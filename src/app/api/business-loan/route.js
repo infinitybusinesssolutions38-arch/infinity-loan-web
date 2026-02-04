@@ -58,19 +58,19 @@ export async function POST(req) {
         const preferredLoanTenureMonths = formData.get("preferredLoanTenureMonths");
         const existingLoanDetails = formData.get("existingLoanDetails");
 
-        const passwordRaw = formData.get("password");
-        const password = typeof passwordRaw === "string" ? passwordRaw : undefined;
+        // const passwordRaw = formData.get("password");
+        // const password = typeof passwordRaw === "string" ? passwordRaw : undefined;
 
         if (!email) {
             return NextResponse.json({ success: false, error: "Email is required" }, { status: 400 });
         }
 
-        if (!password) {
-            return NextResponse.json(
-                { success: false, error: "Password is required" },
-                { status: 400 }
-            );
-        }
+        // if (!password) {
+        //     return NextResponse.json(
+        //         { success: false, error: "Password is required" },
+        //         { status: 400 }
+        //     );
+        // }
 
         // ✅ Extract files
         const panCardFile = formData.get("panCardUpload");
@@ -126,7 +126,7 @@ export async function POST(req) {
         const bankStatementLast6MonthsUrl = await uploadToCloudinary(bankStatementLast6MonthsFile);
 
         // ✅ Hash password
-        const hashedPassword = await bcrypt.hash(password, 10);
+        // const hashedPassword = await bcrypt.hash(password, 10);
 
         // ✅ Create new borrower
         const newBorrower = new BusinessLoanModel({
@@ -134,6 +134,7 @@ export async function POST(req) {
             fullName,
             dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : undefined,
             gender,
+        
             mobile,
             email,
 
@@ -177,7 +178,7 @@ export async function POST(req) {
             otherBusinessLicenseDocumentsUrl,
             bankStatementLast6MonthsUrl,
 
-            password: hashedPassword,
+            // password: hashedPassword,
             role: "borrower-business",
         });
 

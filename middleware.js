@@ -17,7 +17,7 @@ export function middleware(req) {
 
   // Redirect logged-in users away from login/register
   if (token && (url === "/login" || url === "/register")) {
-    return NextResponse.redirect(new URL("/dashboard", req.url));
+    return NextResponse.redirect(new URL("/", req.url));
   }
 
   // Allow public routes

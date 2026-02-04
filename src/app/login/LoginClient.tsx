@@ -39,37 +39,13 @@ const LoginClient = () => {
                 alert("Login successful!");
                 console.log(response.data.token);
 
-                // MANUAL REDIRECTS BASED ON USER ROLE
-                const role = response.data.role;
-
                 const next = searchParams?.get("next");
                 if (next && next.startsWith("/")) {
                     window.location.href = next;
                     return;
                 }
 
-                switch (role) {
-                    case "lender-individual":
-                        window.location.href = "/dashboard/lender";
-                        break;
-                    case "lender-organization":
-                        window.location.href = "/dashboard/lender";
-                        break;
-                    case "lender-nri":
-                        window.location.href = "/dashboard/lender";
-                        break;
-                    case "lender-huf":
-                        window.location.href = "/dashboard/lender";
-                        break;
-                    case "borrower-personal":
-                        window.location.href = "/dashboard/borrower";
-                        break;
-                    case "borrower-business":
-                        window.location.href = "/dashboard/borrower";
-                        break;
-                    default:
-                        window.location.href = "/dashboard";
-                }
+                window.location.href = "/";
             } else {
                 alert(response.data.message || "Invalid credentials");
             }
