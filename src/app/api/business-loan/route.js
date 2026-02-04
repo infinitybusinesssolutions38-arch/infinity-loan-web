@@ -58,10 +58,18 @@ export async function POST(req) {
         const preferredLoanTenureMonths = formData.get("preferredLoanTenureMonths");
         const existingLoanDetails = formData.get("existingLoanDetails");
 
-        const password = formData.get("password");
+        const passwordRaw = formData.get("password");
+        const password = typeof passwordRaw === "string" ? passwordRaw : undefined;
 
         if (!email) {
             return NextResponse.json({ success: false, error: "Email is required" }, { status: 400 });
+        }
+
+        if (!password) {
+            return NextResponse.json(
+                { success: false, error: "Password is required" },
+                { status: 400 }
+            );
         }
 
         // ✅ Extract files
@@ -219,7 +227,13 @@ export async function POST(req) {
         return NextResponse.json({ success: true, data: newBorrower, applicationRef, message: "Borrower registered successfully!" }, { status: 201 });
 
     } catch (error) {
-        console.log(error);
-        return NextResponse.json({ success: false, error: "Interanal Server error..." });
+        console.error("Business loan error:", error);
+        return NextResponse.json(
+            {
+                success: false,
+                error: "Internal Server Error",
+            },
+            { status: 500 }
+        );
     }
 }
