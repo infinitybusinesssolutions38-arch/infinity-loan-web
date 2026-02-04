@@ -1,0 +1,277 @@
+{
+  "auditReportVersion": 2,
+  "vulnerabilities": {
+    "js-yaml": {
+      "name": "js-yaml",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1112715,
+          "name": "js-yaml",
+          "dependency": "js-yaml",
+          "title": "js-yaml has prototype pollution in merge (<<)",
+          "url": "https://github.com/advisories/GHSA-mh29-5h37-fv8m",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-1321"
+          ],
+          "cvss": {
+            "score": 5.3,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+          },
+          "range": ">=4.0.0 <4.1.1"
+        }
+      ],
+      "effects": [],
+      "range": "4.0.0 - 4.1.0",
+      "nodes": [
+        "node_modules/js-yaml"
+      ],
+      "fixAvailable": true
+    },
+    "jws": {
+      "name": "jws",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1111244,
+          "name": "jws",
+          "dependency": "jws",
+          "title": "auth0/node-jws Improperly Verifies HMAC Signature",
+          "url": "https://github.com/advisories/GHSA-869p-cjfg-cm3x",
+          "severity": "high",
+          "cwe": [
+            "CWE-347"
+          ],
+          "cvss": {
+            "score": 7.5,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+          },
+          "range": "<3.2.3"
+        }
+      ],
+      "effects": [],
+      "range": "<3.2.3",
+      "nodes": [
+        "node_modules/jws"
+      ],
+      "fixAvailable": true
+    },
+    "lodash": {
+      "name": "lodash",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1112455,
+          "name": "lodash",
+          "dependency": "lodash",
+          "title": "Lodash has Prototype Pollution Vulnerability in `_.unset` and `_.omit` functions",
+          "url": "https://github.com/advisories/GHSA-xxjr-mmjv-4gpg",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-1321"
+          ],
+          "cvss": {
+            "score": 6.5,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:L"
+          },
+          "range": ">=4.0.0 <=4.17.22"
+        }
+      ],
+      "effects": [],
+      "range": "4.0.0 - 4.17.21",
+      "nodes": [
+        "node_modules/lodash"
+      ],
+      "fixAvailable": true
+    },
+    "next": {
+      "name": "next",
+      "severity": "critical",
+      "isDirect": true,
+      "via": [
+        {
+          "source": 1111368,
+          "name": "next",
+          "dependency": "next",
+          "title": "Next.js is vulnerable to RCE in React flight protocol",
+          "url": "https://github.com/advisories/GHSA-9qr9-h5gf-34mp",
+          "severity": "critical",
+          "cwe": [
+            "CWE-502"
+          ],
+          "cvss": {
+            "score": 10,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H"
+          },
+          "range": ">=16.0.0-canary.0 <16.0.7"
+        },
+        {
+          "source": 1111374,
+          "name": "next",
+          "dependency": "next",
+          "title": "Next Server Actions Source Code Exposure ",
+          "url": "https://github.com/advisories/GHSA-w37m-7fhw-fmv9",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-497",
+            "CWE-502",
+            "CWE-1395"
+          ],
+          "cvss": {
+            "score": 5.3,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N"
+          },
+          "range": ">=16.0.0-beta.0 <16.0.9"
+        },
+        {
+          "source": 1111383,
+          "name": "next",
+          "dependency": "next",
+          "title": "Next Vulnerable to Denial of Service with Server Components",
+          "url": "https://github.com/advisories/GHSA-mwv6-3258-q52c",
+          "severity": "high",
+          "cwe": [
+            "CWE-400",
+            "CWE-502",
+            "CWE-1395"
+          ],
+          "cvss": {
+            "score": 7.5,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+          },
+          "range": ">=16.0.0-beta.0 <16.0.9"
+        },
+        {
+          "source": 1112592,
+          "name": "next",
+          "dependency": "next",
+          "title": "Next.js self-hosted applications vulnerable to DoS via Image Optimizer remotePatterns configuration",
+          "url": "https://github.com/advisories/GHSA-9g9p-9gw9-jx7f",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-400",
+            "CWE-770"
+          ],
+          "cvss": {
+            "score": 5.9,
+            "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H"
+          },
+          "range": ">=15.6.0-canary.0 <16.1.5"
+        },
+        {
+          "source": 1112637,
+          "name": "next",
+          "dependency": "next",
+          "title": "Next.js has Unbounded Memory Consumption via PPR Resume Endpoint ",
+          "url": "https://github.com/advisories/GHSA-5f7q-jpqc-wp7h",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-400",
+            "CWE-409",
+            "CWE-770"
+          ],
+          "cvss": {
+            "score": 5.9,
+            "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H"
+          },
+          "range": ">=16.0.0-beta.0 <16.1.5"
+        },
+        {
+          "source": 1112646,
+          "name": "next",
+          "dependency": "next",
+          "title": "Next.js HTTP request deserialization can lead to DoS when using insecure React Server Components",
+          "url": "https://github.com/advisories/GHSA-h25m-26qc-wcjf",
+          "severity": "high",
+          "cwe": [
+            "CWE-400",
+            "CWE-502"
+          ],
+          "cvss": {
+            "score": 7.5,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+          },
+          "range": ">=16.0.0-beta.0 <16.0.11"
+        }
+      ],
+      "effects": [],
+      "range": "15.6.0-canary.0 - 16.1.4",
+      "nodes": [
+        "node_modules/next"
+      ],
+      "fixAvailable": true
+    },
+    "nodemailer": {
+      "name": "nodemailer",
+      "severity": "moderate",
+      "isDirect": true,
+      "via": [
+        {
+          "source": 1109804,
+          "name": "nodemailer",
+          "dependency": "nodemailer",
+          "title": "Nodemailer: Email to an unintended domain can occur due to Interpretation Conflict",
+          "url": "https://github.com/advisories/GHSA-mm7p-fcc7-pg87",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-20",
+            "CWE-436"
+          ],
+          "cvss": {
+            "score": 0,
+            "vectorString": null
+          },
+          "range": "<7.0.7"
+        },
+        {
+          "source": 1112814,
+          "name": "nodemailer",
+          "dependency": "nodemailer",
+          "title": "Nodemailer’s addressparser is vulnerable to DoS caused by recursive calls",
+          "url": "https://github.com/advisories/GHSA-rcmh-qjqh-p98v",
+          "severity": "low",
+          "cwe": [
+            "CWE-703"
+          ],
+          "cvss": {
+            "score": 0,
+            "vectorString": null
+          },
+          "range": "<=7.0.10"
+        }
+      ],
+      "effects": [],
+      "range": "<=7.0.10",
+      "nodes": [
+        "node_modules/nodemailer"
+      ],
+      "fixAvailable": {
+        "name": "nodemailer",
+        "version": "8.0.0",
+        "isSemVerMajor": true
+      }
+    }
+  },
+  "metadata": {
+    "vulnerabilities": {
+      "info": 0,
+      "low": 0,
+      "moderate": 3,
+      "high": 1,
+      "critical": 1,
+      "total": 5
+    },
+    "dependencies": {
+      "prod": 107,
+      "dev": 356,
+      "optional": 80,
+      "peer": 0,
+      "peerOptional": 0,
+      "total": 496
+    }
+  }
+}
