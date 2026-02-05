@@ -44,7 +44,7 @@ const Navbar = () => {
         <Image src="/logo2.png" alt="logo" width={150} height={50} />
       </Link>
 
-      {/* MENU */}
+      {/* MENU  testing changes */}
       <div className="flex-1 flex justify-center">
         <ul className="menu menu-horizontal gap-6 uppercase font-semibold">
 
