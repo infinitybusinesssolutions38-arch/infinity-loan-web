@@ -575,7 +575,7 @@ export default function VehicleLoanEmiCalculator() {
             <IndianRupee className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-4xl font-bold text-slate-900">
-            Vehicle Loan EMI Calculator
+            Loan EMI Calculator
           </h1>
           <p className="text-slate-600 mt-2">
             Calculate EMI instantly and plan your loan smartly
@@ -678,3 +678,6 @@ export default function VehicleLoanEmiCalculator() {
     </div>
   );
 }
+
+
+

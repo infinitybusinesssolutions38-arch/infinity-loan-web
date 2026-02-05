@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
-import EMICalculator from "@/components/EmiCalculator";
+// import EMICalculator from "@/components/EmiCalculator";
 import {
     ArrowRight,
     CheckCircle2,
@@ -27,6 +27,7 @@ import {
     Sparkles,
 } from "lucide-react";
 import BankLogosSlider from "./BankInfinte";
+import VehicleLoanEmiCalculator from "./Calculator";
 
 const AUTOPLAY_MS = 4000;
 
@@ -536,7 +537,7 @@ const HeroSection: React.FC = () => {
                     </div>
 
                     <div className="rounded-3xl border border-gray-200/70 bg-white shadow-sm overflow-hidden hover:shadow-lg transition-shadow duration-500 animate-fade-in-up">
-                        <EMICalculator />
+                        <VehicleLoanEmiCalculator />
                     </div>
 
                     <div className="mt-8 grid gap-4 sm:grid-cols-2">
