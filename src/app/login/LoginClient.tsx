@@ -1,16 +1,14 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
-import Link from "next/link";
 import axios from "axios";
 import { useSearchParams } from "next/navigation";
+import { motion } from "framer-motion";
 
 type LoginData = {
-    identifier: string; // email or mobile
-    password: string;
+    email: string;
+    otp: string;
 };
 
 const LoginClient = () => {
@@ -21,12 +19,15 @@ const LoginClient = () => {
     } = useForm<LoginData>();
 
     const [loading, setLoading] = useState(false);
-    const [openDropdown, setOpenDropdown] = useState<string | null>(null);
     const searchParams = useSearchParams();
+    const [nextUrl, setNextUrl] = useState<string | null>(null);
 
-    const toggleDropdown = (menu: string) => {
-        setOpenDropdown(openDropdown === menu ? null : menu);
-    };
+    useEffect(() => {
+        const next = searchParams?.get("next");
+        if (next && next.startsWith("/")) {
+            setNextUrl(next);
+        }
+    }, [searchParams]);
 
     const onSubmit = async (data: LoginData) => {
         try {
@@ -39,9 +40,8 @@ const LoginClient = () => {
                 alert("Login successful!");
                 console.log(response.data.token);
 
-                const next = searchParams?.get("next");
-                if (next && next.startsWith("/")) {
-                    window.location.href = next;
+                if (nextUrl) {
+                    window.location.href = nextUrl;
                     return;
                 }
 
@@ -58,128 +58,78 @@ const LoginClient = () => {
     };
 
     return (
-        <section className="h-full lg:min-h-screen bg-gray-50">
-            <div className="flex justify-center pt-5 md:pt-20">
-                <div className="flex flex-col md:flex-row rounded-2xl overflow-hidden w-full max-w-6xl">
-                    {/* LEFT SIDE */}
-                    <div className="md:w-1/2 bg-white shadow-md lg:rounded-l-2xl h-full mx-4 lg:mx-0 p-8 overflow-y-auto">
-                        <h2 className="text-xl sm:text-2xl font-bold text-neutral-800 mb-5">
-                            Login
-                        </h2>
+        <section className="min-h-screen bg-white">
+            {/* breadcrumb area (layout already provides navbar) */}
+            <div className="bg-gray-50 px-6 py-4 text-sm text-gray-700">
+                <span className="font-semibold">HOME</span> › <span className="font-semibold">LOGIN</span>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2">
+                {/* Left visual area */}
+                <div className="relative overflow-hidden min-h-[420px] lg:min-h-screen">
+                    <div className="absolute inset-0 bg-gradient-to-br from-gray-800 via-gray-900 to-black" />
+                    <div
+                        className="absolute inset-0 bg-cover bg-center opacity-40"
+                        style={{ backgroundImage: "url('https://images.unsplash.com/photo-1552664730-d307ca884978?w=1400&q=80')" }}
+                    />
+                    <div className="relative z-10 p-8 lg:p-16 text-white">
+                        <p className="text-sm font-semibold uppercase tracking-wider mb-3 text-blue-400">Welcome back</p>
+                        <h2 className="text-4xl lg:text-5xl font-bold leading-tight mb-4">Access your account</h2>
+                        <p className="max-w-md text-gray-200">Manage your loans, check application status, and more.</p>
+                    </div>
+
+                    {/* floating animated blobs */}
+                    <motion.div
+                        className="absolute -top-20 -right-20 w-72 h-72 bg-blue-500/20 rounded-full blur-3xl"
+                        animate={{ x: [0, -40, 0], y: [0, 20, 0], scale: [1, 1.15, 1] }}
+                        transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
+                    />
+                    <motion.div
+                        className="absolute -bottom-24 left-10 w-56 h-56 bg-purple-500/20 rounded-full blur-3xl"
+                        animate={{ x: [0, 30, 0], y: [0, -20, 0], scale: [1, 0.9, 1] }}
+                        transition={{ duration: 22, repeat: Infinity, ease: "easeInOut" }}
+                    />
+                </div>
+
+                {/* Right - Card form */}
+                <div className="flex items-center justify-center p-8">
+                    <motion.div
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6 }}
+                        whileHover={{ scale: 1.01 }}
+                        className="w-full max-w-md bg-white border border-gray-100 rounded-2xl shadow-2xl p-8"
+                    >
+                        <h3 className="text-2xl font-bold mb-1">Login to your account</h3>
+                        <p className="text-sm text-gray-600 mb-6">Enter email and OTP to continue</p>
 
                         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                            {/* Email or Mobile */}
-                            <LabelInputContainer>
-                                <Label htmlFor="identifier">Email or Mobile Number</Label>
-                                <Input
-                                    id="identifier"
-                                    type="text"
-                                    placeholder="you@example.com or 9876543210"
-                                    {...register("identifier", { required: true })}
-                                    className="border border-gray-300"
-                                />
-                                {errors.identifier?.message && (
-                                    <p className="text-red-500 text-md mt-2">{errors.identifier.message}</p>
-                                )}
-                            </LabelInputContainer>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                                <Input id="email" type="email" placeholder="you@example.com" {...register("email", { required: true })} className="w-full" />
+                                {errors.email && <p className="text-red-500 text-sm mt-1">Email is required</p>}
+                            </div>
 
-                            {/* Password */}
-                            <LabelInputContainer>
-                                <Label htmlFor="password">Password</Label>
-                                <Input
-                                    id="password"
-                                    type="password"
-                                    placeholder="••••••••"
-                                    {...register("password", { required: true })}
-                                    className="border border-gray-300"
-                                />
-                            </LabelInputContainer>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">OTP</label>
+                                <Input id="otp" type="text" placeholder="6-digit OTP" {...register("otp", { required: true })} className="w-full" />
+                                {errors.otp && <p className="text-red-500 text-sm mt-1">OTP is required</p>}
+                            </div>
 
-                            {/* Submit */}
-                            <button
-                                type="submit"
-                                disabled={loading}
-                                className="group/btn relative block h-10 w-full rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white mt-4"
-                            >
-                                {loading ? "Logging in..." : "Login →"}
-                                <BottomGradient />
+                            <div className="flex items-center justify-between">
+                                <label className="flex items-center gap-2 text-sm text-gray-600">
+                                    <input type="checkbox" className="w-4 h-4" /> Remember me
+                                </label>
+                                <a href="#" className="text-sm text-blue-600">Forgot OTP?</a>
+                            </div>
+
+                            <button type="submit" disabled={loading} className="w-full py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold">
+                                {loading ? "Logging in..." : "Login"}
                             </button>
                         </form>
-                    </div>
 
-                    {/* DIVIDER */}
-                    <div className="w-px hidden lg:h-[80%] my-4 bg-gray-300" />
-
-                    {/* RIGHT SIDE */}
-                    <div className="md:w-1/2 bg-white mb-4 lg:mb-0 shadow-md lg:rounded-r-2xl mx-4 lg:mx-0 p-8 flex flex-col justify-start">
-                        <h2 className="text-3xl lg:block hidden font-bold text-gray-800 mb-4">
-                            Welcome to Fortune Loans
-                        </h2>
-                        <p className="lg:block hidden text-gray-600 mb-6">
-                            Choose your role below and start your journey with us.
-                        </p>
-
-                        {/* Role Buttons */}
-                        <div className="flex md:flex-row flex-col gap-4">
-                            <div className="relative w-full">
-                                <button
-                                    onClick={() => toggleDropdown("lender")}
-                                    className="px-4 py-3 text-center w-full font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-all"
-                                >
-                                    Register as a Lender
-                                </button>
-
-                                {openDropdown === "lender" && (
-                                    <div className="absolute left-0 right-0 flex flex-col bg-white border border-gray-200 rounded-md mt-1 shadow-lg z-10">
-                                        <Link
-                                            href="/register/lender/individual"
-                                            className="px-4 py-2 hover:bg-blue-50"
-                                        >
-                                            Individual
-                                        </Link>
-                                        <Link
-                                            href="/register/lender/organization"
-                                            className="px-4 py-2 hover:bg-blue-50"
-                                        >
-                                            Organization
-                                        </Link>
-                                        <Link href="/register/lender/nri" className="px-4 py-2 hover:bg-blue-50">
-                                            NRI
-                                        </Link>
-                                        <Link href="/register/lender/huf" className="px-4 py-2 hover:bg-blue-50">
-                                            HUF
-                                        </Link>
-                                    </div>
-                                )}
-                            </div>
-
-                            <div className="relative w-full">
-                                <button
-                                    onClick={() => toggleDropdown("borrower")}
-                                    className="px-4 py-3 text-center w-full font-semibold text-white bg-green-600 rounded-md hover:bg-green-800 transition-all"
-                                >
-                                    Register as a Borrower
-                                </button>
-
-                                {openDropdown === "borrower" && (
-                                    <div className="absolute left-0 right-0 flex flex-col bg-white border border-gray-200 rounded-md mt-1 shadow-lg z-10">
-                                        <Link
-                                            href="/register/borrower/personal"
-                                            className="px-4 py-2 hover:bg-green-50"
-                                        >
-                                            Personal
-                                        </Link>
-                                        <Link
-                                            href="/register/borrower/business"
-                                            className="px-4 py-2 hover:bg-green-50"
-                                        >
-                                            Business
-                                        </Link>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    </div>
+                        <p className="text-center text-sm text-gray-600 mt-4">Don't have an account? <a href="/apply-now" target="_blank" rel="noopener noreferrer" className="text-blue-600">Apply Now</a></p>
+                    </motion.div>
                 </div>
             </div>
         </section>
@@ -187,19 +137,3 @@ const LoginClient = () => {
 };
 
 export default LoginClient;
-
-/* === Utility Components === */
-const BottomGradient = () => (
-    <>
-        <span className="absolute inset-x-0 -bottom-px block h-px w-full bg-gradient-to-r from-transparent via-cyan-500 to-transparent opacity-0 transition duration-500 group-hover/btn:opacity-100" />
-        <span className="absolute inset-x-10 -bottom-px mx-auto block h-px w-1/2 bg-gradient-to-r from-transparent via-indigo-500 to-transparent opacity-0 blur-sm transition duration-500 group-hover/btn:opacity-100" />
-    </>
-);
-
-const LabelInputContainer = ({
-    children,
-    className,
-}: {
-    children: React.ReactNode;
-    className?: string;
-}) => <div className={cn("flex flex-col w-full space-y-2", className)}>{children}</div>;
