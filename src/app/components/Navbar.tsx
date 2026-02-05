@@ -100,8 +100,6 @@ const Navbar = () => {
               </div>
             </div>
           </li>
-
-          {/* CREDIT & CARDS */}
           <li className="dropdown dropdown-hover group">
             <label tabIndex={0} className="cursor-pointer relative py-2 transition-colors duration-200 hover:text-blue-600 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-blue-600 after:transition-all after:duration-300 hover:after:w-full">
               Credit & Cards
@@ -196,10 +194,12 @@ const Navbar = () => {
         ) : (
           <>
             <Link 
-              href="/register" 
+              href="/apply-now"
+              target="_blank"
+              rel="noopener noreferrer"
               className="btn btn-outline btn-md transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5"
             >
-              Register
+              Apply Now
             </Link>
             <Link 
               href="/login" 
