@@ -1,266 +1,436 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import GoldAssetLoanCalculator from "./_components/GoldAssetLoanCalculator";
+import EmiCalculator from "../../components/Calculator";
+import { ArrowRight, CheckCircle, TrendingUp, Shield, Clock, FileText } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Gold & Asset Loan",
+  title: "Home Loan | Finance Your Dream Home",
+  description: "Get flexible home loans with competitive rates, long tenures, and tax benefits. Calculate EMI, check eligibility, and apply online.",
 };
 
-export default function GoldAssetLoanPage() {
+export default function HomeLoanPage() {
   return (
-    <main className="bg-gray-50">
-      <section className="border-b border-gray-100 bg-white">
-        <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
-          <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
-            <div className="space-y-4">
-              <p className="text-sm font-semibold text-blue-600">Gold &amp; Asset Loan</p>
-              <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-                Secure a loan against your valuable assets
-              </h1>
-              <p className="max-w-xl text-sm text-gray-600 sm:text-base">
-                Gold and asset-backed loans are secured loans where you pledge assets like gold, fixed deposits,
-                insurance policies, or other valuables to access funds quickly—often at lower interest rates than
-                unsecured credit.
-              </p>
+    <main className="bg-gradient-to-b from-gray-50 via-white to-gray-50">
+      {/* Hero Section */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800">
+        {/* Decorative background elements */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-blue-400 opacity-20 blur-3xl" />
+          <div className="absolute -bottom-32 -left-40 h-96 w-96 rounded-full bg-indigo-400 opacity-20 blur-3xl" />
+          <div className="absolute top-1/2 left-1/3 h-72 w-72 rounded-full bg-blue-300 opacity-10 blur-3xl" />
+        </div>
 
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-                <Link
-                  href="#apply"
-                  className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 hover:shadow-md focus:outline-none focus:ring-4 focus:ring-blue-200"
-                >
-                  Get Loan Against Assets
-                </Link>
+        {/* Content */}
+        <div className="relative z-10">
+          <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-28">
+            <div className="grid gap-12 lg:grid-cols-2 lg:items-center lg:gap-16">
+              {/* Left Content */}
+              <div className="space-y-6 sm:space-y-8">
+                <div className="space-y-2">
+                  <p className="text-sm font-semibold text-blue-200 uppercase tracking-widest">
+                    Smart Home Financing
+                  </p>
+                  <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
+                    Finance Your <span className="text-blue-200">Dream Home</span> Today
+                  </h1>
+                </div>
+
+                <p className="max-w-2xl text-lg text-blue-100 sm:text-xl">
+                  Get flexible home loans with competitive interest rates, extended tenures, and potential tax benefits. Whether you're buying, building, or renovating—we make homeownership accessible.
+                </p>
+
+                {/* Key Features */}
+                <div className="space-y-3 pt-4">
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="mt-1 h-5 w-5 flex-shrink-0 text-blue-300" />
+                    <span className="text-blue-50">Loan amounts up to ₹1 Crore with minimal documentation</span>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="mt-1 h-5 w-5 flex-shrink-0 text-blue-300" />
+                    <span className="text-blue-50">Tenure up to 30 years to fit your budget</span>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="mt-1 h-5 w-5 flex-shrink-0 text-blue-300" />
+                    <span className="text-blue-50">Fixed or floating rates based on your preference</span>
+                  </div>
+                </div>
+
+                {/* CTA Buttons */}
+                <div className="flex flex-col gap-4 pt-4 sm:flex-row sm:items-center sm:gap-5">
+                  <Link
+                    href="#apply"
+                    className="group inline-flex items-center justify-center gap-2 rounded-xl bg-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold text-blue-600 shadow-lg transition hover:shadow-xl hover:bg-blue-50 focus:outline-none focus:ring-4 focus:ring-blue-300"
+                  >
+                    Apply for Home Loan
+                    <ArrowRight className="h-5 w-5 transition group-hover:translate-x-1" />
+                  </Link>
+                  <Link
+                    href="#calculator"
+                    className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-blue-200 bg-blue-500/10 px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold text-blue-100 backdrop-blur-sm transition hover:bg-blue-500/20 hover:border-blue-300 focus:outline-none focus:ring-4 focus:ring-blue-300"
+                  >
+                    Calculate EMI
+                  </Link>
+                </div>
+
+                {/* Stats */}
+                <div className="grid grid-cols-3 gap-4 pt-8 border-t border-blue-400/30">
+                  <div>
+                    <p className="text-2xl sm:text-3xl font-bold text-white">50K+</p>
+                    <p className="text-sm text-blue-200">Happy Customers</p>
+                  </div>
+                  <div>
+                    <p className="text-2xl sm:text-3xl font-bold text-white">₹500Cr+</p>
+                    <p className="text-sm text-blue-200">Disbursed</p>
+                  </div>
+                  <div>
+                    <p className="text-2xl sm:text-3xl font-bold text-white">24hrs</p>
+                    <p className="text-sm text-blue-200">Approval</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Side - Feature Cards */}
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                {/* Card 1 */}
+                <div className="group rounded-2xl border border-blue-400/30 bg-white/10 p-6 backdrop-blur-md transition hover:bg-white/15 hover:border-blue-300/50">
+                  <div className="flex items-center justify-center h-12 w-12 rounded-xl bg-white/20 group-hover:bg-blue-300 transition">
+                    <TrendingUp className="h-6 w-6 text-white" />
+                  </div>
+                  <h3 className="mt-4 text-lg font-semibold text-white">Competitive Rates</h3>
+                  <p className="mt-2 text-sm text-blue-100">Starting from 6.5% onwards, tailored to your profile</p>
+                </div>
+
+                {/* Card 2 */}
+                <div className="group rounded-2xl border border-blue-400/30 bg-white/10 p-6 backdrop-blur-md transition hover:bg-white/15 hover:border-blue-300/50">
+                  <div className="flex items-center justify-center h-12 w-12 rounded-xl bg-white/20 group-hover:bg-blue-300 transition">
+                    <Clock className="h-6 w-6 text-white" />
+                  </div>
+                  <h3 className="mt-4 text-lg font-semibold text-white">Quick Processing</h3>
+                  <p className="mt-2 text-sm text-blue-100">Approval within 24 hours with instant disbursal</p>
+                </div>
+
+                {/* Card 3 */}
+                <div className="group rounded-2xl border border-blue-400/30 bg-white/10 p-6 backdrop-blur-md transition hover:bg-white/15 hover:border-blue-300/50">
+                  <div className="flex items-center justify-center h-12 w-12 rounded-xl bg-white/20 group-hover:bg-blue-300 transition">
+                    <Shield className="h-6 w-6 text-white" />
+                  </div>
+                  <h3 className="mt-4 text-lg font-semibold text-white">Secure & Safe</h3>
+                  <p className="mt-2 text-sm text-blue-100">256-bit encryption & RBI compliant platform</p>
+                </div>
+
+                {/* Card 4 */}
+                <div className="group rounded-2xl border border-blue-400/30 bg-white/10 p-6 backdrop-blur-md transition hover:bg-white/15 hover:border-blue-300/50">
+                  <div className="flex items-center justify-center h-12 w-12 rounded-xl bg-white/20 group-hover:bg-blue-300 transition">
+                    <FileText className="h-6 w-6 text-white" />
+                  </div>
+                  <h3 className="mt-4 text-lg font-semibold text-white">Easy Documentation</h3>
+                  <p className="mt-2 text-sm text-blue-100">Minimal documents required with digital verification</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Overview Section */}
+      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">Why Choose Our Home Loans?</h2>
+          <p className="mt-4 text-lg text-gray-600">Everything you need to make your homeownership dream a reality</p>
+        </div>
+
+        <div className="grid gap-8 md:grid-cols-3">
+          {/* Feature 1 */}
+          <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm hover:shadow-md transition">
+            <div className="text-4xl mb-4">💰</div>
+            <h3 className="text-xl font-bold text-gray-900">Flexible Amounts</h3>
+            <p className="mt-3 text-gray-600">Borrow from ₹5 lakhs up to ₹1 crore based on your property value and income</p>
+          </div>
+
+          {/* Feature 2 */}
+          <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm hover:shadow-md transition">
+            <div className="text-4xl mb-4">📊</div>
+            <h3 className="text-xl font-bold text-gray-900">Flexible Tenure</h3>
+            <p className="mt-3 text-gray-600">Repay over 5 to 30 years with options to prepay without penalty</p>
+          </div>
+
+          {/* Feature 3 */}
+          <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm hover:shadow-md transition">
+            <div className="text-4xl mb-4">📈</div>
+            <h3 className="text-xl font-bold text-gray-900">Tax Benefits</h3>
+            <p className="mt-3 text-gray-600">Potential deductions on principal and interest under income tax laws</p>
+          </div>
+
+          {/* Feature 4 */}
+          <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm hover:shadow-md transition">
+            <div className="text-4xl mb-4">🔄</div>
+            <h3 className="text-xl font-bold text-gray-900">Balance Transfer</h3>
+            <p className="mt-3 text-gray-600">Switch from existing lender and get better rates with hassle-free process</p>
+          </div>
+
+          {/* Feature 5 */}
+          <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm hover:shadow-md transition">
+            <div className="text-4xl mb-4">🏠</div>
+            <h3 className="text-xl font-bold text-gray-900">Multiple Use Cases</h3>
+            <p className="mt-3 text-gray-600">Buy, build, renovate, or refinance with same documentation</p>
+          </div>
+
+          {/* Feature 6 */}
+          <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm hover:shadow-md transition">
+            <div className="text-4xl mb-4">👥</div>
+            <h3 className="text-xl font-bold text-gray-900">Expert Support</h3>
+            <p className="mt-3 text-gray-600">Dedicated relationship manager to guide you through the entire process</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Information Section */}
+      <section className="border-b border-gray-100 bg-white">
+        <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
+          <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
+            <div className="space-y-6">
+              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">What is a Home Loan?</h2>
+              <div className="space-y-4 text-gray-600">
+                <p>
+                  A home loan is a secured loan offered by banks and financial institutions to help you buy a new home,
+                  purchase a resale property, construct a house, or renovate an existing one. The property generally
+                  acts as collateral.
+                </p>
+                <p>
+                  Home loans usually offer lower interest rates compared to unsecured credit because they are backed by
+                  the property. You can choose between fixed or floating interest rates and repay over a long tenure,
+                  helping you manage monthly cash flow.
+                </p>
+                <p>
+                  Many borrowers also explore tax benefits (as applicable under prevailing laws) on principal repayment
+                  and interest paid. Typical use cases include purchasing a flat/house, building on a plot, home
+                  extension, and major repairs.
+                </p>
+              </div>
+
+              <div className="pt-4">
                 <Link
                   href="#calculator"
-                  className="inline-flex items-center justify-center rounded-xl border border-gray-200 bg-white px-6 py-3 text-sm font-semibold text-gray-900 shadow-sm transition hover:bg-gray-50 focus:outline-none focus:ring-4 focus:ring-gray-100"
+                  className="inline-flex items-center gap-2 text-blue-600 font-semibold hover:text-blue-700 transition"
                 >
-                  Calculate EMI
+                  Use EMI Calculator
+                  <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>
             </div>
 
-            <div className="rounded-3xl border border-gray-100 bg-gradient-to-br from-blue-50 via-white to-indigo-50 p-6 shadow-sm sm:p-8">
-              <h2 className="text-base font-bold text-gray-900">Assets you can pledge</h2>
-              <p className="mt-2 text-sm text-gray-600 sm:text-base">
-                Depending on lender policy, you may be able to secure funding against:
-              </p>
-              <div className="mt-5 grid gap-3 sm:grid-cols-2">
-                <div className="rounded-2xl bg-white p-4 shadow-sm">
-                  <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Gold</p>
-                  <p className="mt-1 text-sm font-semibold text-gray-900">Jewellery / coins</p>
-                </div>
-                <div className="rounded-2xl bg-white p-4 shadow-sm">
-                  <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Fixed deposits</p>
-                  <p className="mt-1 text-sm font-semibold text-gray-900">FD-backed loans</p>
-                </div>
-                <div className="rounded-2xl bg-white p-4 shadow-sm">
-                  <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Insurance</p>
-                  <p className="mt-1 text-sm font-semibold text-gray-900">Policy-backed loans</p>
-                </div>
-                <div className="rounded-2xl bg-white p-4 shadow-sm">
-                  <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Other valuables</p>
-                  <p className="mt-1 text-sm font-semibold text-gray-900">As per lender</p>
-                </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="rounded-2xl border border-gray-100 bg-gradient-to-br from-blue-50 to-indigo-50 p-6">
+                <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-900">Interest Rates</h3>
+                <p className="mt-3 text-2xl font-bold text-gray-900">6.5% - 9.5%</p>
+                <p className="mt-2 text-sm text-gray-600">Rates vary by lender and profile</p>
+              </div>
+
+              <div className="rounded-2xl border border-gray-100 bg-gradient-to-br from-blue-50 to-indigo-50 p-6">
+                <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-900">Tenure</h3>
+                <p className="mt-3 text-2xl font-bold text-gray-900">Up to 30 Years</p>
+                <p className="mt-2 text-sm text-gray-600">Flexible repayment options</p>
+              </div>
+
+              <div className="rounded-2xl border border-gray-100 bg-gradient-to-br from-green-50 to-emerald-50 p-6">
+                <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-900">Loan Amount</h3>
+                <p className="mt-3 text-2xl font-bold text-gray-900">₹5L - ₹1Cr</p>
+                <p className="mt-2 text-sm text-gray-600">Based on profile and property</p>
+              </div>
+
+              <div className="rounded-2xl border border-gray-100 bg-gradient-to-br from-orange-50 to-amber-50 p-6">
+                <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-900">Processing Fee</h3>
+                <p className="mt-3 text-2xl font-bold text-gray-900">0% - 2%</p>
+                <p className="mt-2 text-sm text-gray-600">Transparent & minimal</p>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
-        <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm sm:p-8">
-          <div className="flex flex-col gap-2">
-            <h2 className="text-xl font-bold text-gray-900">Gold &amp; asset loan categories</h2>
-            <p className="text-sm text-gray-600 sm:text-base">
-              Choose the right asset-backed product based on what you’re pledging and how fast you need funds.
-            </p>
-          </div>
+      {/* Main Content Grid */}
+      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
+        <div className="grid gap-8 lg:grid-cols-3">
+          <div className="lg:col-span-2 space-y-8">
+            {/* Eligibility Section */}
+            <div className="rounded-2xl border border-gray-100 bg-white p-8 shadow-sm">
+              <h2 className="text-2xl font-bold text-gray-900">Eligibility Criteria</h2>
+              <p className="mt-2 text-gray-600">Common benchmarks used during evaluation</p>
 
-          <div className="mt-6 grid gap-4 sm:grid-cols-2">
-            <div className="rounded-2xl border border-gray-100 bg-gray-50 p-5">
-              <h3 className="text-base font-semibold text-gray-900">Gold Loan</h3>
-              <p className="mt-2 text-sm text-gray-600">
-                Secure funds against gold jewellery/coins with quick processing and a loan amount based on valuation.
-              </p>
+              <dl className="mt-6 grid gap-4 sm:grid-cols-2">
+                <div className="rounded-xl border border-gray-100 bg-gray-50 p-5">
+                  <dt className="text-sm font-semibold text-gray-900">Minimum Age</dt>
+                  <dd className="mt-2 text-lg font-bold text-gray-900">21 years</dd>
+                  <p className="mt-1 text-xs text-gray-600">Commonly required</p>
+                </div>
+                <div className="rounded-xl border border-gray-100 bg-gray-50 p-5">
+                  <dt className="text-sm font-semibold text-gray-900">Max Age at Maturity</dt>
+                  <dd className="mt-2 text-lg font-bold text-gray-900">60-65 years</dd>
+                  <p className="mt-1 text-xs text-gray-600">Varies by lender</p>
+                </div>
+                <div className="rounded-xl border border-gray-100 bg-gray-50 p-5">
+                  <dt className="text-sm font-semibold text-gray-900">Employment Type</dt>
+                  <dd className="mt-2 text-lg font-bold text-gray-900">Salaried / Self-employed</dd>
+                  <p className="mt-1 text-xs text-gray-600">With stable income</p>
+                </div>
+                <div className="rounded-xl border border-gray-100 bg-gray-50 p-5">
+                  <dt className="text-sm font-semibold text-gray-900">Minimum Income</dt>
+                  <dd className="mt-2 text-lg font-bold text-gray-900">₹25,000+/month</dd>
+                  <p className="mt-1 text-xs text-gray-600">Varies by city</p>
+                </div>
+              </dl>
             </div>
 
-            <div className="rounded-2xl border border-gray-100 bg-gray-50 p-5">
-              <h3 className="text-base font-semibold text-gray-900">Loan Against Securities</h3>
-              <p className="mt-2 text-sm text-gray-600">
-                Borrow against eligible investments like shares, mutual funds, or bonds without selling them.
-              </p>
+            {/* Documentation Section */}
+            <div className="rounded-2xl border border-gray-100 bg-white p-8 shadow-sm">
+              <h2 className="text-2xl font-bold text-gray-900">Required Documentation</h2>
+              <p className="mt-2 text-gray-600">Keep digital copies ready. The exact list depends on your profile.</p>
+
+              <div className="mt-6 grid gap-4">
+                <div className="rounded-xl border-l-4 border-l-blue-600 bg-blue-50 p-5">
+                  <h3 className="text-sm font-semibold text-gray-900">Identity Proof</h3>
+                  <p className="mt-2 text-sm text-gray-700">Aadhaar, PAN, Passport, or Voter ID</p>
+                </div>
+                <div className="rounded-xl border-l-4 border-l-green-600 bg-green-50 p-5">
+                  <h3 className="text-sm font-semibold text-gray-900">Address Proof</h3>
+                  <p className="mt-2 text-sm text-gray-700">Utility bill, Aadhaar, Passport, or Rent agreement</p>
+                </div>
+                <div className="rounded-xl border-l-4 border-l-purple-600 bg-purple-50 p-5">
+                  <h3 className="text-sm font-semibold text-gray-900">Income Proof</h3>
+                  <p className="mt-2 text-sm text-gray-700">Salary slips, Form 16, ITR, or business financials</p>
+                </div>
+                <div className="rounded-xl border-l-4 border-l-orange-600 bg-orange-50 p-5">
+                  <h3 className="text-sm font-semibold text-gray-900">Property Documents</h3>
+                  <p className="mt-2 text-sm text-gray-700">Sale agreement, title deed, approved plan, and NOC</p>
+                </div>
+                <div className="rounded-xl border-l-4 border-l-red-600 bg-red-50 p-5">
+                  <h3 className="text-sm font-semibold text-gray-900">Bank Statements</h3>
+                  <p className="mt-2 text-sm text-gray-700">Last 6 months statements (commonly requested)</p>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
 
-      <section className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
-        <div className="grid gap-6 lg:grid-cols-3">
-          <div className="lg:col-span-2">
-            <article className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm sm:p-8">
-              <h2 className="text-xl font-bold text-gray-900">Introduction</h2>
-              <div className="mt-3 space-y-3 text-sm text-gray-600 sm:text-base">
-                <p>
-                  A gold and asset-backed loan is a secured borrowing option where the pledged asset reduces the lender’s
-                  risk. This often results in lower interest rates, faster processing, and simpler documentation.
-                </p>
-                <p>
-                  Assets can include gold jewellery, fixed deposits, insurance policies, or other valuable instruments.
-                  The eligible loan amount is typically determined by the asset value and the lender’s loan-to-value
-                  (LTV) policy.
-                </p>
-              </div>
-
-              <div className="mt-6 grid gap-4 sm:grid-cols-2">
-                <section className="rounded-2xl border border-gray-100 bg-gray-50 p-5" aria-labelledby="advantages">
-                  <h3 id="advantages" className="text-base font-semibold text-gray-900">Advantages</h3>
-                  <ul className="mt-2 space-y-2 text-sm text-gray-600">
-                    <li className="flex gap-2">
-                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-blue-600" />
-                      Lower interest rates compared to unsecured loans
-                    </li>
-                    <li className="flex gap-2">
-                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-blue-600" />
-                      Quick disbursal for urgent needs
-                    </li>
-                    <li className="flex gap-2">
-                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-blue-600" />
-                      Minimal documentation in many cases
-                    </li>
-                  </ul>
-                </section>
-
-                <section className="rounded-2xl border border-gray-100 bg-gray-50 p-5" aria-labelledby="use-cases">
-                  <h3 id="use-cases" className="text-base font-semibold text-gray-900">Use cases</h3>
-                  <p className="mt-2 text-sm text-gray-600">
-                    Working capital, education, medical expenses, business expansion, or debt consolidation.
-                  </p>
-                </section>
-              </div>
-            </article>
-          </div>
-
-          <aside className="space-y-4">
-            <section className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm" aria-labelledby="tips">
-              <h2 id="tips" className="text-base font-bold text-gray-900">Quick tips</h2>
-              <ul className="mt-3 space-y-2 text-sm text-gray-600">
-                <li className="flex gap-2">
-                  <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-blue-600" />
-                  Understand the LTV policy for your specific asset type.
+          {/* Sidebar */}
+          <aside className="space-y-6">
+            {/* Quick Tips */}
+            <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+              <h3 className="text-lg font-bold text-gray-900">💡 Quick Tips</h3>
+              <ul className="mt-4 space-y-3">
+                <li className="flex gap-3">
+                  <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-blue-600" />
+                  <span className="text-sm text-gray-700">Keep your credit score 700+ for better rates</span>
                 </li>
-                <li className="flex gap-2">
-                  <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-blue-600" />
-                  Confirm custody/valuation process and associated fees.
+                <li className="flex gap-3">
+                  <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-blue-600" />
+                  <span className="text-sm text-gray-700">Compare fixed vs floating rates based on risk comfort</span>
                 </li>
-                <li className="flex gap-2">
-                  <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-blue-600" />
-                  Repay on time to avoid penalties and keep assets safe.
+                <li className="flex gap-3">
+                  <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-blue-600" />
+                  <span className="text-sm text-gray-700">Maintain a buffer for registration and closing costs</span>
+                </li>
+                <li className="flex gap-3">
+                  <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-blue-600" />
+                  <span className="text-sm text-gray-700">Pre-approval can boost your negotiating power</span>
                 </li>
               </ul>
-            </section>
+            </div>
 
-            <section className="rounded-2xl border border-blue-100 bg-blue-50 p-6 shadow-sm" aria-labelledby="help">
-              <h2 id="help" className="text-base font-bold text-blue-900">Need help choosing?</h2>
-              <p className="mt-2 text-sm text-blue-900/80">
-                Share your requirement and we’ll recommend the right product and next steps.
+            {/* Expert Help CTA */}
+            <div className="rounded-2xl border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50 p-6">
+              <h3 className="text-lg font-bold text-blue-900">🤝 Need Expert Guidance?</h3>
+              <p className="mt-2 text-sm text-blue-800">
+                Our financial experts will help you find the best loan tailored to your needs.
               </p>
               <Link
                 href="/contact"
-                className="mt-4 inline-flex w-full items-center justify-center rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-200"
+                className="mt-4 block w-full rounded-lg bg-blue-600 px-4 py-3 text-center text-sm font-semibold text-white hover:bg-blue-700 transition"
               >
-                Talk to an expert
+                Talk to an Expert
               </Link>
-            </section>
+            </div>
+
+            {/* FAQ Preview */}
+            <div className="rounded-2xl border border-gray-200 bg-white p-6">
+              <h3 className="text-lg font-bold text-gray-900">❓ Common Questions</h3>
+              <div className="mt-4 space-y-3">
+                <details className="group cursor-pointer">
+                  <summary className="text-sm font-medium text-gray-900 group-open:text-blue-600">
+                    How long does approval take?
+                  </summary>
+                  <p className="mt-2 text-xs text-gray-600 leading-relaxed">
+                    Most loans are approved within 24 hours with instant disbursal.
+                  </p>
+                </details>
+                <details className="group cursor-pointer">
+                  <summary className="text-sm font-medium text-gray-900 group-open:text-blue-600">
+                    What's the minimum credit score?
+                  </summary>
+                  <p className="mt-2 text-xs text-gray-600 leading-relaxed">
+                    Typically 700+, but some lenders may consider lower scores.
+                  </p>
+                </details>
+                <details className="group cursor-pointer">
+                  <summary className="text-sm font-medium text-gray-900 group-open:text-blue-600">
+                    Can I prepay without penalty?
+                  </summary>
+                  <p className="mt-2 text-xs text-gray-600 leading-relaxed">
+                    Yes, most modern home loans allow prepayment without charges.
+                  </p>
+                </details>
+              </div>
+            </div>
           </aside>
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-4 pb-10 sm:px-6 sm:pb-14">
-        <div className="grid gap-6 lg:grid-cols-2">
-          <section className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm sm:p-8" aria-labelledby="eligibility">
-            <h2 id="eligibility" className="text-xl font-bold text-gray-900">Eligibility criteria</h2>
-            <p className="mt-2 text-sm text-gray-600 sm:text-base">
-              Eligibility depends on asset type and lender policy. These are common requirements.
-            </p>
+      {/* EMI Calculator Section */}
+      <section id="calculator" className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
+        <EmiCalculator />
+      </section>
 
-            <dl className="mt-5 grid gap-3">
-              <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
-                <dt className="text-sm font-semibold text-gray-900">Asset ownership</dt>
-                <dd className="mt-1 text-sm text-gray-600">You should own the asset being pledged and provide proof.</dd>
-              </div>
-              <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
-                <dt className="text-sm font-semibold text-gray-900">Age requirement</dt>
-                <dd className="mt-1 text-sm text-gray-600">Typically 21+ years (varies by lender and product).</dd>
-              </div>
-              <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
-                <dt className="text-sm font-semibold text-gray-900">Basic KYC compliance</dt>
-                <dd className="mt-1 text-sm text-gray-600">KYC verification as per prevailing guidelines.</dd>
-              </div>
-            </dl>
-          </section>
+      {/* CTA Section */}
+      <section id="apply" className="relative overflow-hidden bg-gradient-to-r from-blue-600 to-indigo-700 py-16 sm:py-20 lg:py-24">
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute -top-20 -right-20 h-64 w-64 rounded-full bg-white opacity-5 blur-3xl" />
+          <div className="absolute -bottom-20 -left-20 h-64 w-64 rounded-full bg-white opacity-5 blur-3xl" />
+        </div>
 
-          <section className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm sm:p-8" aria-labelledby="documents">
-            <h2 id="documents" className="text-xl font-bold text-gray-900">Required documents</h2>
-            <p className="mt-2 text-sm text-gray-600 sm:text-base">
-              Keep clear copies ready. Some lenders may request additional documentation based on the asset type.
-            </p>
+        <div className="relative z-10 mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white">
+            Ready to Own Your Dream Home?
+          </h2>
+          <p className="mt-4 text-lg text-blue-100 max-w-2xl mx-auto">
+            Start your application today and get approval within 24 hours. Our team will guide you through every step of the process.
+          </p>
 
-            <div className="mt-5 grid gap-3">
-              <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
-                <h3 className="text-sm font-semibold text-gray-900">Identity proof</h3>
-                <p className="mt-1 text-sm text-gray-600">PAN, Aadhaar, Passport, or Voter ID (as applicable)</p>
-              </div>
-              <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
-                <h3 className="text-sm font-semibold text-gray-900">Address proof</h3>
-                <p className="mt-1 text-sm text-gray-600">Aadhaar, utility bill, rent agreement, etc. (as applicable)</p>
-              </div>
-              <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
-                <h3 className="text-sm font-semibold text-gray-900">Asset ownership proof</h3>
-                <p className="mt-1 text-sm text-gray-600">Receipts, certificates, FD/policy details, or other proofs (as applicable)</p>
-              </div>
-              <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
-                <h3 className="text-sm font-semibold text-gray-900">Photographs</h3>
-                <p className="mt-1 text-sm text-gray-600">Recent passport-size photos (as applicable)</p>
-              </div>
-            </div>
-          </section>
+          <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
+            <Link
+              href="/register"
+              className="group inline-flex items-center justify-center gap-2 rounded-xl bg-white px-8 py-4 text-lg font-semibold text-blue-600 shadow-lg hover:shadow-xl transition hover:bg-blue-50"
+            >
+              Apply for Home Loan
+              <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition" />
+            </Link>
+            <Link
+              href="/contact"
+              className="inline-flex items-center justify-center rounded-xl border-2 border-white px-8 py-4 text-lg font-semibold text-white transition hover:bg-white/10"
+            >
+              Request a Callback
+            </Link>
+          </div>
+
+          <p className="mt-8 text-sm text-blue-200">
+            ✓ No hidden charges | ✓ Transparent process | ✓ Expert support
+          </p>
         </div>
       </section>
 
-      <section id="calculator" className="mx-auto max-w-6xl px-4 pb-10 sm:px-6 sm:pb-14">
-        <GoldAssetLoanCalculator />
-      </section>
-
-      <section id="apply" className="border-t border-gray-100 bg-white">
-        <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
-          <div className="rounded-2xl border border-gray-100 bg-gradient-to-br from-gray-50 to-white p-6 shadow-sm sm:p-8">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <h2 className="text-xl font-bold text-gray-900">Get loan against assets</h2>
-                <p className="mt-1 text-sm text-gray-600 sm:text-base">
-                  Start your application and we’ll guide you through eligibility checks and documentation.
-                </p>
-              </div>
-              <div className="flex flex-col gap-3 sm:flex-row">
-                <Link
-                  href="/register"
-                  className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 hover:shadow-md focus:outline-none focus:ring-4 focus:ring-blue-200"
-                >
-                  Get Loan Against Assets
-                </Link>
-                <Link
-                  href="/contact"
-                  className="inline-flex items-center justify-center rounded-xl border border-gray-200 bg-white px-6 py-3 text-sm font-semibold text-gray-900 shadow-sm transition hover:bg-gray-50 focus:outline-none focus:ring-4 focus:ring-gray-100"
-                >
-                  Request a callback
-                </Link>
-              </div>
-            </div>
-          </div>
-
-          <p className="mt-6 text-xs text-gray-500">
-            Disclaimer: Eligibility and interest rates depend on lender policies and your profile. This page is for
-            informational purposes.
+      {/* Footer Disclaimer */}
+      <section className="bg-white border-t border-gray-100">
+        <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-12 lg:px-8">
+          <p className="text-xs text-gray-500 leading-relaxed">
+            <strong>Disclaimer:</strong> Eligibility, interest rates, tenure, and loan amounts depend on individual lender policies and your profile including credit score, income, employment status, and property details. This page is for informational purposes only and does not constitute an offer or commitment for any loan. Please consult with our experts or directly with lenders for personalized quotes and terms. Tax benefits are subject to applicable income tax laws and individual circumstances.
           </p>
         </div>
       </section>

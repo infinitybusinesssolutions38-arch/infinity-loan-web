@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import PropertyLoanCalculator from "./_components/PropertyLoanCalculator";
+import EmiCalculator from "../../components/Calculator";
 
 export const metadata: Metadata = {
   title: "Home & Property Loan",
@@ -232,7 +232,7 @@ export default function HomePropertyLoanPage() {
       </section>
 
       <section id="calculator" className="mx-auto max-w-6xl px-4 pb-10 sm:px-6 sm:pb-14">
-        <PropertyLoanCalculator />
+        <EmiCalculator />
       </section>
 
       <section id="apply" className="border-t border-gray-100 bg-white">

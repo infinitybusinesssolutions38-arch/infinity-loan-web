@@ -77,9 +77,9 @@ const Navbar = () => {
 
                   <div className="space-y-2">
                     <h4 className="font-bold mb-3 text-blue-600 text-base">Home & Property</h4>
-                    <Link href="/home-property-loan" className="block py-1.5 px-2 rounded-md transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">Home Loan</Link>
-                    <Link href="/home-property-loan" className="block py-1.5 px-2 rounded-md transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">Loan Against Property</Link>
-                    <Link href="/home-property-loan" className="block py-1.5 px-2 rounded-md transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">Plot / Construction Loan</Link>
+                    <Link href="/home-loan" className="block py-1.5 px-2 rounded-md transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">Home Loan</Link>
+                    <Link href="/home-loan" className="block py-1.5 px-2 rounded-md transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">Loan Against Property</Link>
+                    <Link href="/home-loan" className="block py-1.5 px-2 rounded-md transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">Plot / Construction Loan</Link>
                   </div>
 
                   <div className="space-y-2">
@@ -187,22 +187,22 @@ const Navbar = () => {
       {/* AUTH */}
       <div className="flex gap-3 shrink-0">
         {isAuthenticated ? (
-          <button 
-            onClick={handleLogout} 
+          <button
+            onClick={handleLogout}
             className="btn btn-secondary btn-md transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5"
           >
             Logout
           </button>
         ) : (
           <>
-            <Link 
-              href="/register" 
+            <Link
+              href="/register"
               className="btn btn-outline btn-md transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5"
             >
               Register
             </Link>
-            <Link 
-              href="/login" 
+            <Link
+              href="/login"
               className="btn btn-primary btn-md transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5"
             >
               Login
