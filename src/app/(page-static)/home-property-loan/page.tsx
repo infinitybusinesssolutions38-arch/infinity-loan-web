@@ -178,53 +178,54 @@ export default function HomePropertyLoanPage() {
       <section className="mx-auto max-w-6xl px-4 pb-10 sm:px-6 sm:pb-14">
         <div className="grid gap-6 lg:grid-cols-2">
           <section className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm sm:p-8" aria-labelledby="eligibility">
-            <h2 id="eligibility" className="text-xl font-bold text-gray-900">Eligibility criteria</h2>
-            <p className="mt-2 text-sm text-gray-600 sm:text-base">
-              Requirements can vary. These are common checks lenders perform for property loans.
-            </p>
+            <h2 id="eligibility" className="text-xl font-bold text-gray-900">Home &amp; Property Loans – Eligibility Criteria</h2>
 
             <dl className="mt-5 grid gap-3">
               <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
-                <dt className="text-sm font-semibold text-gray-900">Property ownership</dt>
-                <dd className="mt-1 text-sm text-gray-600">You should own a residential or commercial property with clear title.</dd>
+                <dt className="text-sm font-semibold text-gray-900">Applicant age: 21–65 years</dt>
               </div>
               <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
-                <dt className="text-sm font-semibold text-gray-900">Age criteria</dt>
-                <dd className="mt-1 text-sm text-gray-600">Typically 25 to 65 years at loan maturity (varies by lender).</dd>
+                <dt className="text-sm font-semibold text-gray-900">Indian resident</dt>
               </div>
               <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
-                <dt className="text-sm font-semibold text-gray-900">Income stability</dt>
-                <dd className="mt-1 text-sm text-gray-600">Stable income or business vintage to support EMI repayments.</dd>
+                <dt className="text-sm font-semibold text-gray-900">Stable income source (salaried or self-employed)</dt>
               </div>
               <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
-                <dt className="text-sm font-semibold text-gray-900">Credit history</dt>
-                <dd className="mt-1 text-sm text-gray-600">Consistent repayments and healthy credit score improve eligibility.</dd>
+                <dt className="text-sm font-semibold text-gray-900">Acceptable credit profile / credit score of 650 or above preferred</dt>
+              </div>
+              <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
+                <dt className="text-sm font-semibold text-gray-900">Clear and marketable property title</dt>
+              </div>
+              <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
+                <dt className="text-sm font-semibold text-gray-900">Property must be legally approved as per local authorities</dt>
+              </div>
+              <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
+                <dt className="text-sm font-semibold text-gray-900">Approved construction plan (where applicable)</dt>
               </div>
             </dl>
           </section>
 
           <section className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm sm:p-8" aria-labelledby="documents">
-            <h2 id="documents" className="text-xl font-bold text-gray-900">Documentation required</h2>
-            <p className="mt-2 text-sm text-gray-600 sm:text-base">
-              Keep copies ready. Documentation requirements may differ by property type and borrower profile.
-            </p>
+            <h2 id="documents" className="text-xl font-bold text-gray-900">Home &amp; Property Loans – Documents Required</h2>
 
             <div className="mt-5 grid gap-3">
               <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
-                <h3 className="text-sm font-semibold text-gray-900">Property ownership documents</h3>
-                <p className="mt-1 text-sm text-gray-600">Sale deed, title deed, tax receipts, and approved plans (as applicable).</p>
+                <h3 className="text-sm font-semibold text-gray-900">PAN Card</h3>
               </div>
               <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
-                <h3 className="text-sm font-semibold text-gray-900">Identity &amp; address proof</h3>
-                <p className="mt-1 text-sm text-gray-600">PAN, Aadhaar, Passport, utility bill, etc. (as applicable).</p>
+                <h3 className="text-sm font-semibold text-gray-900">Aadhaar Card / Valid address proof</h3>
               </div>
               <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
-                <h3 className="text-sm font-semibold text-gray-900">Income proof</h3>
-                <p className="mt-1 text-sm text-gray-600">Salary slips, ITR, GST returns, or financial statements.</p>
+                <h3 className="text-sm font-semibold text-gray-900">Income proof (salary slips or Income Tax Returns)</h3>
               </div>
               <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
-                <h3 className="text-sm font-semibold text-gray-900">Bank statements</h3>
-                <p className="mt-1 text-sm text-gray-600">Last 6 months statements (commonly requested).</p>
+                <h3 className="text-sm font-semibold text-gray-900">Bank statements (last 6–12 months)</h3>
+              </div>
+              <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
+                <h3 className="text-sm font-semibold text-gray-900">Property ownership documents / sale agreement</h3>
+              </div>
+              <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
+                <h3 className="text-sm font-semibold text-gray-900">Approved construction plans and permissions (if applicable), for home &amp; property</h3>
               </div>
             </div>
           </section>

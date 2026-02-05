@@ -26,6 +26,7 @@ import {
     ChevronRight,
     Sparkles,
 } from "lucide-react";
+import BankLogosSlider from "./BankInfinte";
 
 const AUTOPLAY_MS = 4000;
 
@@ -686,6 +687,9 @@ const HeroSection: React.FC = () => {
                         </p>
                     </div>
                 </div>
+
+<BankLogosSlider />
+               
             </section>
 
             {/* Latest Updates Section */}
