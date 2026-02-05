@@ -27,9 +27,10 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en" className="bg-white text-gray-900">
+        <html lang="en" className="bg-white text-gray-900" suppressHydrationWarning>
             <body
                 className={`${geistSans.variable} ${geistMono.variable} bg-white antialiased`}
+                suppressHydrationWarning
             >
                 <LoanModalProvider>
                     <Navbar />

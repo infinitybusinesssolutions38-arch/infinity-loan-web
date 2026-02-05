@@ -1,4 +1,3 @@
-"use client";
 import LoginClient from "./LoginClient";
 
 export const dynamic = "force-dynamic";
