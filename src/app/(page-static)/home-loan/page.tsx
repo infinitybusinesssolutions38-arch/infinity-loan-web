@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default function HomeLoanPage() {
   return (
     <main className="bg-gradient-to-b from-gray-50 via-white to-gray-50">
-      {/* Hero Section */}
+      {/* Hero Section this is testing git up */}
       <section className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800">
         {/* Decorative background elements */}
         <div className="absolute inset-0 overflow-hidden">
