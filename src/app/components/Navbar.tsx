@@ -107,10 +107,10 @@ const Navbar = () => {
               Credit & Cards
             </label>
             <ul className="dropdown-content menu p-3 shadow-xl bg-white rounded-xl w-60 normal-case border border-gray-100 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
-              <li><Link href="/services/credit-cards" className="py-2.5 px-3 rounded-lg transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">Credit Line / Flexi Loan</Link></li>
-              <li><Link href="/services/credit-cards" className="py-2.5 px-3 rounded-lg transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">Business Credit Card</Link></li>
-              <li><Link href="/services/credit-cards" className="py-2.5 px-3 rounded-lg transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">Personal Credit Card</Link></li>
-              <li><Link href="/services/credit-cards" className="py-2.5 px-3 rounded-lg transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">BNPL</Link></li>
+              <li><Link href="/credit-cards" className="py-2.5 px-3 rounded-lg transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">Credit Line / Flexi Loan</Link></li>
+              <li><Link href="/credit-cards" className="py-2.5 px-3 rounded-lg transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">Business Credit Card</Link></li>
+              <li><Link href="/credit-cards" className="py-2.5 px-3 rounded-lg transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">Personal Credit Card</Link></li>
+              <li><Link href="/credit-cards" className="py-2.5 px-3 rounded-lg transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">BNPL</Link></li>
             </ul>
           </li>
 

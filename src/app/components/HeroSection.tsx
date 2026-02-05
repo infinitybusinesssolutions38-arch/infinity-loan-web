@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
@@ -18,8 +19,24 @@ import {
     Sparkles,
 } from "lucide-react";
 
+const AUTOPLAY_MS = 4000;
+
 const HeroSection: React.FC = () => {
     const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+
+    const slides = useMemo(
+        () => [
+            { src: "/home-img/home1.jpeg", alt: "Fintech services" },
+            { src: "/home-img/home2.jpeg", alt: "Digital lending" },
+            { src: "/home-img/home3.jpeg", alt: "Financial inclusion" },
+            { src: "/home-img/home4.jpeg", alt: "Secure payments" },
+        ],
+        []
+    );
+
+    const [activeIndex, setActiveIndex] = useState(0);
+    const intervalRef = useRef<number | null>(null);
+    const isPausedRef = useRef(false);
 
     useEffect(() => {
         const checkUser = async () => {
@@ -34,6 +51,56 @@ const HeroSection: React.FC = () => {
         checkUser();
     }, []);
 
+    const nextSlide = useCallback(() => {
+        setActiveIndex((i) => (i + 1) % slides.length);
+    }, [slides.length]);
+
+    const prevSlide = useCallback(() => {
+        setActiveIndex((i) => (i - 1 + slides.length) % slides.length);
+    }, [slides.length]);
+
+    const goToSlide = useCallback(
+        (index: number) => {
+            const len = slides.length;
+            const safe = ((index % len) + len) % len;
+            setActiveIndex(safe);
+        },
+        [slides.length]
+    );
+
+    useEffect(() => {
+        intervalRef.current = window.setInterval(() => {
+            if (isPausedRef.current) return;
+            nextSlide();
+        }, AUTOPLAY_MS);
+
+        return () => {
+            if (intervalRef.current) window.clearInterval(intervalRef.current);
+            intervalRef.current = null;
+        };
+    }, [nextSlide]);
+
+    const onMouseEnter = useCallback(() => {
+        isPausedRef.current = true;
+    }, []);
+    const onMouseLeave = useCallback(() => {
+        isPausedRef.current = false;
+    }, []);
+
+    const onKeyDown = useCallback(
+        (e: React.KeyboardEvent<HTMLDivElement>) => {
+            if (e.key === "ArrowLeft") {
+                e.preventDefault();
+                prevSlide();
+            }
+            if (e.key === "ArrowRight") {
+                e.preventDefault();
+                nextSlide();
+            }
+        },
+        [nextSlide, prevSlide]
+    );
+
     const personalHref =
         isAuthenticated === false
             ? "/login?next=/register/borrower/personal"
@@ -45,9 +112,43 @@ const HeroSection: React.FC = () => {
 
     return (
         <div>
-            <section className="relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-700 via-blue-600 to-emerald-600 opacity-95" />
-                <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDM0djItSDI0di0yaDEyek0zNiAyNHYySDI0di0yaDEyeiIvPjwvZz48L2c+PC9zdmc+')] opacity-30" />
+            <section
+                className="relative overflow-hidden"
+                aria-roledescription="carousel"
+                aria-label="Hero carousel"
+                onMouseEnter={onMouseEnter}
+                onMouseLeave={onMouseLeave}
+            >
+                <div
+                    className="absolute inset-0"
+                    tabIndex={0}
+                    onKeyDown={onKeyDown}
+                    aria-label="Hero carousel. Use left and right arrow keys to change slides."
+                >
+                    {slides.map((slide, i) => {
+                        const isActive = i === activeIndex;
+                        return (
+                            <div
+                                key={slide.src}
+                                className={`absolute inset-0 transition-opacity duration-700 ease-out ${
+                                    isActive ? "opacity-100" : "opacity-0"
+                                }`}
+                                aria-hidden={!isActive}
+                            >
+                                <Image
+                                    src={slide.src}
+                                    alt={slide.alt}
+                                    fill
+                                    priority={i === 0}
+                                    sizes="100vw"
+                                    className="object-cover"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/45 to-black/60" />
+                                <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-black/30" />
+                            </div>
+                        );
+                    })}
+                </div>
 
                 <div className="relative container mx-auto px-4 lg:px-8 py-20 lg:py-32">
                     <div className="max-w-3xl mx-auto text-center text-white">
@@ -99,6 +200,72 @@ const HeroSection: React.FC = () => {
                                 <span className="text-sm">Low Interest Rates</span>
                             </div>
                         </div>
+
+                        <div className="mt-10 flex items-center justify-center gap-2" aria-label="Slide pagination">
+                            {slides.map((_, i) => {
+                                const isActive = i === activeIndex;
+                                return (
+                                    <button
+                                        key={i}
+                                        type="button"
+                                        className={`h-2.5 w-2.5 rounded-full transition ${
+                                            isActive
+                                                ? "bg-white shadow-[0_0_0_4px_rgba(255,255,255,0.18)]"
+                                                : "bg-white/40 hover:bg-white/70"
+                                        }`}
+                                        onClick={() => goToSlide(i)}
+                                        aria-label={`Go to slide ${i + 1}`}
+                                        aria-current={isActive ? "true" : "false"}
+                                    />
+                                );
+                            })}
+                        </div>
+
+                        <button
+                            type="button"
+                            onClick={prevSlide}
+                            className="absolute left-4 top-1/2 -translate-y-1/2 inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 px-3 py-2 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/15 focus:outline-none focus:ring-4 focus:ring-white/20"
+                            aria-label="Previous slide"
+                        >
+                            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" aria-hidden="true">
+                                <path
+                                    d="M19 12H7"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                />
+                                <path
+                                    d="m11 6-6 6 6 6"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                />
+                            </svg>
+                        </button>
+
+                        <button
+                            type="button"
+                            onClick={nextSlide}
+                            className="absolute right-4 top-1/2 -translate-y-1/2 inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 px-3 py-2 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/15 focus:outline-none focus:ring-4 focus:ring-white/20"
+                            aria-label="Next slide"
+                        >
+                            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" aria-hidden="true">
+                                <path
+                                    d="M5 12h12"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                />
+                                <path
+                                    d="m13 6 6 6-6 6"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                />
+                            </svg>
+                        </button>
                     </div>
                 </div>
 
