@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 
 type RegisterData = {
     role: string;
@@ -75,93 +76,214 @@ const RegisterPage = () => {
             setLoading(false);
         }
     };
+return (
+        <section className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-indigo-50 relative overflow-hidden">
+            {/* Animated background elements */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                <motion.div
+                    className="absolute -top-40 -right-40 w-80 h-80 bg-blue-400/20 rounded-full blur-3xl"
+                    animate={{
+                        scale: [1, 1.2, 1],
+                        x: [0, 50, 0],
+                        y: [0, 30, 0],
+                    }}
+                    transition={{
+                        duration: 20,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                    }}
+                />
+                <motion.div
+                    className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-400/20 rounded-full blur-3xl"
+                    animate={{
+                        scale: [1.2, 1, 1.2],
+                        x: [0, -50, 0],
+                        y: [0, -30, 0],
+                    }}
+                    transition={{
+                        duration: 20,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                    }}
+                />
+                <motion.div
+                    className="absolute top-1/2 left-1/2 w-60 h-60 bg-indigo-400/10 rounded-full blur-3xl"
+                    animate={{
+                        scale: [1, 1.3, 1],
+                        rotate: [0, 180, 360],
+                    }}
+                    transition={{
+                        duration: 25,
+                        repeat: Infinity,
+                        ease: "linear"
+                    }}
+                />
+            </div>
 
-    return (
-        <section className="h-full lg:min-h-screen bg-gray-50">
-            <div className="flex justify-center pt-5 md:pt-20">
-                <div className="flex flex-col rounded-2xl overflow-hidden w-full max-w-xl">
-                    <div className="bg-white shadow-md rounded-2xl mx-4 lg:mx-0 p-8">
-                        <h2 className="text-xl sm:text-2xl font-bold text-neutral-800 mb-5">Register</h2>
+            <div className="relative flex justify-center pt-5 md:pt-20 px-4">
+                <motion.div
+                    initial={{ opacity: 0, y: 50 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, ease: "easeOut" }}
+                    className="w-full max-w-xl"
+                >
+                    <motion.div
+                        className="bg-white/90 backdrop-blur-xl shadow-2xl rounded-3xl mx-4 lg:mx-0 p-8 border border-white/20"
+                        whileHover={{ scale: 1.01 }}
+                        transition={{ duration: 0.3 }}
+                    >
+                        <motion.div
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.2, duration: 0.5 }}
+                        >
+                            <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent mb-2">
+                                Create Account
+                            </h2>
+                            <p className="text-gray-600 mb-6">Join us and start your journey</p>
+                        </motion.div>
 
                         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                            <LabelInputContainer>
-                                <Label htmlFor="role">Register As</Label>
-                                <select
-                                    id="role"
-                                    {...register("role", { required: true })}
-                                    className={cn(
-                                        "h-10 w-full rounded-md border border-gray-300 bg-white px-3 text-sm text-gray-900"
-                                    )}
-                                >
-                                    <option value="borrower-personal">Borrower - Personal</option>
-                                    <option value="borrower-business">Borrower - Business</option>
-                                    <option value="lender-individual">Lender - Individual</option>
-                                    <option value="lender-organization">Lender - Organization</option>
-                                    <option value="lender-nri">Lender - NRI</option>
-                                    <option value="lender-huf">Lender - HUF</option>
-                                </select>
-                            </LabelInputContainer>
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.3, duration: 0.5 }}
+                            >
+                                <LabelInputContainer>
+                                    <Label htmlFor="role" className="text-gray-700 font-medium">Register As</Label>
+                                    <motion.select
+                                        id="role"
+                                        {...register("role", { required: true })}
+                                        className="h-12 w-full rounded-xl border-2 border-gray-200 bg-white px-4 text-sm text-gray-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-300 cursor-pointer"
+                                        whileFocus={{ scale: 1.01 }}
+                                    >
+                                        <option value="borrower-personal">Borrower - Personal</option>
+                                        <option value="borrower-business">Borrower - Business</option>
+                                        <option value="lender-individual">Lender - Individual</option>
+                                        <option value="lender-organization">Lender - Organization</option>
+                                        <option value="lender-nri">Lender - NRI</option>
+                                        <option value="lender-huf">Lender - HUF</option>
+                                    </motion.select>
+                                </LabelInputContainer>
+                            </motion.div>
 
-                            <LabelInputContainer>
-                                <Label htmlFor="email">Email</Label>
-                                <Input
-                                    id="email"
-                                    type="email"
-                                    placeholder="you@example.com"
-                                    {...register("email", { required: true })}
-                                    className="border border-gray-300"
-                                />
-                            </LabelInputContainer>
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.4, duration: 0.5 }}
+                            >
+                                <LabelInputContainer>
+                                    <Label htmlFor="email" className="text-gray-700 font-medium">Email</Label>
+                                    <motion.div whileFocus={{ scale: 1.01 }}>
+                                        <Input
+                                            id="email"
+                                            type="email"
+                                            placeholder="you@example.com"
+                                            {...register("email", { required: true })}
+                                            className="h-12 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-300"
+                                        />
+                                    </motion.div>
+                                </LabelInputContainer>
+                            </motion.div>
 
-                            <LabelInputContainer>
-                                <Label htmlFor="mobile">Mobile (optional)</Label>
-                                <Input
-                                    id="mobile"
-                                    type="text"
-                                    placeholder="9876543210"
-                                    {...register("mobile")}
-                                    className="border border-gray-300"
-                                />
-                            </LabelInputContainer>
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.5, duration: 0.5 }}
+                            >
+                                <LabelInputContainer>
+                                    <Label htmlFor="mobile" className="text-gray-700 font-medium">Mobile (optional)</Label>
+                                    <motion.div whileFocus={{ scale: 1.01 }}>
+                                        <Input
+                                            id="mobile"
+                                            type="text"
+                                            placeholder="9876543210"
+                                            {...register("mobile")}
+                                            className="h-12 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-300"
+                                        />
+                                    </motion.div>
+                                </LabelInputContainer>
+                            </motion.div>
 
-                            <LabelInputContainer>
-                                <Label htmlFor="password">Password</Label>
-                                <Input
-                                    id="password"
-                                    type="password"
-                                    placeholder="••••••••"
-                                    {...register("password", { required: true })}
-                                    className="border border-gray-300"
-                                />
-                            </LabelInputContainer>
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.6, duration: 0.5 }}
+                            >
+                                <LabelInputContainer>
+                                    <Label htmlFor="password" className="text-gray-700 font-medium">Password</Label>
+                                    <motion.div whileFocus={{ scale: 1.01 }}>
+                                        <Input
+                                            id="password"
+                                            type="password"
+                                            placeholder="••••••••"
+                                            {...register("password", { required: true })}
+                                            className="h-12 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-300"
+                                        />
+                                    </motion.div>
+                                </LabelInputContainer>
+                            </motion.div>
 
                             {(errors.role || errors.email || errors.password) && (
-                                <p className="text-red-500 text-sm">
+                                <motion.p
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    className="text-red-500 text-sm"
+                                >
                                     Please fill all required fields.
-                                </p>
+                                </motion.p>
                             )}
 
-                            <button
+                            <motion.button
                                 type="submit"
                                 disabled={loading}
-                                className="group/btn relative block h-10 w-full rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white mt-4"
+                                className="relative block h-12 w-full rounded-xl bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 font-semibold text-white mt-6 overflow-hidden"
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.98 }}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.7, duration: 0.5 }}
                             >
-                                {loading ? "Creating account..." : "Register →"}
-                                <BottomGradient />
-                            </button>
+                                <motion.div
+                                    className="absolute inset-0 bg-gradient-to-r from-blue-400 via-purple-400 to-indigo-400"
+                                    initial={{ x: "-100%" }}
+                                    whileHover={{ x: "100%" }}
+                                    transition={{ duration: 0.6 }}
+                                />
+                                <span className="relative z-10">
+                                    {loading ? (
+                                        <motion.span
+                                            animate={{ rotate: 360 }}
+                                            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                                            className="inline-block"
+                                        >
+                                            ⟳
+                                        </motion.span>
+                                    ) : (
+                                        "Register →"
+                                    )}
+                                </span>
+                            </motion.button>
 
-                            <div className="text-sm text-gray-600 pt-2">
+                            <motion.div
+                                className="text-sm text-gray-600 pt-4 text-center"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ delay: 0.8, duration: 0.5 }}
+                            >
                                 Already have an account?{" "}
-                                <a
+                                <motion.a
                                     href="/login"
-                                    className="text-blue-600 hover:underline font-medium"
+                                    className="text-blue-600 hover:text-purple-600 font-semibold transition-colors duration-300"
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
                                 >
                                     Login
-                                </a>
-                            </div>
+                                </motion.a>
+                            </motion.div>
                         </form>
-                    </div>
-                </div>
+                    </motion.div>
+                </motion.div>
             </div>
         </section>
     );
