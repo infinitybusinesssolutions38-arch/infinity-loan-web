@@ -1,24 +1,16 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import axios from "axios";
 import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 
-type LoginData = {
-    email: string;
-    otp: string;
-};
-
 const LoginClient = () => {
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-    } = useForm<LoginData>();
-
+    const [email, setEmail] = useState("");
+    const [otp, setOtp] = useState("");
     const [loading, setLoading] = useState(false);
+    const [otpSent, setOtpSent] = useState(false);
+    const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
     const searchParams = useSearchParams();
     const [nextUrl, setNextUrl] = useState<string | null>(null);
 
@@ -29,29 +21,63 @@ const LoginClient = () => {
         }
     }, [searchParams]);
 
-    const onSubmit = async (data: LoginData) => {
+    const handleSendOTP = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!email) {
+            setMessage({ type: "error", text: "Please enter your email" });
+            return;
+        }
+
         try {
             setLoading(true);
-            const response = await axios.post("/api/login", data);
+            setMessage(null);
+            const response = await axios.post("/api/send-otp", { email });
+            console.log(response.data);
+
+            if (response.data.success) {
+                setOtpSent(true);
+                setMessage({ type: "success", text: "OTP sent to your email!" });
+            } else {
+                setMessage({ type: "error", text: response.data.message || "Failed to send OTP" });
+            }
+        } catch (error) {
+            console.error("Send OTP failed:", error);
+            setMessage({ type: "error", text: "Failed to send OTP. Please try again." });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleSubmitOTP = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!otp) {
+            setMessage({ type: "error", text: "Please enter the OTP" });
+            return;
+        }
+
+        try {
+            setLoading(true);
+            setMessage(null);
+            const response = await axios.post("/api/login", { email, otp });
             console.log(response.data);
 
             if (response.data.success) {
                 localStorage.setItem("token", response.data.token);
-                alert("Login successful!");
-                console.log(response.data.token);
-
-                if (nextUrl) {
-                    window.location.href = nextUrl;
-                    return;
-                }
-
-                window.location.href = "/";
+                setMessage({ type: "success", text: "Login successfully!" });
+                
+                setTimeout(() => {
+                    if (nextUrl) {
+                        window.location.href = nextUrl;
+                        return;
+                    }
+                    window.location.href = "/";
+                }, 2000);
             } else {
-                alert(response.data.message || "Invalid credentials");
+                setMessage({ type: "error", text: response.data.message || "Invalid OTP" });
             }
         } catch (error) {
             console.error("Login failed:", error);
-            alert("Login failed, please check your credentials.");
+            setMessage({ type: "error", text: "Login failed. Please check your OTP and try again." });
         } finally {
             setLoading(false);
         }
@@ -101,30 +127,73 @@ const LoginClient = () => {
                         className="w-full max-w-md bg-white border border-gray-100 rounded-2xl shadow-2xl p-8"
                     >
                         <h3 className="text-2xl font-bold mb-1">Login to your account</h3>
-                        <p className="text-sm text-gray-600 mb-6">Enter email and OTP to continue</p>
+                        <p className="text-sm text-gray-600 mb-6">{otpSent ? "Enter OTP to continue" : "Enter email and OTP to continue"}</p>
 
-                        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                        {message && (
+                            <div className={`mb-4 p-3 rounded-lg text-sm ${message.type === "success" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
+                                {message.text}
+                            </div>
+                        )}
+
+                        <form onSubmit={otpSent ? handleSubmitOTP : handleSendOTP} className="space-y-4">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                                <Input id="email" type="email" placeholder="you@example.com" {...register("email", { required: true })} className="w-full" />
-                                {errors.email && <p className="text-red-500 text-sm mt-1">Email is required</p>}
+                                <Input 
+                                    id="email"
+                                    type="email"
+                                    placeholder="you@example.com"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    disabled={otpSent}
+                                    className="w-full"
+                                />
                             </div>
 
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">OTP</label>
-                                <Input id="otp" type="text" placeholder="6-digit OTP" {...register("otp", { required: true })} className="w-full" />
-                                {errors.otp && <p className="text-red-500 text-sm mt-1">OTP is required</p>}
-                            </div>
+                            {otpSent && (
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">OTP</label>
+                                    <Input
+                                        id="otp"
+                                        type="text"
+                                        placeholder="6-digit OTP"
+                                        value={otp}
+                                        onChange={(e) => setOtp(e.target.value)}
+                                        className="w-full"
+                                    />
+                                </div>
+                            )}
 
-                            <div className="flex items-center justify-between">
-                                <label className="flex items-center gap-2 text-sm text-gray-600">
-                                    <input type="checkbox" className="w-4 h-4" /> Remember me
-                                </label>
-                                <a href="#" className="text-sm text-blue-600">Forgot OTP?</a>
-                            </div>
+                            {!otpSent && (
+                                <div className="flex items-center justify-between">
+                                    <label className="flex items-center gap-2 text-sm text-gray-600">
+                                        <input type="checkbox" className="w-4 h-4" /> Remember me
+                                    </label>
+                                </div>
+                            )}
 
-                            <button type="submit" disabled={loading} className="w-full py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold">
-                                {loading ? "Logging in..." : "Login"}
+                            {otpSent && (
+                                <div className="flex items-center justify-between">
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setOtpSent(false);
+                                            setOtp("");
+                                            setMessage(null);
+                                        }}
+                                        className="text-sm text-blue-600 hover:underline"
+                                    >
+                                        Change Email
+                                    </button>
+                                    <a href="#" className="text-sm text-blue-600">Resend OTP</a>
+                                </div>
+                            )}
+
+                            <button 
+                                type="submit"
+                                disabled={loading}
+                                className="w-full py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold disabled:opacity-50"
+                            >
+                                {loading ? (otpSent ? "Verifying..." : "Sending OTP...") : (otpSent ? "Submit OTP" : "Send OTP")}
                             </button>
                         </form>
 
