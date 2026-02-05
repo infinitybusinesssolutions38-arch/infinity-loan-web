@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import axios from "axios";
@@ -20,6 +20,14 @@ const LoginClient = () => {
 
     const [loading, setLoading] = useState(false);
     const searchParams = useSearchParams();
+    const [nextUrl, setNextUrl] = useState<string | null>(null);
+
+    useEffect(() => {
+        const next = searchParams?.get("next");
+        if (next && next.startsWith("/")) {
+            setNextUrl(next);
+        }
+    }, [searchParams]);
 
     const onSubmit = async (data: LoginData) => {
         try {
@@ -32,9 +40,8 @@ const LoginClient = () => {
                 alert("Login successful!");
                 console.log(response.data.token);
 
-                const next = searchParams?.get("next");
-                if (next && next.startsWith("/")) {
-                    window.location.href = next;
+                if (nextUrl) {
+                    window.location.href = nextUrl;
                     return;
                 }
 
