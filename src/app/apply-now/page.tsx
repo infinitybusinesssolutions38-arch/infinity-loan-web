@@ -26,7 +26,6 @@ const ApplyNowPage = () => {
     });
 
     const [loading, setLoading] = useState(false);
-    const [activeTab, setActiveTab] = useState<"new" | "resume">("new");
 
     const products = [
         { value: "msme-sme-loan", label: "MSME / SME Loan" },
@@ -117,32 +116,10 @@ const ApplyNowPage = () => {
 
                 {/* Right Side - Form */}
                 <div className="bg-gray-50 p-8 lg:p-12 flex flex-col justify-center">
-                    {/* Tabs */}
-                    <div className="flex border-b border-gray-300 mb-8">
-                        <button
-                            onClick={() => setActiveTab("new")}
-                            className={`px-6 py-3 font-bold text-sm uppercase transition-all duration-300 ${
-                                activeTab === "new"
-                                    ? "text-blue-600 border-b-2 border-blue-600"
-                                    : "text-gray-600 hover:text-gray-900"
-                            }`}
-                        >
-                            NEW APPLICATION
-                        </button>
-                        <button
-                            onClick={() => setActiveTab("resume")}
-                            className={`px-6 py-3 font-bold text-sm uppercase transition-all duration-300 ${
-                                activeTab === "resume"
-                                    ? "text-blue-600 border-b-2 border-blue-600"
-                                    : "text-gray-600 hover:text-gray-900"
-                            }`}
-                        >
-                            RESUME APPLICATION
-                        </button>
-                    </div>
-
                     {/* Form */}
-                    {activeTab === "new" && (
+                    
+                    
+                        
                         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
                             <div>
                                 <label htmlFor="product" className="block text-sm font-semibold text-gray-700 mb-2">
@@ -237,34 +214,6 @@ const ApplyNowPage = () => {
                                 {loading ? "Processing..." : "NEXT"}
                             </button>
                         </form>
-                    )}
-
-                    {/* Resume Tab Content */}
-                    {activeTab === "resume" && (
-                        <div className="text-center py-8">
-                            <p className="text-gray-600 text-lg">
-                                Enter your details to resume your previous application
-                            </p>
-                            <form className="space-y-5 mt-6">
-                                <div>
-                                    <label className="block text-sm font-semibold text-gray-700 mb-2">
-                                        Email<span className="text-red-500">*</span>
-                                    </label>
-                                    <Input
-                                        type="email"
-                                        placeholder="you@example.com"
-                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                    />
-                                </div>
-                                <button
-                                    type="submit"
-                                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-all duration-300 mt-6"
-                                >
-                                    SEARCH
-                                </button>
-                            </form>
-                        </div>
-                    )}
                 </div>
             </div>
 
