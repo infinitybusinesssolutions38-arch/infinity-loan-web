@@ -60,40 +60,40 @@ const Navbar = () => {
 
                   <div className="space-y-2">
                     <h4 className="font-bold mb-3 text-blue-600 text-base">Business Loans</h4>
-                    <Link href="/services/loans" className="block py-1.5 px-2 rounded-md transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">MSME / SME Loan</Link>
-                    <Link href="/services/loans" className="block py-1.5 px-2 rounded-md transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">Working Capital</Link>
-                    <Link href="/services/loans" className="block py-1.5 px-2 rounded-md transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">Overdraft / CC</Link>
-                    <Link href="/services/loans" className="block py-1.5 px-2 rounded-md transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">Invoice Discounting</Link>
-                    <Link href="/services/loans" className="block py-1.5 px-2 rounded-md transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">Machinery Loan</Link>
+                    <Link href="/business-loan" className="block py-1.5 px-2 rounded-md transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">MSME / SME Loan</Link>
+                    <Link href="/business-loan" className="block py-1.5 px-2 rounded-md transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">Working Capital</Link>
+                    <Link href="/business-loan" className="block py-1.5 px-2 rounded-md transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">Overdraft / CC</Link>
+                    <Link href="/business-loan" className="block py-1.5 px-2 rounded-md transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">Invoice Discounting</Link>
+                    <Link href="/business-loan" className="block py-1.5 px-2 rounded-md transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">Machinery Loan</Link>
                   </div>
 
                   <div className="space-y-2">
                     <h4 className="font-bold mb-3 text-blue-600 text-base">Personal Loans</h4>
-                    <Link href="/services/loans" className="block py-1.5 px-2 rounded-md transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">Personal Loan</Link>
-                    <Link href="/services/loans" className="block py-1.5 px-2 rounded-md transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">Instant Loan</Link>
-                    <Link href="/services/loans" className="block py-1.5 px-2 rounded-md transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">Education Loan</Link>
-                    <Link href="/services/loans" className="block py-1.5 px-2 rounded-md transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">Medical Loan</Link>
+                    <Link href="/personal-loan" className="block py-1.5 px-2 rounded-md transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">Personal Loan</Link>
+                    <Link href="/business-loan" className="block py-1.5 px-2 rounded-md transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">Instant Loan</Link>
+                    <Link href="/personal-loan" className="block py-1.5 px-2 rounded-md transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">Education Loan</Link>
+                    <Link href="/personal-loan" className="block py-1.5 px-2 rounded-md transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">Medical Loan</Link>
                   </div>
 
                   <div className="space-y-2">
                     <h4 className="font-bold mb-3 text-blue-600 text-base">Home & Property</h4>
-                    <Link href="/services/loans" className="block py-1.5 px-2 rounded-md transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">Home Loan</Link>
-                    <Link href="/services/loans" className="block py-1.5 px-2 rounded-md transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">Loan Against Property</Link>
-                    <Link href="/services/loans" className="block py-1.5 px-2 rounded-md transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">Plot / Construction Loan</Link>
+                    <Link href="/home-property-loan" className="block py-1.5 px-2 rounded-md transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">Home Loan</Link>
+                    <Link href="/home-property-loan" className="block py-1.5 px-2 rounded-md transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">Loan Against Property</Link>
+                    <Link href="/home-property-loan" className="block py-1.5 px-2 rounded-md transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">Plot / Construction Loan</Link>
                   </div>
 
                   <div className="space-y-2">
                     <h4 className="font-bold mb-3 text-blue-600 text-base">Vehicle Loans</h4>
-                    <Link href="/services/loans" className="block py-1.5 px-2 rounded-md transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">Car Loan</Link>
-                    <Link href="/services/loans" className="block py-1.5 px-2 rounded-md transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">Two-Wheeler Loan</Link>
-                    <Link href="/services/loans" className="block py-1.5 px-2 rounded-md transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">Commercial Vehicle</Link>
-                    <Link href="/services/loans" className="block py-1.5 px-2 rounded-md transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">EV Loan</Link>
+                    <Link href="/vehicle-loan" className="block py-1.5 px-2 rounded-md transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">Car Loan</Link>
+                    <Link href="/vehicle-loan" className="block py-1.5 px-2 rounded-md transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">Two-Wheeler Loan</Link>
+                    <Link href="/vehicle-loan" className="block py-1.5 px-2 rounded-md transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">Commercial Vehicle</Link>
+                    <Link href="/vehicle-loan" className="block py-1.5 px-2 rounded-md transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">EV Loan</Link>
                   </div>
 
                   <div className="space-y-2">
                     <h4 className="font-bold mb-3 text-blue-600 text-base">Gold & Asset</h4>
-                    <Link href="/services/loans" className="block py-1.5 px-2 rounded-md transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">Gold Loan</Link>
-                    <Link href="/services/loans" className="block py-1.5 px-2 rounded-md transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">Loan Against Securities</Link>
+                    <Link href="/gold-asset-loan" className="block py-1.5 px-2 rounded-md transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">Gold Loan</Link>
+                    <Link href="/gold-asset-loan" className="block py-1.5 px-2 rounded-md transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">Loan Against Securities</Link>
                   </div>
 
                 </div>
