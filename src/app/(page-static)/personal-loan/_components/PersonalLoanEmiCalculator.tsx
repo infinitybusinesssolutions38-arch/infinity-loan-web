@@ -1,8 +1,10 @@
+
 "use client";
 
 import React, { useMemo, useState } from "react";
+import { TrendingDown, IndianRupee, Calendar } from "lucide-react";
 
-type EmiInputs = {
+type LoanInputs = {
   loanAmount: string;
   interestRate: string;
   tenureYears: string;
@@ -22,12 +24,23 @@ function formatINR(value: number) {
   }).format(Math.round(value));
 }
 
-export default function PersonalLoanEmiCalculator() {
-  const [inputs, setInputs] = useState<EmiInputs>({
-    loanAmount: "500000",
-    interestRate: "12.5",
-    tenureYears: "3",
+function formatINRWithDecimals(value: number) {
+  if (!Number.isFinite(value)) return "—";
+  return new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+    maximumFractionDigits: 2,
+  }).format(value);
+}
+
+export default function VehicleLoanEmiCalculator() {
+  const [inputs, setInputs] = useState<LoanInputs>({
+    loanAmount: "800000",
+    interestRate: "9.5",
+    tenureYears: "5",
   });
+
+  const [activeTab, setActiveTab] = useState<"results" | "breakdown">("results");
 
   const result = useMemo(() => {
     const principal = toNumberOrNaN(inputs.loanAmount);
@@ -50,84 +63,397 @@ export default function PersonalLoanEmiCalculator() {
     const totalPayable = emi * months;
     const totalInterest = totalPayable - principal;
 
-    return {
-      emi,
-      totalPayable,
-      totalInterest,
-    };
+    return { emi, totalPayable, totalInterest };
   }, [inputs.interestRate, inputs.loanAmount, inputs.tenureYears]);
 
+  const principal = toNumberOrNaN(inputs.loanAmount);
+  const totalInterest = result.totalInterest;
+  const interestPercentage =
+    Number.isFinite(principal) && Number.isFinite(totalInterest) && principal > 0
+      ? (totalInterest / principal) * 100
+      : 0;
+
+  const handleInputChange = (field: keyof LoanInputs, value: string) => {
+    setInputs((prev) => ({ ...prev, [field]: value }));
+  };
+
   return (
-    <section className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm sm:p-6">
-      <div className="flex flex-col gap-2">
-        <h3 className="text-lg font-semibold text-gray-900">Personal Loan EMI Calculator</h3>
-        <p className="text-sm text-gray-600">
-          Estimate your monthly EMI instantly. Update the values to match your requirement.
-        </p>
+    <div className="relative min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 px-4 py-8 sm:px-6 lg:px-8">
+      {/* Decorative background elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 right-1/4 w-96 h-96 bg-blue-200/30 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-indigo-200/30 rounded-full blur-3xl"></div>
       </div>
 
-      <div className="mt-5 grid gap-4 lg:grid-cols-3">
-        <label className="space-y-2">
-          <span className="text-sm font-medium text-gray-900">Loan amount</span>
-          <input
-            type="number"
-            inputMode="numeric"
-            min={0}
-            value={inputs.loanAmount}
-            onChange={(e) => setInputs((prev) => ({ ...prev, loanAmount: e.target.value }))}
-            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 shadow-sm outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
-            placeholder="e.g. 500000"
-          />
-        </label>
-
-        <label className="space-y-2">
-          <span className="text-sm font-medium text-gray-900">Interest rate (%)</span>
-          <input
-            type="number"
-            inputMode="decimal"
-            min={0}
-            step="0.01"
-            value={inputs.interestRate}
-            onChange={(e) => setInputs((prev) => ({ ...prev, interestRate: e.target.value }))}
-            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 shadow-sm outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
-            placeholder="e.g. 12.5"
-          />
-        </label>
-
-        <label className="space-y-2">
-          <span className="text-sm font-medium text-gray-900">Tenure (years)</span>
-          <input
-            type="number"
-            inputMode="numeric"
-            min={0}
-            value={inputs.tenureYears}
-            onChange={(e) => setInputs((prev) => ({ ...prev, tenureYears: e.target.value }))}
-            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 shadow-sm outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
-            placeholder="e.g. 3"
-          />
-        </label>
-      </div>
-
-      <div className="mt-6 grid gap-3 sm:grid-cols-3">
-        <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
-          <p className="text-xs font-medium uppercase tracking-wide text-gray-500">EMI per month</p>
-          <p className="mt-1 text-xl font-bold text-gray-900">{formatINR(result.emi)}</p>
+      <div className="relative max-w-6xl mx-auto">
+        {/* Header Section */}
+        <div className="text-center mb-12 md:mb-16">
+          <div className="inline-flex items-center justify-center w-16 h-16 mb-6 rounded-full bg-gradient-to-br from-blue-400 to-indigo-600">
+            <IndianRupee className="w-8 h-8 text-white" />
+          </div>
+          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4 tracking-tight">
+            Vehicle Loan Calculator
+          </h1>
+          <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+            Get instant EMI estimates for your car, bike, or commercial vehicle loan. See detailed breakdowns and plan your finances with confidence.
+          </p>
         </div>
-        <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
-          <p className="text-xs font-medium uppercase tracking-wide text-gray-500">Total interest</p>
-          <p className="mt-1 text-xl font-bold text-gray-900">{formatINR(result.totalInterest)}</p>
-        </div>
-        <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
-          <p className="text-xs font-medium uppercase tracking-wide text-gray-500">Total repayment</p>
-          <p className="mt-1 text-xl font-bold text-gray-900">{formatINR(result.totalPayable)}</p>
-        </div>
-      </div>
 
-      <div className="mt-4 rounded-xl border border-blue-100 bg-blue-50 px-4 py-3">
-        <p className="text-xs text-blue-900">
-          Calculations are indicative. Actual EMI may vary based on lender fees and the final sanctioned interest rate.
-        </p>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Input Section */}
+          <div className="lg:col-span-1">
+            <div className="sticky top-8 bg-gradient-to-b from-white/90 to-blue-50/90 backdrop-blur-xl rounded-3xl border border-blue-200/50 p-8 shadow-xl">
+              <h2 className="text-xl font-semibold text-slate-900 mb-8 flex items-center gap-3">
+                <span className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
+                  <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                </span>
+                Loan Details
+              </h2>
+
+              <div className="space-y-6">
+                {/* Loan Amount Input */}
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-slate-700">
+                    Loan Amount (₹)
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="number"
+                      inputMode="numeric"
+                      min={0}
+                      value={inputs.loanAmount}
+                      onChange={(e) =>
+                        handleInputChange("loanAmount", e.target.value)
+                      }
+                      className="w-full px-5 py-3.5 rounded-xl bg-white border border-blue-200 text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200"
+                      placeholder="800000"
+                    />
+                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-600">
+                      ₹
+                    </span>
+                  </div>
+                  <input
+                    type="range"
+                    min={100000}
+                    max={10000000}
+                    step={100000}
+                    value={inputs.loanAmount}
+                    onChange={(e) =>
+                      handleInputChange("loanAmount", e.target.value)
+                    }
+                    className="w-full h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                  />
+                </div>
+
+                {/* Interest Rate Input */}
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-slate-700">
+                    Interest Rate (%)
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="number"
+                      inputMode="decimal"
+                      min={0}
+                      step="0.01"
+                      value={inputs.interestRate}
+                      onChange={(e) =>
+                        handleInputChange("interestRate", e.target.value)
+                      }
+                      className="w-full px-5 py-3.5 rounded-xl bg-white border border-blue-200 text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200"
+                      placeholder="9.5"
+                    />
+                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-600">
+                      %
+                    </span>
+                  </div>
+                  <input
+                    type="range"
+                    min={0}
+                    max={20}
+                    step={0.1}
+                    value={inputs.interestRate}
+                    onChange={(e) =>
+                      handleInputChange("interestRate", e.target.value)
+                    }
+                    className="w-full h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                  />
+                </div>
+
+                {/* Tenure Input */}
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-slate-700">
+                    Loan Tenure (Years)
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="number"
+                      inputMode="numeric"
+                      min={0}
+                      value={inputs.tenureYears}
+                      onChange={(e) =>
+                        handleInputChange("tenureYears", e.target.value)
+                      }
+                      className="w-full px-5 py-3.5 rounded-xl bg-white border border-blue-200 text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200"
+                      placeholder="5"
+                    />
+                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-600">
+                      yrs
+                    </span>
+                  </div>
+                  <input
+                    type="range"
+                    min={1}
+                    max={20}
+                    step={1}
+                    value={inputs.tenureYears}
+                    onChange={(e) =>
+                      handleInputChange("tenureYears", e.target.value)
+                    }
+                    className="w-full h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                  />
+                </div>
+              </div>
+
+              {/* Disclaimer */}
+              <div className="mt-8 p-4 rounded-xl bg-blue-50 border border-blue-200">
+                <p className="text-xs text-blue-900">
+                  ℹ️ Estimates are indicative. Actual EMI may vary based on lender fees and sanctioned rates.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Results Section */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Main EMI Card */}
+            <div className="group relative bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl overflow-hidden shadow-2xl hover:shadow-3xl transition-all duration-300">
+              {/* Gradient overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+              <div className="relative p-8 md:p-12">
+                <div className="flex items-start justify-between mb-8">
+                  <div>
+                    <p className="text-sm font-semibold text-blue-100 uppercase tracking-wider mb-2">
+                      Monthly EMI
+                    </p>
+                    <p className="text-5xl md:text-6xl font-bold text-white">
+                      {formatINR(result.emi)}
+                    </p>
+                  </div>
+                  <div className="hidden md:flex items-center justify-center w-20 h-20 rounded-2xl bg-white/10 backdrop-blur-sm">
+                    <Calendar className="w-10 h-10 text-blue-200" />
+                  </div>
+                </div>
+
+                <div className="flex items-baseline gap-3 text-blue-100 text-sm">
+                  <span>for {inputs.tenureYears} years</span>
+                  <span className="text-blue-300/60">•</span>
+                  <span>
+                    {Number.isFinite(toNumberOrNaN(inputs.tenureYears)) &&
+                      Math.round(
+                        toNumberOrNaN(inputs.tenureYears) * 12
+                      )}{" "}
+                    months
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Results Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Total Repayment */}
+              <div className="group bg-gradient-to-br from-slate-800/80 to-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 p-8 hover:border-slate-600/50 hover:shadow-xl transition-all duration-300">
+                <div className="flex items-center justify-between mb-4">
+                  <p className="text-sm font-medium text-slate-300 uppercase tracking-wide">
+                    Total Repayment
+                  </p>
+                  <div className="w-3 h-3 rounded-full bg-emerald-500/30"></div>
+                </div>
+                <p className="text-3xl md:text-4xl font-bold text-white mb-2">
+                  {formatINR(result.totalPayable)}
+                </p>
+                <p className="text-sm text-slate-400">
+                  Principal + Interest over loan period
+                </p>
+              </div>
+
+              {/* Total Interest */}
+              <div className="group bg-gradient-to-br from-slate-800/80 to-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 p-8 hover:border-slate-600/50 hover:shadow-xl transition-all duration-300">
+                <div className="flex items-center justify-between mb-4">
+                  <p className="text-sm font-medium text-slate-300 uppercase tracking-wide">
+                    Total Interest
+                  </p>
+                  <div className="w-3 h-3 rounded-full bg-orange-500/30"></div>
+                </div>
+                <p className="text-3xl md:text-4xl font-bold text-white mb-2">
+                  {formatINR(result.totalInterest)}
+                </p>
+                <p className="text-sm text-slate-400">
+                  {interestPercentage.toFixed(1)}% of loan amount
+                </p>
+              </div>
+            </div>
+
+            {/* Breakdown Section */}
+            <div className="bg-gradient-to-br from-slate-800/80 to-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 overflow-hidden">
+              {/* Tab Navigation */}
+              <div className="flex border-b border-slate-700/50">
+                {[
+                  { id: "results", label: "Cost Breakdown" },
+                  { id: "breakdown", label: "Payment Summary" },
+                ].map((tab) => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id as typeof activeTab)}
+                    className={`flex-1 px-6 py-4 text-sm font-semibold transition-all duration-200 ${activeTab === tab.id
+                        ? "text-blue-400 border-b-2 border-blue-400"
+                        : "text-slate-400 hover:text-slate-300 border-b-2 border-transparent"
+                      }`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Tab Content */}
+              <div className="p-8">
+                {activeTab === "results" ? (
+                  <div className="space-y-6">
+                    {/* Breakdown Chart */}
+                    <div className="space-y-4">
+                      <div>
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-sm font-medium text-slate-300">
+                            Principal Amount
+                          </span>
+                          <span className="text-sm font-semibold text-white">
+                            {formatINR(principal)}
+                          </span>
+                        </div>
+                        <div className="w-full h-2 bg-slate-700 rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-gradient-to-r from-blue-500 to-blue-400 rounded-full"
+                            style={{
+                              width: `${(principal / result.totalPayable) * 100
+                                }%`,
+                            }}
+                          ></div>
+                        </div>
+                      </div>
+
+                      <div>
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-sm font-medium text-slate-300">
+                            Interest Amount
+                          </span>
+                          <span className="text-sm font-semibold text-white">
+                            {formatINR(result.totalInterest)}
+                          </span>
+                        </div>
+                        <div className="w-full h-2 bg-slate-700 rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-gradient-to-r from-orange-500 to-orange-400 rounded-full"
+                            style={{
+                              width: `${(result.totalInterest / result.totalPayable) *
+                                100
+                                }%`,
+                            }}
+                          ></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Summary Table */}
+                    <div className="mt-8 space-y-3 p-6 bg-slate-700/20 rounded-xl border border-slate-600/30">
+                      <div className="flex items-center justify-between">
+                        <span className="text-slate-400">Principal</span>
+                        <span className="text-white font-semibold">
+                          {formatINRWithDecimals(principal)}
+                        </span>
+                      </div>
+                      <div className="h-px bg-slate-600/30"></div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-slate-400">Total Interest</span>
+                        <span className="text-white font-semibold">
+                          {formatINRWithDecimals(result.totalInterest)}
+                        </span>
+                      </div>
+                      <div className="h-px bg-slate-600/30"></div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-slate-200 font-medium">
+                          Total Repayment
+                        </span>
+                        <span className="text-white font-bold text-lg">
+                          {formatINRWithDecimals(result.totalPayable)}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="p-4 rounded-xl bg-slate-700/20 border border-slate-600/30">
+                        <p className="text-xs font-medium text-slate-400 mb-1">
+                          MONTHLY EMI
+                        </p>
+                        <p className="text-2xl font-bold text-white">
+                          {formatINR(result.emi)}
+                        </p>
+                      </div>
+                      <div className="p-4 rounded-xl bg-slate-700/20 border border-slate-600/30">
+                        <p className="text-xs font-medium text-slate-400 mb-1">
+                          TENURE
+                        </p>
+                        <p className="text-2xl font-bold text-white">
+                          {inputs.tenureYears} years
+                        </p>
+                      </div>
+                      <div className="p-4 rounded-xl bg-slate-700/20 border border-slate-600/30">
+                        <p className="text-xs font-medium text-slate-400 mb-1">
+                          TOTAL MONTHS
+                        </p>
+                        <p className="text-2xl font-bold text-white">
+                          {Number.isFinite(toNumberOrNaN(inputs.tenureYears)) &&
+                            Math.round(toNumberOrNaN(inputs.tenureYears) * 12)}{" "}
+                        </p>
+                      </div>
+                      <div className="p-4 rounded-xl bg-slate-700/20 border border-slate-600/30">
+                        <p className="text-xs font-medium text-slate-400 mb-1">
+                          INTEREST RATE
+                        </p>
+                        <p className="text-2xl font-bold text-white">
+                          {inputs.interestRate}%
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="mt-6 p-4 rounded-xl bg-slate-700/30 border border-slate-600/30">
+                      <p className="text-sm text-slate-300 leading-relaxed">
+                        You'll pay{" "}
+                        <span className="font-semibold text-white">
+                          {formatINR(result.emi)}
+                        </span>{" "}
+                        each month for{" "}
+                        <span className="font-semibold text-white">
+                          {Number.isFinite(toNumberOrNaN(inputs.tenureYears)) &&
+                            Math.round(toNumberOrNaN(inputs.tenureYears) * 12)}{" "}
+                          months
+                        </span>
+                        . This includes{" "}
+                        <span className="font-semibold text-orange-400">
+                          {formatINR(result.totalInterest)}
+                        </span>{" "}
+                        in interest on your loan.
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    </section>
+    </div>
   );
 }

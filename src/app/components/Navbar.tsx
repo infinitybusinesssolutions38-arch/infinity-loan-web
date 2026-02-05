@@ -44,7 +44,7 @@ const Navbar = () => {
         <Image src="/logo2.png" alt="logo" width={150} height={50} />
       </Link>
 
-      {/* MENU */}
+      {/* MENU  testing changes */}
       <div className="flex-1 flex justify-center">
         <ul className="menu menu-horizontal gap-6 uppercase font-semibold">
 
@@ -100,17 +100,15 @@ const Navbar = () => {
               </div>
             </div>
           </li>
-
-          {/* CREDIT & CARDS */}
           <li className="dropdown dropdown-hover group">
             <label tabIndex={0} className="cursor-pointer relative py-2 transition-colors duration-200 hover:text-blue-600 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-blue-600 after:transition-all after:duration-300 hover:after:w-full">
               Credit & Cards
             </label>
             <ul className="dropdown-content menu p-3 shadow-xl bg-white rounded-xl w-60 normal-case border border-gray-100 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
-              <li><Link href="/services/credit-cards" className="py-2.5 px-3 rounded-lg transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">Credit Line / Flexi Loan</Link></li>
-              <li><Link href="/services/credit-cards" className="py-2.5 px-3 rounded-lg transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">Business Credit Card</Link></li>
-              <li><Link href="/services/credit-cards" className="py-2.5 px-3 rounded-lg transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">Personal Credit Card</Link></li>
-              <li><Link href="/services/credit-cards" className="py-2.5 px-3 rounded-lg transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">BNPL</Link></li>
+              <li><Link href="/credit-cards" className="py-2.5 px-3 rounded-lg transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">Credit Line / Flexi Loan</Link></li>
+              <li><Link href="/credit-cards" className="py-2.5 px-3 rounded-lg transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">Business Credit Card</Link></li>
+              <li><Link href="/credit-cards" className="py-2.5 px-3 rounded-lg transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">Personal Credit Card</Link></li>
+              <li><Link href="/credit-cards" className="py-2.5 px-3 rounded-lg transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1">BNPL</Link></li>
             </ul>
           </li>
 
@@ -196,10 +194,12 @@ const Navbar = () => {
         ) : (
           <>
             <Link 
-              href="/register" 
+              href="/apply-now"
+              target="_blank"
+              rel="noopener noreferrer"
               className="btn btn-outline btn-md transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5"
             >
-              Register
+              Apply Now
             </Link>
             <Link 
               href="/login" 

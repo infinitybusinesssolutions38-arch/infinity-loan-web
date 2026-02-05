@@ -9,49 +9,37 @@ import OrganizationLoanModel from "../models/organization-loan-schema";
 import IndividaulLoanModel from "../models/individaul-loan-schema";
 import HUFLoanModel from "../models/huf-loan-schema";
 import UserModel from "../models/user-schema";
+import { validateOTP, clearOTP } from "../lib/otp-service";
 
 
 export async function POST(req) {
     try {
         await connectDB();
-        const { identifier, password } = await req.json(); // identifier = email or mobile
+        const { email, otp } = await req.json();
 
-        // Search user across all collections (User collection first)
+        if (!email || !otp) {
+            return NextResponse.json({ success: false, message: "Email and OTP are required" });
+        }
+
+        // Validate OTP
+        if (!validateOTP(email, otp)) {
+            return NextResponse.json({ success: false, message: "Invalid or expired OTP" });
+        }
+
+        // Search user across all collections
         const user =
             (await UserModel.findOne({
-                $or: [{ email: identifier }, { mobile: identifier }],
+                email: email.toLowerCase(),
             })) ||
-            (await IndividaulLoanModel.findOne({
-                $or: [{ email: identifier }, { mobile: identifier }],
-            })) ||
-            (await OrganizationLoanModel.findOne({
-                $or: [{ email: identifier }, { mobile: identifier }],
-            })) ||
-            (await NRILoanModel.findOne({
-                $or: [{ email: identifier }, { mobile: identifier }],
-            })) ||
-            (await HUFLoanModel.findOne({
-                $or: [{ email: identifier }, { mobile: identifier }],
-            })) ||
-            (await PersonalLoanModel.findOne({
-                $or: [{ email: identifier }, { mobile: identifier }],
-            })) ||
-            (await BusinessLoanModel.findOne({
-                $or: [{ email: identifier }, { mobile: identifier }],
-            }));
+            (await IndividaulLoanModel.findOne({ email: email.toLowerCase() })) ||
+            (await OrganizationLoanModel.findOne({ email: email.toLowerCase() })) ||
+            (await NRILoanModel.findOne({ email: email.toLowerCase() })) ||
+            (await HUFLoanModel.findOne({ email: email.toLowerCase() })) ||
+            (await PersonalLoanModel.findOne({ email: email.toLowerCase() })) ||
+            (await BusinessLoanModel.findOne({ email: email.toLowerCase() }));
 
         if (!user) {
             return NextResponse.json({ success: false, message: "User not found" });
-        }
-
-        if (!user.password) {
-            return NextResponse.json({ success: false, message: "Invalid password" });
-        }
-
-        // Verify password
-        const validPassword = await bcrypt.compare(password, user.password);
-        if (!validPassword) {
-            return NextResponse.json({ success: false, message: "Invalid password" });
         }
 
         // Identify role type
@@ -63,6 +51,9 @@ export async function POST(req) {
             process.env.JWT_SECRET,
             { expiresIn: "7d" }
         );
+
+        // Clear OTP after successful verification
+        clearOTP(email);
 
         // Set cookie
         const res = NextResponse.json({
