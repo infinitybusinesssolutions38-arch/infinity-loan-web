@@ -213,67 +213,57 @@ export default function BusinessLoanPage() {
       <section id="eligibility" className="mx-auto max-w-6xl px-4 pb-10 sm:px-6 sm:pb-14">
         <div className="grid gap-6 lg:grid-cols-2">
           <section className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm sm:p-8" aria-labelledby="eligibility-title">
-            <h2 id="eligibility-title" className="text-xl font-bold text-gray-900">Eligibility criteria</h2>
-            <p className="mt-2 text-sm text-gray-600 sm:text-base">
-              Eligibility may vary by lender and product. These are common benchmarks for business loans.
-            </p>
+            <h2 id="eligibility-title" className="text-xl font-bold text-gray-900">Business Loans – Eligibility Criteria</h2>
 
             <dl className="mt-5 grid gap-3">
               <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
-                <dt className="text-sm font-semibold text-gray-900">Minimum age of applicant</dt>
-                <dd className="mt-1 text-sm text-gray-600">Typically 21 years (varies by lender)</dd>
+                <dt className="text-sm font-semibold text-gray-900">Applicant age: 25–65 years</dt>
               </div>
               <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
-                <dt className="text-sm font-semibold text-gray-900">Business vintage</dt>
-                <dd className="mt-1 text-sm text-gray-600">Usually 2+ years in operation (product dependent)</dd>
+                <dt className="text-sm font-semibold text-gray-900">Business vintage: Minimum 2 years</dt>
               </div>
               <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
-                <dt className="text-sm font-semibold text-gray-900">Annual turnover requirement</dt>
-                <dd className="mt-1 text-sm text-gray-600">Varies by lender and segment (commonly ₹10L+)</dd>
+                <dt className="text-sm font-semibold text-gray-900">Annual turnover: ₹10 lakhs or above</dt>
               </div>
               <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
-                <dt className="text-sm font-semibold text-gray-900">Credit score / CIBIL score</dt>
-                <dd className="mt-1 text-sm text-gray-600">Typically 700+ improves approval and pricing</dd>
+                <dt className="text-sm font-semibold text-gray-900">Stable business operations and regular cash flows</dt>
               </div>
               <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
-                <dt className="text-sm font-semibold text-gray-900">Type of business</dt>
-                <dd className="mt-1 text-sm text-gray-600">
-                  Proprietorship, Partnership, LLP, or Private Limited (as per lender policy)
-                </dd>
+                <dt className="text-sm font-semibold text-gray-900">Active business banking history</dt>
+              </div>
+              <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
+                <dt className="text-sm font-semibold text-gray-900">Acceptable / satisfactory credit profile</dt>
+              </div>
+              <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
+                <dt className="text-sm font-semibold text-gray-900">B2B businesses eligible where applicable</dt>
               </div>
             </dl>
           </section>
 
           <section className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm sm:p-8" aria-labelledby="documents">
-            <h2 id="documents" className="text-xl font-bold text-gray-900">Required documentation</h2>
-            <p className="mt-2 text-sm text-gray-600 sm:text-base">
-              Keep copies ready. Documentation requirements may vary based on secured/unsecured product.
-            </p>
+            <h2 id="documents" className="text-xl font-bold text-gray-900">Business Loans – Documents Required</h2>
 
             <div className="mt-5 grid gap-3">
               <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
-                <h3 className="text-sm font-semibold text-gray-900">KYC documents</h3>
-                <p className="mt-1 text-sm text-gray-600">PAN, Aadhaar, and address proof (as applicable)</p>
+                <h3 className="text-sm font-semibold text-gray-900">PAN Card (Individual and Business)</h3>
+              </div>
+              <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
+                <h3 className="text-sm font-semibold text-gray-900">Aadhaar Card / Valid address proof</h3>
+              </div>
+              <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
+                <h3 className="text-sm font-semibold text-gray-900">Bank statements (last 12 months)</h3>
+              </div>
+              <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
+                <h3 className="text-sm font-semibold text-gray-900">Income Tax Returns (last 2–3 years)</h3>
+              </div>
+              <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
+                <h3 className="text-sm font-semibold text-gray-900">GST registration certificate &amp; GST returns (if applicable)</h3>
               </div>
               <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
                 <h3 className="text-sm font-semibold text-gray-900">Business registration proof</h3>
-                <p className="mt-1 text-sm text-gray-600">Udyam, Shop Act, Incorporation certificate, etc.</p>
               </div>
               <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
-                <h3 className="text-sm font-semibold text-gray-900">GST registration (if applicable)</h3>
-                <p className="mt-1 text-sm text-gray-600">GST certificate and returns as required</p>
-              </div>
-              <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
-                <h3 className="text-sm font-semibold text-gray-900">Income tax returns</h3>
-                <p className="mt-1 text-sm text-gray-600">ITR for last 1–3 years (commonly requested)</p>
-              </div>
-              <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
-                <h3 className="text-sm font-semibold text-gray-900">Bank statements</h3>
-                <p className="mt-1 text-sm text-gray-600">Last 6–12 months statements (commonly requested)</p>
-              </div>
-              <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
-                <h3 className="text-sm font-semibold text-gray-900">Financial statements</h3>
-                <p className="mt-1 text-sm text-gray-600">P&amp;L and balance sheet (for eligible profiles)</p>
+                <h3 className="text-sm font-semibold text-gray-900">Additional supporting documents as required by the lender afer that i will give for other loans</h3>
               </div>
             </div>
           </section>

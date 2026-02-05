@@ -178,49 +178,45 @@ export default function GoldAssetLoanPage() {
       <section className="mx-auto max-w-6xl px-4 pb-10 sm:px-6 sm:pb-14">
         <div className="grid gap-6 lg:grid-cols-2">
           <section className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm sm:p-8" aria-labelledby="eligibility">
-            <h2 id="eligibility" className="text-xl font-bold text-gray-900">Eligibility criteria</h2>
-            <p className="mt-2 text-sm text-gray-600 sm:text-base">
-              Eligibility depends on asset type and lender policy. These are common requirements.
-            </p>
+            <h2 id="eligibility" className="text-xl font-bold text-gray-900">Gold &amp; Asset Loans – Eligibility Criteria</h2>
 
             <dl className="mt-5 grid gap-3">
               <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
-                <dt className="text-sm font-semibold text-gray-900">Asset ownership</dt>
-                <dd className="mt-1 text-sm text-gray-600">You should own the asset being pledged and provide proof.</dd>
+                <dt className="text-sm font-semibold text-gray-900">Applicant must be an Indian resident</dt>
               </div>
               <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
-                <dt className="text-sm font-semibold text-gray-900">Age requirement</dt>
-                <dd className="mt-1 text-sm text-gray-600">Typically 21+ years (varies by lender and product).</dd>
+                <dt className="text-sm font-semibold text-gray-900">Minimum age: 18 years or above</dt>
               </div>
               <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
-                <dt className="text-sm font-semibold text-gray-900">Basic KYC compliance</dt>
-                <dd className="mt-1 text-sm text-gray-600">KYC verification as per prevailing guidelines.</dd>
+                <dt className="text-sm font-semibold text-gray-900">Ownership of eligible gold jewellery or approved financial securities</dt>
+              </div>
+              <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
+                <dt className="text-sm font-semibold text-gray-900">Assets must be clear, authentic, and acceptable to the lender</dt>
+              </div>
+              <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
+                <dt className="text-sm font-semibold text-gray-900">Active bank account</dt>
+              </div>
+              <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
+                <dt className="text-sm font-semibold text-gray-900">Basic credit assessment as per lender policy</dt>
               </div>
             </dl>
           </section>
 
           <section className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm sm:p-8" aria-labelledby="documents">
-            <h2 id="documents" className="text-xl font-bold text-gray-900">Required documents</h2>
-            <p className="mt-2 text-sm text-gray-600 sm:text-base">
-              Keep clear copies ready. Some lenders may request additional documentation based on the asset type.
-            </p>
+            <h2 id="documents" className="text-xl font-bold text-gray-900">Gold &amp; Asset Loans – Documents Required</h2>
 
             <div className="mt-5 grid gap-3">
               <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
-                <h3 className="text-sm font-semibold text-gray-900">Identity proof</h3>
-                <p className="mt-1 text-sm text-gray-600">PAN, Aadhaar, Passport, or Voter ID (as applicable)</p>
+                <h3 className="text-sm font-semibold text-gray-900">PAN Card</h3>
               </div>
               <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
-                <h3 className="text-sm font-semibold text-gray-900">Address proof</h3>
-                <p className="mt-1 text-sm text-gray-600">Aadhaar, utility bill, rent agreement, etc. (as applicable)</p>
+                <h3 className="text-sm font-semibold text-gray-900">Aadhaar Card / Valid address proof</h3>
               </div>
               <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
-                <h3 className="text-sm font-semibold text-gray-900">Asset ownership proof</h3>
-                <p className="mt-1 text-sm text-gray-600">Receipts, certificates, FD/policy details, or other proofs (as applicable)</p>
+                <h3 className="text-sm font-semibold text-gray-900">Ownership proof of gold jewellery or financial securities</h3>
               </div>
               <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
-                <h3 className="text-sm font-semibold text-gray-900">Photographs</h3>
-                <p className="mt-1 text-sm text-gray-600">Recent passport-size photos (as applicable)</p>
+                <h3 className="text-sm font-semibold text-gray-900">Bank account details</h3>
               </div>
             </div>
           </section>

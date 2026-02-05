@@ -181,53 +181,54 @@ export default function VehicleLoanPage() {
       <section className="mx-auto max-w-6xl px-4 pb-10 sm:px-6 sm:pb-14">
         <div className="grid gap-6 lg:grid-cols-2">
           <section className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm sm:p-8" aria-labelledby="eligibility">
-            <h2 id="eligibility" className="text-xl font-bold text-gray-900">Eligibility criteria</h2>
-            <p className="mt-2 text-sm text-gray-600 sm:text-base">
-              Eligibility varies by lender and vehicle type. These are common criteria.
-            </p>
+            <h2 id="eligibility" className="text-xl font-bold text-gray-900">Vehicle Loans – Eligibility Criteria</h2>
 
             <dl className="mt-5 grid gap-3">
               <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
-                <dt className="text-sm font-semibold text-gray-900">Minimum age</dt>
-                <dd className="mt-1 text-sm text-gray-600">Typically 21 years (varies by lender)</dd>
+                <dt className="text-sm font-semibold text-gray-900">Applicant age: 18–65 years</dt>
               </div>
               <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
-                <dt className="text-sm font-semibold text-gray-900">Employment type</dt>
-                <dd className="mt-1 text-sm text-gray-600">Salaried or self-employed with stable income</dd>
+                <dt className="text-sm font-semibold text-gray-900">Indian resident</dt>
               </div>
               <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
-                <dt className="text-sm font-semibold text-gray-900">Income requirement</dt>
-                <dd className="mt-1 text-sm text-gray-600">Often ₹20,000+/month (depends on city and lender)</dd>
+                <dt className="text-sm font-semibold text-gray-900">Salaried or self-employed individuals</dt>
               </div>
               <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
-                <dt className="text-sm font-semibold text-gray-900">Credit score</dt>
-                <dd className="mt-1 text-sm text-gray-600">Generally 700+ for better rates (varies by lender)</dd>
+                <dt className="text-sm font-semibold text-gray-900">Stable income or business earnings</dt>
+              </div>
+              <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
+                <dt className="text-sm font-semibold text-gray-900">Business income proof required for income-generating vehicles</dt>
+              </div>
+              <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
+                <dt className="text-sm font-semibold text-gray-900">Valid permits and licenses where applicable</dt>
+              </div>
+              <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
+                <dt className="text-sm font-semibold text-gray-900">Acceptable credit profile</dt>
               </div>
             </dl>
           </section>
 
           <section className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm sm:p-8" aria-labelledby="documents">
-            <h2 id="documents" className="text-xl font-bold text-gray-900">Required documents</h2>
-            <p className="mt-2 text-sm text-gray-600 sm:text-base">
-              Keep clear copies ready. Some lenders may request additional documents based on your profile.
-            </p>
+            <h2 id="documents" className="text-xl font-bold text-gray-900">Vehicle Loans – Documents Required</h2>
 
             <div className="mt-5 grid gap-3">
               <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
-                <h3 className="text-sm font-semibold text-gray-900">Identity proof</h3>
-                <p className="mt-1 text-sm text-gray-600">PAN, Aadhaar, Passport, or Voter ID (as applicable)</p>
+                <h3 className="text-sm font-semibold text-gray-900">PAN Card</h3>
               </div>
               <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
-                <h3 className="text-sm font-semibold text-gray-900">Address proof</h3>
-                <p className="mt-1 text-sm text-gray-600">Aadhaar, utility bill, rent agreement, etc. (as applicable)</p>
+                <h3 className="text-sm font-semibold text-gray-900">Aadhaar Card / Valid address proof</h3>
               </div>
               <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
-                <h3 className="text-sm font-semibold text-gray-900">Income proof</h3>
-                <p className="mt-1 text-sm text-gray-600">Salary slips, Form 16, ITR, or business financials</p>
+                <h3 className="text-sm font-semibold text-gray-900">Income proof (salary slips or Income Tax Returns)</h3>
               </div>
               <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
-                <h3 className="text-sm font-semibold text-gray-900">Vehicle quotation</h3>
-                <p className="mt-1 text-sm text-gray-600">Quotation/proforma invoice from the dealer or vendor</p>
+                <h3 className="text-sm font-semibold text-gray-900">Bank statements</h3>
+              </div>
+              <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
+                <h3 className="text-sm font-semibold text-gray-900">Vehicle quotation / proforma invoice</h3>
+              </div>
+              <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
+                <h3 className="text-sm font-semibold text-gray-900">Business proof and permits (for commercial vehicles)</h3>
               </div>
             </div>
           </section>

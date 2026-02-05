@@ -209,53 +209,57 @@ export default function PersonalLoanPage() {
       <section id="eligibility" className="mx-auto max-w-6xl px-4 pb-10 sm:px-6 sm:pb-14">
         <div className="grid gap-6 lg:grid-cols-2">
           <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm sm:p-8">
-            <h2 className="text-xl font-bold text-gray-900">Eligibility criteria</h2>
-            <p className="mt-2 text-sm text-gray-600 sm:text-base">
-              Lenders may have different benchmarks. These are common requirements.
-            </p>
+            <h2 className="text-xl font-bold text-gray-900">Personal Loans – Eligibility Criteria</h2>
 
             <dl className="mt-5 grid gap-3">
               <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
-                <dt className="text-sm font-semibold text-gray-900">Age limit</dt>
-                <dd className="mt-1 text-sm text-gray-600">Typically 21 to 60 years (varies by lender)</dd>
+                <dt className="text-sm font-semibold text-gray-900">Applicant age: 21–60 years</dt>
               </div>
               <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
-                <dt className="text-sm font-semibold text-gray-900">Employment status</dt>
-                <dd className="mt-1 text-sm text-gray-600">Salaried or self-employed with stable income</dd>
+                <dt className="text-sm font-semibold text-gray-900">Indian resident</dt>
               </div>
               <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
-                <dt className="text-sm font-semibold text-gray-900">Minimum monthly income</dt>
-                <dd className="mt-1 text-sm text-gray-600">Often ₹20,000+/month (depends on city and lender)</dd>
+                <dt className="text-sm font-semibold text-gray-900">Salaried or self-employed individuals</dt>
               </div>
               <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
-                <dt className="text-sm font-semibold text-gray-900">Credit score</dt>
-                <dd className="mt-1 text-sm text-gray-600">Generally 700+ for better pricing (varies by lender)</dd>
+                <dt className="text-sm font-semibold text-gray-900">Minimum monthly income: ₹20,000 or above</dt>
+              </div>
+              <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
+                <dt className="text-sm font-semibold text-gray-900">Stable income source</dt>
+              </div>
+              <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
+                <dt className="text-sm font-semibold text-gray-900">Active bank account</dt>
+              </div>
+              <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
+                <dt className="text-sm font-semibold text-gray-900">Acceptable credit profile / credit score of 650 or above preferred</dt>
               </div>
             </dl>
           </div>
 
           <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm sm:p-8">
-            <h2 className="text-xl font-bold text-gray-900">Required documents</h2>
-            <p className="mt-2 text-sm text-gray-600 sm:text-base">
-              Keep clear copies ready. Document requirements can differ by profile.
-            </p>
+            <h2 className="text-xl font-bold text-gray-900">Personal Loans – Documents Required</h2>
 
             <div className="mt-5 grid gap-3">
               <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
-                <h3 className="text-sm font-semibold text-gray-900">PAN card</h3>
-                <p className="mt-1 text-sm text-gray-600">Mandatory for identity and credit checks.</p>
+                <h3 className="text-sm font-semibold text-gray-900">PAN Card</h3>
               </div>
               <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
-                <h3 className="text-sm font-semibold text-gray-900">Aadhaar card</h3>
-                <p className="mt-1 text-sm text-gray-600">Used for identity/address verification (as applicable).</p>
+                <h3 className="text-sm font-semibold text-gray-900">Aadhaar Card / Valid address proof</h3>
               </div>
               <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
-                <h3 className="text-sm font-semibold text-gray-900">Salary slips / income proof</h3>
-                <p className="mt-1 text-sm text-gray-600">Salary slips, Form 16, ITR, or business proof.</p>
+                <h3 className="text-sm font-semibold text-gray-900">Bank statements (last 6 months)</h3>
               </div>
               <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
-                <h3 className="text-sm font-semibold text-gray-900">Bank statements</h3>
-                <p className="mt-1 text-sm text-gray-600">Last 3–6 months statements (commonly requested).</p>
+                <h3 className="text-sm font-semibold text-gray-900">Income proof</h3>
+              </div>
+              <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
+                <h3 className="text-sm font-semibold text-gray-900">Salary slips (for salaried applicants) or</h3>
+              </div>
+              <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
+                <h3 className="text-sm font-semibold text-gray-900">Income Tax Returns (for self-employed applicants)</h3>
+              </div>
+              <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
+                <h3 className="text-sm font-semibold text-gray-900">Employment or business proof</h3>
               </div>
             </div>
           </div>

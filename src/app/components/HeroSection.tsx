@@ -25,6 +25,7 @@ import {
     ChevronRight,
     Sparkles,
 } from "lucide-react";
+import BankLogosSlider from "./BankInfinte";
 
 const HeroSection: React.FC = () => {
     const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
@@ -605,6 +606,9 @@ const HeroSection: React.FC = () => {
                         </p>
                     </div>
                 </div>
+
+<BankLogosSlider />
+               
             </section>
 
             {/* Latest Updates Section */}
