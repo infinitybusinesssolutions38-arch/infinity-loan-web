@@ -7,7 +7,7 @@ const BorrowerPersonalSchema = new mongoose.Schema({
     lastname: { type: String, required: true },
     mobileNumber: { type: String, required: true },
     alternateMobile: { type: String, required: false },
-    personalEmail: { type: String, required: true, unique: true },
+    personalEmail: { type: String, required: true, unique: true, sparse: true },
     businessEmail: { type: String, required: false },
     
     // Identity & Documents
@@ -31,11 +31,15 @@ const BorrowerPersonalSchema = new mongoose.Schema({
     requiredLoanAmount: { type: String, required: true },
     
     // File URLs (from Cloudinary)
-    aadhaarFront: { type: String, required: false },
-    aadhaarBack: { type: String, required: false },
-    panCardFront: { type: String, required: false },
-    residentialElectricityBillUrl: { type: String, required: false },
-    shopElectricityBillUrl: { type: String, required: false },
+    aadhaarFront: { type: String, required: true },
+    aadhaarBack: { type: String, required: true },
+    panCardFront: { type: String, required: true },
+    residentialElectricityBillUrl: { type: String, required: true },
+    shopElectricityBillUrl: { type: String, required: true },
+    
+    // Application metadata
+    loan_type: { type: String, required: true },
+    application_status: { type: String, required: true, enum: ["pending", "under_review", "approved", "rejected"], default: "pending" },
     
     // User Role
     role: {

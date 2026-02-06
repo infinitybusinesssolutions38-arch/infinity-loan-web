@@ -153,6 +153,14 @@ export default function ApplyNowModal({ isOpen, onClose, loanType }: ApplyNowMod
       return;
     }
 
+    // Ensure required documents are uploaded
+    if (!aadhaarFront || !aadhaarBack || !panFront || !residentialBill || !shopBill) {
+      window.alert(
+        "Please upload Aadhaar front, Aadhaar back, PAN card front, latest residential electricity bill and latest shop/office electricity bill."
+      );
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -745,7 +753,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType }: ApplyNowMod
 
             <div className="grid gap-4 sm:grid-cols-3">
               <div className="space-y-2">
-                <Label className="text-sm font-medium">Aadhaar Front</Label>
+                <Label className="text-sm font-medium">Aadhaar Front <span className="text-destructive">*</span></Label>
                 <label className="flex flex-col items-center justify-center h-24 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary/5 group">
                   <Upload className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors" />
                   <span className="mt-1 text-xs text-muted-foreground group-hover:text-primary">
@@ -761,7 +769,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType }: ApplyNowMod
               </div>
 
               <div className="space-y-2">
-                <Label className="text-sm font-medium">Aadhaar Back</Label>
+                <Label className="text-sm font-medium">Aadhaar Back <span className="text-destructive">*</span></Label>
                 <label className="flex flex-col items-center justify-center h-24 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary/5 group">
                   <Upload className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors" />
                   <span className="mt-1 text-xs text-muted-foreground group-hover:text-primary">
@@ -777,7 +785,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType }: ApplyNowMod
               </div>
 
               <div className="space-y-2">
-                <Label className="text-sm font-medium">PAN Card Front</Label>
+                <Label className="text-sm font-medium">PAN Card Front <span className="text-destructive">*</span></Label>
                 <label className="flex flex-col items-center justify-center h-24 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary/5 group">
                   <Upload className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors" />
                   <span className="mt-1 text-xs text-muted-foreground group-hover:text-primary">
@@ -793,7 +801,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType }: ApplyNowMod
               </div>
 
               <div className="space-y-2">
-                <Label className="text-sm font-medium">Latest Residential Electricity Bill</Label>
+                <Label className="text-sm font-medium">Latest Residential Electricity Bill <span className="text-destructive">*</span></Label>
                 <label className="flex flex-col items-center justify-center h-24 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary/5 group">
                   <Upload className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors" />
                   <span className="mt-1 text-xs text-muted-foreground group-hover:text-primary">
@@ -809,7 +817,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType }: ApplyNowMod
               </div>
 
               <div className="space-y-2">
-                <Label className="text-sm font-medium">Latest Shop Electricity Bill</Label>
+                <Label className="text-sm font-medium">Latest Shop/Office Electricity Bill <span className="text-destructive">*</span></Label>
                 <label className="flex flex-col items-center justify-center h-24 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary/5 group">
                   <Upload className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors" />
                   <span className="mt-1 text-xs text-muted-foreground group-hover:text-primary">
