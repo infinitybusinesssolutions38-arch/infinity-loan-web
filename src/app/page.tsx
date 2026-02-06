@@ -1,10 +1,7 @@
-import Image from "next/image";
-import HeroSection from "./components/HeroSection";
+import HomePageClient from "./components/HomePageClient";
 
 export default function Home() {
     return (
-        <section className="">
-            <HeroSection />
-        </section>
+        <HomePageClient />
     );
 }

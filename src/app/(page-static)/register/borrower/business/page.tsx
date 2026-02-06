@@ -123,19 +123,19 @@ const SignupForm = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-8">
+        <div className="min-h-screen flex items-center justify-center bg-background px-4 py-8">
             {/* Outer container without shadow */}
             <div className="flex flex-col md:flex-row  rounded-2xl overflow-hidden w-full max-w-5xl">
                 {/* LEFT SIDE - Text Section */}
-                <div className="md:w-1/2 bg-gray-50 flex flex-col  items-start p-8">
-                    <h2 className="text-3xl font-bold text-gray-800 mb-4">
+                <div className="md:w-1/2 bg-card flex flex-col items-start p-8 border border-border rounded-l-2xl shadow-xl">
+                    <h2 className="text-3xl font-bold text-foreground mb-4">
                         Get Your Business Loan Easily
                     </h2>
-                    <p className="text-gray-600 mb-6">
+                    <p className="text-muted-foreground mb-6">
                         Apply for a business loan with flexible repayment options and quick
                         approvals. Manage your finances smarter with Fortune Loans.
                     </p>
-                    <ul className="space-y-2 text-gray-600">
+                    <ul className="space-y-2 text-muted-foreground">
                         <li>✅ Instant approval process</li>
                         <li>✅ Low interest rates</li>
                         <li>✅ No hidden charges</li>
@@ -143,11 +143,11 @@ const SignupForm = () => {
                 </div>
 
                 {/* RIGHT SIDE - Form Section with its own shadow */}
-                <div className="md:w-1/2 p-8 bg-white mb-5 shadow-md shadow-blue-400 rounded-2xl">
-                    <h2 className="text-xl sm:text-2xl lg:text-4xl mb-5 font-bold text-neutral-800 dark:text-neutral-200">
+                <div className="md:w-1/2 p-8 bg-card mb-5 shadow-xl rounded-2xl border border-border">
+                    <h2 className="text-xl sm:text-2xl lg:text-4xl mb-5 font-bold text-foreground">
                         Apply for a Business Loan
                     </h2>
-                    <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-300">
+                    <p className="mt-2 text-sm text-muted-foreground">
                         Sign up to access your business loan dashboard.
                     </p>
 
@@ -160,7 +160,7 @@ const SignupForm = () => {
                                 id="fullName"
                                 placeholder="John Doe"
                                 type="text"
-                                className="border border-gray-300 bg-gray-100"
+                                className="border border-border bg-background"
                                 {...register("fullName", { required: true })}
                             />
                             {errors.fullName && <span className="text-red-500 text-xs">Required</span>}
@@ -172,7 +172,7 @@ const SignupForm = () => {
                                 <input
                                     id="dateOfBirth"
                                     type="date"
-                                    className="border border-gray-300 bg-gray-100 rounded-md p-2"
+                                    className="border border-border bg-background rounded-md p-2"
                                     {...register("dateOfBirth", { required: true })}
                                 />
                                 {errors.dateOfBirth && <span className="text-red-500 text-xs">Required</span>}
@@ -181,7 +181,7 @@ const SignupForm = () => {
                                 <Label htmlFor="gender">Gender</Label>
                                 <select
                                     id="gender"
-                                    className="border border-gray-300 bg-gray-100 rounded-md p-2"
+                                    className="border border-border bg-background rounded-md p-2"
                                     {...register("gender")}
                                 >
                                     <option value="">Select</option>
@@ -199,7 +199,7 @@ const SignupForm = () => {
                                     id="mobile"
                                     placeholder="9876543210"
                                     type="number"
-                                    className="border border-gray-300 bg-gray-100"
+                                    className="border border-border bg-background"
                                     {...register("mobile", { required: true })}
                                 />
                                 {errors.mobile && <span className="text-red-500 text-xs">Required</span>}
@@ -210,7 +210,7 @@ const SignupForm = () => {
                                     id="email"
                                     placeholder="you@example.com"
                                     type="email"
-                                    className="border border-gray-300 bg-gray-100"
+                                    className="border border-border bg-background"
                                     {...register("email", { required: true })}
                                 />
                                 {errors.email && <span className="text-red-500 text-xs">Required</span>}
@@ -223,7 +223,7 @@ const SignupForm = () => {
                                 id="residentialAddress"
                                 placeholder="House no, Street, Area"
                                 type="text"
-                                className="border border-gray-300 bg-gray-100"
+                                className="border border-border bg-background"
                                 {...register("residentialAddress", { required: true })}
                             />
                             {errors.residentialAddress && <span className="text-red-500 text-xs">Required</span>}
@@ -235,7 +235,7 @@ const SignupForm = () => {
                                 <Input
                                     id="city"
                                     type="text"
-                                    className="border border-gray-300 bg-gray-100"
+                                    className="border border-border bg-background"
                                     {...register("city", { required: true })}
                                 />
                                 {errors.city && <span className="text-red-500 text-xs">Required</span>}
@@ -245,7 +245,7 @@ const SignupForm = () => {
                                 <Input
                                     id="state"
                                     type="text"
-                                    className="border border-gray-300 bg-gray-100"
+                                    className="border border-border bg-background"
                                     {...register("state", { required: true })}
                                 />
                                 {errors.state && <span className="text-red-500 text-xs">Required</span>}
@@ -256,7 +256,7 @@ const SignupForm = () => {
                                     id="pincode"
                                     placeholder="110001"
                                     type="number"
-                                    className="border border-gray-300 bg-gray-100"
+                                    className="border border-border bg-background"
                                     {...register("pincode", { required: true })}
                                 />
                                 {errors.pincode && <span className="text-red-500 text-xs">Required</span>}
@@ -270,7 +270,7 @@ const SignupForm = () => {
                                     id="panNumber"
                                     placeholder="ABCDE1234F"
                                     type="text"
-                                    className="border border-gray-300 bg-gray-100"
+                                    className="border border-border bg-background"
                                     {...register("panNumber", { required: true })}
                                 />
                                 {errors.panNumber && <span className="text-red-500 text-xs">Required</span>}
@@ -281,7 +281,7 @@ const SignupForm = () => {
                                     id="aadhaarNumber"
                                     placeholder="123412341234"
                                     type="text"
-                                    className="border border-gray-300 bg-gray-100"
+                                    className="border border-border bg-background"
                                     {...register("aadhaarNumber", { required: true })}
                                 />
                                 {errors.aadhaarNumber && <span className="text-red-500 text-xs">Required</span>}
@@ -295,7 +295,7 @@ const SignupForm = () => {
                             <Input
                                 id="bankName"
                                 type="text"
-                                className="border border-gray-300 bg-gray-100"
+                                className="border border-border bg-background"
                                 {...register("bankName", { required: true })}
                             />
                             {errors.bankName && <span className="text-red-500 text-xs">Required</span>}
@@ -306,7 +306,7 @@ const SignupForm = () => {
                             <Input
                                 id="accountHolderName"
                                 type="text"
-                                className="border border-gray-300 bg-gray-100"
+                                className="border border-border bg-background"
                                 {...register("accountHolderName", { required: true })}
                             />
                             {errors.accountHolderName && <span className="text-red-500 text-xs">Required</span>}
@@ -318,7 +318,7 @@ const SignupForm = () => {
                                 <Input
                                     id="accountNumber"
                                     type="text"
-                                    className="border border-gray-300 bg-gray-100"
+                                    className="border border-border bg-background"
                                     {...register("accountNumber", { required: true })}
                                 />
                                 {errors.accountNumber && <span className="text-red-500 text-xs">Required</span>}
@@ -328,7 +328,7 @@ const SignupForm = () => {
                                 <Input
                                     id="ifscCode"
                                     type="text"
-                                    className="border border-gray-300 bg-gray-100"
+                                    className="border border-border bg-background"
                                     {...register("ifscCode", { required: true })}
                                 />
                                 {errors.ifscCode && <span className="text-red-500 text-xs">Required</span>}
@@ -340,7 +340,7 @@ const SignupForm = () => {
                                 <Label htmlFor="accountType">Account Type</Label>
                                 <select
                                     id="accountType"
-                                    className="border border-gray-300 bg-gray-100 rounded-md p-2"
+                                    className="border border-border bg-background rounded-md p-2"
                                     {...register("accountType", { required: true })}
                                 >
                                     <option value="">Select</option>
@@ -354,7 +354,7 @@ const SignupForm = () => {
                                 <Input
                                     id="branchName"
                                     type="text"
-                                    className="border border-gray-300 bg-gray-100"
+                                    className="border border-border bg-background"
                                     {...register("branchName")}
                                 />
                             </LabelInputContainer>
@@ -365,7 +365,7 @@ const SignupForm = () => {
                             <Input
                                 id="monthlyAvgBankBalance"
                                 type="text"
-                                className="border border-gray-300 bg-gray-100"
+                                className="border border-border bg-background"
                                 {...register("monthlyAvgBankBalance")}
                             />
                         </LabelInputContainer>
@@ -377,7 +377,7 @@ const SignupForm = () => {
                             <Input
                                 id="businessName"
                                 type="text"
-                                className="border border-gray-300 bg-gray-100"
+                                className="border border-border bg-background"
                                 {...register("businessName", { required: true })}
                             />
                             {errors.businessName && <span className="text-red-500 text-xs">Required</span>}
@@ -387,7 +387,7 @@ const SignupForm = () => {
                             <Label htmlFor="businessType">Type of Business</Label>
                             <select
                                 id="businessType"
-                                className="border border-gray-300 bg-gray-100 rounded-md p-2"
+                                className="border border-border bg-background rounded-md p-2"
                                 {...register("businessType")}
                             >
                                 <option value="">Select</option>
@@ -404,7 +404,7 @@ const SignupForm = () => {
                             <Input
                                 id="businessAddress"
                                 type="text"
-                                className="border border-gray-300 bg-gray-100"
+                                className="border border-border bg-background"
                                 {...register("businessAddress", { required: true })}
                             />
                             {errors.businessAddress && <span className="text-red-500 text-xs">Required</span>}
@@ -416,7 +416,7 @@ const SignupForm = () => {
                                 <Input
                                     id="businessVintageYears"
                                     type="number"
-                                    className="border border-gray-300 bg-gray-100"
+                                    className="border border-border bg-background"
                                     {...register("businessVintageYears", { required: true })}
                                 />
                                 {errors.businessVintageYears && <span className="text-red-500 text-xs">Required</span>}
@@ -426,7 +426,7 @@ const SignupForm = () => {
                                 <Input
                                     id="natureOfBusiness"
                                     type="text"
-                                    className="border border-gray-300 bg-gray-100"
+                                    className="border border-border bg-background"
                                     {...register("natureOfBusiness", { required: true })}
                                 />
                                 {errors.natureOfBusiness && <span className="text-red-500 text-xs">Required</span>}
@@ -438,7 +438,7 @@ const SignupForm = () => {
                             <Input
                                 id="annualTurnover"
                                 type="text"
-                                className="border border-gray-300 bg-gray-100"
+                                className="border border-border bg-background"
                                 {...register("annualTurnover", { required: true })}
                             />
                             {errors.annualTurnover && <span className="text-red-500 text-xs">Required</span>}
@@ -450,7 +450,7 @@ const SignupForm = () => {
                                 <Input
                                     id="gstNumber"
                                     type="text"
-                                    className="border border-gray-300 bg-gray-100"
+                                    className="border border-border bg-background"
                                     {...register("gstNumber")}
                                 />
                             </LabelInputContainer>
@@ -459,7 +459,7 @@ const SignupForm = () => {
                                 <Input
                                     id="businessPan"
                                     type="text"
-                                    className="border border-gray-300 bg-gray-100"
+                                    className="border border-border bg-background"
                                     {...register("businessPan")}
                                 />
                             </LabelInputContainer>
@@ -470,7 +470,7 @@ const SignupForm = () => {
                             <Input
                                 id="otherBusinessLicenseNumber"
                                 type="text"
-                                className="border border-gray-300 bg-gray-100"
+                                className="border border-border bg-background"
                                 {...register("otherBusinessLicenseNumber")}
                             />
                         </LabelInputContainer>
@@ -481,7 +481,7 @@ const SignupForm = () => {
                                 <Input
                                     id="tradeLicense"
                                     type="text"
-                                    className="border border-gray-300 bg-gray-100"
+                                    className="border border-border bg-background"
                                     {...register("tradeLicense")}
                                 />
                             </LabelInputContainer>
@@ -490,7 +490,7 @@ const SignupForm = () => {
                                 <Input
                                     id="msmeUdyam"
                                     type="text"
-                                    className="border border-gray-300 bg-gray-100"
+                                    className="border border-border bg-background"
                                     {...register("msmeUdyam")}
                                 />
                             </LabelInputContainer>
@@ -501,7 +501,7 @@ const SignupForm = () => {
                             <Input
                                 id="shopActLicense"
                                 type="text"
-                                className="border border-gray-300 bg-gray-100"
+                                className="border border-border bg-background"
                                 {...register("shopActLicense")}
                             />
                         </LabelInputContainer>
@@ -513,7 +513,7 @@ const SignupForm = () => {
                             <Input
                                 id="loanAmountRequired"
                                 type="text"
-                                className="border border-gray-300 bg-gray-100"
+                                className="border border-border bg-background"
                                 {...register("loanAmountRequired", { required: true })}
                             />
                             {errors.loanAmountRequired && <span className="text-red-500 text-xs">Required</span>}
@@ -523,7 +523,7 @@ const SignupForm = () => {
                             <Label htmlFor="purposeOfLoan">Purpose of Loan</Label>
                             <select
                                 id="purposeOfLoan"
-                                className="border border-gray-300 bg-gray-100 rounded-md p-2"
+                                className="border border-border bg-background rounded-md p-2"
                                 {...register("purposeOfLoan", { required: true })}
                             >
                                 <option value="">Select</option>
@@ -542,7 +542,7 @@ const SignupForm = () => {
                                 <Input
                                     id="preferredLoanTenureMonths"
                                     type="number"
-                                    className="border border-gray-300 bg-gray-100"
+                                    className="border border-border bg-background"
                                     {...register("preferredLoanTenureMonths", { required: true })}
                                 />
                                 {errors.preferredLoanTenureMonths && <span className="text-red-500 text-xs">Required</span>}
@@ -552,98 +552,93 @@ const SignupForm = () => {
                                 <Input
                                     id="existingLoanDetails"
                                     type="text"
-                                    className="border border-gray-300 bg-gray-100"
+                                    className="border border-border bg-background"
                                     {...register("existingLoanDetails")}
                                 />
                             </LabelInputContainer>
                         </div>
 
-                        <p className="my-6 text-2xl font-semibold">Document Upload</p>
+                            <p className="my-6 text-2xl font-semibold">Document Upload</p>
 
-                        <LabelInputContainer className="mb-4">
-                            <Label>PAN Card Upload</Label>
-                            <Input
-                                type="file"
-                                accept=".pdf,.jpeg,.jpg,.png"
-                                {...register("panCardUpload", { required: true })}
-                                className="border border-gray-300 bg-gray-100"
-                            />
-                            {errors.panCardUpload && <span className="text-red-500 text-xs">Required</span>}
-                        </LabelInputContainer>
+                            <LabelInputContainer className="mb-4">
+                                <Label htmlFor="panCardUpload">Upload PAN Card</Label>
+                                <Input
+                                    id="panCardUpload"
+                                    type="file"
+                                    accept=".pdf,.jpeg,.jpg,.png"
+                                    {...register("panCardUpload", { required: true })}
+                                    className="border border-border bg-background"
+                                />
+                                {errors.panCardUpload && <span className="text-red-500 text-xs">Required</span>}
+                            </LabelInputContainer>
 
-                        <LabelInputContainer className="mb-4">
-                            <Label>Aadhaar Card Upload</Label>
-                            <Input
-                                type="file"
-                                accept=".pdf,.jpeg,.jpg,.png"
-                                {...register("aadhaarCardUpload", { required: true })}
-                                className="border border-gray-300 bg-gray-100"
-                            />
-                            {errors.aadhaarCardUpload && <span className="text-red-500 text-xs">Required</span>}
-                        </LabelInputContainer>
+                            <LabelInputContainer className="mb-4">
+                                <Label htmlFor="aadhaarCardUpload">Upload Aadhaar Card</Label>
+                                <Input
+                                    id="aadhaarCardUpload"
+                                    type="file"
+                                    accept=".pdf,.jpeg,.jpg,.png"
+                                    {...register("aadhaarCardUpload", { required: true })}
+                                    className="border border-border bg-background"
+                                />
+                                {errors.aadhaarCardUpload && <span className="text-red-500 text-xs">Required</span>}
+                            </LabelInputContainer>
 
-                        <LabelInputContainer className="mb-4">
-                            <Label>Passport Copy (Optional)</Label>
-                            <Input
-                                type="file"
-                                accept=".pdf,.jpeg,.jpg,.png"
-                                {...register("passportCopy")}
-                                className="border border-gray-300 bg-gray-100"
-                            />
-                        </LabelInputContainer>
+                            <LabelInputContainer className="mb-4">
+                                <Label htmlFor="passportCopy">Passport Copy (Optional)</Label>
+                                <Input
+                                    id="passportCopy"
+                                    type="file"
+                                    accept=".pdf,.jpeg,.jpg,.png"
+                                    {...register("passportCopy")}
+                                    className="border border-border bg-background"
+                                />
+                            </LabelInputContainer>
 
-                        <LabelInputContainer className="mb-4">
-                            <Label>GST Certificate (Optional)</Label>
-                            <Input
-                                type="file"
-                                accept=".pdf,.jpeg,.jpg,.png"
-                                {...register("gstCertificate")}
-                                className="border border-gray-300 bg-gray-100"
-                            />
-                        </LabelInputContainer>
+                            <LabelInputContainer className="mb-4">
+                                <Label htmlFor="gstCertificate">GST Certificate (Optional)</Label>
+                                <Input
+                                    id="gstCertificate"
+                                    type="file"
+                                    accept=".pdf,.jpeg,.jpg,.png"
+                                    {...register("gstCertificate")}
+                                    className="border border-border bg-background"
+                                />
+                            </LabelInputContainer>
 
-                        <LabelInputContainer className="mb-4">
-                            <Label>Other Business License Documents (Optional)</Label>
-                            <Input
-                                type="file"
-                                accept=".pdf,.jpeg,.jpg,.png"
-                                {...register("otherBusinessLicenseDocuments")}
-                                className="border border-gray-300 bg-gray-100"
-                            />
-                        </LabelInputContainer>
+                            <LabelInputContainer className="mb-4">
+                                <Label htmlFor="otherBusinessLicenseDocuments">Other Business License Documents (Optional)</Label>
+                                <Input
+                                    id="otherBusinessLicenseDocuments"
+                                    type="file"
+                                    accept=".pdf,.jpeg,.jpg,.png"
+                                    {...register("otherBusinessLicenseDocuments")}
+                                    className="border border-border bg-background"
+                                />
+                            </LabelInputContainer>
 
-                        <LabelInputContainer className="mb-4">
-                            <Label>Last 3 Years Bank Statement</Label>
-                            <Input
-                                type="file"
-                                accept=".pdf,.jpeg,.jpg,.png"
-                                {...register("bankStatementLast6Months")}
-                                className="border border-gray-300 bg-gray-100"
-                            />
-                        </LabelInputContainer>
+                            <LabelInputContainer className="mb-4">
+                                <Label htmlFor="bankStatementLast6Months">Bank Statement (Last 6 Months) (Optional)</Label>
+                                <Input
+                                    id="bankStatementLast6Months"
+                                    type="file"
+                                    accept=".pdf,.jpeg,.jpg,.png"
+                                    {...register("bankStatementLast6Months")}
+                                    className="border border-border bg-background"
+                                />
+                            </LabelInputContainer>
 
-                        {/* <LabelInputContainer className="mb-6">
-                            <Label htmlFor="password">Password</Label>
-                            <Input
-                                id="password"
-                                placeholder="••••••••"
-                                type="password"
-                                className="border border-gray-300 bg-gray-100"
-                                {...register("password", { required: true })}
-                            />
-                            {errors.password && <span className="text-red-500 text-xs">Required</span>}
-                        </LabelInputContainer> */}
-
-                        {/* Submit */}
-                        <button
-                            className="group/btn relative block h-10 w-full rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white"
-                            type="submit"
-                            disabled={isSubmitting}
-                        >
-                            {isSubmitting ? "Submitting..." : "Submit"}
-                            <BottomGradient />
-                        </button>
-                    </form>
+                            {/* Submit */}
+                            <button
+                                className="group/btn relative block h-10 w-full rounded-md bg-gradient-to-r from-cta via-cta to-accent font-medium text-white shadow-glow-cta"
+                                type="submit"
+                                disabled={isSubmitting}
+                            >
+                                {isSubmitting ? "Submitting..." : "Submit"}
+                                <BottomGradient />
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -661,11 +656,11 @@ const SocialButton = ({
     text: string;
 }) => (
     <button
-        className="group/btn relative flex h-10 w-full items-center justify-start space-x-2 rounded-md bg-gray-50 px-4 font-medium text-black shadow-sm"
+        className="group/btn relative flex h-10 w-full items-center justify-start space-x-2 rounded-md bg-secondary/50 px-4 font-medium text-foreground shadow-sm"
         type="button"
     >
-        <div className="h-4 w-4 text-neutral-800">{icon}</div>
-        <span className="text-sm text-neutral-700">{text}</span>
+        <div className="h-4 w-4 text-foreground">{icon}</div>
+        <span className="text-sm text-muted-foreground">{text}</span>
         <BottomGradient />
     </button>
 );

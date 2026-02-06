@@ -15,6 +15,27 @@ export default function BorrowerDashboard() {
         });
     }, []);
 
-    if (!user) return <p>Loading...</p>;
-    return <h1>Welcome Borrower {user}</h1>;
+    if (!user) {
+        return (
+            <div className="min-h-screen bg-background flex items-center justify-center px-4">
+                <div className="w-full max-w-md rounded-2xl border border-border bg-card p-6 shadow-xl text-center">
+                    <p className="text-foreground">Loading...</p>
+                </div>
+            </div>
+        );
+    }
+
+    return (
+        <main className="min-h-screen bg-background">
+            <section className="relative overflow-hidden bg-gradient-to-br from-primary via-primary/90 to-primary/80 py-10">
+                <div className="absolute inset-0 overflow-hidden">
+                    <div className="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-accent/20 blur-3xl" />
+                    <div className="absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-cta/20 blur-3xl" />
+                </div>
+                <div className="container relative z-10 mx-auto px-4">
+                    <h1 className="text-center text-3xl font-bold text-primary-foreground">Welcome Borrower {user}</h1>
+                </div>
+            </section>
+        </main>
+    );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState } from "react";
-import LoanApplicationModalForm from "./LoanApplicationModalForm";
+import ApplyNowModal from "./loans/ApplyNowModal";
 
 type LoanModalContextType = {
     open: () => void;
@@ -27,33 +27,7 @@ export function LoanModalProvider({
     return (
         <LoanModalContext.Provider value={value}>
             {children}
-            {isOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 px-4">
-                    <div className="relative w-full max-w-xl rounded-2xl bg-white shadow-xl">
-                        <div className="flex items-center justify-between border-b border-slate-200 px-5 py-4">
-                            <div>
-                                <h2 className="text-base font-semibold text-slate-900">
-                                    Loan Application
-                                </h2>
-                                <p className="mt-1 text-xs text-slate-500">
-                                    Fill a few basic details to get started. You can save and complete it later.
-                                </p>
-                            </div>
-                            <button
-                                type="button"
-                                onClick={() => setIsOpen(false)}
-                                className="inline-flex h-8 w-8 items-center justify-center rounded-full text-slate-500 hover:bg-slate-100 hover:text-slate-900"
-                                aria-label="Close loan application form"
-                            >
-                                ×
-                            </button>
-                        </div>
-                        <div className="max-h-[80vh] overflow-y-auto px-4 pb-5 pt-4">
-                            <LoanApplicationModalForm />
-                        </div>
-                    </div>
-                </div>
-            )}
+            <ApplyNowModal isOpen={isOpen} onClose={() => setIsOpen(false)} loanType="Loan" />
         </LoanModalContext.Provider>
     );
 }

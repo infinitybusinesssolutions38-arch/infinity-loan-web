@@ -77,11 +77,11 @@ const RegisterPage = () => {
         }
     };
 return (
-        <section className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-indigo-50 relative overflow-hidden">
+        <section className="min-h-screen bg-background relative overflow-hidden">
             {/* Animated background elements */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
                 <motion.div
-                    className="absolute -top-40 -right-40 w-80 h-80 bg-blue-400/20 rounded-full blur-3xl"
+                    className="absolute -top-40 -right-40 w-80 h-80 bg-accent/20 rounded-full blur-3xl"
                     animate={{
                         scale: [1, 1.2, 1],
                         x: [0, 50, 0],
@@ -94,7 +94,7 @@ return (
                     }}
                 />
                 <motion.div
-                    className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-400/20 rounded-full blur-3xl"
+                    className="absolute -bottom-40 -left-40 w-80 h-80 bg-cta/20 rounded-full blur-3xl"
                     animate={{
                         scale: [1.2, 1, 1.2],
                         x: [0, -50, 0],
@@ -107,7 +107,7 @@ return (
                     }}
                 />
                 <motion.div
-                    className="absolute top-1/2 left-1/2 w-60 h-60 bg-indigo-400/10 rounded-full blur-3xl"
+                    className="absolute top-1/2 left-1/2 w-60 h-60 bg-primary/10 rounded-full blur-3xl"
                     animate={{
                         scale: [1, 1.3, 1],
                         rotate: [0, 180, 360],
@@ -128,7 +128,7 @@ return (
                     className="w-full max-w-xl"
                 >
                     <motion.div
-                        className="bg-white/90 backdrop-blur-xl shadow-2xl rounded-3xl mx-4 lg:mx-0 p-8 border border-white/20"
+                        className="bg-card/90 backdrop-blur-xl shadow-2xl rounded-3xl mx-4 lg:mx-0 p-8 border border-border"
                         whileHover={{ scale: 1.01 }}
                         transition={{ duration: 0.3 }}
                     >
@@ -137,10 +137,10 @@ return (
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: 0.2, duration: 0.5 }}
                         >
-                            <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent mb-2">
+                            <h2 className="text-3xl font-bold bg-gradient-to-r from-primary via-accent to-cta bg-clip-text text-transparent mb-2">
                                 Create Account
                             </h2>
-                            <p className="text-gray-600 mb-6">Join us and start your journey</p>
+                            <p className="text-muted-foreground mb-6">Join us and start your journey</p>
                         </motion.div>
 
                         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -150,11 +150,11 @@ return (
                                 transition={{ delay: 0.3, duration: 0.5 }}
                             >
                                 <LabelInputContainer>
-                                    <Label htmlFor="role" className="text-gray-700 font-medium">Register As</Label>
+                                    <Label htmlFor="role" className="text-foreground font-medium">Register As</Label>
                                     <motion.select
                                         id="role"
                                         {...register("role", { required: true })}
-                                        className="h-12 w-full rounded-xl border-2 border-gray-200 bg-white px-4 text-sm text-gray-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-300 cursor-pointer"
+                                        className="h-12 w-full rounded-xl border-2 border-border bg-background px-4 text-sm text-foreground focus:border-primary focus:ring-4 focus:ring-primary/20 transition-all duration-300 cursor-pointer"
                                         whileFocus={{ scale: 1.01 }}
                                     >
                                         <option value="borrower-personal">Borrower - Personal</option>
@@ -173,14 +173,14 @@ return (
                                 transition={{ delay: 0.4, duration: 0.5 }}
                             >
                                 <LabelInputContainer>
-                                    <Label htmlFor="email" className="text-gray-700 font-medium">Email</Label>
+                                    <Label htmlFor="email" className="text-foreground font-medium">Email</Label>
                                     <motion.div whileFocus={{ scale: 1.01 }}>
                                         <Input
                                             id="email"
                                             type="email"
                                             placeholder="you@example.com"
                                             {...register("email", { required: true })}
-                                            className="h-12 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-300"
+                                            className="h-12 border-2 border-border bg-background rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/20 transition-all duration-300"
                                         />
                                     </motion.div>
                                 </LabelInputContainer>
@@ -192,14 +192,14 @@ return (
                                 transition={{ delay: 0.5, duration: 0.5 }}
                             >
                                 <LabelInputContainer>
-                                    <Label htmlFor="mobile" className="text-gray-700 font-medium">Mobile (optional)</Label>
+                                    <Label htmlFor="mobile" className="text-foreground font-medium">Mobile (optional)</Label>
                                     <motion.div whileFocus={{ scale: 1.01 }}>
                                         <Input
                                             id="mobile"
                                             type="text"
                                             placeholder="9876543210"
                                             {...register("mobile")}
-                                            className="h-12 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-300"
+                                            className="h-12 border-2 border-border bg-background rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/20 transition-all duration-300"
                                         />
                                     </motion.div>
                                 </LabelInputContainer>
@@ -211,14 +211,14 @@ return (
                                 transition={{ delay: 0.6, duration: 0.5 }}
                             >
                                 <LabelInputContainer>
-                                    <Label htmlFor="password" className="text-gray-700 font-medium">Password</Label>
+                                    <Label htmlFor="password" className="text-foreground font-medium">Password</Label>
                                     <motion.div whileFocus={{ scale: 1.01 }}>
                                         <Input
                                             id="password"
                                             type="password"
                                             placeholder="••••••••"
                                             {...register("password", { required: true })}
-                                            className="h-12 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-300"
+                                            className="h-12 border-2 border-border bg-background rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/20 transition-all duration-300"
                                         />
                                     </motion.div>
                                 </LabelInputContainer>
@@ -237,7 +237,7 @@ return (
                             <motion.button
                                 type="submit"
                                 disabled={loading}
-                                className="relative block h-12 w-full rounded-xl bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 font-semibold text-white mt-6 overflow-hidden"
+                                className="relative block h-12 w-full rounded-xl bg-gradient-to-r from-cta via-cta to-accent font-semibold text-white mt-6 overflow-hidden shadow-glow-cta"
                                 whileHover={{ scale: 1.02 }}
                                 whileTap={{ scale: 0.98 }}
                                 initial={{ opacity: 0, y: 20 }}
@@ -245,7 +245,7 @@ return (
                                 transition={{ delay: 0.7, duration: 0.5 }}
                             >
                                 <motion.div
-                                    className="absolute inset-0 bg-gradient-to-r from-blue-400 via-purple-400 to-indigo-400"
+                                    className="absolute inset-0 bg-gradient-to-r from-accent/40 via-cta/40 to-primary/40"
                                     initial={{ x: "-100%" }}
                                     whileHover={{ x: "100%" }}
                                     transition={{ duration: 0.6 }}
@@ -266,7 +266,7 @@ return (
                             </motion.button>
 
                             <motion.div
-                                className="text-sm text-gray-600 pt-4 text-center"
+                                className="text-sm text-muted-foreground pt-4 text-center"
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 transition={{ delay: 0.8, duration: 0.5 }}
@@ -274,7 +274,7 @@ return (
                                 Already have an account?{" "}
                                 <motion.a
                                     href="/login"
-                                    className="text-blue-600 hover:text-purple-600 font-semibold transition-colors duration-300"
+                                    className="text-primary hover:text-accent font-semibold transition-colors duration-300"
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
                                 >

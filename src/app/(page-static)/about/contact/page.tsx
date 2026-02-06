@@ -84,21 +84,21 @@ For any queries or onboarding support, please contact our support team at suppor
 
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-8">
+        <div className="min-h-screen flex items-center justify-center bg-background px-4 py-8">
             <div className="flex flex-col md:flex-row rounded-2xl overflow-hidden w-full max-w-5xl">
                 {/* LEFT SIDE - Info Section (with shadow) */}
-                <div className="md:w-1/2 bg-white shadow-md rounded-l-2xl p-8 flex flex-col justify-start">
+                <div className="md:w-1/2 bg-card shadow-xl rounded-l-2xl p-8 flex flex-col justify-start border border-border">
                     <section className="mx-auto max-w-6xl px-4 py-20 md:px-8 md:py-10">
                         <div className="grid grid-cols-1 gap-10 md:grid-cols-1">
                             {/* Header */}
                             <div className="mb-5">
-                                <h2 className="text-center text-2xl font-bold tracking-tight text-neutral-700 dark:text-neutral-50 md:text-left md:text-5xl">
+                                <h2 className="text-center text-2xl font-bold tracking-tight text-foreground md:text-left md:text-5xl">
                                     Frequently Asked Questions
                                 </h2>
                             </div>
 
                             {/* FAQ List */}
-                            <div className="divide-y divide-neutral-200 dark:divide-neutral-800">
+                            <div className="divide-y divide-border">
                                 {faqs.map((faq, index) => (
                                     <div
                                         key={index}
@@ -106,12 +106,12 @@ For any queries or onboarding support, please contact our support team at suppor
                                         onClick={() => toggleFAQ(index)}
                                     >
                                         <div className="flex items-start gap-4">
-                                            <div className="mt-1 text-blue-500 flex-shrink-0">
+                                            <div className="mt-1 text-accent flex-shrink-0">
                                                 {openIndex === index ? <Minus size={24} /> : <Plus size={24} />}
                                             </div>
 
                                             <div>
-                                                <h3 className="text-lg font-medium text-neutral-800 dark:text-neutral-200">
+                                                <h3 className="text-lg font-medium text-foreground">
                                                     {faq.question}
                                                 </h3>
 
@@ -124,11 +124,11 @@ For any queries or onboarding support, please contact our support team at suppor
                                                             transition={{ duration: 0.3 }}
                                                         >
                                                             {/* Handle multiline text */}
-                                                            <p className="mt-2 text-neutral-600 dark:text-neutral-400 whitespace-pre-line leading-relaxed">
+                                                            <p className="mt-2 text-muted-foreground whitespace-pre-line leading-relaxed">
                                                                 {faq.answer.split("\n").map((line, i) => {
                                                                     if (line.includes("Individuals applying should:")) {
                                                                         return (
-                                                                            <span key={i} className="font-semibold text-neutral-800 dark:text-neutral-200">
+                                                                            <span key={i} className="font-semibold text-foreground">
                                                                                 {line.trim()}
                                                                                 {"\n"}
                                                                             </span>
@@ -150,14 +150,14 @@ For any queries or onboarding support, please contact our support team at suppor
                 </div>
 
                 {/* Divider Line */}
-                <div className="w-px h-[80%] my-4 bg-gray-300" />
+                <div className="w-px h-[80%] my-4 bg-border" />
 
                 {/* RIGHT SIDE - Form Section (with shadow) */}
-                <div className="md:w-1/2 bg-white shadow-md rounded-r-2xl p-8">
-                    <h2 className="text-2xl font-bold text-neutral-800 mb-2">
+                <div className="md:w-1/2 bg-card shadow-xl rounded-r-2xl p-8 border border-border">
+                    <h2 className="text-2xl font-bold text-foreground mb-2">
                         Contact Us
                     </h2>
-                    <p className="text-sm text-neutral-600 mb-6">
+                    <p className="text-sm text-muted-foreground mb-6">
                         Sign up to access your loan dashboard.
                     </p>
 
@@ -170,7 +170,7 @@ For any queries or onboarding support, please contact our support team at suppor
                                     id="firstname"
                                     type="text"
                                     placeholder="John"
-                                    className="border border-gray-300 bg-gray-100"
+                                    className="border border-border bg-background"
                                     {...register("firstname", { required: true })}
                                 />
                                 {errors.firstname && (
@@ -184,7 +184,7 @@ For any queries or onboarding support, please contact our support team at suppor
                                     id="lastname"
                                     type="text"
                                     placeholder="Doe"
-                                    className="border border-gray-300 bg-gray-100"
+                                    className="border border-border bg-background"
                                     {...register("lastname", { required: true })}
                                 />
                                 {errors.lastname && (
@@ -200,7 +200,7 @@ For any queries or onboarding support, please contact our support team at suppor
                                 id="subject"
                                 type="text"
                                 placeholder="Subject..."
-                                className="border border-gray-300 bg-gray-100"
+                                className="border border-border bg-background"
                                 {...register("subject", { required: true })}
                             />
                             {errors.subject && (
@@ -215,7 +215,7 @@ For any queries or onboarding support, please contact our support team at suppor
                                 id="email"
                                 type="email"
                                 placeholder="you@example.com"
-                                className="border border-gray-300 bg-gray-100"
+                                className="border border-border bg-background"
                                 {...register("email", { required: true })}
                             />
                             {errors.email && (
@@ -232,7 +232,7 @@ For any queries or onboarding support, please contact our support team at suppor
                                 id="mobile"
                                 type="number"
                                 placeholder="9876543210"
-                                className="border border-gray-300 bg-gray-100"
+                                className="border border-border bg-background"
                                 {...register("mobile", { required: true })}
                             />
                             {errors.mobile && (
@@ -247,7 +247,7 @@ For any queries or onboarding support, please contact our support team at suppor
                                 id="message"
                                 rows={4}
                                 cols={3}
-                                className="p-2 border border-gray-300 bg-gray-100 rounded-md focus:border-gray-400 hover:ring-2 focus:ring-gray-400 outline-none "
+                                className="p-2 border border-border bg-background rounded-md focus:border-primary hover:ring-2 focus:ring-primary/20 outline-none "
                                 {...register("message", { required: true })}
                             />
                             {errors.message && (
@@ -259,7 +259,7 @@ For any queries or onboarding support, please contact our support team at suppor
                         <button
                             type="submit"
                             disabled={isSubmitting}
-                            className="group/btn relative block h-10 w-full rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white mt-4"
+                            className="group/btn relative block h-10 w-full rounded-md bg-gradient-to-r from-cta via-cta to-accent font-medium text-white mt-4 shadow-glow-cta"
                         >
                             {isSubmitting ? "Submitting..." : "Submit"}
                             <BottomGradient />

@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { useLoanModal } from "./LoanModalProvider";
-import Link from "next/link";
+import ApplyNowCTAButton from "./loans/ApplyNowCTAButton";
 
 export default function EMICalculator() {
     const [amount, setAmount] = useState(0);
@@ -118,12 +118,13 @@ export default function EMICalculator() {
                         </div>
 
                         {/* CTA Desktop */}
-                        <Link
-                        href={"/apply"}
-                            className="hidden text-center lg:block w-full bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white py-3.5 rounded-xl font-semibold shadow-lg hover:shadow-xl transition"
+                        <ApplyNowCTAButton
+                            loanType="Loan"
+                            size="xl"
+                            className="hidden w-full lg:flex"
                         >
                             Apply for Loan
-                        </Link>
+                        </ApplyNowCTAButton>
                     </div>
 
                     {/* RIGHT */}
@@ -168,13 +169,14 @@ export default function EMICalculator() {
                     
 
                     {/* CTA Mobile */}
-                    <button
-                        type="button"
+                    <ApplyNowCTAButton
+                        loanType="Loan"
+                        size="xl"
+                        className="lg:hidden mt-6 w-full"
                         onClick={handleApply}
-                        className="lg:hidden mt-6 w-full bg-white text-indigo-700 font-bold py-3 rounded-xl shadow-lg hover:shadow-xl transition"
                     >
                         Apply for Loan
-                    </button>
+                    </ApplyNowCTAButton>
                 </div>
             </div>
 

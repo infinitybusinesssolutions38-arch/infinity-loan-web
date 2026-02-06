@@ -2,6 +2,7 @@ import type React from "react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
+import ApplyNowCTAButton from "@/components/loans/ApplyNowCTAButton";
 import {
   Card,
   CardContent,
@@ -37,10 +38,18 @@ export function ServiceCtaButton({
 }) {
   const label = variant === "eligibility" ? "Check Eligibility" : "Apply Now";
 
+  if (variant === "eligibility") {
+    return (
+      <Button asChild size="sm" className="w-full sm:w-auto">
+        <Link href={href}>{label}</Link>
+      </Button>
+    );
+  }
+
   return (
-    <Button asChild size="sm" className="w-full sm:w-auto">
-      <Link href={href}>{label}</Link>
-    </Button>
+    <ApplyNowCTAButton size="sm" className="w-full sm:w-auto">
+      {label}
+    </ApplyNowCTAButton>
   );
 }
 

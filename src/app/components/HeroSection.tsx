@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import BankLogosSlider from "./BankInfinte";
 import VehicleLoanEmiCalculator from "./Calculator";
+import ApplyNowCTAButton from "@/components/loans/ApplyNowCTAButton";
 
 const AUTOPLAY_MS = 4000;
 
@@ -361,7 +362,7 @@ const HeroSection: React.FC = () => {
                             </div>
                         </div>
 
-                        <div className="rounded-3xl border border-gray-200/70 bg-gradient-to-br from-blue-50 via-white to-emerald-50 p-8 shadow-sm hover:shadow-lg transition-all duration-500 animate-fade-in-left">
+                        <div className="rounded-3xl border border-gray-200/70 bg-gradient-to-br from-blue-50 via-white to-emerald-50 p-8 shadow-sm hover:shadow-lg transition-shadow duration-500 animate-fade-in-left">
                             <p className="text-sm font-semibold text-gray-900">Industries we support</p>
                             <div className="mt-4 flex flex-wrap gap-2">
                                 {["Retail", "Manufacturing", "Services", "Trading", "Transport", "Healthcare", "Education"].map((t, index) => (
@@ -457,13 +458,17 @@ const HeroSection: React.FC = () => {
                                 ))}
                             </ul>
 
-                            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                                <Button asChild className="w-full sm:w-auto hover:scale-105 transition-transform duration-300">
+                            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-start">
+                                <Button asChild className="w-full sm:w-auto h-11 px-7 text-base bg-blue-600 text-white hover:bg-blue-700 hover:scale-105 transition-all duration-300 shadow-lg">
                                     <Link href="/services/government-schemes">Explore schemes</Link>
                                 </Button>
-                                <Button asChild variant="outline" className="w-full sm:w-auto hover:scale-105 transition-transform duration-300">
-                                    <Link href="/register?service=pm-mudra-loan">Apply now</Link>
-                                </Button>
+                                <ApplyNowCTAButton
+                                    loanType="PM Mudra Loan"
+                                    size="lg"
+                                    className="w-full sm:w-auto hover:scale-105 transition-transform duration-300"
+                                >
+                                    Apply now
+                                </ApplyNowCTAButton>
                             </div>
                         </div>
 

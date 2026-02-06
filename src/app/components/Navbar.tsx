@@ -5,6 +5,8 @@ import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
+import ApplyNowCTAButton from "@/components/loans/ApplyNowCTAButton";
+
 const Navbar = () => {
   const pathname = usePathname();
   const router = useRouter();
@@ -193,14 +195,12 @@ const Navbar = () => {
           </button>
         ) : (
           <>
-            <Link 
-              href="/apply-now"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn-outline btn-md transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5"
+            <ApplyNowCTAButton
+              size="default"
+              className="transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5"
             >
               Apply Now
-            </Link>
+            </ApplyNowCTAButton>
             <Link 
               href="/login" 
               className="btn btn-primary btn-md transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5"

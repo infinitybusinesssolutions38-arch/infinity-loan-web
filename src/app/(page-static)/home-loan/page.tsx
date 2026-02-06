@@ -3,6 +3,8 @@ import Link from "next/link";
 import HomeLoanEmiCalculator from "../../components/Calculator";
 import { ArrowRight, CheckCircle, TrendingUp, Shield, Clock, FileText } from "lucide-react";
 
+import ApplyNowCTAButton from "@/components/loans/ApplyNowCTAButton";
+
 export const metadata: Metadata = {
   title: "Home Loan | Finance Your Dream Home",
   description: "Get flexible home loans with competitive rates, long tenures, and tax benefits. Calculate EMI, check eligibility, and apply online.",
@@ -57,13 +59,10 @@ export default function HomeLoanPage() {
 
                 {/* CTA Buttons */}
                 <div className="flex flex-col gap-4 pt-4 sm:flex-row sm:items-center sm:gap-5">
-                  <Link
-                    href="#apply"
-                    className="group inline-flex items-center justify-center gap-2 rounded-xl bg-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold text-blue-600 shadow-lg transition hover:shadow-xl hover:bg-blue-50 focus:outline-none focus:ring-4 focus:ring-blue-300"
-                  >
+                  <ApplyNowCTAButton loanType="Home Loan" size="xl" className="group">
                     Apply for Home Loan
                     <ArrowRight className="h-5 w-5 transition group-hover:translate-x-1" />
-                  </Link>
+                  </ApplyNowCTAButton>
                   <Link
                     href="#calculator"
                     className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-blue-200 bg-blue-500/10 px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold text-blue-100 backdrop-blur-sm transition hover:bg-blue-500/20 hover:border-blue-300 focus:outline-none focus:ring-4 focus:ring-blue-300"
@@ -405,13 +404,10 @@ export default function HomeLoanPage() {
           </p>
 
           <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              href="/register"
-              className="group inline-flex items-center justify-center gap-2 rounded-xl bg-white px-8 py-4 text-lg font-semibold text-blue-600 shadow-lg hover:shadow-xl transition hover:bg-blue-50"
-            >
+            <ApplyNowCTAButton loanType="Home Loan" size="xl" className="group">
               Apply for Home Loan
               <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition" />
-            </Link>
+            </ApplyNowCTAButton>
             <Link
               href="/contact"
               className="inline-flex items-center justify-center rounded-xl border-2 border-white px-8 py-4 text-lg font-semibold text-white transition hover:bg-white/10"
