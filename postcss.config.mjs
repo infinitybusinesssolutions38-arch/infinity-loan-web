@@ -16,5 +16,12 @@ const config = {
     plugins: {
         '@tailwindcss/postcss': {},
     },
+    onWarning(warning) {
+        // Suppress @property unknown at-rule warning from daisyUI
+        if (warning.text?.includes('@property') || warning.reason?.includes('@property')) {
+            return;
+        }
+        throw warning;
+    }
 };
 export default config;
