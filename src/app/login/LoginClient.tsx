@@ -60,6 +60,7 @@ const LoginClient: React.FC = () => {
 
         try {
             setLoading(true);
+            
             setMessage(null);
             const response = await axios.post("/api/login", { email, otp });
             console.log(response.data);
