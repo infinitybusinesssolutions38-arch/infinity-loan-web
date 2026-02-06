@@ -42,7 +42,16 @@ export async function POST(req) {
 
         if (!personalEmail || !mobileNumber) {
             return NextResponse.json(
-                { success: false, message: "Email and mobile are required" },
+                { success: false, message: "Personal email and mobile are required" },
+                { status: 400 }
+            );
+        }
+
+        // Validate personalEmail format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(personalEmail)) {
+            return NextResponse.json(
+                { success: false, message: "Invalid personal email format" },
                 { status: 400 }
             );
         }
@@ -78,8 +87,46 @@ export async function POST(req) {
         const residentialBillUrl = await uploadToCloudinary(residentialBillFile);
         const shopBillUrl = await uploadToCloudinary(shopBillFile);
 
+        // Validate required uploaded documents server-side
+        if (!aadhaarFrontUrl || !aadhaarBackUrl || !panCardFrontUrl || !residentialBillUrl || !shopBillUrl) {
+            return NextResponse.json(
+                { success: false, message: "Required documents missing or upload failed" },
+                { status: 400 }
+            );
+        }
+
         // ✅ Connect to MongoDB
         await connectDB();
+
+        // ✅ Clean up old indexes if they exist (migration from old schema)
+        try {
+            const personalCollection = PersonalLoanModel.collection;
+            const businessCollection = BusinessLoanModel.collection;
+            
+            // Drop old email_1 index if it exists
+            try {
+                await personalCollection.dropIndex("email_1");
+            } catch (err) {
+                // Index doesn't exist, which is fine
+            }
+            try {
+                await businessCollection.dropIndex("email_1");
+            } catch (err) {
+                // Index doesn't exist, which is fine
+            }
+        } catch (indexError) {
+            console.warn("Index cleanup warning (non-fatal):", indexError.message);
+        }
+
+        // ✅ Check for existing email to prevent duplicate submissions
+        const existingPersonal = await PersonalLoanModel.findOne({ personalEmail });
+        const existingBusiness = await BusinessLoanModel.findOne({ personalEmail });
+        if (existingPersonal || existingBusiness) {
+            return NextResponse.json(
+                { success: false, message: "An application with this email already exists" },
+                { status: 409 }
+            );
+        }
 
         // ✅ Generate unique sequential application reference
         const totalApplications = await PersonalLoanModel.countDocuments({}) + await BusinessLoanModel.countDocuments({});
@@ -117,6 +164,8 @@ export async function POST(req) {
                 panCardFront: panCardFrontUrl,
                 residentialElectricityBillUrl: residentialBillUrl,
                 shopElectricityBillUrl: shopBillUrl,
+                loan_type: loanType,
+                application_status: "pending",
                 role: "borrower-business",
             });
         } else {
@@ -148,6 +197,8 @@ export async function POST(req) {
                 panCardFront: panCardFrontUrl,
                 residentialElectricityBillUrl: residentialBillUrl,
                 shopElectricityBillUrl: shopBillUrl,
+                loan_type: loanType,
+                application_status: "pending",
                 role: "borrower-personal",
             });
         }
@@ -172,70 +223,82 @@ export async function POST(req) {
             });
 
             const subject = `Loan Application Under Review – Reference No: ${applicationRef}`;
-            const text =
-                `Dear ${firstName || "Customer"},\n\n` +
-                `Thank you for choosing ${companyName} for your loan requirements. We acknowledge the receipt of your loan application.\n\n` +
-                `Application Reference Number: ${applicationRef}\n` +
-                `Loan Amount Requested: ₹${requiredLoanAmount}\n\n` +
-                `We would like to inform you that your loan application is currently under review, and our verification team is in the process of validating the documents submitted by you.\n\n` +
-                `Within 48 hours, I will contact you after reviewing your application.\n\n` +
-                `What happens next:\n` +
-                `1. Document verification and preliminary assessment\n` +
-                `2. Estimated processing time: within 48 working hours\n` +
-                `3. Our loan expert will contact you in case any additional information is required\n\n` +
-                `Please be assured that we are making every effort to ensure a smooth and timely processing of your application.\n\n` +
-                `Thank you for your patience and cooperation. We look forward to assisting you throughout your loan journey.\n\n` +
-                `Warm regards,\n` +
-                `${companyName}\n` +
-                `Customer Support: ${supportPhone}\n` +
-                `Email: ${supportEmail}\n` +
-                `Website: ${website}\n\n` +
-                `Disclaimer: Loan approval is subject to the policies and credit norms of the respective bank/NBFC.`;
 
-            // Send to personal email
+            const customerHtml = `
+                <p>Dear ${firstName || "Customer"},</p>
+                <p>Thank you for choosing <strong>${companyName}</strong> for your loan requirements. We acknowledge receipt of your loan application.</p>
+                <p><strong>Application Reference Number:</strong> ${applicationRef}<br/>
+                <strong>Loan Type:</strong> ${loanType}<br/>
+                <strong>Loan Amount Requested:</strong> ₹${requiredLoanAmount}<br/>
+                <strong>Application Status:</strong> Pending Review</p>
+                <p>Your application is under review and our verification team is validating the documents submitted by you.</p>
+                <p><strong>Within 48 hours, we will contact you after reviewing your application.</strong></p>
+                <h4>What happens next</h4>
+                <ol>
+                  <li>Document verification and preliminary assessment</li>
+                  <li>Estimated processing time: within 48 working hours</li>
+                  <li>Our loan expert will contact you if additional information is required</li>
+                </ol>
+                <p>Warm regards,<br/>${companyName}<br/>Customer Support: ${supportPhone}<br/>Email: ${supportEmail}<br/>Website: ${website}</p>
+                <p style="font-size:12px;color:#888">Disclaimer: Loan approval is subject to the policies and credit norms of the respective bank/NBFC.</p>
+            `;
+
+            // Send to personal email (HTML)
             await transporter.sendMail({
                 from: process.env.EMAIL_FROM,
                 to: personalEmail,
                 subject,
-                text,
+                text: `Your application ${applicationRef} has been received.`,
+                html: customerHtml,
             });
 
-            // Send to business email if provided
+            // Send to business email if provided (HTML)
             if (businessEmail) {
                 await transporter.sendMail({
                     from: process.env.EMAIL_FROM,
                     to: businessEmail,
                     subject,
-                    text,
+                    text: `Your application ${applicationRef} has been received.`,
+                    html: customerHtml,
                 });
             }
 
-            // Send notification to admin
+            // Send notification to admin (HTML with links)
             const adminSubject = `New Loan Application Received – Reference No: ${applicationRef}`;
-            const adminText =
-                `A new loan application has been received.\n\n` +
-                `Application Reference Number: ${applicationRef}\n` +
-                `Applicant Name: ${firstName} ${lastName}\n` +
-                `Email: ${personalEmail}\n` +
-                `Mobile: ${mobileNumber}\n` +
-                `Loan Type: ${loanType}\n` +
-                `Loan Amount Requested: ₹${requiredLoanAmount}\n` +
-                `Residential Status: ${residentialStatus}\n` +
-                `Business Premises Status: ${businessPremisesStatus}\n\n` +
-                `Address Details:\n` +
-                `Residential: ${currentResidentialAddress}, ${currentResidentialPincode}\n` +
-                `Office/Shop: ${currentOfficeAddress}, ${currentOfficePincode}\n\n` +
-                `Document Details:\n` +
-                `Aadhaar: ${aadhaarNumber}\n` +
-                `PAN: ${panNumber}\n\n` +
-                `Timestamp: ${new Date().toUTCString()}\n\n` +
-                `Please review the application at your earliest convenience.`;
+
+            const adminHtml = `
+                <h2>New Loan Application Received</h2>
+                <p><strong>Application Reference:</strong> ${applicationRef}</p>
+                <p><strong>Applicant:</strong> ${firstName} ${middleName ? middleName + ' ' : ''}${lastName}</p>
+                <p><strong>Email:</strong> ${personalEmail} <br/><strong>Mobile:</strong> ${mobileNumber}</p>
+                <p><strong>Loan Type:</strong> ${loanType} <br/><strong>Application Status:</strong> Pending Review<br/><strong>Loan Amount:</strong> ₹${requiredLoanAmount}</p>
+
+                <h3>Address Details</h3>
+                <p><strong>Residential:</strong> ${currentResidentialAddress}, ${currentResidentialPincode}<br/>
+                <strong>Office/Shop:</strong> ${currentOfficeAddress}, ${currentOfficePincode}</p>
+
+                <h3>Document Links</h3>
+                <ul>
+                  <li><a href="${aadhaarFrontUrl}">Aadhaar Front</a></li>
+                  <li><a href="${aadhaarBackUrl}">Aadhaar Back</a></li>
+                  <li><a href="${panCardFrontUrl}">PAN Card Front</a></li>
+                  <li><a href="${residentialBillUrl}">Residential Electricity Bill</a></li>
+                  <li><a href="${shopBillUrl}">Shop/Office Electricity Bill</a></li>
+                </ul>
+
+                <h3>Document Details</h3>
+                <p><strong>Aadhaar:</strong> ${aadhaarNumber}<br/><strong>PAN:</strong> ${panNumber}</p>
+
+                <p><strong>Submitted At:</strong> ${new Date().toUTCString()}</p>
+                <p>Please review the application in the admin dashboard.</p>
+            `;
 
             await transporter.sendMail({
                 from: process.env.EMAIL_FROM,
                 to: process.env.ADMIN_USER || process.env.SUPPORT_EMAIL,
                 subject: adminSubject,
-                text: adminText,
+                text: `New application ${applicationRef} received.`,
+                html: adminHtml,
             });
         } catch (emailError) {
             console.error("Email sending failed:", emailError);
