@@ -141,7 +141,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType }: ApplyNowMod
     ];
 
     requiredFields.forEach((field) => {
-      const error = validateField(field, formData[field]);
+      const error = validateField(field, formData[field] || "");
       if (error || !formData[field]) {
         newErrors[field] = error || "This field is required";
       }
