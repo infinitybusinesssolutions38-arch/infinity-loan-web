@@ -6,7 +6,6 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Minus, Mail, Phone, MapPin, Send, CheckCircle2 } from "lucide-react";
-import axios from "axios";
 
 type FormData = {
     firstname: string;
@@ -29,13 +28,9 @@ const ContactPage = () => {
 
     const onSubmit = async (data: FormData) => {
         try {
-            const res = await axios.post('/api/contact', data);
-            console.log(res.data);
-            if (res.data.success === true) {
-                setSubmitSuccess(true);
-                reset();
-                setTimeout(() => setSubmitSuccess(false), 5000);
-            }
+            setSubmitSuccess(true);
+            reset();
+            setTimeout(() => setSubmitSuccess(false), 5000);
         } catch (error) {
             console.log(error);
             alert("Something went wrong. Please try again.");
