@@ -11,9 +11,11 @@ import {
   Clock,
   CreditCard,
   FileCheck,
+  FileText,
   Shield,
   Sparkles,
   TrendingUp,
+  User,
   Users,
 } from "lucide-react";
 
@@ -21,6 +23,8 @@ import ApplyNowCTAButton from "@/components/loans/ApplyNowCTAButton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import LogoCloud from "@/components/logo-cloud";
+import ModernSections from "./fAQ";
 
 type HubCategoryKey = "loans" | "insurance" | "credit-cards" | "government-schemes";
 
@@ -36,6 +40,19 @@ type ServiceCardItem = {
 type ServiceGroup = {
   title: string;
   items: ServiceCardItem[];
+};
+
+type FaqItem = {
+  id: string;
+  question: string;
+  answer: string;
+};
+
+type HowItWorksStep = {
+  id: string;
+  title: string;
+  description: string;
+  icon: React.ComponentType<{ className?: string }>;
 };
 
 const AUTOPLAY_MS = 4000;
@@ -283,6 +300,8 @@ export default function HomePageClient() {
   const [activeCategory, setActiveCategory] = useState<HubCategoryKey>("loans");
   const activeMeta = CATEGORY_META.find((c) => c.key === activeCategory)!;
 
+  const [openFaqId, setOpenFaqId] = useState<string | null>(null);
+
   const activeCards = useMemo(() => {
     if (activeCategory === "loans") {
       return LOAN_SERVICES.flatMap((g) => g.items);
@@ -323,6 +342,140 @@ export default function HomePageClient() {
         highlight: true,
         badge: "No Collateral",
       },
+    ];
+  }, [activeCategory]);
+
+  const activeFaqItems = useMemo<FaqItem[]>(() => {
+    if (activeCategory === "loans") {
+      return [
+        {
+          id: "loans-eligibility",
+          question: "How do I check eligibility for a loan?",
+          answer:
+            "Eligibility depends on income/cashflow, credit profile, age, and lender policy. Apply once and we help you identify the best options based on your profile.",
+        },
+        {
+          id: "loans-docs",
+          question: "What documents are commonly required?",
+          answer:
+            "Typically PAN and Aadhaar, recent bank statements, and income proof. For business loans, GST/registration and ITRs may be needed depending on the product.",
+        },
+        {
+          id: "loans-approval-time",
+          question: "How long does approval and disbursal take?",
+          answer:
+            "Most cases get an eligibility response quickly. Final approval and disbursal timelines depend on verification and documents, and can be as fast as 24–48 hours for eligible profiles.",
+        },
+        {
+          id: "loans-prepayment",
+          question: "Can I prepay or foreclose my loan?",
+          answer:
+            "Many lenders allow part-prepayment/foreclosure. Charges (if any) depend on lender and product. We’ll help you understand the exact terms before you proceed.",
+        },
+      ];
+    }
+
+    if (activeCategory === "insurance") {
+      return [
+        {
+          id: "ins-which",
+          question: "Which insurance is right for me?",
+          answer:
+            "It depends on your life stage and risk coverage needs. We help you compare plans for life, health, motor, and business coverage with clear pros/cons.",
+        },
+        {
+          id: "ins-docs",
+          question: "What documents are needed to buy insurance?",
+          answer:
+            "Usually basic KYC (PAN/Aadhaar) and plan-specific details (vehicle RC for motor, medical disclosures for health/life). Requirements vary by insurer.",
+        },
+        {
+          id: "ins-claims",
+          question: "How do claims work?",
+          answer:
+            "Claims are filed with the insurer and processed based on the policy terms. We guide you on documents, timelines, and escalation steps for a smooth process.",
+        },
+      ];
+    }
+
+    if (activeCategory === "credit-cards") {
+      return [
+        {
+          id: "cc-eligibility",
+          question: "What decides my credit card eligibility?",
+          answer:
+            "Credit score, income, existing liabilities, and your credit history are key factors. Different cards have different eligibility criteria.",
+        },
+        {
+          id: "cc-best",
+          question: "How do I choose the best card?",
+          answer:
+            "Pick based on your spends (fuel, travel, online, business), annual fees, and reward value. We help you match a card to your usage.",
+        },
+        {
+          id: "cc-limit",
+          question: "How is my credit limit decided?",
+          answer:
+            "Limits are decided by the issuer based on income and credit profile. Responsible usage can help you get increases over time.",
+        },
+      ];
+    }
+
+    return [
+      {
+        id: "govt-who",
+        question: "Who can apply for government schemes?",
+        answer:
+          "Eligibility varies by scheme (sector, turnover, location, category). We help you shortlist schemes based on your business and documentation.",
+      },
+      {
+        id: "govt-docs",
+        question: "What documents are generally required?",
+        answer:
+          "Commonly KYC, business registration (Udyam/GST where applicable), bank details, and scheme-specific declarations. We’ll share a checklist for your selected scheme.",
+      },
+      {
+        id: "govt-timeline",
+        question: "How long does it take to get benefits?",
+        answer:
+          "Timelines depend on the scheme and department processing. We help you submit a correct application to avoid delays.",
+      },
+    ];
+  }, [activeCategory]);
+
+  const activeHowItWorks = useMemo<HowItWorksStep[]>(() => {
+    if (activeCategory === "insurance") {
+      return [
+        { id: "ins-step-1", title: "Tell Us Your Needs", description: "Share what you want to protect and your budget.", icon: User },
+        { id: "ins-step-2", title: "Compare Plans", description: "We shortlist plans with clear benefits and exclusions.", icon: Shield },
+        { id: "ins-step-3", title: "Buy Securely", description: "Complete KYC and purchase with guided support.", icon: FileCheck },
+        { id: "ins-step-4", title: "Get Help Anytime", description: "We assist with renewals and claim guidance.", icon: Clock },
+      ];
+    }
+
+    if (activeCategory === "credit-cards") {
+      return [
+        { id: "cc-step-1", title: "Check Eligibility", description: "We review basic details to match the right cards.", icon: FileText },
+        { id: "cc-step-2", title: "Pick Rewards", description: "Choose offers that fit your spending pattern.", icon: Sparkles },
+        { id: "cc-step-3", title: "Apply Online", description: "Submit the application digitally in minutes.", icon: CreditCard },
+        { id: "cc-step-4", title: "Get Approved", description: "Receive confirmation and track your card delivery.", icon: CheckCircle2 },
+      ];
+    }
+
+    if (activeCategory === "government-schemes") {
+      return [
+        { id: "govt-step-1", title: "Shortlist Schemes", description: "We identify relevant schemes for your profile.", icon: Building2 },
+        { id: "govt-step-2", title: "Prepare Documents", description: "Get a checklist and help with accurate submission.", icon: FileCheck },
+        { id: "govt-step-3", title: "Apply & Track", description: "Submit and track your application status.", icon: TrendingUp },
+        { id: "govt-step-4", title: "Receive Benefits", description: "Get subsidies/approvals as per scheme timelines.", icon: CheckCircle2 },
+      ];
+    }
+
+    return [
+      { id: "loan-step-1", title: "Apply Online", description: "Tell us your requirement and basic details.", icon: FileText },
+      { id: "loan-step-2", title: "Upload Documents", description: "Submit KYC and income/business proofs digitally.", icon: FileCheck },
+      { id: "loan-step-3", title: "Quick Verification", description: "We verify and match you with the best option.", icon: Clock },
+      { id: "loan-step-4", title: "Get Approved", description: "Receive approval and disbursal updates.", icon: CheckCircle2 },
     ];
   }, [activeCategory]);
 
@@ -475,6 +628,8 @@ export default function HomePageClient() {
         </div>
       </section>
 
+      
+
       <section className="py-16 lg:py-24">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
@@ -525,9 +680,9 @@ export default function HomePageClient() {
                     {group.items.slice(0, 4).map((service, idx) => (
                       <Card
                         key={service.key}
-                        className={`group relative overflow-hidden border-2 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${
+                        className={`group relative overflow-hidden border-2 bg-gradient-to-br from-black via-neutral-900 to-neutral-700 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${
                           service.highlight ? "border-primary/30" : "border-transparent"
-                        } ${activeMeta.gradient}`}
+                        }`}
                         style={{ animationDelay: `${(groupIndex * 4 + idx) * 50}ms` }}
                       >
                         {service.badge && (
@@ -542,8 +697,8 @@ export default function HomePageClient() {
                           </Badge>
                         )}
                         <CardHeader className="pb-3">
-                          <CardTitle className="text-xl font-bold text-foreground pr-16">{service.title}</CardTitle>
-                          <CardDescription className="text-muted-foreground mt-2 line-clamp-2">
+                          <CardTitle className="text-xl font-bold text-white pr-16">{service.title}</CardTitle>
+                          <CardDescription className="text-white/70 mt-2 line-clamp-2">
                             {service.description}
                           </CardDescription>
                         </CardHeader>
@@ -573,9 +728,9 @@ export default function HomePageClient() {
               {activeCards.map((service, idx) => (
                 <Card
                   key={service.key}
-                  className={`group relative overflow-hidden border-2 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${
+                  className={`group relative overflow-hidden border-2 bg-gradient-to-br from-black via-neutral-900 to-neutral-700 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${
                     service.highlight ? "border-primary/30" : "border-transparent"
-                  } ${activeMeta.gradient}`}
+                  }`}
                   style={{ animationDelay: `${idx * 50}ms` }}
                 >
                   {service.badge && (
@@ -590,8 +745,8 @@ export default function HomePageClient() {
                     </Badge>
                   )}
                   <CardHeader className="pb-3">
-                    <CardTitle className="text-xl font-bold text-foreground pr-16">{service.title}</CardTitle>
-                    <CardDescription className="text-muted-foreground mt-2 line-clamp-2">
+                    <CardTitle className="text-xl font-bold text-white pr-16">{service.title}</CardTitle>
+                    <CardDescription className="text-white/70 mt-2 line-clamp-2">
                       {service.description}
                     </CardDescription>
                   </CardHeader>
@@ -610,8 +765,103 @@ export default function HomePageClient() {
               ))}
             </div>
           )}
+
+<ModernSections />
+          {/* <div className="mt-14 space-y-12">
+            <section className="rounded-3xl bg-secondary/40 p-6 sm:p-10">
+              <div className="text-center mb-10 animate-fade-in-up">
+                <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">How It Works</h2>
+                <p className="mt-3 text-lg text-muted-foreground">A simple, guided process tailored to your selected service</p>
+              </div>
+
+              <div className="grid gap-6 md:grid-cols-4">
+                {activeHowItWorks.map((step, idx) => (
+                  <div
+                    key={step.id}
+                    className="relative rounded-2xl bg-card p-6 shadow-lg border border-border/60 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 animate-fade-in-up"
+                    style={{ animationDelay: `${idx * 80}ms` }}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10">
+                        <step.icon className="h-6 w-6 text-primary" />
+                      </div>
+                      <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-primary-foreground text-sm font-bold">
+                        {idx + 1}
+                      </div>
+                    </div>
+                    <h3 className="mt-5 text-lg font-bold text-foreground">{step.title}</h3>
+                    <p className="mt-2 text-sm text-muted-foreground">{step.description}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            <section className="rounded-3xl bg-card p-6 sm:p-10 border border-border/60">
+              <div className="text-center mb-10 animate-fade-in-up">
+                <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">FAQs</h2>
+                <p className="mt-3 text-lg text-muted-foreground">Quick answers based on the service you’re viewing</p>
+              </div>
+
+              <div className="mx-auto max-w-3xl space-y-3">
+                {activeFaqItems.map((item, idx) => {
+                  const isOpen = openFaqId === item.id;
+
+                  return (
+                    <div
+                      key={item.id}
+                      className="overflow-hidden rounded-2xl border border-border/70 bg-secondary/20 shadow-sm animate-fade-in-up"
+                      style={{ animationDelay: `${idx * 60}ms` }}
+                    >
+                      <button
+                        type="button"
+                        aria-expanded={isOpen}
+                        aria-controls={`panel-${item.id}`}
+                        id={`tab-${item.id}`}
+                        onClick={() => setOpenFaqId((prev) => (prev === item.id ? null : item.id))}
+                        className="w-full px-5 py-4 text-left flex items-center justify-between gap-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                      >
+                        <span className="text-base sm:text-lg font-semibold text-foreground">{item.question}</span>
+                        <svg
+                          className={cx(
+                            "h-5 w-5 shrink-0 text-muted-foreground transition-transform duration-200",
+                            isOpen && "rotate-180"
+                          )}
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                          aria-hidden="true"
+                        >
+                          <path
+                            d="M6 9l6 6 6-6"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </button>
+
+                      <div
+                        id={`panel-${item.id}`}
+                        role="region"
+                        aria-labelledby={`tab-${item.id}`}
+                        className={cx(
+                          "px-5 pb-5 transition-[max-height,opacity] duration-300 ease-in-out overflow-hidden",
+                          isOpen ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0"
+                        )}
+                      >
+                        <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">{item.answer}</p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
+          </div> */}
         </div>
       </section>
+
+      <LogoCloud />
 
       <section className="py-16 lg:py-24 bg-secondary/50">
         <div className="container mx-auto px-4">
