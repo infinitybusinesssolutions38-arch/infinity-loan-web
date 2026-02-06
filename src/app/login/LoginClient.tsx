@@ -1,3 +1,4 @@
+
 "use client";
 import React, { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
@@ -45,7 +46,10 @@ const LoginClient: React.FC = () => {
             }
         } catch (error) {
             console.error("Send OTP failed:", error);
-            setMessage({ type: "error", text: "Failed to send OTP. Please try again." });
+            const msg = axios.isAxiosError(error)
+                ? (error.response?.data as any)?.message || error.message
+                : "Failed to send OTP. Please try again.";
+            setMessage({ type: "error", text: msg });
         } finally {
             setLoading(false);
         }
@@ -81,7 +85,10 @@ const LoginClient: React.FC = () => {
             }
         } catch (error) {
             console.error("Login failed:", error);
-            setMessage({ type: "error", text: "Login failed. Please check your OTP and try again." });
+            const msg = axios.isAxiosError(error)
+                ? (error.response?.data as any)?.message || error.message
+                : "Login failed. Please check your OTP and try again.";
+            setMessage({ type: "error", text: msg });
         } finally {
             setLoading(false);
         }

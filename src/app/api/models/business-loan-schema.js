@@ -47,6 +47,14 @@ const BorrowerBusinessSchema = new mongoose.Schema({
     otherBusinessLicenseDocumentsUrl: { type: String, required: false },
     bankStatementLast6MonthsUrl: { type: String, required: false },
 
+    status: {
+        type: String,
+        enum: ["Pending", "Approved", "Rejected"],
+        default: "Pending",
+    },
+    adminRemarks: { type: String, default: "" },
+    reviewedAt: { type: Date },
+
     // password: { type: String, required: true },
     role: {
         type: String,

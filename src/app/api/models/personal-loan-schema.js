@@ -20,6 +20,13 @@ const BorrowerPersonalSchema = new mongoose.Schema({
     family: { type: String },
     employment: { type: String },
     loanAmount: { type: String },
+    status: {
+        type: String,
+        enum: ["Pending", "Approved", "Rejected"],
+        default: "Pending",
+    },
+    adminRemarks: { type: String, default: "" },
+    reviewedAt: { type: Date },
     role: {
         type: String,
         default: "borrower-personal",
