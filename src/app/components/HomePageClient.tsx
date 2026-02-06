@@ -478,8 +478,8 @@ export default function HomePageClient() {
       <section className="py-16 lg:py-24">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
-              Explore Our Services
+            <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-6xl">
+              Explore Our <span className="text-[#f97415] text-7xl">Loan</span> Services
             </h2>
             <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
               Choose from a wide range of financial products tailored to your needs
@@ -509,6 +509,12 @@ export default function HomePageClient() {
 
           {activeCategory === "loans" ? (
             <div className="space-y-10">
+              <div className="flex items-center justify-end">
+                <Button asChild variant="outline" size="lg">
+                  <Link href="/services">View All</Link>
+                </Button>
+              </div>
+
               {LOAN_SERVICES.map((group, groupIndex) => (
                 <div key={group.title} className="space-y-6">
                   <div className="flex items-center justify-between">
@@ -516,7 +522,7 @@ export default function HomePageClient() {
                   </div>
 
                   <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                    {group.items.map((service, idx) => (
+                    {group.items.slice(0, 4).map((service, idx) => (
                       <Card
                         key={service.key}
                         className={`group relative overflow-hidden border-2 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${
