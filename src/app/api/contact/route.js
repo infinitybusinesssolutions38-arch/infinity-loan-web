@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import ContactModel from "../models/contact-schema.js";
-import connectDB from "../lib/db.js";
+import ContactModel from "@/app/api/models/contact-schema.js";
+import connectDB from "@/app/api/lib/db.js";
 import nodemailer from "nodemailer";
 
 export async function POST(req) {
