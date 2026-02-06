@@ -4,11 +4,6 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import PersonalLoanModel from "../models/personal-loan-schema";
 import BusinessLoanModel from "../models/business-loan-schema";
-import NRILoanModel from "../models/nri-loan-schema";
-import OrganizationLoanModel from "../models/organization-loan-schema";
-import IndividaulLoanModel from "../models/individaul-loan-schema";
-import HUFLoanModel from "../models/huf-loan-schema";
-import UserModel from "../models/user-schema";
 import { validateOTP, clearOTP } from "../lib/otp-service";
 
 
@@ -26,15 +21,8 @@ export async function POST(req) {
             return NextResponse.json({ success: false, message: "Invalid or expired OTP" });
         }
 
-        // Search user across all collections
+        // Search user across loan collections
         const user =
-            (await UserModel.findOne({
-                email: email.toLowerCase(),
-            })) ||
-            (await IndividaulLoanModel.findOne({ email: email.toLowerCase() })) ||
-            (await OrganizationLoanModel.findOne({ email: email.toLowerCase() })) ||
-            (await NRILoanModel.findOne({ email: email.toLowerCase() })) ||
-            (await HUFLoanModel.findOne({ email: email.toLowerCase() })) ||
             (await PersonalLoanModel.findOne({ email: email.toLowerCase() })) ||
             (await BusinessLoanModel.findOne({ email: email.toLowerCase() }));
 

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import connectDB from "../lib/db";
-import UserModel from "../models/user-schema";
+import PersonalLoanModel from "../models/personal-loan-schema";
 
 export async function POST(req) {
     try {
@@ -37,7 +37,7 @@ export async function POST(req) {
             );
         }
 
-        const existingByEmail = await UserModel.findOne({ email });
+        const existingByEmail = await PersonalLoanModel.findOne({ email });
         if (existingByEmail) {
             return NextResponse.json(
                 { success: false, message: "Email already registered" },
@@ -45,24 +45,28 @@ export async function POST(req) {
             );
         }
 
-        if (mobile) {
-            const existingByMobile = await UserModel.findOne({ mobile });
-            if (existingByMobile) {
-                return NextResponse.json(
-                    { success: false, message: "Mobile already registered" },
-                    { status: 409 }
-                );
-            }
-        }
-
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        const user = await UserModel.create({
-            email,
-            mobile,
-            password: hashedPassword,
-            role,
-        });
+        // Store user in PersonalLoanModel if borrower-personal, else in BusinessLoanModel
+        let user;
+        if (role === "borrower-personal") {
+            user = await PersonalLoanModel.create({
+                firstname: "Pending",
+                lastname: "Information",
+                email,
+                mobile,
+                password: hashedPassword,
+                role,
+                applicationRef: String(Math.floor(100000 + Math.random() * 900000)),
+                pan: "Pending",
+                aadhaarNumber: "Pending",
+            });
+        } else {
+            return NextResponse.json(
+                { success: false, message: "Only borrower-personal registration supported via this endpoint" },
+                { status: 400 }
+            );
+        }
 
         const token = jwt.sign(
             { id: user._id, role: user.role },
