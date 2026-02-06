@@ -155,11 +155,58 @@ export default function ApplyNowModal({ isOpen, onClose, loanType }: ApplyNowMod
 
     setIsSubmitting(true);
 
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    try {
+      const submissionFormData = new FormData();
 
-    setIsSubmitting(false);
-    window.alert("Application submitted. We'll contact you within 24 hours.");
-    onClose();
+      // Add form fields
+      submissionFormData.append("firstName", formData.firstName);
+      submissionFormData.append("middleName", formData.middleName || "");
+      submissionFormData.append("lastName", formData.lastName);
+      submissionFormData.append("mobileNumber", formData.mobileNumber);
+      submissionFormData.append("alternateMobile", formData.alternateMobile || "");
+      submissionFormData.append("businessEmail", formData.businessEmail || "");
+      submissionFormData.append("personalEmail", formData.personalEmail);
+      submissionFormData.append("currentResidentialAddress", formData.currentResidentialAddress);
+      submissionFormData.append("currentResidentialPincode", formData.currentResidentialPincode);
+      submissionFormData.append("currentOfficeAddress", formData.currentOfficeAddress);
+      submissionFormData.append("currentOfficePincode", formData.currentOfficePincode);
+      submissionFormData.append("requiredLoanAmount", formData.requiredLoanAmount as string);
+      submissionFormData.append("residentialStatus", formData.residentialStatus as string);
+      submissionFormData.append("businessPremisesStatus", formData.businessPremisesStatus as string);
+      submissionFormData.append("yearsAtCurrentResidentialAddress", formData.yearsAtCurrentResidentialAddress as string);
+      submissionFormData.append("yearsAtCurrentBusinessAddress", formData.yearsAtCurrentBusinessAddress as string);
+      submissionFormData.append("aadhaarNumber", formData.aadhaarNumber);
+      submissionFormData.append("panNumber", formData.panNumber);
+      submissionFormData.append("voterIdNumber", formData.voterIdNumber || "");
+      submissionFormData.append("drivingLicense", formData.drivingLicense || "");
+      submissionFormData.append("passportNumber", formData.passportNumber || "");
+      submissionFormData.append("loanType", loanType);
+
+      // Add files
+      if (aadhaarFront) submissionFormData.append("aadhaarFront", aadhaarFront);
+      if (aadhaarBack) submissionFormData.append("aadhaarBack", aadhaarBack);
+      if (panFront) submissionFormData.append("panCardFront", panFront);
+      if (residentialBill) submissionFormData.append("residentialBill", residentialBill);
+      if (shopBill) submissionFormData.append("shopBill", shopBill);
+
+      const response = await fetch("/api/apply-now", {
+        method: "POST",
+        body: submissionFormData,
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || "Application submission failed");
+      }
+
+      setIsSubmitting(false);
+      window.alert(`Application submitted successfully!\nApplication Reference: ${result.applicationRef}`);
+      onClose();
+    } catch (error) {
+      setIsSubmitting(false);
+      window.alert(`Error: ${error instanceof Error ? error.message : "Unknown error occurred"}`);
+    }
   };
 
   const handleFileChange = (

@@ -2,63 +2,45 @@ import mongoose from "mongoose";
 
 const BorrowerBusinessSchema = new mongoose.Schema({
     applicationRef: { type: String, required: true, unique: true },
-    fullName: { type: String, required: true },
-    dateOfBirth: { type: Date, required: true },
-    gender: { type: String },
-    mobile: { type: String, required: true },
-    email: { type: String, required: true },
-    residentialAddress: { type: String, required: true },
-    city: { type: String, required: true },
-    state: { type: String, required: true },
-    pincode: { type: String, required: true },
-    panNumber: { type: String, required: true },
+    firstname: { type: String, required: true },
+    lastname: { type: String, required: true },
+    mobileNumber: { type: String, required: true },
+    alternateMobile: { type: String, required: false },
+    personalEmail: { type: String, required: true, unique: true },
+    businessEmail: { type: String, required: false },
+    
+    // Identity & Documents
     aadhaarNumber: { type: String, required: true },
-
-    bankName: { type: String, required: true },
-    accountHolderName: { type: String, required: true },
-    accountNumber: { type: String, required: true },
-    ifscCode: { type: String, required: true },
-    accountType: { type: String, required: true },
-    branchName: { type: String },
-    monthlyAvgBankBalance: { type: String },
-
-    businessName: { type: String, required: true },
-    businessType: { type: String },
-    businessAddress: { type: String, required: true },
-    businessVintageYears: { type: String, required: true },
-    natureOfBusiness: { type: String, required: true },
-    annualTurnover: { type: String, required: true },
-    gstNumber: { type: String },
-    businessPan: { type: String },
-    otherBusinessLicenseNumber: { type: String },
-    tradeLicense: { type: String },
-    msmeUdyam: { type: String },
-    shopActLicense: { type: String },
-
-    loanAmountRequired: { type: String, required: true },
-    purposeOfLoan: { type: String, required: true },
-    preferredLoanTenureMonths: { type: String, required: true },
-    existingLoanDetails: { type: String },
-
-    panCardUploadUrl: { type: String, required: false },
-    aadhaarCardUploadUrl: { type: String, required: false },
-    passportCopyUrl: { type: String, required: false },
-    gstCertificateUrl: { type: String, required: false },
-    otherBusinessLicenseDocumentsUrl: { type: String, required: false },
-    bankStatementLast6MonthsUrl: { type: String, required: false },
-
-    // password: { type: String, required: true },
+    panNumber: { type: String, required: true },
+    voterIdNumber: { type: String, required: false },
+    drivingLicense: { type: String, required: false },
+    passportNumber: { type: String, required: false },
+    
+    // Address Details
+    currentResidentialAddress: { type: String, required: true },
+    currentResidentialPincode: { type: String, required: true },
+    currentOfficeAddress: { type: String, required: true },
+    currentOfficePincode: { type: String, required: true },
+    residentialStatus: { type: String, enum: ["Owned", "Rented"], required: true },
+    businessPremisesStatus: { type: String, enum: ["Owned", "Rented"], required: true },
+    yearsAtCurrentResidentialAddress: { type: Number, required: true },
+    yearsAtCurrentBusinessAddress: { type: Number, required: true },
+    
+    // Loan Details
+    requiredLoanAmount: { type: String, required: true },
+    
+    // File URLs (from Cloudinary)
+    aadhaarFront: { type: String, required: false },
+    aadhaarBack: { type: String, required: false },
+    panCardFront: { type: String, required: false },
+    residentialElectricityBillUrl: { type: String, required: false },
+    shopElectricityBillUrl: { type: String, required: false },
+    
+    // User Role
     role: {
         type: String,
         default: "borrower-business",
-        enum: [
-            "borrower-personal",
-            "borrower-business",
-            "lender-individual",
-            "lender-organization",
-            "lender-nri",
-            "lender-huf",
-        ],
+        enum: ["borrower-business"],
     },
 }, { timestamps: true });
 
