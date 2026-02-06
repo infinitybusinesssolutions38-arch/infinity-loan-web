@@ -178,6 +178,7 @@ export async function POST(req) {
                 `Application Reference Number: ${applicationRef}\n` +
                 `Loan Amount Requested: ₹${requiredLoanAmount}\n\n` +
                 `We would like to inform you that your loan application is currently under review, and our verification team is in the process of validating the documents submitted by you.\n\n` +
+                `Within 48 hours, I will contact you after reviewing your application.\n\n` +
                 `What happens next:\n` +
                 `1. Document verification and preliminary assessment\n` +
                 `2. Estimated processing time: within 48 working hours\n` +
@@ -191,11 +192,50 @@ export async function POST(req) {
                 `Website: ${website}\n\n` +
                 `Disclaimer: Loan approval is subject to the policies and credit norms of the respective bank/NBFC.`;
 
+            // Send to personal email
             await transporter.sendMail({
                 from: process.env.EMAIL_FROM,
                 to: personalEmail,
                 subject,
                 text,
+            });
+
+            // Send to business email if provided
+            if (businessEmail) {
+                await transporter.sendMail({
+                    from: process.env.EMAIL_FROM,
+                    to: businessEmail,
+                    subject,
+                    text,
+                });
+            }
+
+            // Send notification to admin
+            const adminSubject = `New Loan Application Received – Reference No: ${applicationRef}`;
+            const adminText =
+                `A new loan application has been received.\n\n` +
+                `Application Reference Number: ${applicationRef}\n` +
+                `Applicant Name: ${firstName} ${lastName}\n` +
+                `Email: ${personalEmail}\n` +
+                `Mobile: ${mobileNumber}\n` +
+                `Loan Type: ${loanType}\n` +
+                `Loan Amount Requested: ₹${requiredLoanAmount}\n` +
+                `Residential Status: ${residentialStatus}\n` +
+                `Business Premises Status: ${businessPremisesStatus}\n\n` +
+                `Address Details:\n` +
+                `Residential: ${currentResidentialAddress}, ${currentResidentialPincode}\n` +
+                `Office/Shop: ${currentOfficeAddress}, ${currentOfficePincode}\n\n` +
+                `Document Details:\n` +
+                `Aadhaar: ${aadhaarNumber}\n` +
+                `PAN: ${panNumber}\n\n` +
+                `Timestamp: ${new Date().toUTCString()}\n\n` +
+                `Please review the application at your earliest convenience.`;
+
+            await transporter.sendMail({
+                from: process.env.EMAIL_FROM,
+                to: process.env.ADMIN_USER || process.env.SUPPORT_EMAIL,
+                subject: adminSubject,
+                text: adminText,
             });
         } catch (emailError) {
             console.error("Email sending failed:", emailError);
