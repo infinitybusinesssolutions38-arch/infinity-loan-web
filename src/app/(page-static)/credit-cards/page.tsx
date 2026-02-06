@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import ApplyNowCTAButton from "@/components/loans/ApplyNowCTAButton";
+
 export const metadata: Metadata = {
   title: "Credit & Cards | Infinity Loan",
   description:
@@ -380,9 +382,9 @@ function ProductCard({ product }: { product: Product }) {
         </div>
 
         <div className="flex flex-col gap-2 sm:min-w-[280px]">
-          <CtaButton href="#apply" intent="primary">
+          <ApplyNowCTAButton loanType={product.title} size="lg" className="w-full">
             Apply Now
-          </CtaButton>
+          </ApplyNowCTAButton>
           <CtaButton href="#eligibility" intent="secondary">
             Details & Docs
           </CtaButton>

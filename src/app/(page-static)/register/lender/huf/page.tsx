@@ -111,16 +111,16 @@ const OrganizationSignupForm = () => {
         },
     ];
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-8">
+        <div className="min-h-screen flex items-center justify-center bg-background px-4 py-8">
             <div className="flex flex-col md:flex-row rounded-2xl overflow-hidden w-full max-w-6xl">
 
 
                 {/* LEFT SIDE */}
-                <div className="md:w-1/2 bg-white shadow-md rounded-l-2xl p-8 overflow-y-auto">
-                    <h2 className="text-2xl font-bold text-neutral-800 mb-2">
+                <div className="md:w-1/2 bg-card shadow-xl rounded-l-2xl p-8 overflow-y-auto border border-border">
+                    <h2 className="text-2xl font-bold text-foreground mb-2">
                         REGISTER AS HUF LENDER
                     </h2>
-                    <p className="text-sm text-neutral-600 mb-6">
+                    <p className="text-sm text-muted-foreground mb-6">
                         Create your Account
                     </p>
 
@@ -133,7 +133,7 @@ const OrganizationSignupForm = () => {
                                 type="number"
                                 placeholder="100000"
                                 {...register("amount", { required: true })}
-                                className="border border-gray-300 bg-gray-100"
+                                className="border border-border bg-background"
                             />
                             {errors.amount && (
                                 <span className="text-red-500 text-xs">Required</span>
@@ -148,7 +148,7 @@ const OrganizationSignupForm = () => {
                                 type="text"
                                 placeholder="Fortune Pvt Ltd"
                                 {...register("firmName", { required: true })}
-                                className="border border-gray-300 bg-gray-100"
+                                className="border border-border bg-background"
                             />
                             {errors.firmName && (
                                 <span className="text-red-500 text-xs">Required</span>
@@ -164,7 +164,7 @@ const OrganizationSignupForm = () => {
                                     type="text"
                                     placeholder="ABCDE1234F"
                                     {...register("panTan", { required: true })}
-                                    className="border border-gray-300 bg-gray-100"
+                                    className="border border-border bg-background"
                                 />
                                 {errors.panTan && (
                                     <span className="text-red-500 text-xs">Required</span>
@@ -178,7 +178,7 @@ const OrganizationSignupForm = () => {
                                     type="text"
                                     placeholder="L12345MH2020PLC123456"
                                     {...register("cin", { required: true })}
-                                    className="border border-gray-300 bg-gray-100"
+                                    className="border border-border bg-background"
                                 />
                                 {errors.cin && (
                                     <span className="text-red-500 text-xs">Required</span>
@@ -193,7 +193,7 @@ const OrganizationSignupForm = () => {
                                 id="incorporationDate"
                                 type="date"
                                 {...register("incorporationDate", { required: true })}
-                                className="border border-gray-300 bg-gray-100"
+                                className="border border-border bg-background"
                             />
                             {errors.incorporationDate && (
                                 <span className="text-red-500 text-xs">Required</span>
@@ -210,7 +210,7 @@ const OrganizationSignupForm = () => {
                                     type="text"
                                     placeholder="John"
                                     {...register("directorFirstName", { required: true })}
-                                    className="border border-gray-300 bg-gray-100"
+                                    className="border border-border bg-background"
                                 />
                             </LabelInputContainer>
 
@@ -221,7 +221,7 @@ const OrganizationSignupForm = () => {
                                     type="text"
                                     placeholder="Doe"
                                     {...register("directorLastName", { required: true })}
-                                    className="border border-gray-300 bg-gray-100"
+                                    className="border border-border bg-background"
                                 />
                             </LabelInputContainer>
                         </div>
@@ -237,7 +237,7 @@ const OrganizationSignupForm = () => {
                                         type="radio"
                                         value="Mr"
                                         {...register("title", { required: true })}
-                                        className="accent-blue-600"
+                                        className="accent-primary"
                                     />
                                     Mr.
                                 </label>
@@ -246,7 +246,7 @@ const OrganizationSignupForm = () => {
                                         type="radio"
                                         value="Ms"
                                         {...register("title", { required: true })}
-                                        className="accent-blue-600"
+                                        className="accent-primary"
                                     />
                                     Ms.
                                 </label>
@@ -265,7 +265,7 @@ const OrganizationSignupForm = () => {
                                     type="text"
                                     placeholder="Ramesh"
                                     {...register("userFirstName", { required: true })}
-                                    className="border border-gray-300 bg-gray-100"
+                                    className="border border-border bg-background"
                                 />
                             </LabelInputContainer>
 
@@ -276,7 +276,7 @@ const OrganizationSignupForm = () => {
                                     type="text"
                                     placeholder="Sharma"
                                     {...register("userLastName", { required: true })}
-                                    className="border border-gray-300 bg-gray-100"
+                                    className="border border-border bg-background"
                                 />
                             </LabelInputContainer>
                         </div>
@@ -289,7 +289,7 @@ const OrganizationSignupForm = () => {
                                 type="email"
                                 placeholder="you@example.com"
                                 {...register("email", { required: true })}
-                                className="border border-gray-300 bg-gray-100"
+                                className="border border-border bg-background"
                             />
                         </LabelInputContainer>
 
@@ -300,7 +300,7 @@ const OrganizationSignupForm = () => {
                                 type="password"
                                 placeholder="••••••••"
                                 {...register("password", { required: true })}
-                                className="border border-gray-300 bg-gray-100"
+                                className="border border-border bg-background"
                             />
                         </LabelInputContainer>
 
@@ -311,7 +311,7 @@ const OrganizationSignupForm = () => {
                                 type="number"
                                 placeholder="9876543210"
                                 {...register("mobile", { required: true })}
-                                className="border border-gray-300 bg-gray-100"
+                                className="border border-border bg-background"
                             />
                         </LabelInputContainer>
 
@@ -323,7 +323,7 @@ const OrganizationSignupForm = () => {
                                 type="text"
                                 placeholder="123 Business Park"
                                 {...register("regAddress1", { required: true })}
-                                className="border border-gray-300 bg-gray-100"
+                                className="border border-border bg-background"
                             />
                         </LabelInputContainer>
 
@@ -334,7 +334,7 @@ const OrganizationSignupForm = () => {
                                 type="text"
                                 placeholder="Main Street"
                                 {...register("regAddress2")}
-                                className="border border-gray-300 bg-gray-100"
+                                className="border border-border bg-background"
                             />
                         </LabelInputContainer>
 
@@ -347,7 +347,7 @@ const OrganizationSignupForm = () => {
                                     type="text"
                                     placeholder="Maharashtra"
                                     {...register("state", { required: true })}
-                                    className="border border-gray-300 bg-gray-100"
+                                    className="border border-border bg-background"
                                 />
                             </LabelInputContainer>
 
@@ -358,7 +358,7 @@ const OrganizationSignupForm = () => {
                                     type="text"
                                     placeholder="Mumbai"
                                     {...register("city", { required: true })}
-                                    className="border border-gray-300 bg-gray-100"
+                                    className="border border-border bg-background"
                                 />
                             </LabelInputContainer>
 
@@ -369,7 +369,7 @@ const OrganizationSignupForm = () => {
                                     type="number"
                                     placeholder="400001"
                                     {...register("pin", { required: true })}
-                                    className="border border-gray-300 bg-gray-100"
+                                    className="border border-border bg-background"
                                 />
                             </LabelInputContainer>
                         </div>
@@ -382,7 +382,7 @@ const OrganizationSignupForm = () => {
                                 type="text"
                                 placeholder="Corporate Office Address"
                                 {...register("commAddress", { required: true })}
-                                className="border border-gray-300 bg-gray-100"
+                                className="border border-border bg-background"
                             />
                         </LabelInputContainer>
 
@@ -391,16 +391,16 @@ const OrganizationSignupForm = () => {
                             <input
                                 id="agree"
                                 type="checkbox"
-                                className="mt-1 accent-blue-600"
+                                className="mt-1 accent-primary"
                                 {...register("agree", { required: true })}
                             />
-                            <label htmlFor="agree" className="text-sm text-gray-700">
+                            <label htmlFor="agree" className="text-sm text-muted-foreground">
                                 I agree to the{" "}
-                                <a href="#" className="text-blue-600 underline">
+                                <a href="#" className="text-primary underline">
                                     Terms & Conditions
                                 </a>{" "}
                                 and{" "}
-                                <a href="#" className="text-blue-600 underline">
+                                <a href="#" className="text-primary underline">
                                     Privacy Policy
                                 </a>
                                 .
@@ -416,10 +416,10 @@ const OrganizationSignupForm = () => {
                             <input
                                 id="agree2"
                                 type="checkbox"
-                                className="mt-1 accent-blue-600"
+                                className="mt-1 accent-primary"
                                 {...register("agree2", { required: true })}
                             />
-                            <label htmlFor="agree2" className="text-sm text-gray-700">
+                            <label htmlFor="agree2" className="text-sm text-muted-foreground">
                                 I acknowledge that lending carries risk and returns are not
                                 guaranteed.
                             </label>
@@ -434,7 +434,7 @@ const OrganizationSignupForm = () => {
                         <button
                             type="submit"
                             disabled={isSubmitting}
-                            className="group/btn relative block h-10 w-full rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white mt-4"
+                            className="group/btn relative block h-10 w-full rounded-md bg-gradient-to-r from-cta via-cta to-accent font-medium text-white mt-4 shadow-glow-cta"
                         >
                             {isSubmitting ? "Submitting..." : "Submit"}
                             <BottomGradient />
@@ -443,10 +443,10 @@ const OrganizationSignupForm = () => {
                 </div>
 
                 {/* DIVIDER */}
-                <div className="w-px h-[80%] my-4 bg-gray-300" />
+                <div className="w-px h-[80%] my-4 bg-border" />
 
                 {/* RIGHT SIDE */}
-                <div className="md:w-1/2 bg-white shadow-md rounded-r-2xl p-8 flex flex-col justify-start">
+                <div className="md:w-1/2 bg-card shadow-xl rounded-r-2xl p-8 flex flex-col justify-start border border-border">
                     {/* <h2 className="text-3xl font-bold text-gray-800 mb-4">
                         REGISTER AS HUF LENDER
                     </h2> */}
@@ -465,19 +465,19 @@ const OrganizationSignupForm = () => {
                         <div className="grid grid-cols-1 gap-10 md:grid-cols-1">
                             {/* Right Side: FAQ List */}
                             <div className="mb-5">
-                                <h2 className="text-center text-2xl font-bold tracking-tight text-neutral-700 dark:text-neutral-50 md:text-left md:text-5xl">
+                                <h2 className="text-center text-2xl font-bold tracking-tight text-foreground md:text-left md:text-5xl">
                                     Frequently Asked Questions
                                 </h2>
                             </div>
-                            <div className="divide-y divide-neutral-200 dark:divide-neutral-800">
+                            <div className="divide-y divide-border">
                                 {faqs.map((faq, index) => (
                                     <div key={index} className="py-4  cursor-pointer" onClick={() => toggleFAQ(index)}>
                                         <div className="flex items-start gap-4">
-                                            <div className="mt-1 text-blue-500 flex-shrink-0">
+                                            <div className="mt-1 text-accent flex-shrink-0">
                                                 {openIndex === index ? <Minus size={24} /> : <Plus size={24} />}
                                             </div>
                                             <div>
-                                                <h3 className="text-lg font-medium text-neutral-800 dark:text-neutral-200">
+                                                <h3 className="text-lg font-medium text-foreground">
                                                     {faq.question}
                                                 </h3>
                                                 <AnimatePresence>
@@ -487,7 +487,7 @@ const OrganizationSignupForm = () => {
                                                             animate={{ opacity: 1, height: "auto" }}
                                                             exit={{ opacity: 0, height: 0 }}
                                                             transition={{ duration: 0.3 }}
-                                                            className="mt-2 text-neutral-600 dark:text-neutral-400"
+                                                            className="mt-2 text-muted-foreground"
                                                         >
                                                             {faq.answer}
                                                         </motion.p>

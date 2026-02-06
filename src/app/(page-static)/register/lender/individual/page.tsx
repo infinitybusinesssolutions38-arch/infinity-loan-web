@@ -69,18 +69,18 @@ const SignupForm = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-8">
+        <div className="min-h-screen flex items-center justify-center bg-background px-4 py-8">
             <div className="flex flex-col md:flex-row rounded-2xl overflow-hidden w-full max-w-5xl">
                 {/* LEFT SIDE - Info Section (with shadow) */}
-                <div className="md:w-1/2 bg-white shadow-md rounded-l-2xl p-8 flex flex-col justify-center">
+                <div className="md:w-1/2 bg-card shadow-xl rounded-l-2xl p-8 flex flex-col justify-center border border-border">
                     <h2 className="text-3xl font-bold text-gray-800 mb-4">
                         Get Your Loan Easily
                     </h2>
-                    <p className="text-gray-600 mb-6">
+                    <p className="text-muted-foreground mb-6">
                         Apply for a loan with flexible repayment options and quick
                         approvals. Manage your finances smarter with Fortune Loans.
                     </p>
-                    <ul className="space-y-2 text-gray-600">
+                    <ul className="space-y-2 text-muted-foreground">
                         <li>✅ Instant approval process</li>
                         <li>✅ Low interest rates</li>
                         <li>✅ No hidden charges</li>
@@ -91,14 +91,14 @@ const SignupForm = () => {
                 </div>
 
                 {/* Divider Line */}
-                <div className="w-px h-[80%] my-4 bg-gray-300" />
+                <div className="w-px h-[80%] my-4 bg-border" />
 
                 {/* RIGHT SIDE - Form Section (with shadow) */}
-                <div className="md:w-1/2 bg-white shadow-md rounded-r-2xl p-8">
+                <div className="md:w-1/2 bg-card shadow-xl rounded-r-2xl p-8 border border-border">
                     <h2 className="text-2xl font-bold text-neutral-800 mb-2">
                         Register to Start Lending
                     </h2>
-                    <p className="text-sm text-neutral-600 mb-6">
+                    <p className="text-sm text-muted-foreground mb-6">
                         Sign up to access your loan dashboard.
                     </p>
 
@@ -111,7 +111,7 @@ const SignupForm = () => {
                                     id="firstname"
                                     type="text"
                                     placeholder="John"
-                                    className="border border-gray-300 bg-gray-100"
+                                    className="border border-border bg-background"
                                     {...register("firstname", { required: true })}
                                 />
                                 {errors.firstname && (
@@ -125,7 +125,7 @@ const SignupForm = () => {
                                     id="lastname"
                                     type="text"
                                     placeholder="Doe"
-                                    className="border border-gray-300 bg-gray-100"
+                                    className="border border-border bg-background"
                                     {...register("lastname", { required: true })}
                                 />
                                 {errors.lastname && (
@@ -141,7 +141,7 @@ const SignupForm = () => {
                                 id="email"
                                 type="email"
                                 placeholder="you@example.com"
-                                className="border border-gray-300 bg-gray-100"
+                                className="border border-border bg-background"
                                 {...register("email", { required: true })}
                             />
                             {errors.email && (
@@ -156,7 +156,7 @@ const SignupForm = () => {
                                 id="password"
                                 type="password"
                                 placeholder="••••••••"
-                                className="border border-gray-300 bg-gray-100"
+                                className="border border-border bg-background"
                                 {...register("password", { required: true })}
                             />
                             {errors.password && (
@@ -171,7 +171,7 @@ const SignupForm = () => {
                                 id="mobile"
                                 type="number"
                                 placeholder="9876543210"
-                                className="border border-gray-300 bg-gray-100"
+                                className="border border-border bg-background"
                                 {...register("mobile", { required: true })}
                             />
                             {errors.mobile && (
@@ -184,16 +184,16 @@ const SignupForm = () => {
                             <input
                                 id="agree"
                                 type="checkbox"
-                                className="bg-white accent-blue-600"
+                                className="bg-background accent-primary"
                                 {...register("agree", { required: true })}
                             />
-                            <label htmlFor="agree" className="text-sm text-gray-700 select-none">
+                            <label htmlFor="agree" className="text-sm text-muted-foreground select-none">
                                 I agree to the
-                                <a href="#" className="text-blue-600 underline">
+                                <a href="#" className="text-primary underline">
                                     Terms & Conditions
                                 </a>{" "}
                                 and{" "}
-                                <a href="#" className="text-blue-600 underline">
+                                <a href="#" className="text-primary underline">
                                     Privacy Policy
                                 </a>.
                             </label>
@@ -209,10 +209,10 @@ const SignupForm = () => {
                             <input
                                 id="agree2"
                                 type="checkbox"
-                                className="bg-white mt-1 accent-blue-600"
+                                className="bg-background mt-1 accent-primary"
                                 {...register("agree2", { required: true })}
                             />
-                            <label htmlFor="agree2" className="text-sm text-gray-700 select-none">
+                            <label htmlFor="agree2" className="text-sm text-muted-foreground select-none">
                                 I have understood all the risks associated with the lending transactions and acknowledge that Fortune Loans does not assure the return of principal or payment of interest. I am aware that there exists a likelihood of loss of entire principal in case of default by a borrower. Fortune Loans does not provide any assurance or guarantee for the recovery of loans and does not promote peer-to-peer lending as an investment product with features like tenure-linked assured minimum returns, liquidity options, etc.
                             </label>
                         </div>
@@ -228,7 +228,7 @@ const SignupForm = () => {
                         <button
                             type="submit"
                             disabled={isSubmitting}
-                            className="group/btn relative block h-10 w-full rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white mt-4"
+                            className="group/btn relative block h-10 w-full rounded-md bg-gradient-to-r from-cta via-cta to-accent font-medium text-white mt-4 shadow-glow-cta"
                         >
                             {isSubmitting ? "Submitting..." : "Submit"}
                             <BottomGradient />

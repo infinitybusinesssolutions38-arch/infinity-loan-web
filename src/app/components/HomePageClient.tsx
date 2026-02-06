@@ -1,31 +1,26 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import {
+  ArrowRight,
   Banknote,
   Building2,
-  CreditCard,
-  Shield,
-  ArrowRight,
   CheckCircle2,
   Clock,
+  CreditCard,
   FileCheck,
-  Users,
-  TrendingUp,
+  Shield,
   Sparkles,
+  TrendingUp,
+  Users,
 } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
 import ApplyNowCTAButton from "@/components/loans/ApplyNowCTAButton";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 type HubCategoryKey = "loans" | "insurance" | "credit-cards" | "government-schemes";
 
@@ -33,7 +28,6 @@ type ServiceCardItem = {
   key: string;
   title: string;
   description: string;
-  applyHref: string;
   infoHref: string;
   highlight?: boolean;
   badge?: string;
@@ -43,6 +37,8 @@ type ServiceGroup = {
   title: string;
   items: ServiceCardItem[];
 };
+
+const AUTOPLAY_MS = 4000;
 
 const CATEGORY_META: Array<{
   key: HubCategoryKey;
@@ -56,6 +52,13 @@ const CATEGORY_META: Array<{
   { key: "government-schemes", title: "Government Schemes", icon: Building2, gradient: "bg-gradient-government" },
 ];
 
+const TRUST_INDICATORS = [
+  { icon: Users, value: "50,000+", label: "Happy Customers" },
+  { icon: TrendingUp, value: "₹500 Cr+", label: "Loans Disbursed" },
+  { icon: Clock, value: "24 Hours", label: "Average Approval" },
+  { icon: FileCheck, value: "99%", label: "Success Rate" },
+];
+
 const LOAN_SERVICES: ServiceGroup[] = [
   {
     title: "Business Loans",
@@ -64,7 +67,6 @@ const LOAN_SERVICES: ServiceGroup[] = [
         key: "msme-sme-loan",
         title: "MSME / SME Loan",
         description: "Funding for expansion, inventory and day-to-day operations with flexible repayment options.",
-        applyHref: "/register?service=msme-sme-loan",
         infoHref: "/business-loan",
         highlight: true,
         badge: "Popular",
@@ -73,28 +75,24 @@ const LOAN_SERVICES: ServiceGroup[] = [
         key: "working-capital-loan",
         title: "Working Capital Loan",
         description: "Short-term liquidity to manage cash flow, vendor payments and seasonal demand spikes.",
-        applyHref: "/register?service=working-capital-loan",
         infoHref: "/business-loan",
       },
       {
         key: "overdraft-cash-credit",
         title: "Overdraft / Cash Credit (OD / CC)",
         description: "A flexible limit for withdrawals as needed — interest is charged only on utilisation.",
-        applyHref: "/register?service=overdraft-cash-credit",
         infoHref: "/business-loan",
       },
       {
         key: "invoice-discounting",
         title: "Invoice Discounting",
         description: "Unlock cash tied up in invoices and improve working capital without waiting for payments.",
-        applyHref: "/register?service=invoice-discounting",
         infoHref: "/business-loan",
       },
       {
         key: "machinery-loan",
         title: "Machinery Loan",
         description: "Equipment financing for purchase, upgrade, or expansion with structured repayment.",
-        applyHref: "/register?service=machinery-loan",
         infoHref: "/business-loan",
       },
     ],
@@ -106,7 +104,6 @@ const LOAN_SERVICES: ServiceGroup[] = [
         key: "personal-loan",
         title: "Personal Loan",
         description: "Multipurpose unsecured funding for planned needs or urgent expenses with quick approvals.",
-        applyHref: "/register?service=personal-loan",
         infoHref: "/personal-loan",
         highlight: true,
         badge: "Fast Approval",
@@ -115,7 +112,6 @@ const LOAN_SERVICES: ServiceGroup[] = [
         key: "instant-loan",
         title: "Instant Loan",
         description: "Fast-disbursal credit for emergencies, bills and last-minute requirements.",
-        applyHref: "/register?service=instant-loan",
         infoHref: "/personal-loan",
         badge: "24hr Disbursal",
       },
@@ -123,14 +119,12 @@ const LOAN_SERVICES: ServiceGroup[] = [
         key: "education-loan",
         title: "Education Loan",
         description: "Financing for tuition and education expenses with flexible repayment options.",
-        applyHref: "/register?service=education-loan",
         infoHref: "/personal-loan",
       },
       {
         key: "medical-loan",
         title: "Medical Loan",
         description: "Quick funding for planned or emergency medical expenses and treatments.",
-        applyHref: "/register?service=medical-loan",
         infoHref: "/personal-loan",
       },
     ],
@@ -142,7 +136,6 @@ const LOAN_SERVICES: ServiceGroup[] = [
         key: "home-loan",
         title: "Home Loan",
         description: "Buy a home with competitive rates, transparent terms and end-to-end guidance.",
-        applyHref: "/register?service=home-loan",
         infoHref: "/home-property-loan",
         highlight: true,
         badge: "Low Interest",
@@ -151,21 +144,18 @@ const LOAN_SERVICES: ServiceGroup[] = [
         key: "loan-against-property",
         title: "Loan Against Property",
         description: "Leverage your property value for higher ticket funding with longer tenure options.",
-        applyHref: "/register?service=loan-against-property",
         infoHref: "/home-property-loan",
       },
       {
         key: "plot-purchase-loan",
         title: "Plot Purchase Loan",
         description: "Finance plot purchase with repayment options aligned to your income profile.",
-        applyHref: "/register?service=plot-purchase-loan",
         infoHref: "/home-property-loan",
       },
       {
         key: "construction-loan",
         title: "Construction Loan",
         description: "Build your home with stage-wise disbursal and structured repayment plans.",
-        applyHref: "/register?service=construction-loan",
         infoHref: "/home-property-loan",
       },
     ],
@@ -177,28 +167,24 @@ const LOAN_SERVICES: ServiceGroup[] = [
         key: "car-loan",
         title: "Car Loan",
         description: "Finance a new or used car with flexible tenures and fast processing.",
-        applyHref: "/register?service=car-loan",
         infoHref: "/vehicle-loan",
       },
       {
         key: "two-wheeler-loan",
         title: "Two-Wheeler Loan",
         description: "Affordable financing options for scooters and bikes with quick approvals.",
-        applyHref: "/register?service=two-wheeler-loan",
         infoHref: "/vehicle-loan",
       },
       {
         key: "commercial-vehicle-loan",
         title: "Commercial Vehicle Loan",
         description: "Funding for commercial vehicles with tenure options designed for cashflow.",
-        applyHref: "/register?service=commercial-vehicle-loan",
         infoHref: "/vehicle-loan",
       },
       {
         key: "ev-loan",
         title: "EV (Electric Vehicle) Loan",
         description: "Finance electric vehicles with attractive offers and tailored repayment plans.",
-        applyHref: "/register?service=ev-loan",
         infoHref: "/vehicle-loan",
         badge: "EV",
       },
@@ -211,174 +197,258 @@ const LOAN_SERVICES: ServiceGroup[] = [
         key: "gold-loan",
         title: "Gold Loan",
         description: "Quick secured loan against gold with transparent valuation and fast disbursal.",
-        applyHref: "/register?service=gold-loan",
         infoHref: "/gold-asset-loan",
       },
       {
         key: "loan-against-securities",
         title: "Loan Against Securities",
         description: "Secure funding by pledging eligible securities with transparent terms.",
-        applyHref: "/register?service=loan-against-securities",
         infoHref: "/gold-asset-loan",
       },
     ],
   },
 ];
 
-const SERVICES: Record<HubCategoryKey, ServiceCardItem[]> = {
-  loans: [],
-  insurance: [
-    {
-      key: "life-insurance",
-      title: "Life Insurance",
-      description: "Long-term protection plans with guidance to choose the right cover.",
-      applyHref: "/contact?service=life-insurance",
-      infoHref: "/services/insurance",
-      highlight: true,
-      badge: "Essential",
-    },
-    {
-      key: "health-insurance",
-      title: "Health Insurance",
-      description: "Coverage for hospitalisation and treatments with plan comparisons.",
-      applyHref: "/contact?service=health-insurance",
-      infoHref: "/services/insurance",
-      highlight: true,
-      badge: "Family Plans",
-    },
-    {
-      key: "motor-insurance",
-      title: "Motor Insurance",
-      description: "Car and two-wheeler protection including third-party coverage.",
-      applyHref: "/contact?service=motor-insurance",
-      infoHref: "/services/insurance",
-    },
-    {
-      key: "home-insurance",
-      title: "Home Insurance",
-      description: "Secure home and valuables against common risks and calamities.",
-      applyHref: "/contact?service=home-insurance",
-      infoHref: "/services/insurance",
-    },
-  ],
-  "credit-cards": [
-    {
-      key: "credit-line-flexi",
-      title: "Credit Line / Flexi Loan",
-      description: "Revolving limit you can draw from when needed.",
-      applyHref: "/register?service=credit-line-flexi",
-      infoHref: "/services/credit-cards",
-      highlight: true,
-      badge: "Flexible",
-    },
-    {
-      key: "business-credit-card",
-      title: "Business Credit Card",
-      description: "Higher limits and tracking for business spending.",
-      applyHref: "/register?service=business-credit-card",
-      infoHref: "/services/credit-cards",
-    },
-    {
-      key: "personal-credit-card",
-      title: "Personal Credit Card",
-      description: "Everyday credit with rewards and EMI options.",
-      applyHref: "/register?service=personal-credit-card",
-      infoHref: "/services/credit-cards",
-      badge: "Rewards",
-    },
-    {
-      key: "bnpl",
-      title: "Buy Now Pay Later (BNPL)",
-      description: "Split purchases into smaller scheduled payments.",
-      applyHref: "/register?service=bnpl",
-      infoHref: "/services/credit-cards",
-      highlight: true,
-      badge: "0% EMI",
-    },
-  ],
-  "government-schemes": [
-    {
-      key: "pm-mudra",
-      title: "PM Mudra Loan",
-      description: "Collateral-free micro and small business loans.",
-      applyHref: "/register?service=pm-mudra-loan",
-      infoHref: "/services/government-schemes",
-      highlight: true,
-      badge: "No Collateral",
-    },
-    {
-      key: "stand-up-india",
-      title: "Stand-Up India",
-      description: "Support for SC/ST and women entrepreneurs.",
-      applyHref: "/register?service=stand-up-india",
-      infoHref: "/services/government-schemes",
-      badge: "Women & SC/ST",
-    },
-    {
-      key: "cgtmse",
-      title: "CGTMSE Loan",
-      description: "Collateral-free MSME loans with credit guarantee support.",
-      applyHref: "/register?service=cgtmse-loan",
-      infoHref: "/services/government-schemes",
-    },
-    {
-      key: "psb-59",
-      title: "PSB Loans in 59 Minutes",
-      description: "Quick in-principle approval through the PSB platform.",
-      applyHref: "/register?service=psb-loans-59-minutes",
-      infoHref: "/services/government-schemes",
-      highlight: true,
-      badge: "59 Min Approval",
-    },
-  ],
-};
+function cx(...classes: Array<string | false | null | undefined>) {
+  return classes.filter(Boolean).join(" ");
+}
 
-const TRUST_INDICATORS = [
-  { icon: Users, value: "50,000+", label: "Happy Customers" },
-  { icon: TrendingUp, value: "₹500 Cr+", label: "Loans Disbursed" },
-  { icon: Clock, value: "24 Hours", label: "Average Approval" },
-  { icon: FileCheck, value: "99%", label: "Success Rate" },
-];
+function ArrowIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className={className}>
+      <path d="M5 12h12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      <path
+        d="m13 6 6 6-6 6"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
 
-export default function ServicesHubClient() {
+export default function HomePageClient() {
+  const slides = useMemo(
+    () => [
+      { src: "/home-img/home1.jpeg", alt: "Fintech services" },
+      { src: "/home-img/home2.jpeg", alt: "Digital lending" },
+      { src: "/home-img/home3.jpeg", alt: "Financial inclusion" },
+      { src: "/home-img/home4.jpeg", alt: "Secure payments" },
+    ],
+    []
+  );
+
+  const [activeIndex, setActiveIndex] = useState(0);
+  const isPausedRef = useRef(false);
+  const intervalRef = useRef<number | null>(null);
+
+  const nextSlide = useCallback(() => {
+    setActiveIndex((i) => (i + 1) % slides.length);
+  }, [slides.length]);
+
+  const prevSlide = useCallback(() => {
+    setActiveIndex((i) => (i - 1 + slides.length) % slides.length);
+  }, [slides.length]);
+
+  const goToSlide = useCallback(
+    (index: number) => {
+      const len = slides.length;
+      const safe = ((index % len) + len) % len;
+      setActiveIndex(safe);
+    },
+    [slides.length]
+  );
+
+  useEffect(() => {
+    intervalRef.current = window.setInterval(() => {
+      if (isPausedRef.current) return;
+      nextSlide();
+    }, AUTOPLAY_MS);
+
+    return () => {
+      if (intervalRef.current) window.clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    };
+  }, [nextSlide]);
+
+  const onMouseEnter = useCallback(() => {
+    isPausedRef.current = true;
+  }, []);
+
+  const onMouseLeave = useCallback(() => {
+    isPausedRef.current = false;
+  }, []);
+
   const [activeCategory, setActiveCategory] = useState<HubCategoryKey>("loans");
-
-  const activeCards = useMemo(() => SERVICES[activeCategory], [activeCategory]);
   const activeMeta = CATEGORY_META.find((c) => c.key === activeCategory)!;
+
+  const activeCards = useMemo(() => {
+    if (activeCategory === "loans") {
+      return LOAN_SERVICES.flatMap((g) => g.items);
+    }
+
+    if (activeCategory === "insurance") {
+      return [
+        {
+          key: "insurance",
+          title: "Insurance Solutions",
+          description: "Life, health, motor, home and business insurance with expert guidance.",
+          infoHref: "/services/insurance",
+          highlight: true,
+          badge: "Trusted",
+        },
+      ];
+    }
+
+    if (activeCategory === "credit-cards") {
+      return [
+        {
+          key: "credit-cards",
+          title: "Credit Cards & Credit Lines",
+          description: "Smart credit products for personal and business spending.",
+          infoHref: "/services/credit-cards",
+          highlight: true,
+          badge: "Rewards",
+        },
+      ];
+    }
+
+    return [
+      {
+        key: "government-schemes",
+        title: "Government Schemes",
+        description: "Explore subsidised and scheme-backed programs for MSMEs and entrepreneurs.",
+        infoHref: "/services/government-schemes",
+        highlight: true,
+        badge: "No Collateral",
+      },
+    ];
+  }, [activeCategory]);
 
   return (
     <div className="min-h-screen bg-background">
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary via-primary/90 to-primary/80 py-16 lg:py-24">
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-accent/20 blur-3xl" />
-          <div className="absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-cta/20 blur-3xl" />
+      <section
+        className="relative overflow-hidden"
+        aria-roledescription="carousel"
+        aria-label="Hero carousel"
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+      >
+        <div className="absolute inset-0">
+          {slides.map((slide, i) => {
+            const isActive = i === activeIndex;
+            return (
+              <div
+                key={slide.src}
+                className={cx(
+                  "absolute inset-0 transition-opacity duration-700 ease-out",
+                  isActive ? "opacity-100" : "opacity-0"
+                )}
+                aria-hidden={!isActive}
+              >
+                <Image
+                  src={slide.src}
+                  alt={slide.alt}
+                  fill
+                  priority={i === 0}
+                  sizes="100vw"
+                  className="object-cover"
+                />
+              </div>
+            );
+          })}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/45 to-black/70" />
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/55 via-black/30 to-accent/30" />
+          <div className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-accent/20 blur-3xl" />
+          <div className="absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-cta/20 blur-3xl" />
         </div>
 
-        <div className="container relative z-10 mx-auto px-4">
-          <div className="max-w-3xl">
-            <Badge className="mb-4 bg-accent/20 text-accent-foreground border-accent/30 backdrop-blur">
-              <Sparkles className="mr-1 h-3 w-3" />
-              Trusted Financial Partner
-            </Badge>
-            <h1 className="text-4xl font-extrabold tracking-tight text-primary-foreground sm:text-5xl lg:text-6xl">
-              Your Financial Goals,{" "}
-              <span className="text-accent">Simplified</span>
-            </h1>
-            <p className="mt-6 text-lg text-primary-foreground/80 sm:text-xl max-w-2xl">
-              From personal loans to business funding, insurance to credit cards — we help you access the right
-              financial products with complete transparency.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-4">
-              <Button asChild variant="cta" size="xl">
-                <Link href="/register">
-                  Get Started Free
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
-              </Button>
-              <Button asChild variant="hero-outline" size="xl">
-                <Link href="/contact">Talk to an Expert</Link>
-              </Button>
+        <div className="relative">
+          <div className="container relative z-10 mx-auto px-4">
+            <div className="flex min-h-[560px] items-center py-14 sm:min-h-[640px] sm:py-20 lg:min-h-[740px]">
+              <div className="mx-auto w-full max-w-4xl text-center">
+                <Badge className="mb-4 bg-accent/20 text-accent-foreground border-accent/30 backdrop-blur">
+                  <Sparkles className="mr-1 h-3 w-3" />
+                  Trusted Financial Partner
+                </Badge>
+
+                <h1 className="text-4xl font-extrabold tracking-tight text-primary-foreground sm:text-5xl lg:text-6xl">
+                  Your Financial Goals,{" "}
+                  <span className="text-accent">Simplified</span>
+                </h1>
+
+                <p className="mt-6 text-lg text-primary-foreground/80 sm:text-xl max-w-3xl mx-auto">
+                  From personal loans to business funding, insurance to credit cards — we help you access the right
+                  financial products with complete transparency.
+                </p>
+
+                <div className="mt-8 flex flex-wrap justify-center gap-4">
+                  <ApplyNowCTAButton size="xl" className="group">
+                    Apply Now
+                    <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                  </ApplyNowCTAButton>
+                  <Button asChild variant="hero-outline" size="xl">
+                    <Link href="/contact">Talk to an Expert</Link>
+                  </Button>
+                </div>
+
+                <div className="mt-10 flex items-center justify-center gap-2" aria-label="Slide pagination">
+                  {slides.map((_, i) => {
+                    const isActive = i === activeIndex;
+                    return (
+                      <button
+                        key={i}
+                        type="button"
+                        className={cx(
+                          "h-2.5 w-2.5 rounded-full transition",
+                          isActive
+                            ? "bg-white shadow-[0_0_0_4px_rgba(255,255,255,0.18)]"
+                            : "bg-white/40 hover:bg-white/70"
+                        )}
+                        onClick={() => goToSlide(i)}
+                        aria-label={`Go to slide ${i + 1}`}
+                        aria-current={isActive ? "true" : "false"}
+                      />
+                    );
+                  })}
+                </div>
+
+                <div className="mt-8 flex items-center justify-center gap-3">
+                  <button
+                    type="button"
+                    onClick={prevSlide}
+                    className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 px-3 py-2 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/15 focus:outline-none focus:ring-4 focus:ring-white/20"
+                    aria-label="Previous slide"
+                  >
+                    <ArrowIcon className="h-5 w-5" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={nextSlide}
+                    className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 px-3 py-2 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/15 focus:outline-none focus:ring-4 focus:ring-white/20"
+                    aria-label="Next slide"
+                  >
+                    <ArrowIcon className="h-5 w-5 rotate-180" />
+                  </button>
+                </div>
+              </div>
             </div>
+          </div>
+
+          <div className="pointer-events-none absolute bottom-0 left-0 right-0">
+            <svg
+              viewBox="0 0 1440 120"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-full"
+              aria-hidden="true"
+            >
+              <path
+                d="M0 120L60 105C120 90 240 60 360 45C480 30 600 30 720 37.5C840 45 960 60 1080 67.5C1200 75 1320 75 1380 75L1440 75V120H0Z"
+                fill="#ffffff"
+              />
+            </svg>
           </div>
         </div>
       </section>
@@ -442,9 +512,7 @@ export default function ServicesHubClient() {
               {LOAN_SERVICES.map((group, groupIndex) => (
                 <div key={group.title} className="space-y-6">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-2xl font-bold tracking-tight text-foreground">
-                      {group.title}
-                    </h3>
+                    <h3 className="text-2xl font-bold tracking-tight text-foreground">{group.title}</h3>
                   </div>
 
                   <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -468,9 +536,7 @@ export default function ServicesHubClient() {
                           </Badge>
                         )}
                         <CardHeader className="pb-3">
-                          <CardTitle className="text-xl font-bold text-foreground pr-16">
-                            {service.title}
-                          </CardTitle>
+                          <CardTitle className="text-xl font-bold text-foreground pr-16">{service.title}</CardTitle>
                           <CardDescription className="text-muted-foreground mt-2 line-clamp-2">
                             {service.description}
                           </CardDescription>
@@ -525,11 +591,7 @@ export default function ServicesHubClient() {
                   </CardHeader>
                   <CardContent>
                     <div className="flex flex-col gap-3">
-                      <ApplyNowCTAButton
-                        loanType={service.title}
-                        className="w-full group-hover:shadow-glow-cta"
-                        size="lg"
-                      >
+                      <ApplyNowCTAButton loanType={service.title} className="w-full group-hover:shadow-glow-cta" size="lg">
                         Apply Now
                         <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                       </ApplyNowCTAButton>
@@ -559,17 +621,17 @@ export default function ServicesHubClient() {
               {
                 icon: Clock,
                 title: "Quick Approvals",
-                description: "Get loan approvals in as little as 24 hours with minimal documentation",
+                description: "Get approvals in as little as 24 hours with minimal documentation",
               },
               {
                 icon: CheckCircle2,
-                title: "Best Rates Guaranteed",
-                description: "We compare 30+ lenders to find you the lowest interest rates",
+                title: "Best Options",
+                description: "We guide you through eligibility, documentation, and next steps",
               },
               {
                 icon: Shield,
                 title: "100% Secure",
-                description: "Your data is encrypted and never shared without consent",
+                description: "Your data is protected and never shared without consent",
               },
             ].map((benefit, idx) => (
               <div
@@ -595,19 +657,17 @@ export default function ServicesHubClient() {
           <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-primary via-primary to-accent p-8 lg:p-16 text-center">
             <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iYSIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBwYXR0ZXJuVHJhbnNmb3JtPSJyb3RhdGUoNDUpIj48cmVjdCB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4wNSkiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjYSkiLz48L3N2Zz4=')] opacity-50" />
             <div className="relative z-10">
-              <h2 className="text-3xl font-bold text-primary-foreground sm:text-4xl lg:text-5xl">
-                Ready to Get Started?
-              </h2>
+              <h2 className="text-3xl font-bold text-primary-foreground sm:text-4xl lg:text-5xl">Ready to Get Started?</h2>
               <p className="mt-4 text-lg text-primary-foreground/80 max-w-2xl mx-auto">
                 Apply now and get a decision within 24 hours. No hidden fees, no surprises.
               </p>
               <div className="mt-8 flex flex-wrap justify-center gap-4">
                 <ApplyNowCTAButton loanType="Loan" className="shadow-2xl" size="xl">
-                  Apply for a Loan
+                  Apply Now
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </ApplyNowCTAButton>
                 <Button asChild variant="hero-outline" size="xl">
-                  <Link href="/register">Check Eligibility</Link>
+                  <Link href="/contact">Talk to an Expert</Link>
                 </Button>
               </div>
             </div>

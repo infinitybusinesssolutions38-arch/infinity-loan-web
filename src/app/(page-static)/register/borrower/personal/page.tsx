@@ -94,19 +94,19 @@ const SignupForm = () => {
 
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4 py-8">
+        <div className="min-h-screen flex flex-col items-center justify-center bg-background px-4 py-8">
             {/* Outer container without shadow */}
             <div className="flex flex-col md:flex-row rounded-2xl m-5 overflow-hidden w-full max-w-5xl">
                 {/* LEFT SIDE - Text Section */}
-                <div className="md:w-1/2 bg-gray-50 flex flex-col  items-start p-8">
-                    <h2 className="text-3xl font-bold text-gray-800 mb-4">
+                <div className="md:w-1/2 bg-card flex flex-col items-start p-8 border border-border rounded-l-2xl shadow-xl">
+                    <h2 className="text-3xl font-bold text-foreground mb-4">
                         Get Your Personal Loan Easily
                     </h2>
-                    <p className="text-gray-600 mb-6">
+                    <p className="text-muted-foreground mb-6">
                         Apply for a personal loan with flexible repayment options and quick
                         approvals. Manage your finances smarter with Fortune Loans.
                     </p>
-                    <ul className="space-y-2 text-gray-600">
+                    <ul className="space-y-2 text-muted-foreground">
                         <li>✅ Instant approval process</li>
                         <li>✅ Low interest rates</li>
                         <li>✅ No hidden charges</li>
@@ -114,11 +114,11 @@ const SignupForm = () => {
                 </div>
 
                 {/* RIGHT SIDE - Form Section with its own shadow */}
-                <div className="md:w-1/2 p-8 bg-white  mb-5 shadow-md shadow-blue-400 rounded-2xl ">
-                    <h2 className="text-xl sm:text-2xl lg:text-4xl mb-5 font-bold text-neutral-800 dark:text-neutral-200">
+                <div className="md:w-1/2 p-8 bg-card mb-5 shadow-xl rounded-2xl border border-border">
+                    <h2 className="text-xl sm:text-2xl lg:text-4xl mb-5 font-bold text-foreground">
                         Apply for a Personal Loan
                     </h2>
-                    <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-300">
+                    <p className="mt-2 text-sm text-muted-foreground">
                         Sign up to access your personal loan dashboard.
                     </p>
 
@@ -131,7 +131,7 @@ const SignupForm = () => {
                                     id="firstname"
                                     placeholder="Tyler"
                                     type="text"
-                                    className="border  border-gray-300 bg-gray-100"
+                                    className="border border-border bg-background"
                                     {...register("firstname", { required: true })}
                                 />
                                 {errors.firstname && (
@@ -144,7 +144,7 @@ const SignupForm = () => {
                                     id="lastname"
                                     placeholder="Durden"
                                     type="text"
-                                    className="border border-gray-300  bg-gray-100"
+                                    className="border border-border bg-background"
                                     {...register("lastname", { required: true })}
                                 />
                             </LabelInputContainer>
@@ -157,7 +157,7 @@ const SignupForm = () => {
                                 id="pan"
                                 placeholder="ABCDE1234F"
                                 type="text"
-                                className="border border-gray-300 bg-gray-100"
+                                className="border border-border bg-background"
                                 {...register("pan", { required: true })}
                             />
                         </LabelInputContainer>
@@ -168,7 +168,7 @@ const SignupForm = () => {
                             <Input
                                 type="file"
                                 accept=".pdf,.jpeg,.png"
-                                className="border border-gray-300 bg-gray-100"
+                                className="border border-border bg-background"
                                 {...register("panCard")}
                             />
                         </LabelInputContainer>
@@ -178,7 +178,7 @@ const SignupForm = () => {
                             <Input
                                 type="file"
                                 accept=".pdf,.jpeg,.png"
-                                className="border border-gray-300 bg-gray-100"
+                                className="border border-border bg-background"
                                 {...register("adharCard")}
                             />
                         </LabelInputContainer>
@@ -190,7 +190,7 @@ const SignupForm = () => {
                                 id="email"
                                 placeholder="you@example.com"
                                 type="email"
-                                className="border border-gray-300 bg-gray-100"
+                                className="border border-border bg-background"
                                 {...register("email", { required: true })}
                             />
                         </LabelInputContainer>
@@ -202,7 +202,7 @@ const SignupForm = () => {
                                 id="mobile"
                                 placeholder="1234567890"
                                 type="number"
-                                className="border border-gray-300 bg-gray-100"
+                                className="border border-border bg-background"
                                 {...register("mobile", { required: true })}
                             />
                         </LabelInputContainer>
@@ -213,7 +213,7 @@ const SignupForm = () => {
                                 <Label htmlFor="gender">Gender</Label>
                                 <select
                                     id="gender"
-                                    className="border border-gray-300 bg-gray-100 rounded-md p-2"
+                                    className="border border-border bg-background rounded-md p-2"
                                     {...register("gender")}
                                 >
                                     <option value="">Select</option>
@@ -226,7 +226,7 @@ const SignupForm = () => {
                                 <Input
                                     id="dateOfBirth"
                                     type="date"
-                                    className="border border-gray-300 bg-gray-100"
+                                    className="border border-border bg-background"
                                     {...register("dateOfBirth")}
                                 />
                             </LabelInputContainer>
@@ -241,7 +241,7 @@ const SignupForm = () => {
                                     id="pincode"
                                     placeholder="110001"
                                     type="number"
-                                    className="border border-gray-300 bg-gray-100"
+                                    className="border border-border bg-background"
                                     {...register("pincode")}
                                 />
                             </LabelInputContainer>
@@ -250,7 +250,7 @@ const SignupForm = () => {
                                 <Input
                                     id="city"
                                     type="text"
-                                    className="border border-gray-300 bg-gray-100"
+                                    className="border border-border bg-background"
                                     {...register("city")}
                                 />
                             </LabelInputContainer>
@@ -259,7 +259,7 @@ const SignupForm = () => {
                                 <Input
                                     id="state"
                                     type="text"
-                                    className="border border-gray-300 bg-gray-100"
+                                    className="border border-border bg-background"
                                     {...register("state")}
                                 />
                             </LabelInputContainer>
@@ -270,7 +270,7 @@ const SignupForm = () => {
                             <Label htmlFor="addressProof">Address Proof</Label>
                             <select
                                 id="addressProof"
-                                className="border border-gray-300 bg-gray-100 rounded-md p-2"
+                                className="border border-border bg-background rounded-md p-2"
                                 {...register("addressProof")}
                             >
                                 <option value="">Select an option</option>
@@ -284,7 +284,7 @@ const SignupForm = () => {
                             <LabelInputContainer>
                                 <Label>Education Qualification</Label>
                                 <select
-                                    className="border border-gray-300 bg-gray-100 rounded-md p-2"
+                                    className="border border-border bg-background rounded-md p-2"
                                     {...register("education")}
                                 >
                                     <option value="">Select</option>
@@ -297,7 +297,7 @@ const SignupForm = () => {
                             <LabelInputContainer>
                                 <Label>Family Reference</Label>
                                 <select
-                                    className="border border-gray-300 bg-gray-100 rounded-md p-2"
+                                    className="border border-border bg-background rounded-md p-2"
                                     {...register("family")}
                                 >
                                     <option value="">Select</option>
@@ -312,7 +312,7 @@ const SignupForm = () => {
                         <LabelInputContainer className="mb-4">
                             <Label>Employment Type</Label>
                             <select
-                                className="border border-gray-300 bg-gray-100 rounded-md p-2"
+                                className="border border-border bg-background rounded-md p-2"
                                 {...register("employment")}
                             >
                                 <option value="">Select</option>
@@ -326,7 +326,7 @@ const SignupForm = () => {
                             <Input
                                 placeholder="Loan amount"
                                 type="text"
-                                className="border border-gray-300 bg-gray-100"
+                                className="border border-border bg-background"
                                 {...register("loanAmount")}
                             />
                         </LabelInputContainer>
@@ -336,7 +336,7 @@ const SignupForm = () => {
                             <LabelInputContainer>
                                 <Label>Business Proof</Label>
                                 <select
-                                    className="border border-gray-300 bg-gray-100 rounded-md p-2"
+                                    className="border border-border bg-background rounded-md p-2"
                                     {...register("businessProof")}
                                 >
                                     <option value="">Select</option>
@@ -349,7 +349,7 @@ const SignupForm = () => {
                                 <Label>Business Start Date</Label>
                                 <Input
                                     type="date"
-                                    className="border border-gray-300 bg-gray-100"
+                                    className="border border-border bg-background"
                                     {...register("businessStartDate")}
                                 />
                             </LabelInputContainer>
@@ -358,7 +358,7 @@ const SignupForm = () => {
                         <LabelInputContainer className="mb-6">
                             <Label>Business Turnover</Label>
                             <select
-                                className="border border-gray-300 bg-gray-100 rounded-md p-2"
+                                className="border border-border bg-background rounded-md p-2"
                                 {...register("turnover")}
                             >
                                 <option value="">Select</option>
@@ -371,7 +371,7 @@ const SignupForm = () => {
 
                         {/* Submit */}
                         <button disabled={isSubmitting}
-                            className="group/btn relative block h-10 w-full rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white"
+                            className="group/btn relative block h-10 w-full rounded-md bg-gradient-to-r from-cta via-cta to-accent font-medium text-white shadow-glow-cta"
                             type="submit"
                         >
                             {isSubmitting ? "Submitting..." : "Submit"}
