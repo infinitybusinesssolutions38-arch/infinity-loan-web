@@ -1,16 +1,27 @@
 import mongoose from "mongoose";
 
 const connectDB = async () => {
+    const uri =
+        process.env.CONNECTIONSTRING ||
+        process.env.MONGODB_URI ||
+        process.env.MONGO_URI;
+
+    if (!uri) {
+        throw new Error(
+            "MongoDB connection string is missing. Set CONNECTIONSTRING (or MONGODB_URI) in infinity-loan-web/.env.local"
+        );
+    }
+
+    if (mongoose.connection.readyState === 1) {
+        return mongoose.connection;
+    }
+
     try {
-        const instanceConnections = await mongoose.connect(process.env.CONNECTIONSTRING);
-        if (!instanceConnections) {
-            console.log("mongondb is not connected");
-        }
-        else {
-            console.log("mongodb is connected succssfully");
-        }
+        await mongoose.connect(uri);
+        return mongoose.connection;
     } catch (error) {
         console.log(error);
+        throw error;
     }
 };
 
