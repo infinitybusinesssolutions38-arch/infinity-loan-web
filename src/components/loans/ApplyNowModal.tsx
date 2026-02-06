@@ -16,13 +16,21 @@ interface ApplyNowModalProps {
 
 type FormData = {
   firstName: string;
+  middleName?: string;
   lastName: string;
   mobileNumber: string;
   alternateMobile: string;
   businessEmail: string;
   personalEmail: string;
-  fullAddress: string;
-  pincode: string;
+  currentResidentialAddress: string;
+  currentResidentialPincode: string;
+  currentOfficeAddress: string;
+  currentOfficePincode: string;
+  requiredLoanAmount?: string;
+  residentialStatus?: string;
+  businessPremisesStatus?: string;
+  yearsAtCurrentResidentialAddress?: string;
+  yearsAtCurrentBusinessAddress?: string;
   aadhaarNumber: string;
   panNumber: string;
   voterIdNumber: string;
@@ -36,13 +44,21 @@ export default function ApplyNowModal({ isOpen, onClose, loanType }: ApplyNowMod
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState<FormData>({
     firstName: "",
+    middleName: "",
     lastName: "",
     mobileNumber: "",
     alternateMobile: "",
     businessEmail: "",
     personalEmail: "",
-    fullAddress: "",
-    pincode: "",
+    currentResidentialAddress: "",
+    currentResidentialPincode: "",
+    currentOfficeAddress: "",
+    currentOfficePincode: "",
+    requiredLoanAmount: "",
+    residentialStatus: "",
+    businessPremisesStatus: "",
+    yearsAtCurrentResidentialAddress: "",
+    yearsAtCurrentBusinessAddress: "",
     aadhaarNumber: "",
     panNumber: "",
     voterIdNumber: "",
@@ -55,12 +71,16 @@ export default function ApplyNowModal({ isOpen, onClose, loanType }: ApplyNowMod
   const [aadhaarFront, setAadhaarFront] = useState<File | null>(null);
   const [aadhaarBack, setAadhaarBack] = useState<File | null>(null);
   const [panFront, setPanFront] = useState<File | null>(null);
+  const [residentialBill, setResidentialBill] = useState<File | null>(null);
+  const [shopBill, setShopBill] = useState<File | null>(null);
 
   const validateField = (name: keyof FormData, value: string): string => {
     switch (name) {
       case "firstName":
       case "lastName":
         return value.trim().length < 2 ? "Minimum 2 characters required" : "";
+      case "middleName":
+        return "";
       case "mobileNumber":
         return !/^[6-9]\d{9}$/.test(value) ? "Enter valid 10-digit mobile number" : "";
       case "alternateMobile":
@@ -68,10 +88,19 @@ export default function ApplyNowModal({ isOpen, onClose, loanType }: ApplyNowMod
       case "businessEmail":
       case "personalEmail":
         return value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? "Enter valid email address" : "";
-      case "pincode":
+      case "currentResidentialPincode":
+      case "currentOfficePincode":
         return !/^\d{6}$/.test(value) ? "Enter valid 6-digit pincode" : "";
       case "aadhaarNumber":
         return !/^\d{12}$/.test(value) ? "Enter valid 12-digit Aadhaar number" : "";
+      case "requiredLoanAmount":
+        return !value || isNaN(Number(value)) || Number(value) <= 0 ? "Enter valid loan amount" : "";
+      case "residentialStatus":
+      case "businessPremisesStatus":
+        return value && !["Owned", "Rented"].includes(value) ? "Select a valid status" : "";
+      case "yearsAtCurrentResidentialAddress":
+      case "yearsAtCurrentBusinessAddress":
+        return value && !/^\d{1,2}$/.test(value) ? "Enter valid years (0-99)" : "";
       case "panNumber":
         return !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(value.toUpperCase())
           ? "Enter valid PAN (e.g., ABCDE1234F)"
@@ -98,14 +127,21 @@ export default function ApplyNowModal({ isOpen, onClose, loanType }: ApplyNowMod
       "lastName",
       "mobileNumber",
       "personalEmail",
-      "fullAddress",
-      "pincode",
+      "currentResidentialAddress",
+      "currentResidentialPincode",
+      "currentOfficeAddress",
+      "currentOfficePincode",
+      "requiredLoanAmount",
+      "residentialStatus",
+      "businessPremisesStatus",
+      "yearsAtCurrentResidentialAddress",
+      "yearsAtCurrentBusinessAddress",
       "aadhaarNumber",
       "panNumber",
     ];
 
     requiredFields.forEach((field) => {
-      const error = validateField(field, formData[field]);
+      const error = validateField(field, formData[field] || "");
       if (error || !formData[field]) {
         newErrors[field] = error || "This field is required";
       }
@@ -142,7 +178,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType }: ApplyNowMod
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div className="absolute inset-0 bg-background/80 backdrop-blur-sm animate-fade-in" onClick={onClose} />
 
-      <div className="relative z-10 w-full max-w-2xl max-h-[90vh] m-4 overflow-hidden rounded-2xl bg-card shadow-2xl animate-modal-in">
+      <div className="relative z-10 w-full max-w-full max-h-[90vh] m-0 sm:m-4 overflow-hidden rounded-none sm:rounded-2xl bg-card shadow-2xl animate-modal-in">
         <div className="sticky top-0 z-10 flex items-center justify-between border-b bg-card px-6 py-4">
           <div>
             <h2 className="text-2xl font-bold text-foreground">Apply for {loanType}</h2>
@@ -183,6 +219,25 @@ export default function ApplyNowModal({ isOpen, onClose, loanType }: ApplyNowMod
                   placeholder="John"
                 />
                 {errors.firstName && <p className="text-xs text-destructive animate-fade-in">{errors.firstName}</p>}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="middleName" className="text-sm font-medium">
+                  Middle Name
+                </Label>
+                <Input
+                  id="middleName"
+                  name="middleName"
+                  value={formData.middleName as string}
+                  onChange={handleChange}
+                  onFocus={() => setFocusedField("middleName")}
+                  onBlur={() => setFocusedField(null)}
+                  className={`transition-all duration-300 ${
+                    focusedField === "middleName" ? "ring-2 ring-primary shadow-glow-primary" : ""
+                  } ${errors.middleName ? "border-destructive animate-shake" : ""}`}
+                  placeholder="Optional"
+                />
+                {errors.middleName && <p className="text-xs text-destructive animate-fade-in">{errors.middleName}</p>}
               </div>
 
               <div className="space-y-2">
@@ -254,6 +309,132 @@ export default function ApplyNowModal({ isOpen, onClose, loanType }: ApplyNowMod
 
           <fieldset className="space-y-4">
             <legend className="flex items-center gap-2 text-lg font-bold text-foreground mb-4">
+              <CreditCard className="h-5 w-5 text-primary" />
+              Loan & Tenure Details
+            </legend>
+
+            <div className="grid gap-4 sm:grid-cols-3">
+              <div className="space-y-2">
+                <Label htmlFor="requiredLoanAmount" className="text-sm font-medium">
+                  Required Loan Amount <span className="text-destructive">*</span>
+                </Label>
+                <Input
+                  id="requiredLoanAmount"
+                  name="requiredLoanAmount"
+                  type="number"
+                  min={0}
+                  value={formData.requiredLoanAmount as string}
+                  onChange={handleChange}
+                  onFocus={() => setFocusedField("requiredLoanAmount")}
+                  onBlur={() => setFocusedField(null)}
+                  className={`transition-all duration-300 ${
+                    focusedField === "requiredLoanAmount" ? "ring-2 ring-primary shadow-glow-primary" : ""
+                  } ${errors.requiredLoanAmount ? "border-destructive animate-shake" : ""}`}
+                  placeholder="e.g., 500000"
+                />
+                {errors.requiredLoanAmount && (
+                  <p className="text-xs text-destructive animate-fade-in">{errors.requiredLoanAmount}</p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="residentialStatus" className="text-sm font-medium">
+                  Residential Status <span className="text-destructive">*</span>
+                </Label>
+                <select
+                  id="residentialStatus"
+                  name="residentialStatus"
+                  value={formData.residentialStatus as string}
+                  onChange={handleChange}
+                  className={`mt-2 block w-full rounded-md border bg-transparent px-3 py-2 text-sm transition-all duration-200 ${
+                    errors.residentialStatus ? "border-destructive" : ""
+                  }`}
+                >
+                  <option value="">Select</option>
+                  <option value="Owned">Owned</option>
+                  <option value="Rented">Rented</option>
+                </select>
+                {errors.residentialStatus && (
+                  <p className="text-xs text-destructive animate-fade-in">{errors.residentialStatus}</p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="businessPremisesStatus" className="text-sm font-medium">
+                  Business Premises Status <span className="text-destructive">*</span>
+                </Label>
+                <select
+                  id="businessPremisesStatus"
+                  name="businessPremisesStatus"
+                  value={formData.businessPremisesStatus as string}
+                  onChange={handleChange}
+                  className={`mt-2 block w-full rounded-md border bg-transparent px-3 py-2 text-sm transition-all duration-200 ${
+                    errors.businessPremisesStatus ? "border-destructive" : ""
+                  }`}
+                >
+                  <option value="">Select</option>
+                  <option value="Owned">Owned</option>
+                  <option value="Rented">Rented</option>
+                </select>
+                {errors.businessPremisesStatus && (
+                  <p className="text-xs text-destructive animate-fade-in">{errors.businessPremisesStatus}</p>
+                )}
+              </div>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="yearsAtCurrentResidentialAddress" className="text-sm font-medium">
+                  Years at Current Residential Address <span className="text-destructive">*</span>
+                </Label>
+                <Input
+                  id="yearsAtCurrentResidentialAddress"
+                  name="yearsAtCurrentResidentialAddress"
+                  type="number"
+                  min={0}
+                  max={99}
+                  value={formData.yearsAtCurrentResidentialAddress as string}
+                  onChange={handleChange}
+                  onFocus={() => setFocusedField("yearsAtCurrentResidentialAddress")}
+                  onBlur={() => setFocusedField(null)}
+                  className={`transition-all duration-300 ${
+                    focusedField === "yearsAtCurrentResidentialAddress" ? "ring-2 ring-primary shadow-glow-primary" : ""
+                  } ${errors.yearsAtCurrentResidentialAddress ? "border-destructive animate-shake" : ""}`}
+                  placeholder="e.g., 3"
+                />
+                {errors.yearsAtCurrentResidentialAddress && (
+                  <p className="text-xs text-destructive animate-fade-in">{errors.yearsAtCurrentResidentialAddress}</p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="yearsAtCurrentBusinessAddress" className="text-sm font-medium">
+                  Years at Current Business Address <span className="text-destructive">*</span>
+                </Label>
+                <Input
+                  id="yearsAtCurrentBusinessAddress"
+                  name="yearsAtCurrentBusinessAddress"
+                  type="number"
+                  min={0}
+                  max={99}
+                  value={formData.yearsAtCurrentBusinessAddress as string}
+                  onChange={handleChange}
+                  onFocus={() => setFocusedField("yearsAtCurrentBusinessAddress")}
+                  onBlur={() => setFocusedField(null)}
+                  className={`transition-all duration-300 ${
+                    focusedField === "yearsAtCurrentBusinessAddress" ? "ring-2 ring-primary shadow-glow-primary" : ""
+                  } ${errors.yearsAtCurrentBusinessAddress ? "border-destructive animate-shake" : ""}`}
+                  placeholder="e.g., 5"
+                />
+                {errors.yearsAtCurrentBusinessAddress && (
+                  <p className="text-xs text-destructive animate-fade-in">{errors.yearsAtCurrentBusinessAddress}</p>
+                )}
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset className="space-y-4">
+            <legend className="flex items-center gap-2 text-lg font-bold text-foreground mb-4">
               <Mail className="h-5 w-5 text-primary" />
               Email Information
             </legend>
@@ -312,45 +493,94 @@ export default function ApplyNowModal({ isOpen, onClose, loanType }: ApplyNowMod
             </legend>
 
             <div className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="fullAddress" className="text-sm font-medium">
-                  Full Address <span className="text-destructive">*</span>
-                </Label>
-                <Input
-                  id="fullAddress"
-                  name="fullAddress"
-                  value={formData.fullAddress}
-                  onChange={handleChange}
-                  onFocus={() => setFocusedField("fullAddress")}
-                  onBlur={() => setFocusedField(null)}
-                  className={`transition-all duration-300 ${
-                    focusedField === "fullAddress" ? "ring-2 ring-primary shadow-glow-primary" : ""
-                  } ${errors.fullAddress ? "border-destructive animate-shake" : ""}`}
-                  placeholder="House No, Street, Area, City, State"
-                />
-                {errors.fullAddress && (
-                  <p className="text-xs text-destructive animate-fade-in">{errors.fullAddress}</p>
-                )}
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor="currentResidentialAddress" className="text-sm font-medium">
+                    Current Residential Address <span className="text-destructive">*</span>
+                  </Label>
+                  <Input
+                    id="currentResidentialAddress"
+                    name="currentResidentialAddress"
+                    value={formData.currentResidentialAddress}
+                    onChange={handleChange}
+                    onFocus={() => setFocusedField("currentResidentialAddress")}
+                    onBlur={() => setFocusedField(null)}
+                    className={`transition-all duration-300 ${
+                      focusedField === "currentResidentialAddress" ? "ring-2 ring-primary shadow-glow-primary" : ""
+                    } ${errors.currentResidentialAddress ? "border-destructive animate-shake" : ""}`}
+                    placeholder="House No, Street, Area, City, State"
+                  />
+                  {errors.currentResidentialAddress && (
+                    <p className="text-xs text-destructive animate-fade-in">{errors.currentResidentialAddress}</p>
+                  )}
+                </div>
+
+                <div className="w-full sm:w-1/3">
+                  <Label htmlFor="currentResidentialPincode" className="text-sm font-medium">
+                    Current Residential Address PIN Code <span className="text-destructive">*</span>
+                  </Label>
+                  <Input
+                    id="currentResidentialPincode"
+                    name="currentResidentialPincode"
+                    maxLength={6}
+                    value={formData.currentResidentialPincode}
+                    onChange={handleChange}
+                    onFocus={() => setFocusedField("currentResidentialPincode")}
+                    onBlur={() => setFocusedField(null)}
+                    className={`mt-2 transition-all duration-300 ${
+                      focusedField === "currentResidentialPincode" ? "ring-2 ring-primary shadow-glow-primary" : ""
+                    } ${errors.currentResidentialPincode ? "border-destructive animate-shake" : ""}`}
+                    placeholder="400001"
+                  />
+                  {errors.currentResidentialPincode && (
+                    <p className="text-xs text-destructive animate-fade-in">{errors.currentResidentialPincode}</p>
+                  )}
+                </div>
               </div>
 
-              <div className="w-full sm:w-1/3">
-                <Label htmlFor="pincode" className="text-sm font-medium">
-                  Pincode <span className="text-destructive">*</span>
-                </Label>
-                <Input
-                  id="pincode"
-                  name="pincode"
-                  maxLength={6}
-                  value={formData.pincode}
-                  onChange={handleChange}
-                  onFocus={() => setFocusedField("pincode")}
-                  onBlur={() => setFocusedField(null)}
-                  className={`mt-2 transition-all duration-300 ${
-                    focusedField === "pincode" ? "ring-2 ring-primary shadow-glow-primary" : ""
-                  } ${errors.pincode ? "border-destructive animate-shake" : ""}`}
-                  placeholder="400001"
-                />
-                {errors.pincode && <p className="text-xs text-destructive animate-fade-in">{errors.pincode}</p>}
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor="currentOfficeAddress" className="text-sm font-medium">
+                    Current Office / Shop Address <span className="text-destructive">*</span>
+                  </Label>
+                  <Input
+                    id="currentOfficeAddress"
+                    name="currentOfficeAddress"
+                    value={formData.currentOfficeAddress}
+                    onChange={handleChange}
+                    onFocus={() => setFocusedField("currentOfficeAddress")}
+                    onBlur={() => setFocusedField(null)}
+                    className={`transition-all duration-300 ${
+                      focusedField === "currentOfficeAddress" ? "ring-2 ring-primary shadow-glow-primary" : ""
+                    } ${errors.currentOfficeAddress ? "border-destructive animate-shake" : ""}`}
+                    placeholder="Office/Shop, Street, Area, City, State"
+                  />
+                  {errors.currentOfficeAddress && (
+                    <p className="text-xs text-destructive animate-fade-in">{errors.currentOfficeAddress}</p>
+                  )}
+                </div>
+
+                <div className="w-full sm:w-1/3">
+                  <Label htmlFor="currentOfficePincode" className="text-sm font-medium">
+                    Current Office / Shop Address PIN Code <span className="text-destructive">*</span>
+                  </Label>
+                  <Input
+                    id="currentOfficePincode"
+                    name="currentOfficePincode"
+                    maxLength={6}
+                    value={formData.currentOfficePincode}
+                    onChange={handleChange}
+                    onFocus={() => setFocusedField("currentOfficePincode")}
+                    onBlur={() => setFocusedField(null)}
+                    className={`mt-2 transition-all duration-300 ${
+                      focusedField === "currentOfficePincode" ? "ring-2 ring-primary shadow-glow-primary" : ""
+                    } ${errors.currentOfficePincode ? "border-destructive animate-shake" : ""}`}
+                    placeholder="400001"
+                  />
+                  {errors.currentOfficePincode && (
+                    <p className="text-xs text-destructive animate-fade-in">{errors.currentOfficePincode}</p>
+                  )}
+                </div>
               </div>
             </div>
           </fieldset>
@@ -511,6 +741,38 @@ export default function ApplyNowModal({ isOpen, onClose, loanType }: ApplyNowMod
                     accept="image/*,.pdf"
                     className="hidden"
                     onChange={(e) => handleFileChange(e, setPanFront)}
+                  />
+                </label>
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Latest Residential Electricity Bill</Label>
+                <label className="flex flex-col items-center justify-center h-24 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary/5 group">
+                  <Upload className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors" />
+                  <span className="mt-1 text-xs text-muted-foreground group-hover:text-primary">
+                    {residentialBill ? `${residentialBill.name.slice(0, 15)}...` : "Upload"}
+                  </span>
+                  <input
+                    type="file"
+                    accept="image/*,.pdf"
+                    className="hidden"
+                    onChange={(e) => handleFileChange(e, setResidentialBill)}
+                  />
+                </label>
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Latest Shop Electricity Bill</Label>
+                <label className="flex flex-col items-center justify-center h-24 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary/5 group">
+                  <Upload className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors" />
+                  <span className="mt-1 text-xs text-muted-foreground group-hover:text-primary">
+                    {shopBill ? `${shopBill.name.slice(0, 15)}...` : "Upload"}
+                  </span>
+                  <input
+                    type="file"
+                    accept="image/*,.pdf"
+                    className="hidden"
+                    onChange={(e) => handleFileChange(e, setShopBill)}
                   />
                 </label>
               </div>
