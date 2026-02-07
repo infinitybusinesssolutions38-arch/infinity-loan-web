@@ -1,5 +1,6 @@
 "use client";
 
+import type React from "react";
 import { useState } from "react";
 import { createPortal } from "react-dom";
 import { X, Upload, User, Mail, MapPin, CreditCard, FileCheck, Loader2 } from "lucide-react";
@@ -12,9 +13,10 @@ interface ApplyNowModalProps {
   isOpen: boolean;
   onClose: () => void;
   loanType: string;
+  loanTypeKey?: string;
 }
 
-type FormData = {
+type FormState = {
   firstName: string;
   middleName?: string;
   lastName: string;
@@ -38,11 +40,11 @@ type FormData = {
   passportNumber: string;
 };
 
-type FormErrors = Partial<Record<keyof FormData, string>>;
+type FormErrors = Partial<Record<keyof FormState, string>>;
 
-export default function ApplyNowModal({ isOpen, onClose, loanType }: ApplyNowModalProps) {
+export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey }: ApplyNowModalProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState<FormState>({
     firstName: "",
     middleName: "",
     lastName: "",
@@ -74,7 +76,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType }: ApplyNowMod
   const [residentialBill, setResidentialBill] = useState<File | null>(null);
   const [shopBill, setShopBill] = useState<File | null>(null);
 
-  const validateField = (name: keyof FormData, value: string): string => {
+  const validateField = (name: keyof FormState, value: string): string => {
     switch (name) {
       case "firstName":
       case "lastName":
@@ -114,7 +116,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType }: ApplyNowMod
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
 
-    const error = validateField(name as keyof FormData, value);
+    const error = validateField(name as keyof FormState, value);
     setErrors((prev) => ({ ...prev, [name]: error }));
   };
 
@@ -122,7 +124,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType }: ApplyNowMod
     e.preventDefault();
 
     const newErrors: FormErrors = {};
-    const requiredFields: (keyof FormData)[] = [
+    const requiredFields: (keyof FormState)[] = [
       "firstName",
       "lastName",
       "mobileNumber",
@@ -164,7 +166,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType }: ApplyNowMod
     setIsSubmitting(true);
 
     try {
-      const submissionFormData = new FormData();
+      const submissionFormData = new globalThis.FormData();
 
       // Add form fields
       submissionFormData.append("firstName", formData.firstName);
@@ -188,7 +190,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType }: ApplyNowMod
       submissionFormData.append("voterIdNumber", formData.voterIdNumber || "");
       submissionFormData.append("drivingLicense", formData.drivingLicense || "");
       submissionFormData.append("passportNumber", formData.passportNumber || "");
-      submissionFormData.append("loanType", loanType);
+      submissionFormData.append("loanType", loanTypeKey || loanType);
 
       // Add files
       if (aadhaarFront) submissionFormData.append("aadhaarFront", aadhaarFront);
