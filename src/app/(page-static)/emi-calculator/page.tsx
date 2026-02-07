@@ -1,8 +1,7 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
-import { IndianRupee, Calendar } from "lucide-react";
-import PrivateInstitutionalHighlight from "./PrivateInstitutionalHighlight";
+import { IndianRupee, Calendar, TrendingUp, PiggyBank } from "lucide-react";
 
 /* -------------------- Types -------------------- */
 type LoanInputs = {
@@ -72,7 +71,7 @@ function numberToWordsIndian(num: number): string {
 /* -------------------- Component -------------------- */
 export default function VehicleLoanEmiCalculator() {
   const [inputs, setInputs] = useState<LoanInputs>({
-    loanAmount: "10000",
+    loanAmount: "800000",
     interestRate: "9.5",
     tenureYears: "5",
   });
@@ -145,10 +144,6 @@ export default function VehicleLoanEmiCalculator() {
           </p>
         </div>
 
-        <PrivateInstitutionalHighlight />
-
-
-
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
           {/* Input Card */}
           <div className="rounded-3xl bg-white/5 backdrop-blur-xl p-6 sm:p-8 border border-white/10 shadow-2xl">
@@ -158,7 +153,6 @@ export default function VehicleLoanEmiCalculator() {
               </div>
               <h2 className="text-xl font-semibold text-white">Loan Details</h2>
             </div>
-
 
             {/* Loan Amount */}
             <div className="space-y-3 mb-6">

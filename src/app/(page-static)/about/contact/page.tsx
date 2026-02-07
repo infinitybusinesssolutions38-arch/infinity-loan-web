@@ -130,7 +130,9 @@ const ContactPage = () => {
                         Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible.
                     </motion.p>
                 </div>
+
                 <PrivateInstitutionalHighlight />
+
                 <div className="grid lg:grid-cols-2 gap-12">
                     {/* LEFT SIDE - FAQ Section */}
                     <motion.div 
