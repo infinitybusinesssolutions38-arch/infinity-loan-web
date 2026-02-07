@@ -6,15 +6,9 @@ import React from "react";
 import {
   Banknote,
   Building2,
-  Car,
-  CreditCard,
-  GraduationCap,
-  HeartPulse,
-  Home,
+  Briefcase,
   Landmark,
-  PiggyBank,
-  Shield,
-  Calculator,
+  Users,
 } from "lucide-react";
 
 const Navbar = () => {
@@ -54,107 +48,33 @@ const Navbar = () => {
               </span>
 
               <div className="absolute top-full left-1/2 -translate-x-1/2 pt-4 hidden group-hover:block">
-                <div className="w-[min(1100px,calc(100vw-2rem))] rounded-2xl bg-white p-6 shadow-2xl border border-[#F97415]/10 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
-                  <div className="grid grid-cols-5 gap-6 text-sm normal-case">
+                <div className="w-[min(720px,calc(100vw-2rem))] rounded-2xl bg-white p-6 shadow-2xl border border-[#F97415]/10 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+                  <div className="grid grid-cols-1 gap-6 text-sm normal-case">
                     <div className="space-y-2">
-                      <h4 className="font-bold mb-3 text-[#F97415] text-base">Loans</h4>
-                      <Link href="/business-loan" className="flex items-center gap-2 py-2 px-2 rounded-md transition-all duration-200 hover:bg-orange-50 hover:text-[#F97415] hover:translate-x-1">
-                        <Building2 className="h-4 w-4 text-[#F97415]" />
-                        Business Loan
+                      {/* <h4 className="font-bold mb-3 text-[#F97415] text-base">Services</h4> */}
+                      <Link href="/services?category=salaried-employees" className="flex items-center gap-2 py-2 px-2 rounded-md transition-all duration-200 hover:bg-orange-50 hover:text-[#F97415] hover:translate-x-1">
+                        <Users className="h-4 w-4 text-[#F97415]" />
+                        Loan Offers for Salaried Employees
                       </Link>
-                      <Link href="/personal-loan" className="flex items-center gap-2 py-2 px-2 rounded-md transition-all duration-200 hover:bg-orange-50 hover:text-[#F97415] hover:translate-x-1">
+                      <Link href="/services?category=businesses" className="flex items-center gap-2 py-2 px-2 rounded-md transition-all duration-200 hover:bg-orange-50 hover:text-[#F97415] hover:translate-x-1">
                         <Banknote className="h-4 w-4 text-[#F97415]" />
-                        Personal Loan
+                        Smart Loan & Funding Solutions for All Businesses
                       </Link>
-                      <Link href="/home-property-loan" className="flex items-center gap-2 py-2 px-2 rounded-md transition-all duration-200 hover:bg-orange-50 hover:text-[#F97415] hover:translate-x-1">
-                        <Home className="h-4 w-4 text-[#F97415]" />
-                        Home & Property Loans
+                      <Link href="/services?category=professionals" className="flex items-center gap-2 py-2 px-2 rounded-md transition-all duration-200 hover:bg-orange-50 hover:text-[#F97415] hover:translate-x-1">
+                        <Briefcase className="h-4 w-4 text-[#F97415]" />
+                        Smart Loan & Funding Solutions for All Professionals
                       </Link>
-                      <Link href="/vehicle-loan" className="flex items-center gap-2 py-2 px-2 rounded-md transition-all duration-200 hover:bg-orange-50 hover:text-[#F97415] hover:translate-x-1">
-                        <Car className="h-4 w-4 text-[#F97415]" />
-                        Vehicle Loans
-                      </Link>
-                      <Link href="/gold-asset-loan" className="flex items-center gap-2 py-2 px-2 rounded-md transition-all duration-200 hover:bg-orange-50 hover:text-[#F97415] hover:translate-x-1">
-                        <PiggyBank className="h-4 w-4 text-[#F97415]" />
-                        Gold & Asset-Backed Loans
-                      </Link>
-
-                      <div className="pt-2">
-                        <Link href="/services" className="inline-flex items-center rounded-lg border border-[#F97415]/20 bg-orange-50 px-3 py-2 font-semibold text-[#F97415] transition-all duration-200 hover:bg-orange-100">
-                          View All Services
-                        </Link>
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <h4 className="font-bold mb-3 text-[#F97415] text-base">Insurance</h4>
-                      <Link href="/services/insurance" className="flex items-center gap-2 py-2 px-2 rounded-md transition-all duration-200 hover:bg-orange-50 hover:text-[#F97415] hover:translate-x-1">
-                        <Shield className="h-4 w-4 text-[#F97415]" />
-                        Life Insurance
-                      </Link>
-                      <Link href="/services/insurance" className="flex items-center gap-2 py-2 px-2 rounded-md transition-all duration-200 hover:bg-orange-50 hover:text-[#F97415] hover:translate-x-1">
-                        <HeartPulse className="h-4 w-4 text-[#F97415]" />
-                        Health Insurance
-                      </Link>
-                      <Link href="/services/insurance" className="flex items-center gap-2 py-2 px-2 rounded-md transition-all duration-200 hover:bg-orange-50 hover:text-[#F97415] hover:translate-x-1">
-                        <Car className="h-4 w-4 text-[#F97415]" />
-                        Motor Insurance
-                      </Link>
-                      <Link href="/services/insurance" className="flex items-center gap-2 py-2 px-2 rounded-md transition-all duration-200 hover:bg-orange-50 hover:text-[#F97415] hover:translate-x-1">
-                        <Home className="h-4 w-4 text-[#F97415]" />
-                        Home Insurance
-                      </Link>
-                    </div>
-
-                    <div className="space-y-2">
-                      <h4 className="font-bold mb-3 text-[#F97415] text-base">Credit & Cards</h4>
-                      <Link href="/services/credit-cards" className="flex items-center gap-2 py-2 px-2 rounded-md transition-all duration-200 hover:bg-orange-50 hover:text-[#F97415] hover:translate-x-1">
-                        <CreditCard className="h-4 w-4 text-[#F97415]" />
-                        Credit Line / Flexi Loan
-                      </Link>
-                      <Link href="/services/credit-cards" className="flex items-center gap-2 py-2 px-2 rounded-md transition-all duration-200 hover:bg-orange-50 hover:text-[#F97415] hover:translate-x-1">
+                      <Link href="/services?category=govt-employees" className="flex items-center gap-2 py-2 px-2 rounded-md transition-all duration-200 hover:bg-orange-50 hover:text-[#F97415] hover:translate-x-1">
                         <Building2 className="h-4 w-4 text-[#F97415]" />
-                        Business Credit Card
+                        Smart Loan & Funding Solutions for Central & State Government Employees
                       </Link>
-                      <Link href="/services/credit-cards" className="flex items-center gap-2 py-2 px-2 rounded-md transition-all duration-200 hover:bg-orange-50 hover:text-[#F97415] hover:translate-x-1">
-                        <CreditCard className="h-4 w-4 text-[#F97415]" />
-                        Personal Credit Card
-                      </Link>
-                      <Link href="/services/credit-cards" className="flex items-center gap-2 py-2 px-2 rounded-md transition-all duration-200 hover:bg-orange-50 hover:text-[#F97415] hover:translate-x-1">
-                        <GraduationCap className="h-4 w-4 text-[#F97415]" />
-                        BNPL
-                      </Link>
-                    </div>
-
-                    <div className="space-y-2">
-                      <h4 className="font-bold mb-3 text-[#F97415] text-base">Government Schemes</h4>
-                      <Link href="/services/government-schemes" className="flex items-center gap-2 py-2 px-2 rounded-md transition-all duration-200 hover:bg-orange-50 hover:text-[#F97415] hover:translate-x-1">
+                      <Link href="/services?category=government-schemes" className="flex items-center gap-2 py-2 px-2 rounded-md transition-all duration-200 hover:bg-orange-50 hover:text-[#F97415] hover:translate-x-1">
                         <Landmark className="h-4 w-4 text-[#F97415]" />
-                        PM Mudra Loan
+                        End-to-End Financing Support for Central & State Government Schemes
                       </Link>
-                      <Link href="/services/government-schemes" className="flex items-center gap-2 py-2 px-2 rounded-md transition-all duration-200 hover:bg-orange-50 hover:text-[#F97415] hover:translate-x-1">
-                        <Landmark className="h-4 w-4 text-[#F97415]" />
-                        Stand-Up India
-                      </Link>
-                      <Link href="/services/government-schemes" className="flex items-center gap-2 py-2 px-2 rounded-md transition-all duration-200 hover:bg-orange-50 hover:text-[#F97415] hover:translate-x-1">
-                        <Shield className="h-4 w-4 text-[#F97415]" />
-                        CGTMSE Loan
-                      </Link>
-                      <Link href="/services/government-schemes" className="flex items-center gap-2 py-2 px-2 rounded-md transition-all duration-200 hover:bg-orange-50 hover:text-[#F97415] hover:translate-x-1">
-                        <Landmark className="h-4 w-4 text-[#F97415]" />
-                        Jansamarth
-                      </Link>
-                    </div>
-
-                    <div className="space-y-2">
-                      <h4 className="font-bold mb-3 text-[#F97415] text-base">Tools</h4>
-                      <Link href="/services/tools" className="flex items-center gap-2 py-2 px-2 rounded-md transition-all duration-200 hover:bg-orange-50 hover:text-[#F97415] hover:translate-x-1">
-                        <Calculator className="h-4 w-4 text-[#F97415]" />
-                        EMI Calculator
-                      </Link>
-                      <Link href="/services/tools" className="flex items-center gap-2 py-2 px-2 rounded-md transition-all duration-200 hover:bg-orange-50 hover:text-[#F97415] hover:translate-x-1">
-                        <Banknote className="h-4 w-4 text-[#F97415]" />
-                        Eligibility Checker
+                      <Link href="/services?category=builders-developers" className="flex items-center gap-2 py-2 px-2 rounded-md transition-all duration-200 hover:bg-orange-50 hover:text-[#F97415] hover:translate-x-1">
+                        <Building2 className="h-4 w-4 text-[#F97415]" />
+                        Smart Loan & Project Funding Solutions for Builders & Developers
                       </Link>
                     </div>
                   </div>
@@ -177,6 +97,15 @@ const Navbar = () => {
                 className={navLinkClass(pathname === "/contact")}
               >
                 Contact
+              </Link>
+            </li>
+
+            <li>
+              <Link
+                href="/emi-calculator"
+                className={navLinkClass(pathname === "/emi-calculator")}
+              >
+                EMI-Calculator
               </Link>
             </li>
           </ul>

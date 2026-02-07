@@ -41,23 +41,91 @@ const activeHowItWorks = [
 const activeFaqItems = [
     {
         id: "faq-1",
-        question: "What documents are required for a loan application?",
-        answer: "For personal loans, you need PAN card, Aadhaar card, bank statements (last 6 months), and salary slips. Business loans require additional documents like GST certificate, business registration proof, and ITR. We'll provide a complete checklist based on your loan type.",
+        question: "What does Infinity Loans & Business Solutions do?",
+        answer: "Infinity Loans & Business Solutions is a loan advisory and facilitation firm. We analyze client profiles and assist in securing the right loan from the right Bank or NBFC. We do not provide loans directly.",
     },
     {
         id: "faq-2",
-        question: "How long does the approval process take?",
-        answer: "Most applications are processed within 24 hours of submission. Once approved, the loan amount is typically disbursed to your bank account within 24-48 hours. We pride ourselves on quick turnaround times while maintaining thorough verification.",
+        question: "Do you provide loans directly?",
+        answer: "No. We act strictly as a financial advisor and channel partner. Final loan approval and disbursement are carried out solely by the respective Bank or NBFC.",
     },
     {
         id: "faq-3",
-        question: "What are the interest rates and charges?",
-        answer: "Interest rates start from 10.5% p.a. for personal loans and 12% p.a. for business loans, depending on your credit profile and loan amount. We believe in complete transparency - there are no hidden charges. All fees are clearly mentioned in your loan agreement.",
+        question: "Are your services available Pan-India?",
+        answer: "Yes. We provide loan advisory services across Pan-India, covering all States and Union Territories of India.",
     },
     {
         id: "faq-4",
-        question: "Can I prepay my loan without penalties?",
-        answer: "Yes! We do not charge any prepayment or foreclosure penalties. You are free to repay your loan anytime without any additional fees. We want to support your financial freedom, not restrict it.",
+        question: "Which Banks and NBFCs do you work with?",
+        answer: "We work with 100+ leading Banks and NBFCs, allowing us to match each profile with the most suitable lender.",
+    },
+    {
+        id: "faq-5",
+        question: "How do you check loan eligibility?",
+        answer: "We evaluate CIBIL score, income, employment or business profile, existing liabilities, and submitted documents to assess eligibility.",
+    },
+    {
+        id: "faq-6",
+        question: "What is the minimum CIBIL score required?",
+        answer: "CIBIL score requirements vary by lender and loan type. Generally, a score of 650 or above improves approval chances.",
+    },
+    {
+        id: "faq-7",
+        question: "Can I apply if my CIBIL score is low?",
+        answer: "Yes. We analyze the complete profile and may suggest alternate Banks/NBFCs or profile-improvement strategies, subject to eligibility.",
+    },
+    {
+        id: "faq-8",
+        question: "What is the loan process?",
+        answer: "Our process includes profile assessment, internal credit and document analysis, Bank/NBFC matching, application support, and disbursement coordination.",
+    },
+    {
+        id: "faq-9",
+        question: "When will I know my loan eligibility?",
+        answer: "Once all required documents are submitted, your profile is evaluated and loan eligibility is communicated within 48 hours, subject to internal assessment and lender criteria.",
+    },
+    {
+        id: "faq-10",
+        question: "What documents are required?",
+        answer: "Common documents include PAN, Aadhaar, address proof, income proof (salary slips / ITR), bank statements, and employment or business details.",
+    },
+    {
+        id: "faq-11",
+        question: "Will my documents be shared with banks?",
+        answer: "Yes. Documents are shared only with selected Banks or NBFCs, only after internal analysis, and strictly with your consent.",
+    },
+    {
+        id: "faq-12",
+        question: "What charges do you take for your services?",
+        answer:
+            "Our charges are applicable only as professional advisory and facilitation fees payable to Infinity Loans & Business Solutions.\n\nThese fees do not include any Bank or NBFC charges. All Bank/NBFC-related charges, including processing fees or statutory costs, are deducted directly from the loan amount by the respective lender, as per their policies.\n\nInfinity Loans & Business Solutions’ professional fees are payable separately and are communicated clearly in advance.",
+    },
+    {
+        id: "faq-13",
+        question: "Will interest rates be decided by you?",
+        answer: "No. Interest rates, tenure, and loan terms are solely decided by the respective Bank or NBFC, based on eligibility and internal credit policy.",
+    },
+    {
+        id: "faq-14",
+        question: "Is my personal and financial data safe?",
+        answer: "Yes. We follow strict data confidentiality and privacy practices to protect client information.",
+    },
+    {
+        id: "faq-15",
+        question: "How do you protect my documents and CIBIL score?",
+        answer:
+            "We first thoroughly review and analyze all documents internally to assess eligibility.\n\nWe do not distribute documents to multiple lenders initially, ensuring no unnecessary impact on your CIBIL score. Documents are shared only with carefully selected lenders, after detailed analysis and with your consent.",
+    },
+    {
+        id: "faq-16",
+        question: "How can I contact your team?",
+        answer:
+            "You may contact us through:\n\nTalk to a Financial Expert\nChat with a Loan Expert on WhatsApp\nRequest a Call Back\nEmail our advisory team",
+    },
+    {
+        id: "faq-17",
+        question: "Do you provide post-disbursement support?",
+        answer: "Yes. We assist with documentation clarifications, balance transfer guidance, and future funding advisory.",
     },
 ];
 
@@ -177,7 +245,7 @@ export default function ModernSections() {
                         </div>
 
                         <h2 className="text-4xl lg:text-5xl font-black text-gray-900 mb-4 animate-fade-in-up">
-                            FAQs
+                            Frequently Asked Questions (FAQs)
                         </h2>
 
                         <p className="text-lg text-gray-600 animate-fade-in-up animation-delay-100">
@@ -267,7 +335,7 @@ export default function ModernSections() {
                                                             <CheckCircle2 className="w-3 h-3 text-[#F97415]" />
                                                         </div>
                                                     </div>
-                                                    <p className="text-sm lg:text-base text-gray-700 leading-relaxed">
+                                                    <p className="text-sm lg:text-base text-gray-700 leading-relaxed whitespace-pre-line">
                                                         {item.answer}
                                                     </p>
                                                 </div>
@@ -277,6 +345,24 @@ export default function ModernSections() {
                                 </div>
                             );
                         })}
+                    </div>
+
+                    <div className="max-w-3xl mx-auto mt-8 animate-fade-in-up">
+                        <div className="bg-orange-50/60 rounded-xl shadow-md border-2 border-[#F97415]/20 overflow-hidden">
+                            <div className="px-5 py-4 flex items-start gap-3">
+                                <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-gradient-to-br from-[#F97415] to-orange-600 flex items-center justify-center">
+                                    <Shield className="w-4 h-4 text-white" />
+                                </div>
+                                <div className="flex-1">
+                                    <p className="text-base lg:text-lg font-bold text-gray-900">Disclaimer</p>
+                                    <p className="mt-2 text-sm lg:text-base text-gray-700 leading-relaxed whitespace-pre-line">
+                                        Infinity Loans & Business Solutions is not a Bank or NBFC.
+                                        {"\n"}
+                                        We provide loan advisory and facilitation services only. Final loan sanction, interest rates, terms, and disbursement are solely at the discretion of the respective Bank or NBFC, subject to eligibility norms and internal policies.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     {/* Help Footer */}

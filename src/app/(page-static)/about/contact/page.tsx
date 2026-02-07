@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Minus, Mail, Phone, MapPin, Send, CheckCircle2 } from "lucide-react";
+import PrivateInstitutionalHighlight from "@/app/components/PrivateInstitutionalHighlight";
 
 type FormData = {
     firstname: string;
@@ -129,7 +130,7 @@ const ContactPage = () => {
                         Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible.
                     </motion.p>
                 </div>
-
+                <PrivateInstitutionalHighlight />
                 <div className="grid lg:grid-cols-2 gap-12">
                     {/* LEFT SIDE - FAQ Section */}
                     <motion.div 
