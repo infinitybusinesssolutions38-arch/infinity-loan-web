@@ -293,9 +293,19 @@ export async function POST(req) {
                 <p>Please review the application in the admin dashboard.</p>
             `;
 
+            const adminRecipients = Array.from(
+                new Set(
+                    [
+                        process.env.SUPPORT_EMAIL,
+                        process.env.DIRECTOR_EMAIL,
+                        process.env.ADMIN_USER,
+                    ].filter(Boolean)
+                )
+            );
+
             await transporter.sendMail({
                 from: process.env.EMAIL_FROM,
-                to: process.env.ADMIN_USER || process.env.SUPPORT_EMAIL,
+                to: adminRecipients,
                 subject: adminSubject,
                 text: `New application ${applicationRef} received.`,
                 html: adminHtml,
