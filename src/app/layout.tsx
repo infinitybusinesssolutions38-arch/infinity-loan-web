@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "./components/Navbar";
 import { Footer } from "./components/Footer";
 import { LoanModalProvider } from "@/components/LoanModalProvider";
+import StickyContactButtons from "./components/StickyContactButtons";
 
 
 const geistSans = Geist({
@@ -34,6 +35,7 @@ export default function RootLayout({
             >
                 <LoanModalProvider>
                     <Navbar />
+                    <StickyContactButtons />
                     {children}
                     <Footer />
                 </LoanModalProvider>

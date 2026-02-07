@@ -720,16 +720,25 @@ export default function HomePageClient() {
 
       <section className="py-16 lg:py-24">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-6xl">
-              Explore Our <span className="text-[#f97415] text-7xl">Loan</span> Services
-            </h2>
-            <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-              Choose from a wide range of financial products tailored to your needs
-            </p>
-          </div>
+          <div className="text-center mb-12 border border-gray-200 rounded-2xl p-6 shadow-xl">
+  <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-6xl">
+    Explore Our <span className="text-[#f97415] text-7xl">Loan</span> Services
+  </h2>
 
-          <div className="flex flex-wrap justify-center gap-3 mb-10">
+  <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
+    Choose from a wide range of financial products tailored to your needs
+  </p>
+
+  <div className="mt-8">
+    <Link href="/services">
+      <button className="cursor-pointer px-8 py-3 bg-[#f97415] text-white font-semibold rounded-lg shadow-md hover:bg-[#e8630f] transition duration-300">
+        View All Services
+      </button>
+    </Link>
+  </div>
+</div>
+
+          {/* <div className="flex flex-wrap justify-center gap-3 mb-10">
             {CATEGORY_META.map((cat) => {
               const Icon = cat.icon;
               const isActive = cat.key === activeCategory;
@@ -888,7 +897,7 @@ export default function HomePageClient() {
                 ))}
               </div>
             </div>
-          )}
+          )} */}
 
 <ModernSections />
           {/* <div className="mt-14 space-y-12">

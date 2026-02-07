@@ -54,11 +54,11 @@ export default function AboutUsPage() {
               </h1>
 
               <p className="text-lg md:text-xl text-gray-300 leading-relaxed">
-                A trusted financial distribution and loan advisory firm dedicated to delivering transparent, reliable, and result-driven funding solutions across India.
+                A financial advisory and loan facilitation firm focused on the right analysis, right structuring, and the right lender fit.
               </p>
 
               <p className="text-base text-gray-400 leading-relaxed">
-                We help individuals, professionals, entrepreneurs, and businesses access the right finance through our strong lending network and expert advisory support. Our approach focuses on simplifying the borrowing process while enabling long-term financial stability and growth.
+                We assess requirements, profile risk, structure applications, and map each case to suitable Banks and NBFCs—staying involved from profiling to disbursement.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 pt-4">
@@ -104,6 +104,105 @@ export default function AboutUsPage() {
         </div>
       </section>
 
+      <section className="py-20 lg:py-32 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
+        <div className="absolute inset-0 opacity-[0.03]">
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage: `radial-gradient(circle at 1px 1px, black 1px, transparent 0)`,
+              backgroundSize: "40px 40px",
+            }}
+          />
+        </div>
+
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-black/5 border border-black/10 backdrop-blur-sm mb-4">
+              <TrendingUp className="w-4 h-4 text-[#F97415]" />
+              <span className="text-sm font-medium text-gray-700">Our Purpose</span>
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold text-black mb-4">
+              Our <span className="text-[#F97415]">Mission</span> & <span className="text-[#F97415]">Vision</span>
+            </h2>
+          </div>
+
+          <div className="grid gap-8 lg:grid-cols-2 max-w-6xl mx-auto">
+            <article className="group relative rounded-3xl bg-white/80 backdrop-blur-xl border border-gray-200/50 p-8 shadow-xl hover:shadow-2xl transition-all duration-500">
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#F97415] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-gray-100 to-gray-50 border border-gray-200 flex items-center justify-center">
+                  <Shield className="h-6 w-6 text-black" />
+                </div>
+                <h3 className="text-2xl font-bold text-black">Our Mission</h3>
+              </div>
+
+              <p className="text-gray-600 leading-relaxed mb-6">
+                Our mission is to deliver trusted, transparent, and expert-led financial advisory services that enable individuals and businesses to access the right funding solutions.
+              </p>
+
+              <div className="rounded-2xl bg-gradient-to-br from-gray-50 to-white p-6 border border-gray-200">
+                <p className="text-sm font-semibold text-black mb-4">We are committed to:</p>
+                <ul className="space-y-3">
+                  {[
+                    "In-depth credit and financial analysis",
+                    "Ethical, unbiased, and client-first advisory",
+                    "Accurate structuring aligned with lender policies",
+                    "Full transparency and regulatory compliance",
+                    "Long-term value creation for every client",
+                  ].map((item, idx) => (
+                    <li key={idx} className="flex gap-3 items-start group/item">
+                      <div className="w-5 h-5 rounded-full bg-[#F97415]/10 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover/item:bg-[#F97415]/20 transition-colors">
+                        <div className="w-2 h-2 rounded-full bg-[#F97415]" />
+                      </div>
+                      <span className="text-gray-600 leading-relaxed">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <p className="mt-6 text-gray-600 leading-relaxed">
+                Our objective is not just loan facilitation, but building enduring financial partnerships.
+              </p>
+            </article>
+
+            <article className="group relative rounded-3xl bg-white/80 backdrop-blur-xl border border-gray-200/50 p-8 shadow-xl hover:shadow-2xl transition-all duration-500">
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#F97415] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-gray-100 to-gray-50 border border-gray-200 flex items-center justify-center">
+                  <Award className="h-6 w-6 text-black" />
+                </div>
+                <h3 className="text-2xl font-bold text-black">Our Vision</h3>
+              </div>
+
+              <p className="text-gray-600 leading-relaxed mb-6">
+                Our vision is to become a globally trusted financial advisory institution, recognized for integrity, transparency, deep banking expertise, structured credit advisory excellence, and scalable and compliant operations.
+              </p>
+
+              <div className="rounded-2xl bg-gradient-to-br from-gray-50 to-white p-6 border border-gray-200">
+                <p className="text-sm font-semibold text-black mb-4">We aim to:</p>
+                <ul className="space-y-3">
+                  {[
+                    "Set new benchmarks in loan structuring and advisory",
+                    "Expand across Pan-India and international markets",
+                    "Leverage analytics, technology, and expert talent",
+                    "Promote financial inclusion across all business sizes",
+                  ].map((item, idx) => (
+                    <li key={idx} className="flex gap-3 items-start group/item">
+                      <div className="w-5 h-5 rounded-full bg-[#F97415]/10 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover/item:bg-[#F97415]/20 transition-colors">
+                        <div className="w-2 h-2 rounded-full bg-[#F97415]" />
+                      </div>
+                      <span className="text-gray-600 leading-relaxed">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
       {/* Vision & Mission Section */}
       <section className="py-20 lg:py-32 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
         <div className="absolute inset-0 opacity-[0.03]">
@@ -117,10 +216,10 @@ export default function AboutUsPage() {
           <div className="text-center mb-16">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-black/5 border border-black/10 backdrop-blur-sm mb-4">
               <TrendingUp className="w-4 h-4 text-[#F97415]" />
-              <span className="text-sm font-medium text-gray-700">Our Purpose</span>
+              <span className="text-sm font-medium text-gray-700">Our Story</span>
             </div>
             <h2 className="text-4xl md:text-5xl font-bold text-black mb-4">
-              Vision & <span className="text-[#F97415]">Mission</span>
+              Founder & <span className="text-[#F97415]">Roadmap</span>
             </h2>
           </div>
 
@@ -133,17 +232,17 @@ export default function AboutUsPage() {
                 <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-gray-100 to-gray-50 border border-gray-200 flex items-center justify-center">
                   <Award className="h-6 w-6 text-black" />
                 </div>
-                <h3 className="text-2xl font-bold text-black">Our Vision</h3>
+                <h3 className="text-2xl font-bold text-black">Founder’s Vision</h3>
               </div>
 
               <p className="text-gray-600 leading-relaxed mb-6">
-                To be recognized as one of India's most trusted and customer-centric financial distribution companies by delivering ethical, transparent, and customized loan solutions that create lasting value.
+                Aamin Khan (Founder & Director) brings 17+ years of experience across loans, banking, insurance, taxation, business coaching, and real estate—building a platform rooted in ethics, expertise, and clarity.
               </p>
               
               <div className="rounded-2xl bg-gradient-to-br from-gray-50 to-white p-5 border border-gray-200">
                 <p className="text-sm font-semibold text-black flex items-center gap-2">
                   <Sparkles className="h-4 w-4 text-[#F97415]" />
-                  Building trust through transparency and excellence
+                  Right Analysis. Right Structuring. Right Bank.
                 </p>
               </div>
             </article>
@@ -156,16 +255,16 @@ export default function AboutUsPage() {
                 <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-gray-100 to-gray-50 border border-gray-200 flex items-center justify-center">
                   <Shield className="h-6 w-6 text-black" />
                 </div>
-                <h3 className="text-2xl font-bold text-black">Our Mission</h3>
+                <h3 className="text-2xl font-bold text-black">Growth Roadmap</h3>
               </div>
 
               <ul className="space-y-4">
                 {[
-                  "Deliver fast, simple, and transparent loan processing",
-                  "Understand every client's financial profile to offer tailored funding solutions",
-                  "Provide competitive interest rates and faster approvals through strong lender partnerships",
-                  "Maintain the highest standards of professionalism, ethics, and regulatory compliance",
-                  "Build long-term relationships based on trust, reliability, and service excellence"
+                  "Infinity Loans & Business Solutions is on a structured institutional growth path",
+                  "Planned transition from proprietorship to a Private Limited Company",
+                  "Stronger corporate governance and regulatory compliance",
+                  "Improved operational scalability and institutional credibility",
+                  "Deeper partnerships with Banks, NBFCs, and investors"
                 ].map((item, idx) => (
                   <li key={idx} className="flex gap-3 items-start group/item">
                     <div className="w-5 h-5 rounded-full bg-[#F97415]/10 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover/item:bg-[#F97415]/20 transition-colors">
@@ -193,62 +292,62 @@ export default function AboutUsPage() {
           <div className="text-center mb-16">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 backdrop-blur-sm mb-4">
               <Users className="w-4 h-4 text-[#F97415]" />
-              <span className="text-sm font-medium text-white">Our Network</span>
+              <span className="text-sm font-medium text-white">Why Choose Us</span>
             </div>
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              Strong Lending <span className="text-[#F97415]">Network</span>
+              Why Choose <span className="text-[#F97415]">Infinity Loans</span>
             </h2>
             <p className="text-gray-400 text-lg max-w-3xl mx-auto">
-              A diversified and powerful lending ecosystem, enabling higher approval success and flexible funding options
+              Strategic placement, transparent advisory, and end-to-end ownership from profiling to disbursement.
             </p>
           </div>
 
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-7xl mx-auto">
             {[
               {
-                icon: Building2,
-                title: "100+ Leading Banks",
-                description: "Partnerships with top banking institutions across India",
+                icon: Clock,
+                title: "17+ Years of Industry Experience",
+                description: "Deep domain expertise across lending, risk, and structuring.",
                 color: "from-blue-500/10 to-blue-600/10",
                 iconBg: "bg-blue-500/10",
                 iconColor: "text-blue-400"
               },
               {
-                icon: Users,
-                title: "100+ NBFCs & Financial Institutions",
-                description: "Extensive network of non-banking financial companies",
+                icon: Building2,
+                title: "100+ Bank & NBFC Relationships",
+                description: "Wide lender network to match policies with your profile.",
                 color: "from-purple-500/10 to-purple-600/10",
                 iconBg: "bg-purple-500/10",
                 iconColor: "text-purple-400"
               },
               {
-                icon: Zap,
-                title: "Fintech Platform Integrations",
-                description: "Multiple lending platform integrations for faster processing",
+                icon: Users,
+                title: "500+ Financial & Credit Experts",
+                description: "Multi-disciplinary support across profiling, documentation, and follow-ups.",
                 color: "from-green-500/10 to-green-600/10",
                 iconBg: "bg-green-500/10",
                 iconColor: "text-green-400"
               },
               {
-                icon: Shield,
-                title: "Verified Private Lenders",
-                description: "Network of trusted and verified private lending sources",
+                icon: CheckCircle2,
+                title: "High Approval Ratio",
+                description: "Better outcomes through policy-aligned structuring and placement.",
                 color: "from-red-500/10 to-red-600/10",
                 iconBg: "bg-red-500/10",
                 iconColor: "text-red-400"
               },
               {
                 icon: Award,
-                title: "Dedicated Relationship Managers",
-                description: "Expert loan advisors and support throughout your journey",
+                title: "Specialized HNI & UHNI Advisory",
+                description: "Large-ticket structuring and multi-bank negotiation support.",
                 color: "from-orange-500/10 to-orange-600/10",
                 iconBg: "bg-[#F97415]/10",
                 iconColor: "text-[#F97415]"
               },
               {
                 icon: TrendingUp,
-                title: "Network Advantage",
-                description: "Competitive interest structures and faster disbursements",
+                title: "Pan-India Reach",
+                description: "Serving Tier 1 metros, Tier 2 & Tier 3 markets, emerging regions, all States and Union Territories — with select international cases.",
                 color: "from-cyan-500/10 to-cyan-600/10",
                 iconBg: "bg-cyan-500/10",
                 iconColor: "text-cyan-400"
@@ -290,53 +389,52 @@ export default function AboutUsPage() {
           <div className="text-center mb-16">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-black/5 border border-black/10 backdrop-blur-sm mb-4">
               <Briefcase className="w-4 h-4 text-[#F97415]" />
-              <span className="text-sm font-medium text-gray-700">Our Expertise</span>
+              <span className="text-sm font-medium text-gray-700">Our Core</span>
             </div>
             <h2 className="text-4xl md:text-5xl font-bold text-black mb-4">
-              Comprehensive Loan <span className="text-[#F97415]">Solutions</span>
+              Our Core Service <span className="text-[#F97415]">Segments</span>
             </h2>
             <p className="text-gray-600 text-lg max-w-3xl mx-auto">
-              End-to-end consultation and processing support across a wide range of loan products
+              Advisory-led structuring and execution across corporate, real estate, and high-value funding.
             </p>
           </div>
 
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 max-w-7xl mx-auto">
             {[
               {
-                icon: "🚗",
-                title: "Vehicle & Transport Loans",
-                items: ["New & Used Car Loans", "Commercial Vehicle & Fleet Financing", "Two-Wheeler Loans", "Luxury Vehicle Loans"],
+                icon: "💼",
+                title: "Business & Corporate Loan Advisory",
+                items: [
+                  "Term Loans",
+                  "Working Capital Facilities",
+                  "MSME / SME Funding",
+                  "Expansion and Growth Capital",
+                  "Balance Sheet-Based Lending",
+                  "Cash Flow-Based Lending",
+                ],
                 gradient: "from-blue-50 to-blue-100/50"
               },
               {
-                icon: "💼",
-                title: "SME & Business Loans",
-                items: ["SME & MSME Loans", "Business Expansion & Working Capital", "Startup Funding", "Trade & Inventory Finance", "Overdraft & Cash Credit"],
+                icon: "🏗️",
+                title: "Builder & Developer Funding",
+                items: [
+                  "Project Funding & Construction Finance",
+                  "Land Acquisition & Development Funding",
+                  "Structured Real Estate Finance",
+                  "Residential, Commercial & Mixed-Use Projects",
+                ],
                 gradient: "from-purple-50 to-purple-100/50"
               },
               {
-                icon: "🏭",
-                title: "Industrial & Project Finance",
-                items: ["Industrial Loans & Project Finance", "Machinery & Equipment Loans", "Infrastructure Expansion", "Warehouse & Logistics Financing"],
+                icon: "👑",
+                title: "HNI & UHNI Loan Advisory",
+                items: [
+                  "Large-Ticket Loan Structuring",
+                  "Asset-Backed Financing",
+                  "Customized Credit Solutions",
+                  "Multi-Bank Negotiation Support",
+                ],
                 gradient: "from-green-50 to-green-100/50"
-              },
-              {
-                icon: "🏠",
-                title: "Property & Mortgage Loans",
-                items: ["Home Loans", "Loan Against Property (LAP)", "Commercial Property Loans", "Construction Finance", "Balance Transfer & Top-Up"],
-                gradient: "from-orange-50 to-orange-100/50"
-              },
-              {
-                icon: "👤",
-                title: "Personal & Private Funding",
-                items: ["Personal & Professional Loans", "Emergency Funding", "Private Funding Solutions", "Debt Consolidation Loans"],
-                gradient: "from-red-50 to-red-100/50"
-              },
-              {
-                icon: "⚡",
-                title: "Quick Solutions",
-                items: ["Fast Track Approvals", "Minimal Documentation", "Digital Processing", "Same-Day Disbursement"],
-                gradient: "from-cyan-50 to-cyan-100/50"
               },
             ].map((category, idx) => (
               <div
@@ -381,21 +479,57 @@ export default function AboutUsPage() {
               <span className="text-sm font-medium text-white">Our Process</span>
             </div>
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              End-to-End Loan <span className="text-[#F97415]">Assistance</span>
+              Requirement to Disbursement <span className="text-[#F97415]">Workflow</span>
             </h2>
             <p className="text-gray-400 text-lg max-w-3xl mx-auto">
-              We manage the complete loan lifecycle to ensure a smooth and hassle-free experience
+              A structured advisory flow designed for higher approval probability and smoother execution.
             </p>
           </div>
 
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
             {[
-              { title: "Financial Profile Evaluation", icon: "📊", step: "01" },
-              { title: "Documentation & Compliance Support", icon: "📄", step: "02" },
-              { title: "Lender Matching & Expert Consultation", icon: "🤝", step: "03" },
-              { title: "Approval & Processing Assistance", icon: "✅", step: "04" },
-              { title: "Loan Disbursement Support", icon: "💰", step: "05" },
-              { title: "Post-Disbursement Customer Service", icon: "🎯", step: "06" },
+              {
+                title: "Requirement Understanding & Profiling",
+                icon: "📌",
+                step: "01",
+                description:
+                  "We assess the funding requirement, financial background, and long-term objectives to build the right credit strategy.",
+              },
+              {
+                title: "Credit, Financial & Risk Analysis",
+                icon: "📊",
+                step: "02",
+                description:
+                  "CIBIL score and credit history, financial statements and income strength, banking conduct and liabilities, documentation and compliance readiness.",
+              },
+              {
+                title: "Internal Expert Committee Review",
+                icon: "🧩",
+                step: "03",
+                description:
+                  "Multi-disciplinary review for policy-aligned structuring, accurate documentation, and higher approval probability.",
+              },
+              {
+                title: "Strategic Bank & NBFC Mapping",
+                icon: "🏦",
+                step: "04",
+                description:
+                  "We shortlist lenders from our network of 100+ institutions whose credit policies best match the client’s profile.",
+              },
+              {
+                title: "Application & Process Execution",
+                icon: "📝",
+                step: "05",
+                description:
+                  "We manage application filing, documentation coordination, lender communication, and continuous follow-ups.",
+              },
+              {
+                title: "Sanction & Disbursement Support",
+                icon: "💰",
+                step: "06",
+                description:
+                  "We remain involved until sanction is issued, conditions are fulfilled, and funds are successfully disbursed.",
+              },
             ].map((item, idx) => (
               <div
                 key={idx}
@@ -409,6 +543,9 @@ export default function AboutUsPage() {
                     <h3 className="text-base font-semibold text-white leading-tight">
                       {item.title}
                     </h3>
+                    <p className="mt-2 text-sm text-gray-400 leading-relaxed">
+                      {item.description}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -453,48 +590,10 @@ export default function AboutUsPage() {
           </div>
 
           <p className="mt-8 text-center text-sm text-gray-500">
-            Disclaimer: This page is for informational purposes only. Loan approval subject to eligibility and documentation.
+            Compliance & Disclaimer: Infinity Loans & Business Solutions acts strictly as a financial advisory and loan facilitation firm. We do not provide loans directly. All loan sanctions, interest rates, terms, and disbursements are solely at the discretion of the respective Bank or NBFC, subject to their internal credit policies and regulatory norms.
           </p>
         </div>
       </section>
-
-      {/* Animation Styles */}
-      <style>{`
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        @keyframes blob {
-          0%, 100% {
-            transform: translate(0, 0) scale(1);
-          }
-          33% {
-            transform: translate(30px, -50px) scale(1.1);
-          }
-          66% {
-            transform: translate(-20px, 20px) scale(0.9);
-          }
-        }
-
-        .animate-blob {
-          animation: blob 7s infinite;
-        }
-
-        .animation-delay-2000 {
-          animation-delay: 2s;
-        }
-
-        .animation-delay-4000 {
-          animation-delay: 4s;
-        }
-      `}</style>
     </main>
   );
 }
