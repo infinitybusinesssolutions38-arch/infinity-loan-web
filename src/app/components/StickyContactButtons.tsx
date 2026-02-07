@@ -1,6 +1,6 @@
 "use client";
 
-import { Mail, MessageCircle, Phone } from "lucide-react";
+import { Mail, MessageCircle, Phone, PhoneCall } from "lucide-react";
 
 function normalizePhoneTel(phone: string) {
   const trimmed = phone.trim();
@@ -23,6 +23,7 @@ export default function StickyContactButtons() {
   const telHref = `tel:${normalizePhoneTel(phone)}`;
   const whatsappHref = `https://wa.me/${normalizeWhatsappNumber(whatsapp)}?text=${encodeURIComponent(whatsappMessage)}`;
   const mailHref = `mailto:${email}`;
+  const callbackHref = "/contact";
 
   return (
     <div className="fixed right-3 top-1/2 z-[60] -translate-y-1/2">
@@ -36,6 +37,17 @@ export default function StickyContactButtons() {
             Talk to a Financial Expert
           </span>
           <Phone className="h-5 w-5" />
+        </a>
+        <div className="h-px w-full bg-white/10" />
+        <a
+          href={callbackHref}
+          aria-label="Request a call back"
+          className="group relative flex cursor-pointer h-12 w-12 items-center justify-center text-white/90 transition-colors hover:bg-white/10 hover:text-[#f97415]"
+        >
+          <span className="pointer-events-none absolute right-full mr-3 whitespace-nowrap rounded-md bg-gray-950 px-3 py-1.5 text-xs font-medium text-white opacity-0 shadow-lg ring-1 ring-white/10 transition-opacity group-hover:opacity-100">
+            Request a Call Back
+          </span>
+          <PhoneCall className="h-5 w-5" />
         </a>
         <div className="h-px w-full bg-white/10" />
         <a

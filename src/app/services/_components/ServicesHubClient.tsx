@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import {
   Banknote,
   Building2,
@@ -27,6 +28,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import PrivateInstitutionalHighlight from "@/app/components/PrivateInstitutionalHighlight";
 
 type HubCategoryKey =
   | "salaried-employees"
@@ -707,23 +709,240 @@ const LOAN_GROUP_BY_TITLE = Object.fromEntries(
   LOAN_SERVICES.map((group) => [group.title, group])
 ) as Record<string, ServiceGroup>;
 
+const SALARIED_EMPLOYEE_LOAN_OFFERS: ServiceGroup = {
+  title: "Loan Offers for Salaried Employees",
+  items: [
+    ...makeItems({
+      prefix: "salaried",
+      infoHref: "/services/loans",
+      titles: [
+        "Personal Loan",
+        "New Home Loan",
+        "Resale Home Loan",
+        "Home Extension Loan",
+        "Self-Construction Home Loan",
+        "Open Plot / Plot Purchase Loan",
+        "Plot + Construction Loan",
+        "Home Renovation / Improvement Loan",
+        "New Car Loan",
+        "Used / Resale Car Loan",
+        "Education Loan",
+        "Medical Emergency Loan",
+        "Wedding / Marriage Loan",
+        "Travel / Holiday Loan",
+        "Consumer Durable Loan",
+        "Loan Against Property (LAP)",
+        "Salary Advance / Short-Term Loan",
+        "Balance Transfer Loan",
+        "Top-Up Loan",
+        "Balance Transfer & Top-Up Loan",
+        "Gold Loan",
+        "Credit Card Loan",
+        "Overdraft Facility for Salaried Employees",
+        "Personal Overdraft Loan",
+        "Flexi Personal Loan",
+        "Flexi Home Loan",
+        "Festival Loan Offers",
+        "Instant Cash Loan",
+        "Small Ticket Loan",
+        "Emergency Cash Loan",
+        "Digital / Paperless Loan",
+        "Refinance Loan",
+        "Pre-Approved Loan",
+        "NRI Home Loan (for Salaried NRIs)",
+        "Pension Loan",
+        "Government Employee Special Loan",
+        "Women Salaried Loan",
+        "Green Home / EV Vehicle Loan",
+        "Solar Panel Installation Loan",
+        "Salary Account–Linked Loan",
+        "Corporate Salary Package Loan",
+        "Joint Home Loan",
+        "No-Collateral Personal Loan",
+        "Quick Disbursal Loan",
+        "Same-Day Approval Loan",
+        "Online Instant Approval Loan",
+        "Lifestyle Loan",
+        "Tax-Saving Home Loan",
+        "PMAY-Linked Home Loan (Eligible Salaried Employees)",
+      ],
+    }),
+  ],
+};
+
+const BUSINESS_LOAN_SERVICES: ServiceGroup = {
+  title: "Smart Loan & Funding Solutions for All Businesses",
+  items: [
+    ...makeItems({
+      prefix: "business",
+      infoHref: "/business-loan",
+      titles: [
+        "Working Capital Loan",
+        "Cash Credit (CC) Facility",
+        "Overdraft (OD) Facility",
+        "Short-Term Business Loan",
+        "MSME Business Loan",
+        "SME Term Loan",
+        "Startup Business Loan",
+        "Proprietorship Business Loan",
+        "Partnership Firm Loan",
+        "Unsecured Business Loan",
+        "Collateral-Free Business Loan",
+        "Loan Against Property (Business LAP)",
+        "Machinery / Equipment Loan",
+        "Commercial Vehicle Loan",
+        "Industrial Term Loan",
+        "Manufacturing Unit Loan",
+        "Raw Material Procurement Loan",
+        "Business Expansion Loan",
+        "Capacity Expansion Loan",
+        "Franchise / Branch Expansion Loan",
+        "Trade Finance Loan",
+        "Invoice / Bill Discounting",
+        "Import Finance Loan",
+        "Export Finance Loan",
+        "Corporate Term Loan",
+        "Project Finance",
+        "Structured Corporate Finance",
+        "Syndicated Loan",
+        "Bridge Finance for Corporates",
+        "Pre-Approved Business Loan",
+        "Digital / Paperless Business Loan",
+      ],
+      applyPrefix: "business-",
+    }),
+  ],
+};
+
+const PROFESSIONAL_LOAN_SERVICES: ServiceGroup = {
+  title: "Smart Loan & Funding Solutions for All Professionals",
+  items: [
+    ...makeItems({
+      prefix: "professional",
+      infoHref: "/personal-loan",
+      titles: [
+        "Professional Personal Loan",
+        "Doctor Loan",
+        "Chartered Accountant (CA) Loan",
+        "Architect Loan",
+        "Engineer Loan",
+        "Lawyer / Advocate Loan",
+        "Consultant Loan",
+        "Self-Employed Professional Loan",
+        "Practice Setup Loan",
+        "Clinic / Office Purchase Loan",
+        "Clinic / Office Renovation Loan",
+        "Medical Equipment Loan",
+        "Office Equipment Loan",
+        "Working Capital Loan for Professionals",
+        "Unsecured Professional Loan",
+        "Loan Against Property for Professionals",
+        "Overdraft Facility for Professionals",
+        "Balance Transfer for Professional Loans",
+        "Top-Up Loan for Professionals",
+        "Tax-Saving Loan for Professionals",
+      ],
+      applyPrefix: "professional-",
+    }),
+  ],
+};
+
+const GOVT_EMPLOYEE_LOAN_SERVICES: ServiceGroup = {
+  title: "Smart Loan & Funding Solutions for Central & State Government Employees",
+  items: [
+    ...makeItems({
+      prefix: "govt-employee",
+      infoHref: "/personal-loan",
+      titles: [
+        "Government Employee Personal Loan",
+        "Central Government Employee Loan",
+        "State Government Employee Loan",
+        "PSU Employee Loan",
+        "Defence Personnel Loan",
+        "Salary-Based Personal Loan",
+        "Pre-Approved Salary Loan",
+        "Pension Loan",
+        "Home Loan for Government Employees",
+        "Car Loan for Government Employees",
+        "Education Loan for Government Employees",
+        "Loan Against Property for Govt Employees",
+        "Salary Overdraft Facility",
+        "Emergency Loan for Government Employees",
+        "Balance Transfer for Salary Loans",
+        "Top-Up Loan on Existing Loan",
+        "Special Scheme Loan for Govt Employees",
+      ],
+      applyPrefix: "govt-employee-",
+    }),
+  ],
+};
+
+const GOVT_SCHEME_SERVICES: ServiceGroup = {
+  title: "End-to-End Financing Support for Central & State Government Schemes",
+  items: [
+    ...makeItems({
+      prefix: "govt-scheme",
+      infoHref: "/services/government-schemes",
+      titles: [
+        "PMEGP Loan",
+        "Mudra Loan (Shishu, Kishor, Tarun)",
+        "Stand-Up India Loan",
+        "CGTMSE-Backed Business Loan",
+        "PMAY Home Loan (Urban & Rural)",
+        "Credit-Linked Subsidy Scheme (CLSS)",
+        "MSME Government Scheme Loan",
+        "Startup India Scheme Loan",
+        "Women Entrepreneurship Scheme Loan",
+        "SC / ST Category Business Loan",
+        "Minority Community Business Loan",
+        "Agriculture & Allied Activity Loan",
+        "Skill Development Scheme Loan",
+        "State Government Subsidy Loan",
+        "Central Government Sponsored Scheme Loan",
+      ],
+      applyPrefix: "govt-scheme-",
+    }),
+  ],
+};
+
+const BUILDER_DEVELOPER_SERVICES: ServiceGroup = {
+  title: "Smart Loan & Project Funding Solutions for Builders & Developers",
+  items: [
+    ...makeItems({
+      prefix: "builder",
+      infoHref: "/business-loan",
+      titles: [
+        "Builder Project Loan",
+        "Real Estate Project Funding",
+        "Construction Finance Loan",
+        "Residential Project Funding",
+        "Commercial Project Funding",
+        "Mixed-Use Development Loan",
+        "Land Purchase Loan",
+        "Plot Development Loan",
+        "Construction Working Capital Loan",
+        "Inventory Funding for Builders",
+        "Lease Rental Discounting (LRD)",
+        "Loan Against Property for Builders",
+        "Bridge Loan for Builders",
+        "Project Expansion Funding",
+        "Redevelopment Project Loan",
+        "Joint Development Project Funding",
+        "Balance Transfer for Builder Loans",
+        "Project Restructuring / Takeover Loan",
+      ],
+      applyPrefix: "builder-",
+    }),
+  ],
+};
+
 const GROUPED_SERVICES: Partial<Record<HubCategoryKey, ServiceGroup[]>> = {
-  "salaried-employees": [
-    LOAN_GROUP_BY_TITLE["Personal / Consumer Loans"],
-    LOAN_GROUP_BY_TITLE["Education / Medical / Wellness"],
-    LOAN_GROUP_BY_TITLE["Home & Property Loans"],
-    LOAN_GROUP_BY_TITLE["Vehicle / Mobility Loans"],
-  ].filter(Boolean) as ServiceGroup[],
-  businesses: [
-    LOAN_GROUP_BY_TITLE["Business / MSME / Enterprise Loans"],
-    LOAN_GROUP_BY_TITLE["Working Capital / Credit Facilities"],
-    LOAN_GROUP_BY_TITLE["Invoice / Trade / Supply Chain Finance"],
-    LOAN_GROUP_BY_TITLE["Industrial / Manufacturing / Infrastructure"],
-  ].filter(Boolean) as ServiceGroup[],
-  "builders-developers": [
-    LOAN_GROUP_BY_TITLE["Real Estate / Builder / Project Finance"],
-    LOAN_GROUP_BY_TITLE["Working Capital / Credit Facilities"],
-  ].filter(Boolean) as ServiceGroup[],
+  "salaried-employees": [SALARIED_EMPLOYEE_LOAN_OFFERS],
+  businesses: [BUSINESS_LOAN_SERVICES],
+  professionals: [PROFESSIONAL_LOAN_SERVICES],
+  "govt-employees": [GOVT_EMPLOYEE_LOAN_SERVICES],
+  "government-schemes": [GOVT_SCHEME_SERVICES],
+  "builders-developers": [BUILDER_DEVELOPER_SERVICES],
 };
 
 const TRUST_INDICATORS = [
@@ -734,7 +953,15 @@ const TRUST_INDICATORS = [
 ];
 
 export default function ServicesHubClient() {
+  const searchParams = useSearchParams();
   const [activeCategory, setActiveCategory] = useState<HubCategoryKey>("salaried-employees");
+
+  useEffect(() => {
+    const requested = searchParams.get("category") as HubCategoryKey | null;
+    if (requested && requested in SERVICES) {
+      setActiveCategory(requested);
+    }
+  }, [searchParams]);
 
   const activeCards = useMemo(() => SERVICES[activeCategory], [activeCategory]);
   const activeMeta = CATEGORY_META.find((c) => c.key === activeCategory)!;
@@ -788,6 +1015,8 @@ export default function ServicesHubClient() {
         </div>
       </section>
 
+      <PrivateInstitutionalHighlight />
+
       <section className="relative -mt-8 z-20">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
@@ -833,13 +1062,13 @@ export default function ServicesHubClient() {
                   size="lg"
                   variant="tab-inactive"
                   onClick={() => setActiveCategory(cat.key)}
-                  className={`h-auto w-full justify-start gap-2 py-3 transition-all duration-300 whitespace-normal text-left leading-snug ${
+                  className={`h-auto w-full justify-start gap-3 py-4 transition-all duration-300 whitespace-normal text-left leading-snug text-base sm:text-lg ${
                     isActive
                       ? "scale-105 bg-[#F97415] text-white border border-[#F97415] hover:bg-[#F97415]/90"
                       : ""
                   }`}
                 >
-                  <Icon className="h-5 w-5" />
+                  <Icon className="h-7 w-7" />
                   {cat.title}
                 </Button>
               );

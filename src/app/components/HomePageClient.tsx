@@ -26,6 +26,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import LogoCloud from "@/components/logo-cloud";
 import ModernSections from "./fAQ";
+import PrivateInstitutionalHighlight from "./PrivateInstitutionalHighlight";
 
 type HubCategoryKey = "loans" | "insurance" | "credit-cards" | "government-schemes";
 
@@ -693,6 +694,8 @@ export default function HomePageClient() {
           </div>
         </div>
       </section>
+
+      <PrivateInstitutionalHighlight />
 
       <section className="relative -mt-8 z-20">
         <div className="container mx-auto px-4">
