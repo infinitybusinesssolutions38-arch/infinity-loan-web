@@ -894,6 +894,7 @@ export default function ServicesHubClient() {
                             <ApplyNowCTAButton
                               loanType={service.title}
                               loanTypeKey={service.applyHref.split("product=")[1]?.split("&")[0]}
+                              categoryKey={activeCategory}
                               className="w-full group-hover:shadow-glow-cta"
                               size="lg"
                             >
@@ -943,6 +944,7 @@ export default function ServicesHubClient() {
                       <ApplyNowCTAButton
                         loanType={service.title}
                         loanTypeKey={service.applyHref.split("product=")[1]?.split("&")[0]}
+                        categoryKey={activeCategory}
                         className="w-full group-hover:shadow-glow-cta"
                         size="lg"
                       >
