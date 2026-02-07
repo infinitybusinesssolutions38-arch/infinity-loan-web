@@ -891,12 +891,15 @@ export default function ServicesHubClient() {
                         </CardHeader>
                         <CardContent>
                           <div className="flex flex-col gap-3">
-                            <Button asChild variant="cta" className="w-full group-hover:shadow-glow-cta" size="lg">
-                              <Link href={service.applyHref}>
-                                Apply Now
-                                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                              </Link>
-                            </Button>
+                            <ApplyNowCTAButton
+                              loanType={service.title}
+                              loanTypeKey={service.applyHref.split("product=")[1]?.split("&")[0]}
+                              className="w-full group-hover:shadow-glow-cta"
+                              size="lg"
+                            >
+                              Apply Now
+                              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                            </ApplyNowCTAButton>
                             <Button asChild variant="outline" className="w-full text-black border-white/30 hover:bg-white/10 hover:text-white">
                               <Link href={service.infoHref}>Learn More</Link>
                             </Button>
@@ -937,12 +940,15 @@ export default function ServicesHubClient() {
                   </CardHeader>
                   <CardContent>
                     <div className="flex flex-col gap-3">
-                      <Button asChild variant="cta" className="w-full group-hover:shadow-glow-cta" size="lg">
-                        <Link href={service.applyHref}>
-                          Apply Now
-                          <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                        </Link>
-                      </Button>
+                      <ApplyNowCTAButton
+                        loanType={service.title}
+                        loanTypeKey={service.applyHref.split("product=")[1]?.split("&")[0]}
+                        className="w-full group-hover:shadow-glow-cta"
+                        size="lg"
+                      >
+                        Apply Now
+                        <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                      </ApplyNowCTAButton>
                       <Button asChild variant="outline" className="w-full text-white border-white/30 hover:bg-white/10 hover:text-white">
                         <Link href={service.infoHref}>Learn More</Link>
                       </Button>
