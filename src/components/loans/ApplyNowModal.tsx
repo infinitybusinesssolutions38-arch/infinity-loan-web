@@ -311,10 +311,10 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
     monthlyNetSalary: "",
     salaryCreditMode: "",
     salaryAccountBankName: "",
-    existingLoans: "",
-    existingLoanType: "",
-    totalMonthlyEmi: "",
-    anyDelays: "",
+    numberOfExistingLoans: "",
+    existingLoansData: [
+      { totalLoanAmount: "", totalMonthlyEmi: "", loanType: "", bankName: "", emiDelayPast3Months: "" },
+    ],
     hasCibil: "",
     cibilScore: "",
     requiredLoanAmount: "",
@@ -328,6 +328,24 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
   const handleSalariedChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setSForm((p) => ({ ...p, [name]: value }));
+  };
+
+  const handleExistingLoanChange = (index: number, field: string, value: string) => {
+    setSForm((p) => {
+      const updated = [...p.existingLoansData];
+      if (updated[index]) {
+        updated[index] = { ...updated[index], [field]: value };
+      }
+      return { ...p, existingLoansData: updated };
+    });
+  };
+
+  const handleNumberOfLoansChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const num = parseInt(e.target.value, 10);
+    setSForm((p) => {
+      const loansData = Array.from({ length: num }, (_, i) => p.existingLoansData[i] || { totalLoanAmount: "", totalMonthlyEmi: "", loanType: "", bankName: "", emiDelayPast3Months: "" });
+      return { ...p, numberOfExistingLoans: String(num), existingLoansData: loansData };
+    });
   };
 
   const handleSalariedSubmit = async (e: React.FormEvent) => {
@@ -421,7 +439,12 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
     try {
       const fd = new globalThis.FormData();
       fd.append("loanType", loanTypeKey || loanType);
-      Object.entries(sForm).forEach(([k, v]) => fd.append(k, v || ""));
+      
+      const { existingLoansData, ...formDataRest } = sForm;
+      Object.entries(formDataRest).forEach(([k, v]) => {
+        fd.append(k, String(v || ""));
+      });
+      fd.append("existingLoansData", JSON.stringify(existingLoansData));
 
       fd.append("panPhoto", panPhoto);
       fd.append("aadhaarPhoto", aadhaarPhoto);
@@ -838,28 +861,80 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
               {/* F. EXISTING LOAN & CREDIT DETAILS */}
               <fieldset className="space-y-4">
                 <legend className="text-lg font-bold text-foreground mb-4">F. Existing Loan & Credit Details</legend>
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div className="space-y-2">
-                    <Label htmlFor="s_existingLoans" className="text-sm font-medium">Existing Loans</Label>
-                    <select id="s_existingLoans" name="existingLoans" value={sForm.existingLoans} onChange={handleSalariedChange} className="mt-2 block w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm">
-                      <option value="">Existing Loans</option>
-                      <option value="No">No</option>
-                      <option value="Yes">Yes</option>
-                    </select>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="s_existingLoanType" className="text-sm font-medium">If Yes – Loan Type & Bank</Label>
-                    <Input id="s_existingLoanType" name="existingLoanType" placeholder="If Yes – Loan Type & Bank" value={sForm.existingLoanType} onChange={handleSalariedChange} className="border-gray-300" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="s_totalMonthlyEmi" className="text-sm font-medium">Total Monthly EMI (₹)</Label>
-                    <Input id="s_totalMonthlyEmi" name="totalMonthlyEmi" type="number" placeholder="Total Monthly EMI (₹)" value={sForm.totalMonthlyEmi} onChange={handleSalariedChange} className="border-gray-300" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="s_anyDelays" className="text-sm font-medium">Any EMI Delay in Past?</Label>
-                    <Input id="s_anyDelays" name="anyDelays" placeholder="Any EMI Delay in Past?" value={sForm.anyDelays} onChange={handleSalariedChange} className="border-gray-300" />
-                  </div>
+                <div className="space-y-2">
+                  <Label htmlFor="s_numberOfExistingLoans" className="text-sm font-medium">Number of Existing Loans</Label>
+                  <select id="s_numberOfExistingLoans" value={sForm.numberOfExistingLoans} onChange={handleNumberOfLoansChange} className="mt-2 block w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm">
+                    <option value="">Select Number of Loans</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                  </select>
                 </div>
+                {sForm.numberOfExistingLoans && parseInt(sForm.numberOfExistingLoans) > 0 && (
+                  <div className="space-y-6">
+                    {Array.from({ length: parseInt(sForm.numberOfExistingLoans) }).map((_, index) => (
+                      <div key={index} className="border border-gray-300 rounded-lg p-4 space-y-4">
+                        <h4 className="text-md font-semibold text-foreground">Loan {index + 1}</h4>
+                        <div className="grid gap-4 sm:grid-cols-2">
+                          <div className="space-y-2">
+                            <Label htmlFor={`s_loanAmount_${index}`} className="text-sm font-medium">Total Loan Amount (₹)</Label>
+                            <Input
+                              id={`s_loanAmount_${index}`}
+                              type="number"
+                              placeholder="Total Loan Amount"
+                              value={sForm.existingLoansData[index]?.totalLoanAmount || ""}
+                              onChange={(e) => handleExistingLoanChange(index, "totalLoanAmount", e.target.value)}
+                              className="border-gray-300"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor={`s_loanEmi_${index}`} className="text-sm font-medium">Total Monthly EMI (₹)</Label>
+                            <Input
+                              id={`s_loanEmi_${index}`}
+                              type="number"
+                              placeholder="Total Monthly EMI"
+                              value={sForm.existingLoansData[index]?.totalMonthlyEmi || ""}
+                              onChange={(e) => handleExistingLoanChange(index, "totalMonthlyEmi", e.target.value)}
+                              className="border-gray-300"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor={`s_loanType_${index}`} className="text-sm font-medium">Loan Type</Label>
+                            <Input
+                              id={`s_loanType_${index}`}
+                              placeholder="e.g., Home Loan, Car Loan"
+                              value={sForm.existingLoansData[index]?.loanType || ""}
+                              onChange={(e) => handleExistingLoanChange(index, "loanType", e.target.value)}
+                              className="border-gray-300"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor={`s_bankName_${index}`} className="text-sm font-medium">Bank Name</Label>
+                            <Input
+                              id={`s_bankName_${index}`}
+                              placeholder="Bank Name"
+                              value={sForm.existingLoansData[index]?.bankName || ""}
+                              onChange={(e) => handleExistingLoanChange(index, "bankName", e.target.value)}
+                              className="border-gray-300"
+                            />
+                          </div>
+                          <div className="space-y-2 sm:col-span-2">
+                            <Label htmlFor={`s_emiDelay_${index}`} className="text-sm font-medium">Any EMI Delay in Past 3 Months?</Label>
+                            <Input
+                              id={`s_emiDelay_${index}`}
+                              placeholder="No / Yes (specify details)"
+                              value={sForm.existingLoansData[index]?.emiDelayPast3Months || ""}
+                              onChange={(e) => handleExistingLoanChange(index, "emiDelayPast3Months", e.target.value)}
+                              className="border-gray-300"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </fieldset>
 
               {/* G. CREDIT SCORE */}
