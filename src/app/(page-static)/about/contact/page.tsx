@@ -25,15 +25,31 @@ const ContactPage = () => {
     } = useForm<FormData>();
 
     const [submitSuccess, setSubmitSuccess] = useState(false);
+    const [submitError, setSubmitError] = useState("");
 
     const onSubmit = async (data: FormData) => {
         try {
-            setSubmitSuccess(true);
-            reset();
-            setTimeout(() => setSubmitSuccess(false), 5000);
+            setSubmitError("");
+            const response = await fetch("/api/contact", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.success) {
+                setSubmitSuccess(true);
+                reset();
+                setTimeout(() => setSubmitSuccess(false), 5000);
+            } else {
+                setSubmitError(result.message || "Failed to submit form. Please try again.");
+            }
         } catch (error) {
             console.log(error);
-            alert("Something went wrong. Please try again.");
+            setSubmitError("Something went wrong. Please try again.");
         }
     };
 
@@ -239,6 +255,23 @@ const ContactPage = () => {
                                     <p className="text-green-800 font-medium">
                                         Message sent successfully! We'll be in touch soon.
                                     </p>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+
+                        {/* Error Message */}
+                        <AnimatePresence>
+                            {submitError && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: -10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -10 }}
+                                    className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3"
+                                >
+                                    <svg className="text-red-600 flex-shrink-0 w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                                    </svg>
+                                    <p className="text-red-800 font-medium">{submitError}</p>
                                 </motion.div>
                             )}
                         </AnimatePresence>
