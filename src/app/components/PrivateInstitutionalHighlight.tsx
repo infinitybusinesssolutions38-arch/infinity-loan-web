@@ -55,7 +55,7 @@ export default function PrivateInstitutionalHighlight() {
                     </p>
                   </div>
 
-                  <p className="mt-4 text-xs leading-relaxed text-gray-300">
+                  <p className="mt-4 text-md font-bold leading-relaxed text-gray-300">
                     Based on borrower profile strength, legal & financial documentation, credit history, repayment track record, and overall risk assessment.
                   </p>
 
@@ -70,7 +70,13 @@ export default function PrivateInstitutionalHighlight() {
                       href="/services?category=businesses"
                       className="inline-flex h-11 items-center justify-center rounded-xl border border-white/20 bg-white/5 px-5 text-sm font-semibold text-white transition hover:bg-white/10"
                     >
-                      Explore Business Services
+                      Explore Our Loan  Services
+                    </a>
+                     <a
+                      href="/"
+                      className="inline-flex h-11 items-center justify-center rounded-xl border border-white/20 bg-white/5 px-5 text-sm font-semibold text-white transition hover:bg-white/10"
+                    >
+                      Apply Now
                     </a>
                   </div>
                 </div>

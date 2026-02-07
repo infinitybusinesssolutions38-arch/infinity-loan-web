@@ -1,6 +1,7 @@
 "use client";
 
 import { Mail, MessageCircle, Phone, PhoneCall } from "lucide-react";
+import { FaWhatsapp } from "react-icons/fa";
 
 function normalizePhoneTel(phone: string) {
   const trimmed = phone.trim();
@@ -71,7 +72,7 @@ export default function StickyContactButtons() {
           <span className="pointer-events-none absolute right-full mr-3 whitespace-nowrap rounded-md bg-gray-950 px-3 py-1.5 text-xs font-medium text-white opacity-0 shadow-lg ring-1 ring-white/10 transition-opacity group-hover:opacity-100">
             Chat with a Loan Expert on WhatsApp
           </span>
-          <MessageCircle className="h-5 w-5" />
+          <FaWhatsapp className="h-5 w-5" />
         </a>
       </div>
     </div>
