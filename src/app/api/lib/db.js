@@ -1,26 +1,29 @@
 import mongoose from "mongoose";
 
-const connectDB = async () => {
-    const uri =
-        process.env.CONNECTIONSTRING ||
-        process.env.MONGODB_URI ||
-        process.env.MONGO_URI;
+const globalWithMongoose = global;
+const cached = globalWithMongoose.__mongoose || { conn: null, promise: null };
 
-    if (!uri) {
-        throw new Error(
-            "MongoDB connection string is missing. Set CONNECTIONSTRING (or MONGODB_URI) in infinity-loan-web/.env.local"
-        );
+const connectDB = async () => {
+    if (cached.conn) return cached.conn;
+
+    if (!process.env.CONNECTIONSTRING) {
+        throw new Error("Missing CONNECTIONSTRING environment variable");
     }
 
-    if (mongoose.connection.readyState === 1) {
-        return mongoose.connection;
+    if (!cached.promise) {
+        cached.promise = mongoose
+            .connect(process.env.CONNECTIONSTRING, {
+                bufferCommands: false,
+            })
+            .then((mongooseInstance) => mongooseInstance);
     }
 
     try {
-        await mongoose.connect(uri);
-        return mongoose.connection;
+        cached.conn = await cached.promise;
+        globalWithMongoose.__mongoose = cached;
+        return cached.conn;
     } catch (error) {
-        console.log(error);
+        cached.promise = null;
         throw error;
     }
 };

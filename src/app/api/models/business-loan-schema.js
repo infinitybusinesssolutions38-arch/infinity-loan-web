@@ -11,36 +11,49 @@ const BorrowerBusinessSchema = new mongoose.Schema({
     
     // Identity & Documents
     aadhaarNumber: { type: String, required: true },
-    panNumber: { type: String, required: true },
-    voterIdNumber: { type: String, required: false },
-    drivingLicense: { type: String, required: false },
-    passportNumber: { type: String, required: false },
-    
-    // Address Details
-    currentResidentialAddress: { type: String, required: true },
-    currentResidentialPincode: { type: String, required: true },
-    currentOfficeAddress: { type: String, required: true },
-    currentOfficePincode: { type: String, required: true },
-    residentialStatus: { type: String, enum: ["Owned", "Rented"], required: true },
-    businessPremisesStatus: { type: String, enum: ["Owned", "Rented"], required: true },
-    yearsAtCurrentResidentialAddress: { type: Number, required: true },
-    yearsAtCurrentBusinessAddress: { type: Number, required: true },
-    
-    // Loan Details
-    requiredLoanAmount: { type: String, required: true },
-    
-    // File URLs (from Cloudinary)
-    aadhaarFront: { type: String, required: true },
-    aadhaarBack: { type: String, required: true },
-    panCardFront: { type: String, required: true },
-    residentialElectricityBillUrl: { type: String, required: true },
-    shopElectricityBillUrl: { type: String, required: true },
 
-    // Application metadata
-    loan_type: { type: String, required: true },
-    application_status: { type: String, required: true, enum: ["pending", "under_review", "approved", "rejected"], default: "pending" },
-    
-    // User Role
+    bankName: { type: String, required: true },
+    accountHolderName: { type: String, required: true },
+    accountNumber: { type: String, required: true },
+    ifscCode: { type: String, required: true },
+    accountType: { type: String, required: true },
+    branchName: { type: String },
+    monthlyAvgBankBalance: { type: String },
+
+    businessName: { type: String, required: true },
+    businessType: { type: String },
+    businessAddress: { type: String, required: true },
+    businessVintageYears: { type: String, required: true },
+    natureOfBusiness: { type: String, required: true },
+    annualTurnover: { type: String, required: true },
+    gstNumber: { type: String },
+    businessPan: { type: String },
+    otherBusinessLicenseNumber: { type: String },
+    tradeLicense: { type: String },
+    msmeUdyam: { type: String },
+    shopActLicense: { type: String },
+
+    loanAmountRequired: { type: String, required: true },
+    purposeOfLoan: { type: String, required: true },
+    preferredLoanTenureMonths: { type: String, required: true },
+    existingLoanDetails: { type: String },
+
+    panCardUploadUrl: { type: String, required: false },
+    aadhaarCardUploadUrl: { type: String, required: false },
+    passportCopyUrl: { type: String, required: false },
+    gstCertificateUrl: { type: String, required: false },
+    otherBusinessLicenseDocumentsUrl: { type: String, required: false },
+    bankStatementLast6MonthsUrl: { type: String, required: false },
+
+    status: {
+        type: String,
+        enum: ["Pending", "Approved", "Rejected"],
+        default: "Pending",
+    },
+    adminRemarks: { type: String, default: "" },
+    reviewedAt: { type: Date },
+
+    // password: { type: String, required: true },
     role: {
         type: String,
         default: "borrower-business",

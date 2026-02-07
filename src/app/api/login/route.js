@@ -12,22 +12,50 @@ export async function POST(req) {
         await connectDB();
         const { email, otp } = await req.json();
 
-        if (!email || !otp) {
+        const normalizedEmail = String(email || "").trim().toLowerCase();
+        const emailRegex = new RegExp(`^${normalizedEmail.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "i");
+
+        if (!normalizedEmail || !otp) {
             return NextResponse.json({ success: false, message: "Email and OTP are required" });
         }
 
         // Validate OTP
-        if (!validateOTP(email, otp)) {
+        if (!validateOTP(normalizedEmail, otp)) {
             return NextResponse.json({ success: false, message: "Invalid or expired OTP" });
         }
 
-        // Search user across loan collections
-        const user =
-            (await PersonalLoanModel.findOne({ email: email.toLowerCase() })) ||
-            (await BusinessLoanModel.findOne({ email: email.toLowerCase() }));
+        // Search user across all collections
+        let user =
+            (await UserModel.findOne({
+                email: { $regex: emailRegex },
+            })) ||
+            (await IndividaulLoanModel.findOne({ email: { $regex: emailRegex } })) ||
+            (await OrganizationLoanModel.findOne({ email: { $regex: emailRegex } })) ||
+            (await NRILoanModel.findOne({ email: { $regex: emailRegex } })) ||
+            (await HUFLoanModel.findOne({ email: { $regex: emailRegex } })) ||
+            (await PersonalLoanModel.findOne({ email: { $regex: emailRegex } })) ||
+            (await BusinessLoanModel.findOne({ email: { $regex: emailRegex } }));
 
         if (!user) {
-            return NextResponse.json({ success: false, message: "User not found" });
+            const allowAutoRegister =
+                process.env.ALLOW_OTP_AUTO_REGISTER === "true" || process.env.NODE_ENV !== "production";
+
+            if (!allowAutoRegister) {
+                return NextResponse.json(
+                    { success: false, message: "Account not found for this email. Please register first." },
+                    { status: 404 }
+                );
+            }
+
+            const defaultRole = String(process.env.DEFAULT_USER_ROLE || "borrower-personal").trim();
+            const randomPassword = `otp-${Math.random().toString(36).slice(2)}-${Date.now()}`;
+            const hashedPassword = await bcrypt.hash(randomPassword, 10);
+
+            user = await UserModel.create({
+                email: normalizedEmail,
+                password: hashedPassword,
+                role: defaultRole,
+            });
         }
 
         // Identify role type
@@ -41,7 +69,7 @@ export async function POST(req) {
         );
 
         // Clear OTP after successful verification
-        clearOTP(email);
+        clearOTP(normalizedEmail);
 
         // Set cookie
         const res = NextResponse.json({

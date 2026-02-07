@@ -1,30 +1,17 @@
 import mongoose from "mongoose";
 
-const contactSchema = new mongoose.Schema(
+const ContactSchema = new mongoose.Schema(
     {
-        firstname: {
+        firstname: { type: String, required: true },
+        lastname: { type: String, required: true },
+        email: { type: String, required: true },
+        subject: { type: String, required: true },
+        mobile: { type: String, required: true },
+        message: { type: String, required: true },
+        status: {
             type: String,
-            required: true,
-        },
-        lastname: {
-            type: String,
-            required: true,
-        },
-        email: {
-            type: String,
-            required: true,
-        },
-        mobile: {
-            type: String,
-            required: true,
-        },
-        subject: {
-            type: String,
-            required: true,
-        },
-        message: {
-            type: String,
-            required: true,
+            enum: ["New", "Contacted", "Closed"],
+            default: "New",
         },
     },
     { timestamps: true }
