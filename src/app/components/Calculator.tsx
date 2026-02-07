@@ -462,6 +462,7 @@
 
 import React, { useMemo, useState } from "react";
 import { IndianRupee, Calendar } from "lucide-react";
+import PrivateInstitutionalHighlight from "./PrivateInstitutionalHighlight";
 
 /* -------------------- Types -------------------- */
 type LoanInputs = {
@@ -581,6 +582,8 @@ export default function VehicleLoanEmiCalculator() {
             Calculate EMI instantly and plan your loan smartly
           </p>
         </div>
+
+        <PrivateInstitutionalHighlight />
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Inputs */}

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowLeft, Sparkles, TrendingUp, Users, Award, Shield, Clock, CheckCircle2, Building2, Briefcase, Home, Wrench, User, Zap } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import PrivateInstitutionalHighlight from "@/app/components/PrivateInstitutionalHighlight";
 
 export const metadata: Metadata = {
   title: "About Us - Infinity Loans & Business Solutions",
@@ -103,6 +104,8 @@ export default function AboutUsPage() {
           </div>
         </div>
       </section>
+
+      <PrivateInstitutionalHighlight />
 
       <section className="py-20 lg:py-32 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
         <div className="absolute inset-0 opacity-[0.03]">

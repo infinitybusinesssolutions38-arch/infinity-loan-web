@@ -27,6 +27,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import PrivateInstitutionalHighlight from "@/app/components/PrivateInstitutionalHighlight";
 
 type HubCategoryKey =
   | "salaried-employees"
@@ -787,6 +788,8 @@ export default function ServicesHubClient() {
           </div>
         </div>
       </section>
+
+      <PrivateInstitutionalHighlight />
 
       <section className="relative -mt-8 z-20">
         <div className="container mx-auto px-4">
