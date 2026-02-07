@@ -56,7 +56,7 @@ type HowItWorksStep = {
   icon: React.ComponentType<{ className?: string }>;
 };
 
-const AUTOPLAY_MS = 4000;
+const AUTOPLAY_MS = 3000;
 
 const CATEGORY_META: Array<{
   key: HubCategoryKey;
@@ -274,15 +274,113 @@ export default function HomePageClient() {
 
   const slides = useMemo(
     () => [
-      { src: "/home-img/home1.jpeg", alt: "Fintech services" },
-      { src: "/home-img/home2.jpeg", alt: "Digital lending" },
-      { src: "/home-img/home3.jpeg", alt: "Financial inclusion" },
-      { src: "/home-img/home4.jpeg", alt: "Secure payments" },
+      {
+        src: "/home-img/home-1.webp",
+        alt: "Business lending support",
+      },
+      {
+        src: "/home-img/home-2.jpeg",
+        alt: "Personal finance solutions",
+      },
+      {
+        src: "/home-img/home-3.jpeg",
+        alt: "Government scheme guidance",
+      },
+      {
+        src: "/home-img/home-4.jpeg",
+        alt: "Secure documentation and approvals",
+      },
+      {
+        src: "/home-img/home-5.jpeg",
+        alt: "Business lending support",
+      },
+      {
+        src: "/home-img/home-6.webp",
+        alt: "Personal finance solutions",
+      },
+      {
+        src: "/home-img/home-7.jpeg",
+        alt: "Government scheme guidance",
+      },
+      {
+        src: "/home-img/home-8.webp",
+        alt: "Secure documentation and approvals",
+      },
+      {
+        src: "/home-img/home-9.webp",
+        alt: "Business lending support",
+      },
+      {
+        src: "/home-img/home-10.webp",
+        alt: "Personal finance solutions",
+      },
+      {
+        src: "/home-img/home-11.jpeg",
+        alt: "Government scheme guidance",
+      },
+      {
+        src: "/home-img/home-12.png",
+        alt: "Secure documentation and approvals",
+      },
+      {
+        src: "/home-img/home-13.png",
+        alt: "Business lending support",
+      },
+      {
+        src: "/home-img/home-14.jpeg",
+        alt: "Personal finance solutions",
+      },
+      {
+        src: "/home-img/home-15.jpeg",
+        alt: "Government scheme guidance",
+      },
+      {
+        src: "/home-img/home-16.jpeg",
+        alt: "Secure documentation and approvals",
+      },
+      {
+        src: "/home-img/home-17.jpeg",
+        alt: "Business lending support",
+      },
+      {
+        src: "/home-img/home-18.jpeg",
+        alt: "Personal finance solutions",
+      },
     ],
     []
   );
 
   const [activeIndex, setActiveIndex] = useState(0);
+  const activeSlide = slides[activeIndex];
+
+  const heroContentGroups = useMemo(
+    () => [
+      {
+        badge: "Trusted Financial Partner",
+        title: "Smart Financing,",
+        emphasis: "For Everyone",
+        description:
+          "1.Loan Offers for Salaried Employees | 2.Smart Loan & Funding Solutions for All Businesses — Proprietorships, Mid-Sized SMEs, Industrial Enterprises, and Corporates",
+      },
+      {
+        badge: "Quick & Transparent",
+        title: "Smart Funding,",
+        emphasis: "For Professionals",
+        description:
+          "3.Smart Loan & Funding Solutions for All Professionals — Doctors, Chartered Accountants, Architects, Engineers, Lawyers, Consultants, and Self-Employed Professionals | 4.Smart Loan & Funding Solutions for Central & State Government Employees — Civil Services, Public Sector Staff, Defence Personnel, and Other Government Employees",
+      },
+      {
+        badge: "Eligibility-led Guidance",
+        title: "End-to-End,",
+        emphasis: "Project Support",
+        description:
+          "5. End-to-End Financing Support for Central & State Government Schemes | 6. Smart Loan & Project Funding Solutions for Builders & Developers",
+      },
+    ],
+    []
+  );
+
+  const activeHeroContent = heroContentGroups[activeIndex % heroContentGroups.length];
   const isPausedRef = useRef(false);
   const intervalRef = useRef<number | null>(null);
 
@@ -606,17 +704,16 @@ export default function HomePageClient() {
               <div className="mx-auto w-full max-w-4xl text-center">
                 <Badge className="mb-4 bg-accent/20 text-accent-foreground border-accent/30 backdrop-blur">
                   <Sparkles className="mr-1 h-3 w-3" />
-                  Trusted Financial Partner
+                  {activeHeroContent.badge}
                 </Badge>
 
                 <h1 className="text-4xl font-extrabold tracking-tight text-primary-foreground sm:text-5xl lg:text-6xl">
-                  Your Financial Goals,{" "}
-                  <span className="text-accent">Simplified</span>
+                  {activeHeroContent.title}{" "}
+                  <span className="text-accent">{activeHeroContent.emphasis}</span>
                 </h1>
 
                 <p className="mt-6 text-lg text-primary-foreground/80 sm:text-xl max-w-3xl mx-auto">
-                  From personal loans to business funding, insurance to credit cards — we help you access the right
-                  financial products with complete transparency.
+                  {activeHeroContent.description}
                 </p>
 
                 <div className="mt-8 flex flex-wrap justify-center gap-4">
