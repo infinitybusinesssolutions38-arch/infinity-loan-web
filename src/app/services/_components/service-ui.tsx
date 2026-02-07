@@ -120,23 +120,43 @@ export function ServicesPageShell({
 }) {
   return (
     <main className="bg-gray-50">
-      <header className="border-b border-gray-100 bg-white">
-        <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
+      <header className="relative overflow-hidden bg-gradient-to-br from-black via-gray-900 to-black">
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-[#F97415]/10 blur-3xl animate-blob" />
+          <div className="absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-gray-700/20 blur-3xl animate-blob animation-delay-2000" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[600px] rounded-full bg-gray-800/10 blur-3xl animate-blob animation-delay-4000" />
+        </div>
+
+        <div className="absolute inset-0 opacity-10">
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
+              backgroundSize: "40px 40px",
+            }}
+          />
+        </div>
+
+        <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20 relative z-10">
           <div className="space-y-3">
-            <p className="text-sm font-semibold text-blue-600">{eyebrow}</p>
-            <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+            <p className="text-sm font-semibold text-[#F97415]">{eyebrow}</p>
+            <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
               {title}
             </h1>
-            <p className="max-w-3xl text-sm text-gray-600 sm:text-base">
+            <p className="max-w-3xl text-sm text-gray-300 sm:text-base">
               {description}
             </p>
           </div>
 
           <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
-            <Button asChild variant="outline" className="w-full sm:w-auto">
+            <Button
+              asChild
+              variant="outline"
+              className="w-full sm:w-auto border-white/20 bg-white/10 text-white hover:bg-white/20"
+            >
               <Link href="/services">View all categories</Link>
             </Button>
-            <Button asChild className="w-full sm:w-auto">
+            <Button asChild className="w-full sm:w-auto bg-[#F97415] text-white hover:bg-[#F97415]/90">
               <Link href="/contact">Talk to an expert</Link>
             </Button>
           </div>

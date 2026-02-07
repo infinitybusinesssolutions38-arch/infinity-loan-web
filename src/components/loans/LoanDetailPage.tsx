@@ -24,17 +24,27 @@ export default function LoanDetailPage({ loanType }: LoanDetailPageProps) {
 
   return (
     <div className="min-h-screen bg-background">
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary via-primary/90 to-accent/80 py-16 lg:py-24">
+      <section className="relative overflow-hidden bg-gradient-to-br from-black via-gray-900 to-black py-20 lg:py-32">
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-accent/20 blur-3xl" />
-          <div className="absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-cta/20 blur-3xl" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[600px] rounded-full bg-primary-foreground/5 blur-3xl" />
+          <div className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-[#F97415]/10 blur-3xl animate-blob" />
+          <div className="absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-gray-700/20 blur-3xl animate-blob animation-delay-2000" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[600px] rounded-full bg-gray-800/10 blur-3xl animate-blob animation-delay-4000" />
+        </div>
+
+        <div className="absolute inset-0 opacity-10">
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
+              backgroundSize: "40px 40px",
+            }}
+          />
         </div>
 
         <div className="container relative z-10 mx-auto px-4">
           <Link
             href="/services"
-            className="inline-flex items-center gap-2 text-primary-foreground/80 hover:text-primary-foreground transition-colors mb-8 group"
+            className="inline-flex items-center gap-2 text-gray-300 hover:text-white transition-all mb-8 group"
           >
             <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
             Back to Services
@@ -42,21 +52,21 @@ export default function LoanDetailPage({ loanType }: LoanDetailPageProps) {
 
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
             <div className="max-w-2xl">
-              <Badge className="mb-4 bg-accent/20 text-accent-foreground border-accent/30 backdrop-blur">
+              <Badge className="mb-4 bg-white/10 text-white border-white/20 backdrop-blur">
                 <Sparkles className="mr-1 h-3 w-3" />
                 {data.subtitle}
               </Badge>
 
               <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-card/10 backdrop-blur-sm border border-primary-foreground/20 text-primary-foreground">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 text-white">
                   <HeroIcon className="h-6 w-6" />
                 </div>
-                <h1 className="text-4xl font-extrabold tracking-tight text-primary-foreground sm:text-5xl lg:text-6xl">
+                <h1 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl">
                   {data.title}
                 </h1>
               </div>
 
-              <p className="mt-6 text-lg text-primary-foreground/80 sm:text-xl">{data.description}</p>
+              <p className="mt-6 text-lg text-gray-300 sm:text-xl">{data.description}</p>
 
               <div className="mt-8 flex flex-wrap gap-4">
                 <Button
@@ -77,8 +87,8 @@ export default function LoanDetailPage({ loanType }: LoanDetailPageProps) {
             {(data.interestRate || data.maxAmount || data.tenure) && (
               <div className="flex flex-col gap-4">
                 {data.interestRate && (
-                  <div className="flex items-center gap-4 rounded-2xl bg-card/10 backdrop-blur-sm border border-primary-foreground/20 p-5 text-primary-foreground">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-accent/20">
+                  <div className="flex items-center gap-4 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 p-5 text-white">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#F97415]/15">
                       <Percent className="h-6 w-6" />
                     </div>
                     <div>
@@ -89,8 +99,8 @@ export default function LoanDetailPage({ loanType }: LoanDetailPageProps) {
                 )}
 
                 {data.maxAmount && (
-                  <div className="flex items-center gap-4 rounded-2xl bg-card/10 backdrop-blur-sm border border-primary-foreground/20 p-5 text-primary-foreground">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-cta/20">
+                  <div className="flex items-center gap-4 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 p-5 text-white">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/10">
                       <Banknote className="h-6 w-6" />
                     </div>
                     <div>
@@ -101,8 +111,8 @@ export default function LoanDetailPage({ loanType }: LoanDetailPageProps) {
                 )}
 
                 {data.tenure && (
-                  <div className="flex items-center gap-4 rounded-2xl bg-card/10 backdrop-blur-sm border border-primary-foreground/20 p-5 text-primary-foreground">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary-foreground/20">
+                  <div className="flex items-center gap-4 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 p-5 text-white">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/10">
                       <Calendar className="h-6 w-6" />
                     </div>
                     <div>

@@ -5,6 +5,7 @@ import Link from "next/link";
 import {
   Banknote,
   Building2,
+  Briefcase,
   CreditCard,
   Shield,
   ArrowRight,
@@ -27,7 +28,14 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
-type HubCategoryKey = "loans" | "insurance" | "credit-cards" | "government-schemes";
+type HubCategoryKey =
+  | "salaried-employees"
+  | "businesses"
+  | "professionals"
+  | "govt-employees"
+  | "government-schemes"
+  | "builders-developers"
+  | "credit-cards";
 
 type ServiceCardItem = {
   key: string;
@@ -68,7 +76,7 @@ const makeItems = (params: {
       key: `${params.prefix}-${slug}`,
       title,
       description: `Apply for ${title} with tailored eligibility and quick processing.`,
-      applyHref: `/register?service=${applyPrefix}${slug}`,
+      applyHref: `/apply-now?product=${applyPrefix}${slug}`,
       infoHref: params.infoHref,
     } satisfies ServiceCardItem;
   });
@@ -80,10 +88,43 @@ const CATEGORY_META: Array<{
   icon: React.ComponentType<{ className?: string }>;
   gradient: string;
 }> = [
-  { key: "loans", title: "Loans", icon: Banknote, gradient: "bg-gradient-loans" },
-  { key: "insurance", title: "Insurance", icon: Shield, gradient: "bg-gradient-insurance" },
+  {
+    key: "salaried-employees",
+    title: "Loan Offers for Salaried Employees",
+    icon: Users,
+    gradient: "bg-gradient-loans",
+  },
+  {
+    key: "businesses",
+    title: "Smart Loan & Funding Solutions for All Businesses",
+    icon: Banknote,
+    gradient: "bg-gradient-loans",
+  },
+  {
+    key: "professionals",
+    title: "Smart Loan & Funding Solutions for All Professionals",
+    icon: Briefcase,
+    gradient: "bg-gradient-loans",
+  },
+  {
+    key: "govt-employees",
+    title: "Smart Loan & Funding Solutions for Central & State Government Employees",
+    icon: Building2,
+    gradient: "bg-gradient-government",
+  },
+  {
+    key: "government-schemes",
+    title: "End-to-End Financing Support for Central & State Government Schemes",
+    icon: Building2,
+    gradient: "bg-gradient-government",
+  },
+  {
+    key: "builders-developers",
+    title: "Smart Loan & Project Funding Solutions for Builders & Developers",
+    icon: Building2,
+    gradient: "bg-gradient-loans",
+  },
   { key: "credit-cards", title: "Credits & Cards", icon: CreditCard, gradient: "bg-gradient-credit" },
-  { key: "government-schemes", title: "Government Schemes", icon: Building2, gradient: "bg-gradient-government" },
 ];
 
 const LOAN_SERVICES: ServiceGroup[] = [
@@ -94,7 +135,7 @@ const LOAN_SERVICES: ServiceGroup[] = [
         key: "msme-sme-loan",
         title: "MSME / SME Loan",
         description: "Funding for expansion, inventory and day-to-day operations with flexible repayment options.",
-        applyHref: "/register?service=msme-sme-loan",
+        applyHref: "/apply-now?product=msme-sme-loan",
         infoHref: "/business-loan",
         highlight: true,
         badge: "Popular",
@@ -343,7 +384,7 @@ const LOAN_SERVICES: ServiceGroup[] = [
         key: "home-loan",
         title: "Home Loan",
         description: "Buy a home with competitive rates, transparent terms and end-to-end guidance.",
-        applyHref: "/register?service=home-loan",
+        applyHref: "/apply-now?product=home-loan",
         infoHref: "/home-property-loan",
         highlight: true,
         badge: "Low Interest",
@@ -479,47 +520,41 @@ const LOAN_SERVICES: ServiceGroup[] = [
 ];
 
 const SERVICES: Record<HubCategoryKey, ServiceCardItem[]> = {
-  loans: [],
-  insurance: [
-    {
-      key: "life-insurance",
-      title: "Life Insurance",
-      description: "Long-term protection plans with guidance to choose the right cover.",
-      applyHref: "/contact?service=life-insurance",
-      infoHref: "/services/insurance",
-      highlight: true,
-      badge: "Essential",
-    },
-    {
-      key: "health-insurance",
-      title: "Health Insurance",
-      description: "Coverage for hospitalisation and treatments with plan comparisons.",
-      applyHref: "/contact?service=health-insurance",
-      infoHref: "/services/insurance",
-      highlight: true,
-      badge: "Family Plans",
-    },
-    {
-      key: "motor-insurance",
-      title: "Motor Insurance",
-      description: "Car and two-wheeler protection including third-party coverage.",
-      applyHref: "/contact?service=motor-insurance",
-      infoHref: "/services/insurance",
-    },
-    {
-      key: "home-insurance",
-      title: "Home Insurance",
-      description: "Secure home and valuables against common risks and calamities.",
-      applyHref: "/contact?service=home-insurance",
-      infoHref: "/services/insurance",
-    },
+  "salaried-employees": [],
+  businesses: [],
+  professionals: [
+    ...makeItems({
+      prefix: "pro",
+      infoHref: "/business-loan",
+      titles: [
+        "Professional Loan (Doctors / CAs / Architects)",
+        "Loan for Professionals",
+        "Teacher Loan",
+        "Shopkeeper / Trader Loan",
+        "Self-Employed Loan",
+        "New to Credit Loan",
+      ],
+    }),
   ],
+  "govt-employees": [
+    ...makeItems({
+      prefix: "govt-emp",
+      infoHref: "/personal-loan",
+      titles: [
+        "Personal Loan for Salaried Individuals",
+        "Salary Advance Loan",
+        "Line of Credit (Personal)",
+        "Emergency Loan",
+      ],
+    }),
+  ],
+  "builders-developers": [],
   "credit-cards": [
     {
       key: "credit-line-flexi",
       title: "Credit Line / Flexi Loan",
       description: "Revolving limit you can draw from when needed.",
-      applyHref: "/register?service=credit-line-flexi",
+      applyHref: "/apply-now?product=credit-line-flexi",
       infoHref: "/services/credit-cards",
       highlight: true,
       badge: "Flexible",
@@ -528,14 +563,14 @@ const SERVICES: Record<HubCategoryKey, ServiceCardItem[]> = {
       key: "business-credit-card",
       title: "Business Credit Card",
       description: "Higher limits and tracking for business spending.",
-      applyHref: "/register?service=business-credit-card",
+      applyHref: "/apply-now?product=business-credit-card",
       infoHref: "/services/credit-cards",
     },
     {
       key: "personal-credit-card",
       title: "Personal Credit Card",
       description: "Everyday credit with rewards and EMI options.",
-      applyHref: "/register?service=personal-credit-card",
+      applyHref: "/apply-now?product=personal-credit-card",
       infoHref: "/services/credit-cards",
       badge: "Rewards",
     },
@@ -543,14 +578,14 @@ const SERVICES: Record<HubCategoryKey, ServiceCardItem[]> = {
       key: "corporate-credit-card",
       title: "Corporate Credit Card",
       description: "Corporate cards for company expenses and better spend controls.",
-      applyHref: "/register?service=corporate-credit-card",
+      applyHref: "/apply-now?product=corporate-credit-card",
       infoHref: "/services/credit-cards",
     },
     {
       key: "emi-card",
       title: "EMI Card",
       description: "Pre-approved EMI limit for easy instalment purchases.",
-      applyHref: "/register?service=emi-card",
+      applyHref: "/apply-now?product=emi-card",
       infoHref: "/services/credit-cards",
       badge: "EMI",
     },
@@ -558,7 +593,7 @@ const SERVICES: Record<HubCategoryKey, ServiceCardItem[]> = {
       key: "bnpl",
       title: "Buy Now Pay Later (BNPL)",
       description: "Split purchases into smaller scheduled payments.",
-      applyHref: "/register?service=bnpl",
+      applyHref: "/apply-now?product=bnpl",
       infoHref: "/services/credit-cards",
       highlight: true,
       badge: "0% EMI",
@@ -567,14 +602,14 @@ const SERVICES: Record<HubCategoryKey, ServiceCardItem[]> = {
       key: "postpaid-credit-line",
       title: "Postpaid Credit Line",
       description: "A revolving postpaid line for everyday expenses and bill payments.",
-      applyHref: "/register?service=postpaid-credit-line",
+      applyHref: "/apply-now?product=postpaid-credit-line",
       infoHref: "/services/credit-cards",
     },
     {
       key: "subscription-financing",
       title: "Subscription Financing",
       description: "Convert subscriptions into manageable monthly instalments.",
-      applyHref: "/register?service=subscription-financing",
+      applyHref: "/apply-now?product=subscription-financing",
       infoHref: "/services/credit-cards",
     },
   ],
@@ -583,7 +618,7 @@ const SERVICES: Record<HubCategoryKey, ServiceCardItem[]> = {
       key: "pm-mudra",
       title: "PM Mudra Loan",
       description: "Collateral-free micro and small business loans.",
-      applyHref: "/register?service=pm-mudra-loan",
+      applyHref: "/apply-now?product=pm-mudra-loan",
       infoHref: "/services/government-schemes",
       highlight: true,
       badge: "No Collateral",
@@ -592,7 +627,7 @@ const SERVICES: Record<HubCategoryKey, ServiceCardItem[]> = {
       key: "mudra-shishu",
       title: "Mudra Shishu Loan",
       description: "Micro loans for early-stage small businesses under Mudra Shishu category.",
-      applyHref: "/register?service=mudra-shishu-loan",
+      applyHref: "/apply-now?product=mudra-shishu-loan",
       infoHref: "/services/government-schemes",
       badge: "Mudra",
     },
@@ -600,7 +635,7 @@ const SERVICES: Record<HubCategoryKey, ServiceCardItem[]> = {
       key: "mudra-kishor",
       title: "Mudra Kishor Loan",
       description: "Working capital loans for growing micro enterprises under Mudra Kishor.",
-      applyHref: "/register?service=mudra-kishor-loan",
+      applyHref: "/apply-now?product=mudra-kishor-loan",
       infoHref: "/services/government-schemes",
       badge: "Mudra",
     },
@@ -608,7 +643,7 @@ const SERVICES: Record<HubCategoryKey, ServiceCardItem[]> = {
       key: "mudra-tarun",
       title: "Mudra Tarun Loan",
       description: "Higher ticket Mudra loans for established micro enterprises under Mudra Tarun.",
-      applyHref: "/register?service=mudra-tarun-loan",
+      applyHref: "/apply-now?product=mudra-tarun-loan",
       infoHref: "/services/government-schemes",
       badge: "Mudra",
     },
@@ -616,7 +651,7 @@ const SERVICES: Record<HubCategoryKey, ServiceCardItem[]> = {
       key: "stand-up-india",
       title: "Stand-Up India",
       description: "Support for SC/ST and women entrepreneurs.",
-      applyHref: "/register?service=stand-up-india",
+      applyHref: "/apply-now?product=stand-up-india",
       infoHref: "/services/government-schemes",
       badge: "Women & SC/ST",
     },
@@ -624,21 +659,21 @@ const SERVICES: Record<HubCategoryKey, ServiceCardItem[]> = {
       key: "pmegp-loan",
       title: "PMEGP Loan",
       description: "Subsidy-linked credit for micro enterprises under PMEGP.",
-      applyHref: "/register?service=pmegp-loan",
+      applyHref: "/apply-now?product=pmegp-loan",
       infoHref: "/services/government-schemes",
     },
     {
       key: "cgtmse",
       title: "CGTMSE Loan",
       description: "Collateral-free MSME loans with credit guarantee support.",
-      applyHref: "/register?service=cgtmse-loan",
+      applyHref: "/apply-now?product=cgtmse-loan",
       infoHref: "/services/government-schemes",
     },
     {
       key: "jansamarth",
       title: "Jansamarth Scheme Loans",
       description: "Apply for government credit-linked schemes via the Jansamarth portal.",
-      applyHref: "/register?service=jansamarth-scheme-loans",
+      applyHref: "/apply-now?product=jansamarth-scheme-loans",
       infoHref: "/services/government-schemes",
       badge: "Portal",
     },
@@ -646,26 +681,49 @@ const SERVICES: Record<HubCategoryKey, ServiceCardItem[]> = {
       key: "pm-svanidhi",
       title: "PM SVANidhi Loan",
       description: "Micro credit for street vendors under PM SVANidhi.",
-      applyHref: "/register?service=pm-svanidhi-loan",
+      applyHref: "/apply-now?product=pm-svanidhi-loan",
       infoHref: "/services/government-schemes",
     },
     {
       key: "pm-awas-yojana",
       title: "PM Awas Yojana Loan",
       description: "Housing-linked support for eligible beneficiaries under PMAY.",
-      applyHref: "/register?service=pm-awas-yojana-loan",
+      applyHref: "/apply-now?product=pm-awas-yojana-loan",
       infoHref: "/services/government-schemes",
     },
     {
       key: "psb-59",
       title: "PSB Loans in 59 Minutes",
       description: "Quick in-principle approval through the PSB platform.",
-      applyHref: "/register?service=psb-loans-59-minutes",
+      applyHref: "/apply-now?product=psb-loans-59-minutes",
       infoHref: "/services/government-schemes",
       highlight: true,
       badge: "59 Min Approval",
     },
   ],
+};
+
+const LOAN_GROUP_BY_TITLE = Object.fromEntries(
+  LOAN_SERVICES.map((group) => [group.title, group])
+) as Record<string, ServiceGroup>;
+
+const GROUPED_SERVICES: Partial<Record<HubCategoryKey, ServiceGroup[]>> = {
+  "salaried-employees": [
+    LOAN_GROUP_BY_TITLE["Personal / Consumer Loans"],
+    LOAN_GROUP_BY_TITLE["Education / Medical / Wellness"],
+    LOAN_GROUP_BY_TITLE["Home & Property Loans"],
+    LOAN_GROUP_BY_TITLE["Vehicle / Mobility Loans"],
+  ].filter(Boolean) as ServiceGroup[],
+  businesses: [
+    LOAN_GROUP_BY_TITLE["Business / MSME / Enterprise Loans"],
+    LOAN_GROUP_BY_TITLE["Working Capital / Credit Facilities"],
+    LOAN_GROUP_BY_TITLE["Invoice / Trade / Supply Chain Finance"],
+    LOAN_GROUP_BY_TITLE["Industrial / Manufacturing / Infrastructure"],
+  ].filter(Boolean) as ServiceGroup[],
+  "builders-developers": [
+    LOAN_GROUP_BY_TITLE["Real Estate / Builder / Project Finance"],
+    LOAN_GROUP_BY_TITLE["Working Capital / Credit Facilities"],
+  ].filter(Boolean) as ServiceGroup[],
 };
 
 const TRUST_INDICATORS = [
@@ -676,30 +734,42 @@ const TRUST_INDICATORS = [
 ];
 
 export default function ServicesHubClient() {
-  const [activeCategory, setActiveCategory] = useState<HubCategoryKey>("loans");
+  const [activeCategory, setActiveCategory] = useState<HubCategoryKey>("salaried-employees");
 
   const activeCards = useMemo(() => SERVICES[activeCategory], [activeCategory]);
   const activeMeta = CATEGORY_META.find((c) => c.key === activeCategory)!;
+  const activeGroups = GROUPED_SERVICES[activeCategory];
 
   return (
     <div className="min-h-screen bg-background">
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary via-primary/90 to-primary/80 py-16 lg:py-24">
+      <section className="relative overflow-hidden bg-gradient-to-br from-black via-gray-900 to-black py-20 lg:py-32">
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-accent/20 blur-3xl" />
-          <div className="absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-cta/20 blur-3xl" />
+          <div className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-[#F97415]/10 blur-3xl animate-blob" />
+          <div className="absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-gray-700/20 blur-3xl animate-blob animation-delay-2000" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[600px] rounded-full bg-gray-800/10 blur-3xl animate-blob animation-delay-4000" />
+        </div>
+
+        <div className="absolute inset-0 opacity-10">
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
+              backgroundSize: "40px 40px",
+            }}
+          />
         </div>
 
         <div className="container relative z-10 mx-auto px-4">
           <div className="max-w-3xl">
-            <Badge className="mb-4 bg-accent/20 text-accent-foreground border-accent/30 backdrop-blur">
+            <Badge className="mb-4 bg-white/10 text-white border-white/20 backdrop-blur">
               <Sparkles className="mr-1 h-3 w-3" />
               Trusted Financial Partner
             </Badge>
-            <h1 className="text-4xl font-extrabold tracking-tight text-primary-foreground sm:text-5xl lg:text-6xl">
+            <h1 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl">
               Your Financial Goals,{" "}
-              <span className="text-accent">Simplified</span>
+              <span className="text-[#F97415]">Simplified</span>
             </h1>
-            <p className="mt-6 text-lg text-primary-foreground/80 sm:text-xl max-w-2xl">
+            <p className="mt-6 text-lg text-gray-300 sm:text-xl max-w-2xl">
               From personal loans to business funding, insurance to credit cards — we help you access the right
               financial products with complete transparency.
             </p>
@@ -751,7 +821,7 @@ export default function ServicesHubClient() {
             </p>
           </div>
 
-          <div className="flex flex-wrap justify-center gap-3 mb-10">
+          <div className="grid grid-cols-1 gap-3 mb-10 sm:grid-cols-2 lg:grid-cols-3">
             {CATEGORY_META.map((cat) => {
               const Icon = cat.icon;
               const isActive = cat.key === activeCategory;
@@ -761,9 +831,13 @@ export default function ServicesHubClient() {
                   key={cat.key}
                   type="button"
                   size="lg"
-                  variant={isActive ? (cat.key as any) : "tab-inactive"}
+                  variant="tab-inactive"
                   onClick={() => setActiveCategory(cat.key)}
-                  className={`gap-2 transition-all duration-300 ${isActive ? "scale-105" : ""}`}
+                  className={`h-auto w-full justify-start gap-2 py-3 transition-all duration-300 whitespace-normal text-left leading-snug ${
+                    isActive
+                      ? "scale-105 bg-[#F97415] text-white border border-[#F97415] hover:bg-[#F97415]/90"
+                      : ""
+                  }`}
                 >
                   <Icon className="h-5 w-5" />
                   {cat.title}
@@ -772,24 +846,29 @@ export default function ServicesHubClient() {
             })}
           </div>
 
-          {activeCategory === "loans" ? (
+          {activeGroups ? (
             <div className="space-y-10">
-              {LOAN_SERVICES.map((group, groupIndex) => (
+              {activeGroups.map((group, groupIndex) => (
                 <div key={group.title} className="space-y-6">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-2xl font-bold tracking-tight text-foreground">
-                      {group.title}
-                    </h3>
+                    <h3 className="text-2xl font-bold text-foreground">{group.title}</h3>
+                    <Link
+                      href="/services/loans"
+                      className="text-sm font-medium text-primary hover:text-primary/80 inline-flex items-center gap-1"
+                    >
+                      View all
+                      <ArrowRight className="h-4 w-4" />
+                    </Link>
                   </div>
 
                   <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                     {group.items.map((service, idx) => (
                       <Card
                         key={service.key}
-                        className={`group relative overflow-hidden border-2 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${
+                        className={`group relative overflow-hidden border-2 bg-gradient-to-br from-black via-neutral-900 to-neutral-700 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${
                           service.highlight ? "border-primary/30" : "border-transparent"
-                        } ${activeMeta.gradient}`}
-                        style={{ animationDelay: `${(groupIndex * 4 + idx) * 50}ms` }}
+                        }`}
+                        style={{ animationDelay: `${groupIndex * 120 + idx * 50}ms` }}
                       >
                         {service.badge && (
                           <Badge
@@ -803,24 +882,22 @@ export default function ServicesHubClient() {
                           </Badge>
                         )}
                         <CardHeader className="pb-3">
-                          <CardTitle className="text-xl font-bold text-foreground pr-16">
+                          <CardTitle className="text-xl font-bold text-white pr-16">
                             {service.title}
                           </CardTitle>
-                          <CardDescription className="text-muted-foreground mt-2 line-clamp-2">
+                          <CardDescription className="text-gray-300 mt-2 line-clamp-2">
                             {service.description}
                           </CardDescription>
                         </CardHeader>
                         <CardContent>
                           <div className="flex flex-col gap-3">
-                            <ApplyNowCTAButton
-                              loanType={service.title}
-                              className="w-full group-hover:shadow-glow-cta"
-                              size="lg"
-                            >
-                              Apply Now
-                              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                            </ApplyNowCTAButton>
-                            <Button asChild variant="outline" className="w-full">
+                            <Button asChild variant="cta" className="w-full group-hover:shadow-glow-cta" size="lg">
+                              <Link href={service.applyHref}>
+                                Apply Now
+                                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                              </Link>
+                            </Button>
+                            <Button asChild variant="outline" className="w-full text-black border-white/30 hover:bg-white/10 hover:text-white">
                               <Link href={service.infoHref}>Learn More</Link>
                             </Button>
                           </div>
@@ -836,9 +913,9 @@ export default function ServicesHubClient() {
               {activeCards.map((service, idx) => (
                 <Card
                   key={service.key}
-                  className={`group relative overflow-hidden border-2 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${
+                  className={`group relative overflow-hidden border-2 bg-gradient-to-br from-black via-neutral-900 to-neutral-700 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${
                     service.highlight ? "border-primary/30" : "border-transparent"
-                  } ${activeMeta.gradient}`}
+                  }`}
                   style={{ animationDelay: `${idx * 50}ms` }}
                 >
                   {service.badge && (
@@ -853,22 +930,20 @@ export default function ServicesHubClient() {
                     </Badge>
                   )}
                   <CardHeader className="pb-3">
-                    <CardTitle className="text-xl font-bold text-foreground pr-16">{service.title}</CardTitle>
-                    <CardDescription className="text-muted-foreground mt-2 line-clamp-2">
+                    <CardTitle className="text-xl font-bold text-white pr-16">{service.title}</CardTitle>
+                    <CardDescription className="text-gray-300 mt-2 line-clamp-2">
                       {service.description}
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="flex flex-col gap-3">
-                      <ApplyNowCTAButton
-                        loanType={service.title}
-                        className="w-full group-hover:shadow-glow-cta"
-                        size="lg"
-                      >
-                        Apply Now
-                        <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                      </ApplyNowCTAButton>
-                      <Button asChild variant="outline" className="w-full">
+                      <Button asChild variant="cta" className="w-full group-hover:shadow-glow-cta" size="lg">
+                        <Link href={service.applyHref}>
+                          Apply Now
+                          <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                        </Link>
+                      </Button>
+                      <Button asChild variant="outline" className="w-full text-white border-white/30 hover:bg-white/10 hover:text-white">
                         <Link href={service.infoHref}>Learn More</Link>
                       </Button>
                     </div>
