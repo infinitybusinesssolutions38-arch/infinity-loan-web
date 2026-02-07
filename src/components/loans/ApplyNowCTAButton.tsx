@@ -10,12 +10,14 @@ import ApplyNowModal from "./ApplyNowModal";
 type ApplyNowCTAButtonProps = React.ComponentProps<typeof Button> & {
   loanType?: string;
   loanTypeKey?: string;
+  categoryKey?: string;
   label?: string;
 };
 
 export default function ApplyNowCTAButton({
   loanType = "Loan",
   loanTypeKey,
+  categoryKey,
   label = "Apply Now",
   variant = "cta",
   size = "xl",
@@ -39,7 +41,13 @@ export default function ApplyNowCTAButton({
       >
         {children ?? label}
       </Button>
-      <ApplyNowModal isOpen={open} onClose={() => setOpen(false)} loanType={loanType} loanTypeKey={loanTypeKey} />
+      <ApplyNowModal
+        isOpen={open}
+        onClose={() => setOpen(false)}
+        loanType={loanType}
+        loanTypeKey={loanTypeKey}
+        categoryKey={categoryKey}
+      />
     </>
   );
 }

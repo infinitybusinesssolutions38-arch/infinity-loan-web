@@ -14,6 +14,7 @@ interface ApplyNowModalProps {
   onClose: () => void;
   loanType: string;
   loanTypeKey?: string;
+  categoryKey?: string;
 }
 
 type FormState = {
@@ -42,7 +43,7 @@ type FormState = {
 
 type FormErrors = Partial<Record<keyof FormState, string>>;
 
-export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey }: ApplyNowModalProps) {
+export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, categoryKey }: ApplyNowModalProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState<FormState>({
     firstName: "",
@@ -75,6 +76,15 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey }
   const [panFront, setPanFront] = useState<File | null>(null);
   const [residentialBill, setResidentialBill] = useState<File | null>(null);
   const [shopBill, setShopBill] = useState<File | null>(null);
+
+  // Salaried-specific files
+  const [panPhoto, setPanPhoto] = useState<File | null>(null);
+  const [aadhaarPhoto, setAadhaarPhoto] = useState<File | null>(null);
+  const [applicantPhoto, setApplicantPhoto] = useState<File | null>(null);
+  const [residencePhoto, setResidencePhoto] = useState<File | null>(null);
+  const [officeIdPhoto, setOfficeIdPhoto] = useState<File | null>(null);
+  const [salarySlips, setSalarySlips] = useState<File | null>(null);
+  const [bankStatement, setBankStatement] = useState<File | null>(null);
 
   const validateField = (name: keyof FormState, value: string): string => {
     switch (name) {
@@ -229,6 +239,125 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey }
     }
   };
 
+  const isSalaried =
+    (typeof categoryKey !== "undefined" && categoryKey === "salaried-employees") ||
+    (loanTypeKey && loanTypeKey.toLowerCase().includes("salaried")) ||
+    loanType.toLowerCase().includes("salaried");
+
+  // Salaried form state
+  const [sForm, setSForm] = useState({
+    fullName: "",
+    dob: "",
+    gender: "",
+    maritalStatus: "",
+    mobileNumber: "",
+    whatsappNumber: "",
+    personalEmail: "",
+    panNumber: "",
+    aadhaarNumber: "",
+    currentResidentialAddress: "",
+    currentResidentialPincode: "",
+    city: "",
+    state: "",
+    residenceType: "",
+    stayingSinceYears: "",
+    companyName: "",
+    companyNature: "",
+    industry: "",
+    designation: "",
+    employmentType: "",
+    dateOfJoining: "",
+    totalExperienceYears: "",
+    officeLocation: "",
+    officialEmail: "",
+    monthlyNetSalary: "",
+    salaryCreditMode: "",
+    salaryAccountBankName: "",
+    existingLoans: "",
+    existingLoanType: "",
+    totalMonthlyEmi: "",
+    anyDelays: "",
+    cibilScore: "",
+    loanTypeRequired: "",
+    requiredLoanAmount: "",
+    preferredTenure: "",
+    purpose: "",
+    coApplicantName: "",
+    coApplicantRelation: "",
+    coApplicantEmploymentType: "",
+  });
+
+  const handleSalariedChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setSForm((p) => ({ ...p, [name]: value }));
+  };
+
+  const handleSalariedSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Basic required fields validation
+    const required = [
+      "fullName",
+      "dob",
+      "mobileNumber",
+      "personalEmail",
+      "panNumber",
+      "aadhaarNumber",
+      "currentResidentialAddress",
+      "city",
+      "state",
+      "companyName",
+      "designation",
+      "employmentType",
+      "dateOfJoining",
+      "monthlyNetSalary",
+      "salaryCreditMode",
+      "salaryAccountBankName",
+      "loanTypeRequired",
+      "requiredLoanAmount",
+    ];
+
+    for (const f of required) {
+      if (!sForm[f as keyof typeof sForm]) {
+        window.alert("Please fill all required salaried fields");
+        return;
+      }
+    }
+
+    // Ensure essential documents
+    if (!panPhoto || !aadhaarPhoto || !applicantPhoto) {
+      window.alert("Please upload PAN photo, Aadhaar photo and Applicant photo");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const fd = new globalThis.FormData();
+      fd.append("loanType", loanTypeKey || loanType);
+      Object.entries(sForm).forEach(([k, v]) => fd.append(k, v || ""));
+
+      fd.append("panPhoto", panPhoto);
+      fd.append("aadhaarPhoto", aadhaarPhoto);
+      fd.append("applicantPhoto", applicantPhoto);
+      if (residencePhoto) fd.append("residencePhoto", residencePhoto);
+      if (officeIdPhoto) fd.append("officeIdPhoto", officeIdPhoto);
+      if (salarySlips) fd.append("salarySlips", salarySlips);
+      if (bankStatement) fd.append("bankStatement", bankStatement);
+
+      const response = await fetch("/api/apply-now", { method: "POST", body: fd });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.message || "Submission failed");
+
+      setIsSubmitting(false);
+      window.alert(`Application submitted successfully!\nReference: ${result.applicationRef}`);
+      onClose();
+    } catch (err) {
+      setIsSubmitting(false);
+      window.alert(`Error: ${err instanceof Error ? err.message : "Unknown error"}`);
+    }
+  };
+
   if (!isOpen) return null;
 
   return createPortal(
@@ -251,7 +380,184 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey }
           </Button>
         </div>
 
-        <form onSubmit={handleSubmit} className="overflow-y-auto max-h-[calc(90vh-140px)] p-6 space-y-8">
+        <form onSubmit={isSalaried ? handleSalariedSubmit : handleSubmit} className="overflow-y-auto max-h-[calc(90vh-140px)] p-6 space-y-8">
+
+          {isSalaried && (
+            <>
+              {/* A. APPLICANT BASIC DETAILS */}
+              <fieldset className="space-y-4">
+                <legend className="text-lg font-bold text-foreground mb-4">A. Applicant Basic Details</legend>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <Input name="fullName" placeholder="Full Name (as per PAN)*" value={sForm.fullName} onChange={handleSalariedChange} />
+                  <Input name="dob" placeholder="Date of Birth (DD/MM/YYYY)*" value={sForm.dob} onChange={handleSalariedChange} />
+                  <Input name="gender" placeholder="Gender" value={sForm.gender} onChange={handleSalariedChange} />
+                  <Input name="maritalStatus" placeholder="Marital Status" value={sForm.maritalStatus} onChange={handleSalariedChange} />
+                  <Input name="mobileNumber" placeholder="Mobile Number*" value={sForm.mobileNumber} onChange={handleSalariedChange} />
+                  <Input name="whatsappNumber" placeholder="WhatsApp Number" value={sForm.whatsappNumber} onChange={handleSalariedChange} />
+                  <Input name="personalEmail" type="email" placeholder="Personal Email ID*" value={sForm.personalEmail} onChange={handleSalariedChange} />
+                </div>
+              </fieldset>
+
+              {/* B. KYC DETAILS */}
+              <fieldset className="space-y-4">
+                <legend className="text-lg font-bold text-foreground mb-4">B. KYC Details</legend>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <Input name="panNumber" placeholder="PAN Card Number*" value={sForm.panNumber} onChange={handleSalariedChange} />
+                  <Input name="aadhaarNumber" placeholder="Aadhaar Card Number*" value={sForm.aadhaarNumber} onChange={handleSalariedChange} />
+                </div>
+                <div className="grid gap-4 sm:grid-cols-3">
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium">PAN Card Photo*</Label>
+                    <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed rounded cursor-pointer hover:border-primary">
+                      <Upload className="h-5 w-5" />
+                      <span className="text-xs mt-1">{panPhoto ? "✓" : "Upload"}</span>
+                      <input type="file" accept="image/*,.pdf" className="hidden" onChange={(e) => handleFileChange(e, setPanPhoto)} />
+                    </label>
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium">Aadhaar Photo*</Label>
+                    <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed rounded cursor-pointer hover:border-primary">
+                      <Upload className="h-5 w-5" />
+                      <span className="text-xs mt-1">{aadhaarPhoto ? "✓" : "Upload"}</span>
+                      <input type="file" accept="image/*,.pdf" className="hidden" onChange={(e) => handleFileChange(e, setAadhaarPhoto)} />
+                    </label>
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium">Applicant Photo*</Label>
+                    <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed rounded cursor-pointer hover:border-primary">
+                      <Upload className="h-5 w-5" />
+                      <span className="text-xs mt-1">{applicantPhoto ? "✓" : "Upload"}</span>
+                      <input type="file" accept="image/*,.jpg,.png" className="hidden" onChange={(e) => handleFileChange(e, setApplicantPhoto)} />
+                    </label>
+                  </div>
+                </div>
+              </fieldset>
+
+              {/* C. RESIDENTIAL DETAILS */}
+              <fieldset className="space-y-4">
+                <legend className="text-lg font-bold text-foreground mb-4">C. Residential Details</legend>
+                <Input name="currentResidentialAddress" placeholder="Current Address (with PIN)*" value={sForm.currentResidentialAddress} onChange={handleSalariedChange} />
+                <div className="grid gap-4 sm:grid-cols-3">
+                  <Input name="city" placeholder="City" value={sForm.city} onChange={handleSalariedChange} />
+                  <Input name="state" placeholder="State" value={sForm.state} onChange={handleSalariedChange} />
+                  <Input name="currentResidentialPincode" placeholder="PIN" />
+                </div>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <Input name="residenceType" placeholder="Owned / Rented / Company Provided" value={sForm.residenceType} onChange={handleSalariedChange} />
+                  <Input name="stayingSinceYears" type="number" placeholder="Staying Since (Years)" value={sForm.stayingSinceYears} onChange={handleSalariedChange} />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Residence Photo</Label>
+                  <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed rounded cursor-pointer hover:border-primary">
+                    <Upload className="h-5 w-5" />
+                    <span className="text-xs mt-1">{residencePhoto ? "✓" : "Upload"}</span>
+                    <input type="file" accept="image/*,.pdf" className="hidden" onChange={(e) => handleFileChange(e, setResidencePhoto)} />
+                  </label>
+                </div>
+              </fieldset>
+
+              {/* D. EMPLOYMENT DETAILS */}
+              <fieldset className="space-y-4">
+                <legend className="text-lg font-bold text-foreground mb-4">D. Employment Details</legend>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <Input name="companyName" placeholder="Company Name" value={sForm.companyName} onChange={handleSalariedChange} />
+                  <Input name="companyNature" placeholder="Nature (Private/MNC/Govt/PSU)" value={sForm.companyNature} onChange={handleSalariedChange} />
+                  <Input name="industry" placeholder="Industry / Sector" value={sForm.industry} onChange={handleSalariedChange} />
+                  <Input name="designation" placeholder="Designation" value={sForm.designation} onChange={handleSalariedChange} />
+                  <Input name="employmentType" placeholder="Employment Type" value={sForm.employmentType} onChange={handleSalariedChange} />
+                  <Input name="dateOfJoining" placeholder="Date of Joining" value={sForm.dateOfJoining} onChange={handleSalariedChange} />
+                  <Input name="totalExperienceYears" type="number" placeholder="Total Experience (Years)" value={sForm.totalExperienceYears} onChange={handleSalariedChange} />
+                  <Input name="officeLocation" placeholder="Office Location / City" value={sForm.officeLocation} onChange={handleSalariedChange} />
+                  <Input name="officialEmail" type="email" placeholder="Official Email ID" value={sForm.officialEmail} onChange={handleSalariedChange} />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Office ID Card Photo</Label>
+                  <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed rounded cursor-pointer hover:border-primary">
+                    <Upload className="h-5 w-5" />
+                    <span className="text-xs mt-1">{officeIdPhoto ? "✓" : "Upload"}</span>
+                    <input type="file" accept="image/*,.pdf" className="hidden" onChange={(e) => handleFileChange(e, setOfficeIdPhoto)} />
+                  </label>
+                </div>
+              </fieldset>
+
+              {/* E. INCOME DETAILS */}
+              <fieldset className="space-y-4">
+                <legend className="text-lg font-bold text-foreground mb-4">E. Income Details</legend>
+                <div className="grid gap-4 sm:grid-cols-3">
+                  <Input name="monthlyNetSalary" type="number" placeholder="Monthly Net Salary (₹)" value={sForm.monthlyNetSalary} onChange={handleSalariedChange} />
+                  <Input name="salaryCreditMode" placeholder="Salary Credit Mode" value={sForm.salaryCreditMode} onChange={handleSalariedChange} />
+                  <Input name="salaryAccountBankName" placeholder="Salary Account Bank" value={sForm.salaryAccountBankName} onChange={handleSalariedChange} />
+                </div>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium">Last 3 Months Salary Slips*</Label>
+                    <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed rounded cursor-pointer hover:border-primary">
+                      <Upload className="h-5 w-5" />
+                      <span className="text-xs mt-1">{salarySlips ? "✓" : "Upload"}</span>
+                      <input type="file" accept="application/pdf,image/*" className="hidden" onChange={(e) => handleFileChange(e, setSalarySlips)} />
+                    </label>
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium">Last 6 Months Bank Statement*</Label>
+                    <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed rounded cursor-pointer hover:border-primary">
+                      <Upload className="h-5 w-5" />
+                      <span className="text-xs mt-1">{bankStatement ? "✓" : "Upload"}</span>
+                      <input type="file" accept="application/pdf,image/*" className="hidden" onChange={(e) => handleFileChange(e, setBankStatement)} />
+                    </label>
+                  </div>
+                </div>
+              </fieldset>
+
+              {/* F. EXISTING LOAN & CREDIT DETAILS */}
+              <fieldset className="space-y-4">
+                <legend className="text-lg font-bold text-foreground mb-4">F. Existing Loan & Credit Details</legend>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <Input name="existingLoans" placeholder="Existing Loans (Yes / No)" value={sForm.existingLoans} onChange={handleSalariedChange} />
+                  <Input name="existingLoanType" placeholder="If Yes – Loan Type" value={sForm.existingLoanType} onChange={handleSalariedChange} />
+                  <Input name="totalMonthlyEmi" type="number" placeholder="Total Monthly EMI (₹)" value={sForm.totalMonthlyEmi} onChange={handleSalariedChange} />
+                  <Input name="anyDelays" placeholder="Any EMI Delay in Past?" value={sForm.anyDelays} onChange={handleSalariedChange} />
+                </div>
+              </fieldset>
+
+              {/* G. CREDIT SCORE */}
+              <fieldset className="space-y-4">
+                <legend className="text-lg font-bold text-foreground mb-4">G. Credit Score</legend>
+                <Input name="cibilScore" type="number" placeholder="CIBIL Score" value={sForm.cibilScore} onChange={handleSalariedChange} />
+              </fieldset>
+
+              {/* H. LOAN REQUIREMENT */}
+              <fieldset className="space-y-4">
+                <legend className="text-lg font-bold text-foreground mb-4">H. Loan Requirement Details</legend>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <Input name="loanTypeRequired" placeholder="Type of Loan Required" value={sForm.loanTypeRequired} onChange={handleSalariedChange} />
+                  <Input name="requiredLoanAmount" type="number" placeholder="Required Loan Amount (₹)" value={sForm.requiredLoanAmount} onChange={handleSalariedChange} />
+                  <Input name="preferredTenure" placeholder="Preferred Loan Tenure" value={sForm.preferredTenure} onChange={handleSalariedChange} />
+                  <Input name="purpose" placeholder="Purpose of Loan" value={sForm.purpose} onChange={handleSalariedChange} />
+                </div>
+              </fieldset>
+
+              {/* I. CO-APPLICANT DETAILS */}
+              <fieldset className="space-y-4">
+                <legend className="text-lg font-bold text-foreground mb-4">I. Co-Applicant Details (If Any)</legend>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <Input name="coApplicantName" placeholder="Co-Applicant Name" value={sForm.coApplicantName} onChange={handleSalariedChange} />
+                  <Input name="coApplicantRelation" placeholder="Relationship with Applicant" value={sForm.coApplicantRelation} onChange={handleSalariedChange} />
+                  <Input name="coApplicantEmploymentType" placeholder="Co-Applicant Employment Type" value={sForm.coApplicantEmploymentType} onChange={handleSalariedChange} />
+                </div>
+              </fieldset>
+
+              {/* J. DECLARATION & CONSENT */}
+              <fieldset className="space-y-4">
+                <legend className="text-lg font-bold text-foreground mb-4">J. Declaration & Consent</legend>
+                <div className="flex items-start gap-3">
+                  <input id="s_consent" type="checkbox" className="mt-1" required />
+                  <label htmlFor="s_consent" className="text-sm">I authorize Infinity Loans & Business Solutions to verify my details and share my application with Banks / NBFCs for loan evaluation.</label>
+                </div>
+              </fieldset>
+            </>
+          )}
+
+          {!isSalaried && <>
           <fieldset className="space-y-4">
             <legend className="flex items-center gap-2 text-lg font-bold text-foreground mb-4">
               <User className="h-5 w-5 text-primary" />
@@ -835,6 +1141,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey }
               </div>
             </div>
           </fieldset>
+          </>}
         </form>
 
         <div className="sticky bottom-0 border-t bg-card px-6 py-4">
@@ -842,13 +1149,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey }
             <Button type="button" variant="outline" onClick={onClose} className="flex-1">
               Cancel
             </Button>
-            <Button
-              type="submit"
-              variant="cta"
-              onClick={handleSubmit}
-              disabled={isSubmitting}
-              className="flex-1 animate-pulse-subtle"
-            >
+            <Button type="submit" variant="cta" disabled={isSubmitting} className="flex-1 animate-pulse-subtle">
               {isSubmitting ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin" />
