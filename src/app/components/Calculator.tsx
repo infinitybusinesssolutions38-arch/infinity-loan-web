@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
-import { IndianRupee, Calendar } from "lucide-react";
+import { IndianRupee, Calendar, TrendingUp, PiggyBank } from "lucide-react";
 import PrivateInstitutionalHighlight from "./PrivateInstitutionalHighlight";
 
 /* -------------------- Types -------------------- */
