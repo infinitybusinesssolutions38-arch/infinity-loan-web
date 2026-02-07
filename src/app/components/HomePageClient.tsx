@@ -65,11 +65,11 @@ const CATEGORY_META: Array<{
   icon: React.ComponentType<{ className?: string }>;
   gradient: string;
 }> = [
-  { key: "loans", title: "Loans", icon: Banknote, gradient: "bg-gradient-loans" },
-  { key: "insurance", title: "Insurance", icon: Shield, gradient: "bg-gradient-insurance" },
-  { key: "credit-cards", title: "Credits & Cards", icon: CreditCard, gradient: "bg-gradient-credit" },
-  { key: "government-schemes", title: "Government Schemes", icon: Building2, gradient: "bg-gradient-government" },
-];
+    { key: "loans", title: "Loans", icon: Banknote, gradient: "bg-gradient-loans" },
+    { key: "insurance", title: "Insurance", icon: Shield, gradient: "bg-gradient-insurance" },
+    { key: "credit-cards", title: "Credits & Cards", icon: CreditCard, gradient: "bg-gradient-credit" },
+    { key: "government-schemes", title: "Government Schemes", icon: Building2, gradient: "bg-gradient-government" },
+  ];
 
 const TRUST_INDICATORS = [
   { icon: Users, value: "50,000+", label: "Happy Customers" },
@@ -276,75 +276,75 @@ export default function HomePageClient() {
   const slides = useMemo(
     () => [
       {
-        src: "/home-img/home-1.webp",
-        alt: "Business lending support",
+        src: "/home/salaried-emp-1.jpeg",
+        alt: "Loan Offers for Salaried Employees",
       },
       {
-        src: "/home-img/home-2.jpeg",
-        alt: "Personal finance solutions",
+        src: "/home/businesses-2.jpeg",
+        alt: "Smart Loan & Funding Solutions for All Businesses",
       },
       {
-        src: "/home-img/home-3.jpeg",
+        src: "/home/professionals-1.jpeg",
+        alt: "Smart Loan & Funding Solutions for All Professionals",
+      },
+      {
+        src: "/home/central-state-govt-emp-1.png",
+        alt: "Smart Loan & Funding Solutions for Central & State Government Employees",
+      },
+      {
+        src: "/home/central-state-govt-schema-1.jpeg",
+        alt: "End-to-End Financing Support for Central & State Government Schemes",
+      },
+      {
+        src: "/home/builder-developers-1.jpeg",
+        alt: "Smart Loan & Project Funding Solutions for Builders & Developers",
+      },
+      {
+        src: "/home/salaried-emp-2.jpeg",
         alt: "Government scheme guidance",
       },
       {
-        src: "/home-img/home-4.jpeg",
-        alt: "Secure documentation and approvals",
+        src: "/home/businesses-3.jpeg",
+        alt: "Smart Loan & Funding Solutions for All Businesses",
       },
       {
-        src: "/home-img/home-5.jpeg",
-        alt: "Business lending support",
+        src: "/home/professionals-2.png",
+        alt: "Smart Loan & Funding Solutions for All Professionals",
       },
       {
-        src: "/home-img/home-6.webp",
+        src: "/home-img/home1.jpeg",
         alt: "Personal finance solutions",
       },
       {
-        src: "/home-img/home-7.jpeg",
+        src: "/home-img/home2.jpeg",
         alt: "Government scheme guidance",
       },
       {
-        src: "/home-img/home-8.webp",
+        src: "/home-img/home3.jpeg",
         alt: "Secure documentation and approvals",
       },
       {
-        src: "/home-img/home-9.webp",
+        src: "/home/salaried-emp-3.jpeg",
         alt: "Business lending support",
       },
       {
-        src: "/home-img/home-10.webp",
-        alt: "Personal finance solutions",
+        src: "/home/businesses-1.jpeg",
+        alt: "Smart Loan & Funding Solutions for All Businesses",
       },
       {
-        src: "/home-img/home-11.jpeg",
-        alt: "Government scheme guidance",
+        src: "/home/professionals-3.jpeg",
+        alt: "Smart Loan & Funding Solutions for All Professionals",
       },
       {
-        src: "/home-img/home-12.png",
+        src: "/home-img/home4.jpeg",
         alt: "Secure documentation and approvals",
       },
       {
-        src: "/home-img/home-13.png",
+        src: "/home-img/home1.jpeg",
         alt: "Business lending support",
       },
       {
-        src: "/home-img/home-14.jpeg",
-        alt: "Personal finance solutions",
-      },
-      {
-        src: "/home-img/home-15.jpeg",
-        alt: "Government scheme guidance",
-      },
-      {
-        src: "/home-img/home-16.jpeg",
-        alt: "Secure documentation and approvals",
-      },
-      {
-        src: "/home-img/home-17.jpeg",
-        alt: "Business lending support",
-      },
-      {
-        src: "/home-img/home-18.jpeg",
+        src: "/home-img/home2.jpeg",
         alt: "Personal finance solutions",
       },
     ],
@@ -358,25 +358,42 @@ export default function HomePageClient() {
     () => [
       {
         badge: "Trusted Financial Partner",
-        title: "Smart Financing,",
-        emphasis: "For Everyone",
-        description:
-          "1.Loan Offers for Salaried Employees | 2.Smart Loan & Funding Solutions for All Businesses — Proprietorships, Mid-Sized SMEs, Industrial Enterprises, and Corporates",
+        title: "Loan Offers for Salaried Employees",
+        // emphasis: "For Everyone",
+        // description:
+        //   "1.Loan Offers for Salaried Employees | 2.Smart Loan & Funding Solutions for All Businesses — Proprietorships, Mid-Sized SMEs, Industrial Enterprises, and Corporates",
+
       },
       {
         badge: "Quick & Transparent",
-        title: "Smart Funding,",
-        emphasis: "For Professionals",
-        description:
-          "3.Smart Loan & Funding Solutions for All Professionals — Doctors, Chartered Accountants, Architects, Engineers, Lawyers, Consultants, and Self-Employed Professionals | 4.Smart Loan & Funding Solutions for Central & State Government Employees — Civil Services, Public Sector Staff, Defence Personnel, and Other Government Employees",
+        title: "Smart Loan & Funding Solutions for All Businesses",
+        // emphasis: "For Professionals",
+        // description:
+        //   "3.Smart Loan & Funding Solutions for All Professionals — Doctors, Chartered Accountants, Architects, Engineers, Lawyers, Consultants, and Self-Employed Professionals | 4.Smart Loan & Funding Solutions for Central & State Government Employees — Civil Services, Public Sector Staff, Defence Personnel, and Other Government Employees",
+
       },
       {
         badge: "Eligibility-led Guidance",
-        title: "End-to-End,",
-        emphasis: "Project Support",
-        description:
-          "5. End-to-End Financing Support for Central & State Government Schemes | 6. Smart Loan & Project Funding Solutions for Builders & Developers",
+        title: "Smart Loan & Funding Solutions for All Professionals",
+        // emphasis: "Project Support",
+        // description:
+        //   "5. End-to-End Financing Support for Central & State Government Schemes | 6. Smart Loan & Project Funding Solutions for Builders & Developers",
+
       },
+      {
+        badge: "Eligibility-led Guidance",
+        title: "Smart Loan & Funding Solutions for Central & State Government Employees",
+      },
+      {
+        badge: "Eligibility-led Guidance",
+        title: "End-to-End Financing Support for Central & State Government Schemes",
+      },
+      {
+        badge: "Eligibility-led Guidance",
+        title: "Smart Loan & Project Funding Solutions for Builders & Developers",
+      },
+
+
     ],
     []
   );
@@ -437,7 +454,7 @@ export default function HomePageClient() {
         {
           key: "insurance-life",
           title: "Life Insurance",
-          description: "Protect your family’s future with the right life cover and plan benefits.",
+          description: "Protect your family’s future with the right life cover and plan benefits",
           infoHref: "/services/insurance",
           highlight: true,
           badge: "Trusted",
@@ -688,7 +705,7 @@ export default function HomePageClient() {
                   fill
                   priority={i === 0}
                   sizes="100vw"
-                  className="object-cover"
+                  className="object-content "
                 />
               </div>
             );
@@ -708,14 +725,14 @@ export default function HomePageClient() {
                   {activeHeroContent.badge}
                 </Badge>
 
-                <h1 className="text-4xl font-extrabold tracking-tight text-primary-foreground sm:text-5xl lg:text-6xl">
+                <h1 className="text-4xl font-extrabold tracking-tight text-primary-foreground sm:text-5xl lg:text-5xl">
                   {activeHeroContent.title}{" "}
-                  <span className="text-accent">{activeHeroContent.emphasis}</span>
+                  {/* <span className="text-accent">{activeHeroContent.emphasis}</span> */}
                 </h1>
 
-                <p className="mt-6 text-lg text-primary-foreground/80 sm:text-xl max-w-3xl mx-auto">
+                {/* <p className="mt-6 text-lg text-primary-foreground/80 sm:text-xl max-w-3xl mx-auto">
                   {activeHeroContent.description}
-                </p>
+                </p> */}
 
                 <div className="mt-8 flex flex-wrap justify-center gap-4">
                   {/* <ApplyNowCTAButton size="xl" className="group">
@@ -816,27 +833,27 @@ export default function HomePageClient() {
         </div>
       </section>
 
-      
+
 
       <section className="py-16 lg:py-24">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12 border border-gray-200 rounded-2xl p-6 shadow-xl">
-  <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-6xl">
-    Explore Our <span className="text-[#f97415] text-7xl">Loan</span> Services
-  </h2>
+            <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-6xl">
+              Explore Our <span className="text-[#f97415] text-7xl">Loan</span> Services
+            </h2>
 
-  <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-    Choose from a wide range of financial products tailored to your needs
-  </p>
+            <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
+              Choose from a wide range of financial products tailored to your needs
+            </p>
 
-  <div className="mt-8">
-    <Link href="/services">
-      <button className="cursor-pointer px-8 py-3 bg-[#f97415] text-white font-semibold rounded-lg shadow-md hover:bg-[#e8630f] transition duration-300">
-        View All Services
-      </button>
-    </Link>
-  </div>
-</div>
+            <div className="mt-8">
+              <Link href="/services">
+                <button className="cursor-pointer px-8 py-3 bg-[#f97415] text-white font-semibold rounded-lg shadow-md hover:bg-[#e8630f] transition duration-300">
+                  View All Services
+                </button>
+              </Link>
+            </div>
+          </div>
 
           {/* <div className="flex flex-wrap justify-center gap-3 mb-10">
             {CATEGORY_META.map((cat) => {
@@ -999,7 +1016,7 @@ export default function HomePageClient() {
             </div>
           )} */}
 
-<ModernSections />
+          <ModernSections />
           {/* <div className="mt-14 space-y-12">
             <section className="rounded-3xl bg-secondary/40 p-6 sm:p-10">
               <div className="text-center mb-10 animate-fade-in-up">
@@ -1097,117 +1114,117 @@ export default function HomePageClient() {
       <LogoCloud />
 
       <section className="relative py-20 lg:py-32 overflow-hidden bg-gradient-to-b from-gray-50 via-white to-gray-50">
-      {/* Subtle Background Pattern */}
-      <div className="absolute inset-0 opacity-[0.03]">
-        <div className="absolute inset-0" style={{
-          backgroundImage: `radial-gradient(circle at 1px 1px, black 1px, transparent 0)`,
-          backgroundSize: '40px 40px'
-        }} />
-      </div>
-
-      {/* Animated Gradient Orbs */}
-      <div className="absolute top-0 left-1/4 w-96 h-96 bg-gray-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob" />
-      <div className="absolute top-0 right-1/4 w-96 h-96 bg-gray-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000" />
-      <div className="absolute -bottom-8 left-1/2 w-96 h-96 bg-gray-100 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000" />
-
-      <div className="container mx-auto px-4 relative z-10">
-        {/* Header */}
-        <div className="text-center mb-16 space-y-4">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-black/5 border border-black/10 backdrop-blur-sm mb-4">
-            <div className="w-2 h-2 bg-[#F97415] rounded-full animate-pulse" />
-            <span className="text-sm font-medium text-gray-700">Why Choose Us</span>
-          </div>
-          
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-black">
-            Built for Your{" "}
-            <span className="relative inline-block">
-              <span className="relative z-10">Success</span>
-              <span className="absolute bottom-2 left-0 w-full h-3 bg-[#F97415]/20 -rotate-1" />
-            </span>
-          </h2>
-          
-          <p className="mt-6 text-lg md:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
-            We make financial products accessible, transparent, and hassle-free with cutting-edge technology
-          </p>
+        {/* Subtle Background Pattern */}
+        <div className="absolute inset-0 opacity-[0.03]">
+          <div className="absolute inset-0" style={{
+            backgroundImage: `radial-gradient(circle at 1px 1px, black 1px, transparent 0)`,
+            backgroundSize: '40px 40px'
+          }} />
         </div>
 
-        {/* Benefits Grid */}
-        <div className="grid gap-6 md:gap-8 sm:grid-cols-2 lg:grid-cols-3 max-w-7xl mx-auto">
-          {benefits.map((benefit, idx) => (
-            <div
-              key={idx}
-              className="group relative"
-              style={{
-                animation: `fadeInUp 0.6s ease-out ${idx * 0.15}s both`
-              }}
-            >
-              {/* Glass Card */}
-              <div className="relative h-full rounded-2xl bg-white/60 backdrop-blur-xl border border-gray-200/50 shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden">
-                {/* Hover Gradient Effect */}
-                <div className="absolute inset-0 bg-gradient-to-br from-gray-50/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                
-                {/* Orange Accent Line */}
-                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#F97415] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        {/* Animated Gradient Orbs */}
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-gray-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob" />
+        <div className="absolute top-0 right-1/4 w-96 h-96 bg-gray-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000" />
+        <div className="absolute -bottom-8 left-1/2 w-96 h-96 bg-gray-100 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000" />
 
-                <div className="relative p-8">
-                  {/* Icon Container with Stat Badge */}
-                  <div className="flex items-start justify-between mb-6">
-                    <div className="relative">
-                      {/* Icon Background */}
-                      <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-gray-100 to-gray-50 border border-gray-200/50 shadow-inner group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
-                        <benefit.icon className="h-8 w-8 text-black group-hover:text-[#F97415] transition-colors duration-500" strokeWidth={1.5} />
+        <div className="container mx-auto px-4 relative z-10">
+          {/* Header */}
+          <div className="text-center mb-16 space-y-4">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-black/5 border border-black/10 backdrop-blur-sm mb-4">
+              <div className="w-2 h-2 bg-[#F97415] rounded-full animate-pulse" />
+              <span className="text-sm font-medium text-gray-700">Why Choose Us</span>
+            </div>
+
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-black">
+              Built for Your{" "}
+              <span className="relative inline-block">
+                <span className="relative z-10">Success</span>
+                <span className="absolute bottom-2 left-0 w-full h-3 bg-[#F97415]/20 -rotate-1" />
+              </span>
+            </h2>
+
+            <p className="mt-6 text-lg md:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
+              We make financial products accessible, transparent, and hassle-free with cutting-edge technology
+            </p>
+          </div>
+
+          {/* Benefits Grid */}
+          <div className="grid gap-6 md:gap-8 sm:grid-cols-2 lg:grid-cols-3 max-w-7xl mx-auto">
+            {benefits.map((benefit, idx) => (
+              <div
+                key={idx}
+                className="group relative"
+                style={{
+                  animation: `fadeInUp 0.6s ease-out ${idx * 0.15}s both`
+                }}
+              >
+                {/* Glass Card */}
+                <div className="relative h-full rounded-2xl bg-white/60 backdrop-blur-xl border border-gray-200/50 shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden">
+                  {/* Hover Gradient Effect */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-gray-50/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+                  {/* Orange Accent Line */}
+                  <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#F97415] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+                  <div className="relative p-8">
+                    {/* Icon Container with Stat Badge */}
+                    <div className="flex items-start justify-between mb-6">
+                      <div className="relative">
+                        {/* Icon Background */}
+                        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-gray-100 to-gray-50 border border-gray-200/50 shadow-inner group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
+                          <benefit.icon className="h-8 w-8 text-black group-hover:text-[#F97415] transition-colors duration-500" strokeWidth={1.5} />
+                        </div>
+
+                        {/* Animated Ring */}
+                        <div className="absolute -inset-2 rounded-2xl border-2 border-[#F97415]/20 opacity-0 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500" />
                       </div>
-                      
-                      {/* Animated Ring */}
-                      <div className="absolute -inset-2 rounded-2xl border-2 border-[#F97415]/20 opacity-0 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500" />
+
+                      {/* Stat Badge */}
+                      <div className="text-right">
+                        <div className="text-2xl font-bold text-black group-hover:text-[#F97415] transition-colors duration-300">
+                          {benefit.stat}
+                        </div>
+                        <div className="text-xs text-gray-500 font-medium mt-1">
+                          {benefit.label}
+                        </div>
+                      </div>
                     </div>
 
-                    {/* Stat Badge */}
-                    <div className="text-right">
-                      <div className="text-2xl font-bold text-black group-hover:text-[#F97415] transition-colors duration-300">
-                        {benefit.stat}
-                      </div>
-                      <div className="text-xs text-gray-500 font-medium mt-1">
-                        {benefit.label}
-                      </div>
+                    {/* Content */}
+                    <div className="space-y-3">
+                      <h3 className="text-xl font-bold text-black group-hover:text-gray-900 transition-colors duration-300">
+                        {benefit.title}
+                      </h3>
+                      <p className="text-gray-600 leading-relaxed group-hover:text-gray-700 transition-colors duration-300">
+                        {benefit.description}
+                      </p>
                     </div>
+
+                    {/* Bottom Shine Effect */}
+                    <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
                   </div>
 
-                  {/* Content */}
-                  <div className="space-y-3">
-                    <h3 className="text-xl font-bold text-black group-hover:text-gray-900 transition-colors duration-300">
-                      {benefit.title}
-                    </h3>
-                    <p className="text-gray-600 leading-relaxed group-hover:text-gray-700 transition-colors duration-300">
-                      {benefit.description}
-                    </p>
-                  </div>
-
-                  {/* Bottom Shine Effect */}
-                  <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
+                  {/* Corner Accent */}
+                  <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-[#F97415]/5 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 </div>
 
-                {/* Corner Accent */}
-                <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-[#F97415]/5 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                {/* Floating Shadow */}
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 rounded-2xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-500 -z-10" />
               </div>
+            ))}
+          </div>
 
-              {/* Floating Shadow */}
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 rounded-2xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-500 -z-10" />
+          {/* Bottom CTA (Optional) */}
+          <div className="mt-16 text-center">
+            <div className="inline-flex items-center gap-2 text-sm text-gray-600">
+              <Shield className="w-4 h-4 text-[#F97415]" />
+              <span>Trusted by over 10,000+ customers nationwide</span>
             </div>
-          ))}
-        </div>
-
-        {/* Bottom CTA (Optional) */}
-        <div className="mt-16 text-center">
-          <div className="inline-flex items-center gap-2 text-sm text-gray-600">
-            <Shield className="w-4 h-4 text-[#F97415]" />
-            <span>Trusted by over 10,000+ customers nationwide</span>
           </div>
         </div>
-      </div>
 
-      {/* CSS Animations */}
-      <style jsx>{`
+        {/* CSS Animations */}
+        <style jsx>{`
         @keyframes fadeInUp {
           from {
             opacity: 0;
@@ -1243,7 +1260,7 @@ export default function HomePageClient() {
           animation-delay: 4s;
         }
       `}</style>
-    </section>
+      </section>
 
       <section className="py-16 lg:py-24">
         <div className="container mx-auto px-4">
