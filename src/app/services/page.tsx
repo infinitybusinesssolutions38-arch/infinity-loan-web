@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 
+import { Suspense } from "react";
+
 import ServicesHubClient from "./_components/ServicesHubClient";
 
 export const metadata: Metadata = {
@@ -11,7 +13,9 @@ export const metadata: Metadata = {
 export default function ServicesPage() {
   return (
     <main>
-      <ServicesHubClient />
+      <Suspense fallback={null}>
+        <ServicesHubClient />
+      </Suspense>
     </main>
   );
 }
