@@ -87,7 +87,7 @@ const ApplyNowPage = () => {
                 <span className="font-semibold">HOME</span> › <span className="font-semibold">APPLY FOR LOAN</span>
             </div>
 
-            {/* Main Content */}
+            {/* Main Content add changes*/}
             <div className="flex-1 grid grid-cols-1 lg:grid-cols-2">
                 {/* Left Side - Content */}
                 <div className="relative bg-gradient-to-br from-gray-800 via-gray-900 to-black flex flex-col justify-center items-start p-8 lg:p-16 min-h-[500px] lg:min-h-screen">
