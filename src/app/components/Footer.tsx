@@ -17,9 +17,9 @@ export function Footer() {
               <Image 
                 src="/logo2.png" 
                 alt="LoanEase logo" 
-                width={150} 
-                height={150}
-                className="h-12 w-auto"
+                width={250} 
+                height={250}
+                className="h-20 w-auto"
               />
             </div>
             <p className="text-white/70 text-sm leading-relaxed">
@@ -81,6 +81,14 @@ export function Footer() {
                   >
                     +91 9579880841
                   </Link>
+                  <div className="mt-1">
+                    <Link 
+                      href="tel:+919766169660" 
+                      className="font-medium hover:text-[#F97415] transition-colors"
+                    >
+                      +91 9766169660
+                    </Link>
+                  </div>
                 </div>
               </li>
               <li className="flex items-start gap-3">
@@ -93,6 +101,14 @@ export function Footer() {
                   >
                     business@infinityloanservices.com
                   </Link>
+                  <div className="mt-1">
+                    <Link 
+                      href="mailto:businessservicesinfinity@gmail.com" 
+                      className="font-medium hover:text-[#F97415] transition-colors break-all"
+                    >
+                      businessservicesinfinity@gmail.com
+                    </Link>
+                  </div>
                 </div>
               </li>
             </ul>

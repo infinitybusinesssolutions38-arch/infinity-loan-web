@@ -58,14 +58,14 @@ const Navbar = () => {
     }`;
 
   return (
-    <div className="sticky top-0 z-50 w-full">
-      <div className="navbar mx-auto max-w-full border border-white/10 bg-black/40 px-4 py-2 shadow-lg backdrop-blur-lg supports-[backdrop-filter]:bg-black/40 sm:px-6 ">
+    <div className="sticky top-0 z-50 w-full px-3 py-2">
+      <div className="navbar mx-auto max-w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-2 shadow-lg backdrop-blur-lg supports-[backdrop-filter]:bg-black/40 sm:px-6 ">
         {/* LOGO */}
         <Link
           href="/"
-          className="flex w-[150px] shrink-0 items-center transition-transform duration-300 hover:scale-109"
+          className="flex w-[150px] shrink-0 items-center transition-transform duration-300 hover:scale-110"
         >
-          <Image src="/logo2.png" alt="logo" width={180} height={60} />
+          <Image src="/logo2.png" alt="logo" width={200} height={100} />
         </Link>
 
         {/* MENU  testing changes */}
@@ -82,7 +82,7 @@ const Navbar = () => {
 
             <li className="group relative">
               <span className="cursor-pointer relative py-2 transition-colors duration-200 hover:text-[#F97415] after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-[#F97415] after:transition-all after:duration-300 hover:after:w-full">
-                Services
+                Our Services
               </span>
 
               <div className="absolute top-full left-1/2 -translate-x-1/2 pt-4 hidden group-hover:block">

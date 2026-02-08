@@ -4,7 +4,7 @@ import React from "react";
 
 const SuccessBadge: React.FC = () => {
   return (
-    <div className="fixed top-32 left-0 z-[1000] flex justify-start px-4 animate-[successBadgeSlide_10s_ease-in-out_infinite]">
+    <div className="fixed top-32 left-0 z-[40] flex justify-start px-4 animate-[successBadgeSlide_10s_ease-in-out_infinite]">
       <div className="relative z-0 overflow-hidden flex items-center gap-4 rounded-2xl px-5 py-3 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 shadow-xl border border-slate-700">
         <div className="pointer-events-none absolute inset-0 -z-10 opacity-40 animate-[successBadgeBg_6s_ease-in-out_infinite]" />
 
