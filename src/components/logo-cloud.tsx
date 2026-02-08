@@ -1,3 +1,5 @@
+"use client";
+
 // import { InfiniteSlider } from '@/components/ui/infinite-slider'
 // import { ProgressiveBlur } from '@/components/ui/progressive-blur'
 // import sbiLogo from "@/components/bank logos/SBI-logo.svg.png"
@@ -52,52 +54,42 @@
 //                     </InfiniteSlider>
 
 //                     <div className="bg-linear-to-r from-background absolute inset-y-0 left-0 w-20" />
-//                     <div className="bg-linear-to-l from-background absolute inset-y-0 right-0 w-20" />
-//                     <ProgressiveBlur
-//                         className="pointer-events-none absolute left-0 top-0 h-full w-20"
-//                         direction="left"
-//                         blurIntensity={1}
-//                     />
-//                     <ProgressiveBlur
-//                         className="pointer-events-none absolute right-0 top-0 h-full w-20"
-//                         direction="right"
-//                         blurIntensity={1}
-//                     />
-//                 </div>
-//             </div>
-//         </section>
-//     )
-// }
-
-
 import { InfiniteSlider } from '@/components/ui/infinite-slider'
 import { ProgressiveBlur } from '@/components/ui/progressive-blur'
-import sbiLogo from "@/components/bank logos/SBI-logo.svg.png"
-import auLogo from "@/components/bank logos/au-small-finance-bank-limited-logo-png_seeklogo-333683.png"
-import axisLogo from "@/components/bank logos/axis-bank-logo-png_seeklogo-14775.png"
-import bobLogo from "@/components/bank logos/bank-of-baroda-logo-png_seeklogo-195534.png"
-import hdfcLogo from "@/components/bank logos/hdfc-bank-limited-logo-png_seeklogo-289647.png"
-import hsbcLogo from "@/components/bank logos/hsbc-private-bank-logo-png_seeklogo-481153.png"
-import iciciLogo from "@/components/bank logos/icici-bank-logo-png_seeklogo-69551.png"
-import idfcLogo from "@/components/bank logos/idfc-first-bank-logo-png_seeklogo-556504.png"
-import kotakLogo from "@/components/bank logos/kotak-mahindra-bank-logo-png_seeklogo-304220.png"
-import pnbLogo from "@/components/bank logos/punjab-national-bank-pnb-logo-png_seeklogo-386963.png"
 import Image from 'next/image'
 import { Handshake, Award, Shield, CheckCircle2 } from 'lucide-react'
+import { useEffect, useMemo, useState } from "react";
 
 export default function LogoCloud() {
-    const logos = [
-        { src: sbiLogo, alt: "SBI" },
-        { src: hdfcLogo, alt: "HDFC Bank" },
-        { src: iciciLogo, alt: "ICICI Bank" },
-        { src: axisLogo, alt: "Axis Bank" },
-        { src: kotakLogo, alt: "Kotak Mahindra Bank" },
-        { src: idfcLogo, alt: "IDFC First Bank" },
-        { src: pnbLogo, alt: "Punjab National Bank" },
-        { src: bobLogo, alt: "Bank of Baroda" },
-        { src: hsbcLogo, alt: "HSBC" },
-        { src: auLogo, alt: "AU Small Finance Bank" },
-    ];
+    const [imageFiles, setImageFiles] = useState<string[]>([]);
+
+    useEffect(() => {
+        let cancelled = false;
+
+        (async () => {
+            try {
+                const res = await fetch("/api/public-images", { cache: "no-store" });
+                const data = await res.json();
+                const files = Array.isArray(data?.files) ? (data.files as string[]) : [];
+                if (!cancelled) setImageFiles(files);
+            } catch {
+                if (!cancelled) setImageFiles([]);
+            }
+        })();
+
+        return () => {
+            cancelled = true;
+        };
+    }, []);
+
+    const logos = useMemo(
+        () =>
+            imageFiles.map((fileName) => ({
+                src: `/images/${encodeURIComponent(fileName)}`,
+                alt: fileName.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " "),
+            })),
+        [imageFiles]
+    );
 
     const stats = [
         { icon: Handshake, label: "Bank Partners", value: "100+" },
@@ -177,7 +169,45 @@ export default function LogoCloud() {
                                             alt={logo.alt}
                                             fill
                                             sizes="350px"
-                                            className="object-cover filter transition-all duration-300"
+                                            className="object-contain filter transition-all duration-300"
+                                            priority={index < 3}
+                                        />
+                                    </div>
+                                </div>
+                            ))}
+                        </InfiniteSlider>
+
+                        {/* Progressive Blur Overlays */}
+                        <ProgressiveBlur
+                            className="pointer-events-none absolute left-0 top-0 h-full w-24"
+                            direction="left"
+                            blurIntensity={1}
+                        />
+                        <ProgressiveBlur
+                            className="pointer-events-none absolute right-0 top-0 h-full w-24"
+                            direction="right"
+                            blurIntensity={1}
+                        />
+
+                        {/* Gradient Overlays for smooth fade */}
+                        <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-white to-transparent pointer-events-none" />
+                        <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-white to-transparent pointer-events-none" />
+                    </div>
+
+                    <div className="bg-white mt-5 rounded-3xl border-2 border-gray-100 shadow-xl overflow-hidden py-8 relative">
+                        <InfiniteSlider speed={40} speedOnHover={20} gap={96} reverse>
+                            {logos.map((logo, index) => (
+                                <div
+                                    key={index}
+                                    className="flex items-center group/logo"
+                                >
+                                    <div className="relative h-20 w-40 px-4 py-2 rounded-xl transition-all duration-300 group-hover/logo:bg-orange-50 group-hover/logo:scale-110">
+                                        <Image
+                                            src={logo.src}
+                                            alt={logo.alt}
+                                            fill
+                                            sizes="350px"
+                                            className="object-contain filter transition-all duration-300"
                                             priority={index < 3}
                                         />
                                     </div>

@@ -27,6 +27,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import LogoCloud from "@/components/logo-cloud";
 import ModernSections from "./fAQ";
 import PrivateInstitutionalHighlight from "./PrivateInstitutionalHighlight";
+import PoorCibilHighlight from "./PoorCibilHighlight";
+import EmiRestructuringHighlight from "./Emirestructuringhighlight";
+import PropertyLoanHighlight from "./Propertyloanhighlight";
+import LogoCloud2 from "@/components/logocloud2";
+
 
 type HubCategoryKey = "loans" | "insurance" | "credit-cards" | "government-schemes";
 
@@ -274,84 +279,39 @@ export default function HomePageClient() {
   ];
 
   const slides = useMemo(
-    () => [
-      {
-        src: "/home/salaried-emp-1.jpeg",
-        alt: "Loan Offers for Salaried Employees",
-      },
-      {
-        src: "/home/businesses-2.jpeg",
-        alt: "Smart Loan & Funding Solutions for All Businesses",
-      },
-      {
-        src: "/home/professionals-1.jpeg",
-        alt: "Smart Loan & Funding Solutions for All Professionals",
-      },
-      {
-        src: "/home/central-state-govt-emp-1.png",
-        alt: "Smart Loan & Funding Solutions for Central & State Government Employees",
-      },
-      {
-        src: "/home/central-state-govt-schema-1.jpeg",
-        alt: "End-to-End Financing Support for Central & State Government Schemes",
-      },
-      {
-        src: "/home/builder-developers-1.jpeg",
-        alt: "Smart Loan & Project Funding Solutions for Builders & Developers",
-      },
-      {
-        src: "/home/salaried-emp-2.jpeg",
-        alt: "Government scheme guidance",
-      },
-      {
-        src: "/home/businesses-3.jpeg",
-        alt: "Smart Loan & Funding Solutions for All Businesses",
-      },
-      {
-        src: "/home/professionals-2.png",
-        alt: "Smart Loan & Funding Solutions for All Professionals",
-      },
-      {
-        src: "/home-img/home1.jpeg",
-        alt: "Personal finance solutions",
-      },
-      {
-        src: "/home-img/home2.jpeg",
-        alt: "Government scheme guidance",
-      },
-      {
-        src: "/home-img/home3.jpeg",
-        alt: "Secure documentation and approvals",
-      },
-      {
-        src: "/home/salaried-emp-3.jpeg",
-        alt: "Business lending support",
-      },
-      {
-        src: "/home/businesses-1.jpeg",
-        alt: "Smart Loan & Funding Solutions for All Businesses",
-      },
-      {
-        src: "/home/professionals-3.jpeg",
-        alt: "Smart Loan & Funding Solutions for All Professionals",
-      },
-      {
-        src: "/home-img/home4.jpeg",
-        alt: "Secure documentation and approvals",
-      },
-      {
-        src: "/home-img/home1.jpeg",
-        alt: "Business lending support",
-      },
-      {
-        src: "/home-img/home2.jpeg",
-        alt: "Personal finance solutions",
-      },
-    ],
+    () => {
+      const fileNames = [
+        "2024-India-Outlook-IMAGE.jpg.jpeg",
+        "960x0.jpg.jpeg",
+        "Agronomist-Liquid-Fertiliercomp.jpg.jpeg",
+        "ChatGPT Image Feb 8, 2026, 11_41_02 AM.png",
+        "ChatGPT Image Feb 8, 2026, 12_16_16 PM.png",
+        "ChatGPT-Image-Jun-3-2025-03_56_54-PM.png",
+        "The-5-KPIs-Every-Hospital-Should-Be-Tracking-in-2025.jpg.jpeg",
+        "Untitled-design-6.png",
+        "blogcube-father-6813857.jpg.jpeg",
+        "business-mentor-indian-family-business.jpg.jpeg",
+        "co-workers-working-together-sketch.jpg.jpeg",
+        "construction-engineers-reviewing-plans.jpg (1).jpeg",
+        "focused-design-professional-presenting-renovation-project.jpg (1).jpeg",
+        "hover_422032048.jpg.jpeg",
+        "indian-happy-bank-manager-arm-600nw-2441923621.webp",
+        "joyful-military-father-uniform-returning-family-holding-two-kids-arms-woman-adjusting-husbands-cap-family-reunion-returning-home-concept.jpg.jpeg",
+        "serious-young-businessman-showing-presentation-pc-tablet.jpg.jpeg",
+        "two-successful-entrepreneur-helmet-with-project-laptop-new-buildings-stay-near-glass-roof.jpg.jpeg",
+      ];
+
+      return fileNames.map((fileName) => ({
+        src: `/home2/${encodeURIComponent(fileName)}`,
+        alt: "Infinity Loan Services",
+      }));
+    },
     []
   );
 
   const [activeIndex, setActiveIndex] = useState(0);
+  const [previousIndex, setPreviousIndex] = useState<number | null>(null);
+  const [isSlideAnimating, setIsSlideAnimating] = useState(false);
   const activeSlide = slides[activeIndex];
 
   const heroContentGroups = useMemo(
@@ -403,21 +363,49 @@ export default function HomePageClient() {
   const intervalRef = useRef<number | null>(null);
 
   const nextSlide = useCallback(() => {
-    setActiveIndex((i) => (i + 1) % slides.length);
+    setActiveIndex((i) => {
+      setPreviousIndex(i);
+      return (i + 1) % slides.length;
+    });
   }, [slides.length]);
 
   const prevSlide = useCallback(() => {
-    setActiveIndex((i) => (i - 1 + slides.length) % slides.length);
+    setActiveIndex((i) => {
+      setPreviousIndex(i);
+      return (i - 1 + slides.length) % slides.length;
+    });
   }, [slides.length]);
 
   const goToSlide = useCallback(
     (index: number) => {
       const len = slides.length;
       const safe = ((index % len) + len) % len;
-      setActiveIndex(safe);
+      setActiveIndex((i) => {
+        setPreviousIndex(i);
+        return safe;
+      });
     },
     [slides.length]
   );
+
+  useEffect(() => {
+    if (previousIndex === null) return;
+
+    setIsSlideAnimating(false);
+    const raf = window.requestAnimationFrame(() => {
+      setIsSlideAnimating(true);
+    });
+
+    const t = window.setTimeout(() => {
+      setPreviousIndex(null);
+      setIsSlideAnimating(false);
+    }, 720);
+
+    return () => {
+      window.cancelAnimationFrame(raf);
+      window.clearTimeout(t);
+    };
+  }, [previousIndex]);
 
   useEffect(() => {
     intervalRef.current = window.setInterval(() => {
@@ -688,28 +676,43 @@ export default function HomePageClient() {
         onMouseLeave={onMouseLeave}
       >
         <div className="absolute inset-0">
-          {slides.map((slide, i) => {
-            const isActive = i === activeIndex;
-            return (
-              <div
-                key={i}
-                className={cx(
-                  "absolute inset-0 transition-opacity duration-700 ease-out",
-                  isActive ? "opacity-100" : "opacity-0"
-                )}
-                aria-hidden={!isActive}
-              >
-                <Image
-                  src={slide.src}
-                  alt={slide.alt}
-                  fill
-                  priority={i === 0}
-                  sizes="100vw"
-                  className="object-content "
-                />
-              </div>
-            );
-          })}
+          {previousIndex !== null && slides[previousIndex] && (
+            <div
+              key={`prev-${previousIndex}`}
+              className="absolute inset-0 transition-transform duration-700 ease-out will-change-transform"
+              style={{ transform: isSlideAnimating ? "translateX(-100%)" : "translateX(0%)" }}
+              aria-hidden
+            >
+              <Image
+                src={slides[previousIndex].src}
+                alt={slides[previousIndex].alt}
+                fill
+                priority={false}
+                sizes="100vw"
+                className="object-cover"
+              />
+            </div>
+          )}
+
+          <div
+            key={`active-${activeIndex}`}
+            className="absolute inset-0 transition-transform duration-700 ease-out will-change-transform"
+            style={
+              previousIndex === null
+                ? { transform: "translateX(0%)" }
+                : { transform: isSlideAnimating ? "translateX(0%)" : "translateX(100%)" }
+            }
+          >
+            <Image
+              src={activeSlide.src}
+              alt={activeSlide.alt}
+              fill
+              priority={activeIndex === 0}
+              sizes="100vw"
+              className="object-cover"
+            />
+          </div>
+
           <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/45 to-black/70" />
           <div className="absolute inset-0 bg-gradient-to-r from-primary/55 via-black/30 to-accent/30" />
           <div className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-accent/20 blur-3xl" />
@@ -810,6 +813,9 @@ export default function HomePageClient() {
       </section>
 
       <PrivateInstitutionalHighlight />
+      <PoorCibilHighlight />
+      <EmiRestructuringHighlight />
+      <PropertyLoanHighlight />
 
       <section className="relative -mt-8 z-20">
         <div className="container mx-auto px-4">

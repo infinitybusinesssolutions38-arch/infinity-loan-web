@@ -57,7 +57,7 @@ type ServiceGroup = {
 };
 
 const CATEGORY_FALLBACK_IMAGE: Record<HubCategoryKey, string> = {
-  "salaried-employees": "/home/salaried-emp-1.jpeg",
+  "salaried-employees": "/test.jpeg",
   businesses: "/home/businesses-1.jpeg",
   professionals: "/home/professionals-1.jpeg",
   "govt-employees": "/home/central-state-govt-emp-1.png",
