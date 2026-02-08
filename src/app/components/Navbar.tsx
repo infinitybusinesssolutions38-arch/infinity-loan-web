@@ -65,7 +65,7 @@ const Navbar = () => {
           href="/"
           className="flex w-[150px] shrink-0 items-center transition-transform duration-300 hover:scale-110"
         >
-          <Image src="/logo2.png" alt="logo" width={200} height={100} />
+          <Image src="/logo2.png" alt="logo" width={250} height={250} />
         </Link>
 
         {/* MENU  testing changes */}

@@ -1,4 +1,4 @@
-import { Phone, Mail, MapPin } from 'lucide-react';
+import { Phone, Mail, MapPin, Zap, ShieldCheck, CheckCircle2, Globe } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -17,15 +17,46 @@ export function Footer() {
               <Image 
                 src="/logo2.png" 
                 alt="LoanEase logo" 
-                width={250} 
-                height={250}
-                className="h-20 w-auto"
+                width={150} 
+                height={150}
+                className="h-26 w-auto"
               />
             </div>
-            <p className="text-white/70 text-sm leading-relaxed">
-              Your trusted partner for quick and hassle-free loan approvals. 
-              We make financing simple and accessible for everyone.
-            </p>
+            <div className="space-y-3">
+              <h4 className="text-base font-semibold text-white">
+                Why Choose Us
+              </h4>
+              <ul className="space-y-3">
+                <li className="flex items-start gap-3">
+                  <Zap className="mt-0.5 h-5 w-5 text-[#F97415] flex-shrink-0" />
+                  <div className="text-sm">
+                    <p className="font-medium text-white">Quick Approvals</p>
+                    <p className="text-white/70 leading-relaxed">Fast and efficient loan processing for timely financial support.</p>
+                  </div>
+                </li>
+                <li className="flex items-start gap-3">
+                  <ShieldCheck className="mt-0.5 h-5 w-5 text-[#F97415] flex-shrink-0" />
+                  <div className="text-sm">
+                    <p className="font-medium text-white">Secure & Reliable</p>
+                    <p className="text-white/70 leading-relaxed">Robust security standards to protect your data and transactions.</p>
+                  </div>
+                </li>
+                <li className="flex items-start gap-3">
+                  <CheckCircle2 className="mt-0.5 h-5 w-5 text-[#F97415] flex-shrink-0" />
+                  <div className="text-sm">
+                    <p className="font-medium text-white">Hassle-Free Process</p>
+                    <p className="text-white/70 leading-relaxed">Simple documentation and a smooth, transparent application journey.</p>
+                  </div>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Globe className="mt-0.5 h-5 w-5 text-[#F97415] flex-shrink-0" />
+                  <div className="text-sm">
+                    <p className="font-medium text-white">Accessible for All</p>
+                    <p className="text-white/70 leading-relaxed">Financing solutions designed to be inclusive, straightforward, and easy to understand.</p>
+                  </div>
+                </li>
+              </ul>
+            </div>
           </div>
 
           {/* Quick Links */}
