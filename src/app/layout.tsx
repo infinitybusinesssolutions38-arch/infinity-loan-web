@@ -5,6 +5,7 @@ import Navbar from "./components/Navbar";
 import { Footer } from "./components/Footer";
 import { LoanModalProvider } from "@/components/LoanModalProvider";
 import StickyContactButtons from "./components/StickyContactButtons";
+import SuccessBadge from "./components/SuccessBadge";
 
 
 const geistSans = Geist({
@@ -35,6 +36,7 @@ export default function RootLayout({
             >
                 <LoanModalProvider>
                     <Navbar />
+                     <SuccessBadge />
                     <StickyContactButtons />
                     {children}
                     <Footer />

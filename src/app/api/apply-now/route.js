@@ -2,8 +2,10 @@ import { NextResponse } from "next/server";
 import connectDB from "../lib/db";
 import PersonalLoanModel from "../models/personal-loan-schema";
 import BusinessLoanModel from "../models/business-loan-schema";
+import SalariedLoanModel from "../models/salaried-loan-schema";
 import nodemailer from "nodemailer";
 import cloudinary from "cloudinary";
+import { sendLoanApplicationConfirmationEmail } from "../lib/loan-application-email";
 
 // ✅ Cloudinary Config
 cloudinary.v2.config({
@@ -16,29 +18,76 @@ export async function POST(req) {
     try {
         const formData = await req.formData();
 
-        // Extract text fields
+        // Extract common text fields
         const firstName = formData.get("firstName");
         const middleName = formData.get("middleName") || "";
         const lastName = formData.get("lastName");
         const mobileNumber = formData.get("mobileNumber");
         const alternateMobile = formData.get("alternateMobile") || "";
-        const businessEmail = formData.get("businessEmail") || "";
         const personalEmail = formData.get("personalEmail");
-        const currentResidentialAddress = formData.get("currentResidentialAddress");
-        const currentResidentialPincode = formData.get("currentResidentialPincode");
-        const currentOfficeAddress = formData.get("currentOfficeAddress");
-        const currentOfficePincode = formData.get("currentOfficePincode");
-        const requiredLoanAmount = formData.get("requiredLoanAmount");
-        const residentialStatus = formData.get("residentialStatus");
-        const businessPremisesStatus = formData.get("businessPremisesStatus");
-        const yearsAtCurrentResidentialAddress = formData.get("yearsAtCurrentResidentialAddress");
-        const yearsAtCurrentBusinessAddress = formData.get("yearsAtCurrentBusinessAddress");
         const aadhaarNumber = formData.get("aadhaarNumber");
         const panNumber = formData.get("panNumber");
         const voterIdNumber = formData.get("voterIdNumber") || "";
         const drivingLicense = formData.get("drivingLicense") || "";
         const passportNumber = formData.get("passportNumber") || "";
+        const requiredLoanAmount = formData.get("requiredLoanAmount");
         const loanType = formData.get("loanType") || "personal";
+
+        // Check if this is a salaried application
+        const isSalariedApp = loanType.toLowerCase().includes("salaried");
+
+        // Extract salaried-specific fields if applicable
+        let salariedData = {};
+        if (isSalariedApp) {
+            salariedData = {
+                dob: formData.get("dob") || "",
+                gender: formData.get("gender") || "",
+                maritalStatus: formData.get("maritalStatus") || "",
+                whatsappNumber: formData.get("whatsappNumber") || "",
+                state: formData.get("state") || "",
+                city: formData.get("city") || "",
+                permanentAddress: formData.get("permanentAddress") || "",
+                currentResidentialAddress: formData.get("currentResidentialAddress") || "",
+                currentResidentialPincode: formData.get("currentResidentialPincode") || "",
+                residenceType: formData.get("residenceType") || "",
+                stayingSinceYears: formData.get("stayingSinceYears") || "",
+                companyName: formData.get("companyName") || "",
+                organizationType: formData.get("organizationType") || "",
+                industry: formData.get("industry") || "",
+                designation: formData.get("designation") || "",
+                employmentType: formData.get("employmentType") || "",
+                dateOfJoining: formData.get("dateOfJoining") || "",
+                totalExperienceYears: formData.get("totalExperienceYears") || "",
+                officeLocation: formData.get("officeLocation") || "",
+                officePincode: formData.get("officePincode") || "",
+                officialEmail: formData.get("officialEmail") || "",
+                monthlyNetSalary: formData.get("monthlyNetSalary") || "",
+                salaryCreditMode: formData.get("salaryCreditMode") || "",
+                salaryAccountBankName: formData.get("salaryAccountBankName") || "",
+                numberOfExistingLoans: formData.get("numberOfExistingLoans") || "0",
+                existingLoansData: JSON.parse(formData.get("existingLoansData") || "[]"),
+                hasCibil: formData.get("hasCibil") || "",
+                cibilScore: formData.get("cibilScore") || "",
+                preferredTenure: formData.get("preferredTenure") || "",
+                purpose: formData.get("purpose") || "",
+                coApplicantName: formData.get("coApplicantName") || "",
+                coApplicantRelation: formData.get("coApplicantRelation") || "",
+                coApplicantEmploymentType: formData.get("coApplicantEmploymentType") || "",
+            };
+        } else {
+            // Extract business/personal loan fields
+            salariedData = {
+                businessEmail: formData.get("businessEmail") || "",
+                currentOfficeAddress: formData.get("currentOfficeAddress") || "",
+                currentOfficePincode: formData.get("currentOfficePincode") || "",
+                currentResidentialAddress: formData.get("currentResidentialAddress") || "",
+                currentResidentialPincode: formData.get("currentResidentialPincode") || "",
+                residentialStatus: formData.get("residentialStatus") || "",
+                businessPremisesStatus: formData.get("businessPremisesStatus") || "",
+                yearsAtCurrentResidentialAddress: formData.get("yearsAtCurrentResidentialAddress") || "",
+                yearsAtCurrentBusinessAddress: formData.get("yearsAtCurrentBusinessAddress") || "",
+            };
+        }
 
         if (!personalEmail || !mobileNumber) {
             return NextResponse.json(
@@ -74,25 +123,47 @@ export async function POST(req) {
             });
         }
 
-        // ✅ Extract and upload files
-        const aadhaarFrontFile = formData.get("aadhaarFront");
-        const aadhaarBackFile = formData.get("aadhaarBack");
-        const panCardFrontFile = formData.get("panCardFront");
-        const residentialBillFile = formData.get("residentialBill");
-        const shopBillFile = formData.get("shopBill");
+        // ✅ Upload files based on application type
+        let uploadedFiles = {};
+        
+        if (isSalariedApp) {
+            // Salaried-specific documents
+            uploadedFiles.panPhotoUrl = await uploadToCloudinary(formData.get("panPhoto"));
+            uploadedFiles.aadhaarPhotoUrl = await uploadToCloudinary(formData.get("aadhaarPhoto"));
+            uploadedFiles.aadhaarBackPhotoUrl = await uploadToCloudinary(formData.get("aadhaarBackPhoto"));
+            uploadedFiles.applicantPhotoUrl = await uploadToCloudinary(formData.get("applicantPhoto"));
+            uploadedFiles.residencePhotoUrl = await uploadToCloudinary(formData.get("residencePhoto"));
+            uploadedFiles.officeIdPhotoUrl = await uploadToCloudinary(formData.get("officeIdPhoto"));
+            uploadedFiles.salarySlipsUrl = await uploadToCloudinary(formData.get("salarySlips"));
+            uploadedFiles.bankStatementUrl = await uploadToCloudinary(formData.get("bankStatement"));
+            uploadedFiles.cibilReportUrl = await uploadToCloudinary(formData.get("cibilReport"));
+            uploadedFiles.lastElectricityBillUrl = await uploadToCloudinary(formData.get("lastElectricityBill"));
+            uploadedFiles.permElectricityBillUrl = await uploadToCloudinary(formData.get("permElectricityBill"));
+            uploadedFiles.rentAgreementUrl = await uploadToCloudinary(formData.get("rentAgreement"));
+            uploadedFiles.companyAllotmentLetterUrl = await uploadToCloudinary(formData.get("companyAllotmentLetter"));
 
-        const aadhaarFrontUrl = await uploadToCloudinary(aadhaarFrontFile);
-        const aadhaarBackUrl = await uploadToCloudinary(aadhaarBackFile);
-        const panCardFrontUrl = await uploadToCloudinary(panCardFrontFile);
-        const residentialBillUrl = await uploadToCloudinary(residentialBillFile);
-        const shopBillUrl = await uploadToCloudinary(shopBillFile);
+            // Validate required salaried documents
+            if (!uploadedFiles.panPhotoUrl || !uploadedFiles.aadhaarPhotoUrl || !uploadedFiles.aadhaarBackPhotoUrl || !uploadedFiles.applicantPhotoUrl) {
+                return NextResponse.json(
+                    { success: false, message: "Required documents missing: PAN, Aadhaar (front & back), and Applicant photo are mandatory" },
+                    { status: 400 }
+                );
+            }
+        } else {
+            // Business/Personal loan documents
+            uploadedFiles.aadhaarFrontUrl = await uploadToCloudinary(formData.get("aadhaarFront"));
+            uploadedFiles.aadhaarBackUrl = await uploadToCloudinary(formData.get("aadhaarBack"));
+            uploadedFiles.panCardFrontUrl = await uploadToCloudinary(formData.get("panCardFront"));
+            uploadedFiles.residentialBillUrl = await uploadToCloudinary(formData.get("residentialBill"));
+            uploadedFiles.shopBillUrl = await uploadToCloudinary(formData.get("shopBill"));
 
-        // Validate required uploaded documents server-side
-        if (!aadhaarFrontUrl || !aadhaarBackUrl || !panCardFrontUrl || !residentialBillUrl || !shopBillUrl) {
-            return NextResponse.json(
-                { success: false, message: "Required documents missing or upload failed" },
-                { status: 400 }
-            );
+            // Validate required business/personal documents
+            if (!uploadedFiles.aadhaarFrontUrl || !uploadedFiles.aadhaarBackUrl || !uploadedFiles.panCardFrontUrl || !uploadedFiles.residentialBillUrl || !uploadedFiles.shopBillUrl) {
+                return NextResponse.json(
+                    { success: false, message: "Required documents missing or upload failed" },
+                    { status: 400 }
+                );
+            }
         }
 
         // ✅ Connect to MongoDB
@@ -121,7 +192,8 @@ export async function POST(req) {
         // ✅ Check for existing email to prevent duplicate submissions
         const existingPersonal = await PersonalLoanModel.findOne({ personalEmail });
         const existingBusiness = await BusinessLoanModel.findOne({ personalEmail });
-        if (existingPersonal || existingBusiness) {
+        const existingSalaried = await SalariedLoanModel.findOne({ personalEmail });
+        if (existingPersonal || existingBusiness || existingSalaried) {
             return NextResponse.json(
                 { success: false, message: "An application with this email already exists" },
                 { status: 409 }
@@ -129,14 +201,84 @@ export async function POST(req) {
         }
 
         // ✅ Generate unique sequential application reference
-        const totalApplications = await PersonalLoanModel.countDocuments({}) + await BusinessLoanModel.countDocuments({});
+        const totalPersonal = await PersonalLoanModel.countDocuments({});
+        const totalBusiness = await BusinessLoanModel.countDocuments({});
+        const totalSalaried = await SalariedLoanModel.countDocuments({});
+        const totalApplications = totalPersonal + totalBusiness + totalSalaried;
         const nextNumber = totalApplications + 1;
         const applicationRef = `aplic_${String(nextNumber).padStart(5, "0")}`;
 
         // ✅ Save to appropriate model
         let newApplication = null;
 
-        if (loanType.includes("business")) {
+        if (isSalariedApp) {
+            // Save as salaried loan
+            newApplication = new SalariedLoanModel({
+                applicationRef,
+                firstName,
+                middleName: middleName || "",
+                lastName,
+                dob: salariedData.dob,
+                gender: salariedData.gender,
+                maritalStatus: salariedData.maritalStatus,
+                mobileNumber,
+                whatsappNumber: salariedData.whatsappNumber,
+                alternateMobile: alternateMobile || "",
+                personalEmail,
+                panNumber,
+                aadhaarNumber,
+                voterIdNumber: voterIdNumber || "",
+                drivingLicense: drivingLicense || "",
+                passportNumber: passportNumber || "",
+                currentResidentialAddress: salariedData.currentResidentialAddress,
+                currentResidentialPincode: salariedData.currentResidentialPincode,
+                state: salariedData.state,
+                city: salariedData.city,
+                residenceType: salariedData.residenceType,
+                stayingSinceYears: salariedData.stayingSinceYears,
+                permanentAddress: salariedData.permanentAddress,
+                companyName: salariedData.companyName,
+                organizationType: salariedData.organizationType,
+                industry: salariedData.industry,
+                designation: salariedData.designation,
+                employmentType: salariedData.employmentType,
+                dateOfJoining: salariedData.dateOfJoining,
+                totalExperienceYears: salariedData.totalExperienceYears,
+                officeLocation: salariedData.officeLocation,
+                officePincode: salariedData.officePincode,
+                officialEmail: salariedData.officialEmail,
+                monthlyNetSalary: salariedData.monthlyNetSalary,
+                salaryCreditMode: salariedData.salaryCreditMode,
+                salaryAccountBankName: salariedData.salaryAccountBankName,
+                numberOfExistingLoans: salariedData.numberOfExistingLoans,
+                existingLoansData: salariedData.existingLoansData,
+                hasCibil: salariedData.hasCibil,
+                cibilScore: salariedData.cibilScore,
+                requiredLoanAmount,
+                preferredTenure: salariedData.preferredTenure,
+                purpose: salariedData.purpose,
+                coApplicantName: salariedData.coApplicantName,
+                coApplicantRelation: salariedData.coApplicantRelation,
+                coApplicantEmploymentType: salariedData.coApplicantEmploymentType,
+                // Document URLs
+                panPhotoUrl: uploadedFiles.panPhotoUrl,
+                aadhaarPhotoUrl: uploadedFiles.aadhaarPhotoUrl,
+                aadhaarBackPhotoUrl: uploadedFiles.aadhaarBackPhotoUrl,
+                applicantPhotoUrl: uploadedFiles.applicantPhotoUrl,
+                residencePhotoUrl: uploadedFiles.residencePhotoUrl,
+                officeIdPhotoUrl: uploadedFiles.officeIdPhotoUrl,
+                salarySlipsUrl: uploadedFiles.salarySlipsUrl,
+                bankStatementUrl: uploadedFiles.bankStatementUrl,
+                cibilReportUrl: uploadedFiles.cibilReportUrl,
+                lastElectricityBillUrl: uploadedFiles.lastElectricityBillUrl,
+                permElectricityBillUrl: uploadedFiles.permElectricityBillUrl,
+                rentAgreementUrl: uploadedFiles.rentAgreementUrl,
+                companyAllotmentLetterUrl: uploadedFiles.companyAllotmentLetterUrl,
+                loan_type: "salaried",
+                application_status: "pending",
+                role: "borrower-salaried",
+            });
+        } else if (loanType.includes("business")) {
             newApplication = new BusinessLoanModel({
                 applicationRef,
                 firstname: firstName,
@@ -144,26 +286,26 @@ export async function POST(req) {
                 mobileNumber,
                 alternateMobile: alternateMobile || "",
                 personalEmail,
-                businessEmail: businessEmail || "",
+                businessEmail: salariedData.businessEmail || "",
                 panNumber,
                 aadhaarNumber,
                 voterIdNumber: voterIdNumber || "",
                 drivingLicense: drivingLicense || "",
                 passportNumber: passportNumber || "",
-                currentResidentialAddress,
-                currentResidentialPincode,
-                currentOfficeAddress,
-                currentOfficePincode,
-                residentialStatus,
-                businessPremisesStatus,
-                yearsAtCurrentResidentialAddress: Number(yearsAtCurrentResidentialAddress) || 0,
-                yearsAtCurrentBusinessAddress: Number(yearsAtCurrentBusinessAddress) || 0,
+                currentResidentialAddress: salariedData.currentResidentialAddress,
+                currentResidentialPincode: salariedData.currentResidentialPincode,
+                currentOfficeAddress: salariedData.currentOfficeAddress,
+                currentOfficePincode: salariedData.currentOfficePincode,
+                residentialStatus: salariedData.residentialStatus,
+                businessPremisesStatus: salariedData.businessPremisesStatus,
+                yearsAtCurrentResidentialAddress: Number(salariedData.yearsAtCurrentResidentialAddress) || 0,
+                yearsAtCurrentBusinessAddress: Number(salariedData.yearsAtCurrentBusinessAddress) || 0,
                 requiredLoanAmount,
-                aadhaarFront: aadhaarFrontUrl,
-                aadhaarBack: aadhaarBackUrl,
-                panCardFront: panCardFrontUrl,
-                residentialElectricityBillUrl: residentialBillUrl,
-                shopElectricityBillUrl: shopBillUrl,
+                aadhaarFront: uploadedFiles.aadhaarFrontUrl,
+                aadhaarBack: uploadedFiles.aadhaarBackUrl,
+                panCardFront: uploadedFiles.panCardFrontUrl,
+                residentialElectricityBillUrl: uploadedFiles.residentialBillUrl,
+                shopElectricityBillUrl: uploadedFiles.shopBillUrl,
                 loan_type: loanType,
                 application_status: "pending",
                 role: "borrower-business",
@@ -177,26 +319,26 @@ export async function POST(req) {
                 mobileNumber,
                 alternateMobile: alternateMobile || "",
                 personalEmail,
-                businessEmail: businessEmail || "",
+                businessEmail: salariedData.businessEmail || "",
                 panNumber,
                 aadhaarNumber,
                 voterIdNumber: voterIdNumber || "",
                 drivingLicense: drivingLicense || "",
                 passportNumber: passportNumber || "",
-                currentResidentialAddress,
-                currentResidentialPincode,
-                currentOfficeAddress,
-                currentOfficePincode,
-                residentialStatus,
-                businessPremisesStatus,
-                yearsAtCurrentResidentialAddress: Number(yearsAtCurrentResidentialAddress) || 0,
-                yearsAtCurrentBusinessAddress: Number(yearsAtCurrentBusinessAddress) || 0,
+                currentResidentialAddress: salariedData.currentResidentialAddress,
+                currentResidentialPincode: salariedData.currentResidentialPincode,
+                currentOfficeAddress: salariedData.currentOfficeAddress,
+                currentOfficePincode: salariedData.currentOfficePincode,
+                residentialStatus: salariedData.residentialStatus,
+                businessPremisesStatus: salariedData.businessPremisesStatus,
+                yearsAtCurrentResidentialAddress: Number(salariedData.yearsAtCurrentResidentialAddress) || 0,
+                yearsAtCurrentBusinessAddress: Number(salariedData.yearsAtCurrentBusinessAddress) || 0,
                 requiredLoanAmount,
-                aadhaarFront: aadhaarFrontUrl,
-                aadhaarBack: aadhaarBackUrl,
-                panCardFront: panCardFrontUrl,
-                residentialElectricityBillUrl: residentialBillUrl,
-                shopElectricityBillUrl: shopBillUrl,
+                aadhaarFront: uploadedFiles.aadhaarFrontUrl,
+                aadhaarBack: uploadedFiles.aadhaarBackUrl,
+                panCardFront: uploadedFiles.panCardFrontUrl,
+                residentialElectricityBillUrl: uploadedFiles.residentialBillUrl,
+                shopElectricityBillUrl: uploadedFiles.shopBillUrl,
                 loan_type: loanType,
                 application_status: "pending",
                 role: "borrower-personal",
@@ -222,44 +364,33 @@ export async function POST(req) {
                 },
             });
 
-            const subject = `Loan Application Under Review – Reference No: ${applicationRef}`;
-
-            const customerHtml = `
-                <p>Dear ${firstName || "Customer"},</p>
-                <p>Thank you for choosing <strong>${companyName}</strong> for your loan requirements. We acknowledge receipt of your loan application.</p>
-                <p><strong>Application Reference Number:</strong> ${applicationRef}<br/>
-                <strong>Loan Type:</strong> ${loanType}<br/>
-                <strong>Loan Amount Requested:</strong> ₹${requiredLoanAmount}<br/>
-                <strong>Application Status:</strong> Pending Review</p>
-                <p>Your application is under review and our verification team is validating the documents submitted by you.</p>
-                <p><strong>Within 48 hours, we will contact you after reviewing your application.</strong></p>
-                <h4>What happens next</h4>
-                <ol>
-                  <li>Document verification and preliminary assessment</li>
-                  <li>Estimated processing time: within 48 working hours</li>
-                  <li>Our loan expert will contact you if additional information is required</li>
-                </ol>
-                <p>Warm regards,<br/>${companyName}<br/>Customer Support: ${supportPhone}<br/>Email: ${supportEmail}<br/>Website: ${website}</p>
-                <p style="font-size:12px;color:#888">Disclaimer: Loan approval is subject to the policies and credit norms of the respective bank/NBFC.</p>
-            `;
-
-            // Send to personal email (HTML)
-            await transporter.sendMail({
-                from: process.env.EMAIL_FROM,
-                to: personalEmail,
-                subject,
-                text: `Your application ${applicationRef} has been received.`,
-                html: customerHtml,
+            // Format application date
+            const applicationDate = new Date().toLocaleDateString("en-IN", {
+                day: "numeric",
+                month: "long",
+                year: "numeric",
             });
 
-            // Send to business email if provided (HTML)
-            if (businessEmail) {
-                await transporter.sendMail({
-                    from: process.env.EMAIL_FROM,
-                    to: businessEmail,
-                    subject,
-                    text: `Your application ${applicationRef} has been received.`,
-                    html: customerHtml,
+            // Send confirmation email to customer using the detailed template
+            const customerEmailResult = await sendLoanApplicationConfirmationEmail(
+                personalEmail,
+                {
+                    customerName: firstName,
+                    applicationNumber: applicationRef,
+                    applicationDate: applicationDate,
+                    loanType: loanType,
+                    loanAmount: requiredLoanAmount,
+                }
+            );
+
+            // Also send to business email if provided
+            if (businessEmail && customerEmailResult.success) {
+                await sendLoanApplicationConfirmationEmail(businessEmail, {
+                    customerName: firstName,
+                    applicationNumber: applicationRef,
+                    applicationDate: applicationDate,
+                    loanType: loanType,
+                    loanAmount: requiredLoanAmount,
                 });
             }
 

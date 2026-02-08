@@ -45,6 +45,9 @@ type FormState = {
 type FormErrors = Partial<Record<keyof FormState, string>>;
 
 export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, categoryKey }: ApplyNowModalProps) {
+  // Employment type selector for determining which form to show
+  const [employmentType, setEmploymentType] = useState<"" | "salaried" | "self-employed">("");
+  
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState<FormState>({
     firstName: "",
@@ -270,6 +273,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
   };
 
   const isSalaried =
+    employmentType === "salaried" ||
     (typeof categoryKey !== "undefined" && categoryKey === "salaried-employees") ||
     (loanTypeKey && loanTypeKey.toLowerCase().includes("salaried")) ||
     loanType.toLowerCase().includes("salaried");
@@ -640,8 +644,38 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 </div>
                 <div className="grid gap-4 sm:grid-cols-3">
                   <div className="space-y-2">
-                    <Label htmlFor="s_state" className="text-sm font-medium">State</Label>
-                    <Input id="s_state" name="state" placeholder="State" value={sForm.state} onChange={handleSalariedChange} className="border-gray-300" />
+                    <Label htmlFor="s_state" className="text-sm font-medium">State <span className="text-destructive">*</span></Label>
+                    <select id="s_state" name="state" value={sForm.state} onChange={handleSalariedChange} className="mt-2 block w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm">
+                      <option value="">Select State</option>
+                      <option value="Andhra Pradesh">Andhra Pradesh</option>
+                      <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                      <option value="Assam">Assam</option>
+                      <option value="Bihar">Bihar</option>
+                      <option value="Chhattisgarh">Chhattisgarh</option>
+                      <option value="Goa">Goa</option>
+                      <option value="Gujarat">Gujarat</option>
+                      <option value="Haryana">Haryana</option>
+                      <option value="Himachal Pradesh">Himachal Pradesh</option>
+                      <option value="Jharkhand">Jharkhand</option>
+                      <option value="Karnataka">Karnataka</option>
+                      <option value="Kerala">Kerala</option>
+                      <option value="Madhya Pradesh">Madhya Pradesh</option>
+                      <option value="Maharashtra">Maharashtra</option>
+                      <option value="Manipur">Manipur</option>
+                      <option value="Meghalaya">Meghalaya</option>
+                      <option value="Mizoram">Mizoram</option>
+                      <option value="Nagaland">Nagaland</option>
+                      <option value="Odisha">Odisha</option>
+                      <option value="Punjab">Punjab</option>
+                      <option value="Rajasthan">Rajasthan</option>
+                      <option value="Sikkim">Sikkim</option>
+                      <option value="Tamil Nadu">Tamil Nadu</option>
+                      <option value="Telangana">Telangana</option>
+                      <option value="Tripura">Tripura</option>
+                      <option value="Uttar Pradesh">Uttar Pradesh</option>
+                      <option value="Uttarakhand">Uttarakhand</option>
+                      <option value="West Bengal">West Bengal</option>
+                    </select>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="s_city" className="text-sm font-medium">City</Label>
@@ -663,7 +697,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                     </select>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="s_stayingSinceYears" className="text-sm font-medium">Staying Since (Years)</Label>
+                    <Label htmlFor="s_stayingSinceYears" className="text-sm font-medium">Staying Since </Label>
                     <Input id="s_stayingSinceYears" name="stayingSinceYears" type="number" placeholder="Staying Since (Years)" value={sForm.stayingSinceYears} onChange={handleSalariedChange} className="border-gray-300" />
                   </div>
                 </div>

@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
-import nodemailer from "nodemailer";
-
-// Simple in-memory storage (for production, use a database)
-// In production, replace this with proper database storage
-const partnerRequests = [];
+import connectDB from "../lib/db";
+import PartnerRegisterModel from "../models/partner-register-schema";
+import {
+  sendPartnerConfirmationEmail,
+  sendPartnerNotificationToAdmin,
+} from "../lib/partner-email";
 
 export async function POST(req) {
   try {
@@ -35,36 +36,74 @@ export async function POST(req) {
       );
     }
 
-    // Create partner request object
-    const partnerRequest = {
-      id: Date.now().toString(),
-      fullName,
-      mobileNumber,
-      email,
-      city,
-      experience: experience || "Not provided",
-      preferredCategory: preferredCategory || "Not specified",
-      createdAt: new Date().toISOString(),
-      status: "pending",
-    };
+    // Connect to database
+    await connectDB();
 
-    // Store in memory (TODO: Replace with database storage)
-    partnerRequests.push(partnerRequest);
+    // Check if partner already exists
+    const existingPartner = await PartnerRegisterModel.findOne({
+      $or: [{ email: email.toLowerCase() }, { mobileNumber }],
+    });
 
-    // Optional: Send confirmation email to the partner
-    // TODO: Implement email sending with proper SMTP configuration
-    // Example:
-    // await sendPartnerConfirmationEmail(email, fullName);
+    if (existingPartner) {
+      return NextResponse.json(
+        { success: false, message: "Partner with this email or mobile number already registered" },
+        { status: 409 }
+      );
+    }
 
-    // Optional: Send notification to admin
-    // TODO: Implement email sending to admin
-    // await notifyAdminOfNewPartner(partnerRequest);
+    // Create new partner registration
+    const newPartner = new PartnerRegisterModel({
+      fullName: fullName.trim(),
+      mobileNumber: mobileNumber.trim(),
+      email: email.toLowerCase().trim(),
+      city: city.trim(),
+      experience: experience?.trim() || "Not provided",
+      preferredCategory: preferredCategory?.trim() || "Not specified",
+      status: "New",
+    });
+
+    // Save to database
+    const savedPartner = await newPartner.save();
+
+    // Send confirmation email to partner
+    const partnerEmailResult = await sendPartnerConfirmationEmail(
+      savedPartner.email,
+      savedPartner.fullName,
+      {
+        fullName: savedPartner.fullName,
+        email: savedPartner.email,
+        mobileNumber: savedPartner.mobileNumber,
+        city: savedPartner.city,
+        experience: savedPartner.experience,
+        preferredCategory: savedPartner.preferredCategory,
+        createdAt: savedPartner.createdAt,
+      }
+    );
+
+    // Send notification email to admin
+    const adminEmailResult = await sendPartnerNotificationToAdmin({
+      fullName: savedPartner.fullName,
+      email: savedPartner.email,
+      mobileNumber: savedPartner.mobileNumber,
+      city: savedPartner.city,
+      experience: savedPartner.experience,
+      preferredCategory: savedPartner.preferredCategory,
+      createdAt: savedPartner.createdAt,
+    });
+
+    // Log email results (don't fail the registration if emails fail)
+    if (!partnerEmailResult.success) {
+      console.warn("Failed to send partner confirmation email:", partnerEmailResult.error);
+    }
+    if (!adminEmailResult.success) {
+      console.warn("Failed to send admin notification email:", adminEmailResult.error);
+    }
 
     return NextResponse.json(
       {
         success: true,
         message: "Thank you for registering! Our team will contact you shortly.",
-        partnerId: partnerRequest.id,
+        partnerId: savedPartner._id,
       },
       { status: 201 }
     );
@@ -92,11 +131,17 @@ export async function GET(req) {
       );
     }
 
+    await connectDB();
+
+    const partners = await PartnerRegisterModel.find()
+      .sort({ createdAt: -1 })
+      .limit(100);
+
     return NextResponse.json(
       {
         success: true,
-        count: partnerRequests.length,
-        data: partnerRequests,
+        count: partners.length,
+        data: partners,
       },
       { status: 200 }
     );

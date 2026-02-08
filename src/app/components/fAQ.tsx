@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Link from "next/link";
 import {
     FileText,
     Upload,
@@ -136,29 +137,29 @@ export default function ModernSections() {
     const [openFaqId, setOpenFaqId] = useState<string | null>(null);
 
     return (
-        <div className="w-full bg-gray-50">
+        <div className="w-full bg-gradient-to-b from-black via-gray-900 to-gray-800">
             {/* HOW IT WORKS SECTION */}
             <section className="py-16 lg:py-24 relative overflow-hidden">
                 {/* Background Elements */}
-                <div className="absolute inset-0 bg-gradient-to-b from-white via-orange-50/30 to-white" />
-                <div className="absolute top-0 right-0 w-96 h-96 bg-[#F97415]/5 rounded-full blur-3xl" />
-                <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#F97415]/5 rounded-full blur-3xl" />
+                <div className="absolute inset-0 bg-gradient-to-b from-black via-gray-900 to-gray-800" />
+                <div className="absolute top-0 right-0 w-96 h-96 bg-[#F97415]/10 rounded-full blur-3xl" />
+                <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#F97415]/10 rounded-full blur-3xl" />
 
                 <div className="container mx-auto px-4 lg:px-8 relative z-10">
                     {/* Header */}
                     <div className="text-center max-w-3xl mx-auto mb-16">
-                        <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-white border-2 border-[#F97415]/30 rounded-full mb-6 shadow-sm animate-fade-in">
+                        <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-gray-800/50 border-2 border-[#F97415]/50 rounded-full mb-6 shadow-sm animate-fade-in">
                             <Sparkles className="h-4 w-4 text-[#F97415]" />
                             <span className="text-sm font-bold text-[#F97415] uppercase tracking-wide">
                                 Simple Process
                             </span>
                         </div>
 
-                        <h2 className="text-4xl lg:text-5xl font-black text-gray-900 mb-4 animate-fade-in-up">
+                        <h2 className="text-4xl lg:text-5xl font-black text-white mb-4 animate-fade-in-up">
                             How It Works
                         </h2>
 
-                        <p className="text-lg text-gray-600 animate-fade-in-up animation-delay-100">
+                        <p className="text-lg text-gray-300 animate-fade-in-up animation-delay-100">
                             A simple, guided process tailored to your selected service
                         </p>
                     </div>
@@ -182,29 +183,29 @@ export default function ModernSections() {
                                         )}
 
                                         {/* Card */}
-                                        <div className="relative bg-white rounded-2xl p-6 shadow-md hover:shadow-xl border border-gray-100 hover:border-[#F97415]/50 transition-all duration-300 h-full group-hover:-translate-y-2">
+                                        <div className="relative bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-6 shadow-md hover:shadow-xl border border-gray-700 hover:border-[#F97415]/50 transition-all duration-300 h-full group-hover:-translate-y-2">
                                             {/* Step Number */}
                                             <div className="absolute -top-3 -right-3 w-10 h-10 bg-gradient-to-br from-[#F97415] to-orange-600 rounded-xl flex items-center justify-center text-white font-black text-lg shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 z-10">
                                                 {idx + 1}
                                             </div>
 
                                             {/* Icon */}
-                                            <div className="w-16 h-16 bg-gradient-to-br from-orange-100 to-orange-50 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
+                                            <div className="w-16 h-16 bg-gradient-to-br from-[#F97415]/20 to-orange-600/10 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
                                                 <Icon className="w-8 h-8 text-[#F97415]" strokeWidth={2.5} />
                                             </div>
 
                                             {/* Content */}
-                                            <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-[#F97415] transition-colors">
+                                            <h3 className="text-xl font-bold text-white mb-3 group-hover:text-[#F97415] transition-colors">
                                                 {step.title}
                                             </h3>
 
-                                            <p className="text-sm text-gray-600 leading-relaxed">
+                                            <p className="text-sm text-gray-300 leading-relaxed">
                                                 {step.description}
                                             </p>
 
                                             {/* Progress Dot */}
                                             <div className="mt-4 flex items-center gap-2">
-                                                <div className="flex-1 h-1 bg-gray-200 rounded-full overflow-hidden">
+                                                <div className="flex-1 h-1 bg-gray-700 rounded-full overflow-hidden">
                                                     <div
                                                         className="h-full bg-gradient-to-r from-[#F97415] to-orange-500 transition-all duration-700"
                                                         style={{
@@ -222,33 +223,33 @@ export default function ModernSections() {
 
                         {/* CTA */}
                         <div className="mt-12 text-center animate-fade-in-up animation-delay-400">
-                            <button className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-[#F97415] to-orange-600 text-white font-bold text-lg rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 group">
+                            <Link href="/services" className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-[#F97415] to-orange-600 text-white font-bold text-lg rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 group">
                                 <MousePointerClick className="w-5 h-5" />
                                 Get Started Now
                                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                            </button>
+                            </Link>
                         </div>
                     </div>
                 </div>
             </section>
 
             {/* FAQ SECTION */}
-            <section className="py-16 lg:py-24 bg-white relative">
+            <section className="py-16 lg:py-24 bg-gradient-to-b from-gray-800 via-gray-900 to-black relative">
                 <div className="container mx-auto px-4 lg:px-8">
                     {/* Header */}
                     <div className="text-center max-w-3xl mx-auto mb-12">
-                        <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-orange-50 border-2 border-[#F97415]/20 rounded-full mb-6 shadow-sm animate-fade-in">
+                        <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-gray-900/50 border-2 border-[#F97415]/50 rounded-full mb-6 shadow-sm animate-fade-in">
                             <HelpCircle className="h-4 w-4 text-[#F97415]" />
                             <span className="text-sm font-bold text-[#F97415] uppercase tracking-wide">
                                 Got Questions?
                             </span>
                         </div>
 
-                        <h2 className="text-4xl lg:text-5xl font-black text-gray-900 mb-4 animate-fade-in-up">
+                        <h2 className="text-4xl lg:text-5xl font-black text-white mb-4 animate-fade-in-up">
                             Frequently Asked Questions (FAQs)
                         </h2>
 
-                        <p className="text-lg text-gray-600 animate-fade-in-up animation-delay-100">
+                        <p className="text-lg text-gray-300 animate-fade-in-up animation-delay-100">
                             Quick answers based on the service you're viewing
                         </p>
                     </div>
@@ -265,10 +266,10 @@ export default function ModernSections() {
                                     style={{ animationDelay: `${idx * 80}ms` }}
                                 >
                                     <div
-                                        className={`bg-white rounded-xl shadow-md border-2 transition-all duration-300 overflow-hidden ${
+                                        className={`bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-md border-2 transition-all duration-300 overflow-hidden ${
                                             isOpen
                                                 ? "border-[#F97415] shadow-lg shadow-[#F97415]/10"
-                                                : "border-gray-200 hover:border-[#F97415]/30 hover:shadow-lg"
+                                                : "border-gray-700 hover:border-[#F97415]/50 hover:shadow-lg"
                                         }`}
                                     >
                                         {/* Question Button */}
@@ -284,7 +285,7 @@ export default function ModernSections() {
                                                     className={`flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-300 ${
                                                         isOpen
                                                             ? "bg-gradient-to-br from-[#F97415] to-orange-600"
-                                                            : "bg-orange-100 group-hover:bg-orange-200"
+                                                            : "bg-gray-700 group-hover:bg-gray-600"
                                                     }`}
                                                 >
                                                     <HelpCircle
@@ -299,7 +300,7 @@ export default function ModernSections() {
                                                     className={`text-base lg:text-lg font-bold pr-4 transition-colors ${
                                                         isOpen
                                                             ? "text-[#F97415]"
-                                                            : "text-gray-900 group-hover:text-[#F97415]"
+                                                            : "text-white group-hover:text-[#F97415]"
                                                     }`}
                                                 >
                                                     {item.question}
@@ -311,11 +312,11 @@ export default function ModernSections() {
                                                 className={`flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-300 ${
                                                     isOpen
                                                         ? "bg-gradient-to-br from-[#F97415] to-orange-600 rotate-180"
-                                                        : "bg-gray-100 group-hover:bg-orange-100"
+                                                        : "bg-gray-700 group-hover:bg-gray-600"
                                                 }`}
                                             >
                                                 <ChevronDown
-                                                    className={`w-5 h-5 ${isOpen ? "text-white" : "text-gray-600"}`}
+                                                    className={`w-5 h-5 ${isOpen ? "text-white" : "text-gray-400"}`}
                                                 />
                                             </div>
                                         </button>
@@ -327,15 +328,15 @@ export default function ModernSections() {
                                             }`}
                                         >
                                             <div className="px-5 pb-5">
-                                                <div className="h-px bg-gradient-to-r from-transparent via-[#F97415]/20 to-transparent mb-4" />
+                                                <div className="h-px bg-gradient-to-r from-transparent via-[#F97415]/40 to-transparent mb-4" />
                                                 
                                                 <div className="flex gap-3">
                                                     <div className="flex-shrink-0 mt-1">
-                                                        <div className="w-5 h-5 rounded-full bg-orange-100 flex items-center justify-center">
+                                                        <div className="w-5 h-5 rounded-full bg-[#F97415]/20 flex items-center justify-center">
                                                             <CheckCircle2 className="w-3 h-3 text-[#F97415]" />
                                                         </div>
                                                     </div>
-                                                    <p className="text-sm lg:text-base text-gray-700 leading-relaxed whitespace-pre-line">
+                                                    <p className="text-sm lg:text-base text-gray-300 leading-relaxed whitespace-pre-line">
                                                         {item.answer}
                                                     </p>
                                                 </div>
@@ -348,14 +349,14 @@ export default function ModernSections() {
                     </div>
 
                     <div className="max-w-3xl mx-auto mt-8 animate-fade-in-up">
-                        <div className="bg-orange-50/60 rounded-xl shadow-md border-2 border-[#F97415]/20 overflow-hidden">
+                        <div className="bg-gray-900/50 rounded-xl shadow-md border-2 border-[#F97415]/40 overflow-hidden">
                             <div className="px-5 py-4 flex items-start gap-3">
                                 <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-gradient-to-br from-[#F97415] to-orange-600 flex items-center justify-center">
                                     <Shield className="w-4 h-4 text-white" />
                                 </div>
                                 <div className="flex-1">
-                                    <p className="text-base lg:text-lg font-bold text-gray-900">Disclaimer</p>
-                                    <p className="mt-2 text-sm lg:text-base text-gray-700 leading-relaxed whitespace-pre-line">
+                                    <p className="text-base lg:text-lg font-bold text-white">Disclaimer</p>
+                                    <p className="mt-2 text-sm lg:text-base text-gray-300 leading-relaxed whitespace-pre-line">
                                         Infinity Loans & Business Solutions is not a Bank or NBFC.
                                         {"\n"}
                                         We provide loan advisory and facilitation services only. Final loan sanction, interest rates, terms, and disbursement are solely at the discretion of the respective Bank or NBFC, subject to eligibility norms and internal policies.
@@ -367,11 +368,11 @@ export default function ModernSections() {
 
                     {/* Help Footer */}
                     <div className="mt-10 text-center animate-fade-in-up animation-delay-400">
-                        <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl border border-[#F97415]/20">
+                        <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-gray-900 to-gray-800 rounded-xl border border-[#F97415]/40">
                             <Shield className="w-5 h-5 text-[#F97415]" />
-                            <p className="text-sm font-semibold text-gray-700">
+                            <p className="text-sm font-semibold text-gray-300">
                                 Still have questions?{" "}
-                                <span className="text-[#F97415] underline cursor-pointer hover:text-orange-700 transition-colors">
+                                <span className="text-[#F97415] underline cursor-pointer hover:text-orange-400 transition-colors">
                                     Contact our support team
                                 </span>
                             </p>
