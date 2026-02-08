@@ -1040,6 +1040,9 @@ export default function HomePageClient() {
                 Apply now and get a decision within 24 hours. No hidden fees, no surprises.
               </p>
               <div className="mt-8 flex flex-wrap justify-center gap-4">
+                <Button asChild variant="hero" size="xl">
+                  <Link href="/services">Get Started Now</Link>
+                </Button>
                 <ApplyNowCTAButton loanType="Loan" className="shadow-2xl" size="xl">
                   Apply Now
                   <ArrowRight className="ml-2 h-5 w-5" />

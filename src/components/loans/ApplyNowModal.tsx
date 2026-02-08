@@ -697,7 +697,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                     </select>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="s_stayingSinceYears" className="text-sm font-medium">Staying Since (Years)</Label>
+                    <Label htmlFor="s_stayingSinceYears" className="text-sm font-medium">Staying Since </Label>
                     <Input id="s_stayingSinceYears" name="stayingSinceYears" type="number" placeholder="Staying Since (Years)" value={sForm.stayingSinceYears} onChange={handleSalariedChange} className="border-gray-300" />
                   </div>
                 </div>
