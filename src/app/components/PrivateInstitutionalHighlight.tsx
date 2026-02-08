@@ -82,6 +82,20 @@ export default function PrivateInstitutionalHighlight() {
     }
   };
 
+  const loanCategories = ["Personal Loan",
+    "Business Loan",
+    "Home Loan",
+    "Mortgage Loan",
+    "Loan Against Property",
+    "Vehicle Loan",
+    "Two-Wheeler Loan",
+    "Commercial Vehicle Loan",
+    "MSME / SME Loan",
+    "Working Capital Loan",
+    "Startup Loan",
+    "Education Loan",
+    "Gold Loan"]
+
   return (
     <section className="bg-white">
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-12">
@@ -297,7 +311,7 @@ export default function PrivateInstitutionalHighlight() {
                       <p className="text-xs text-destructive">{errors.homeAddressPincode.message}</p>
                     )}
                   </div>
-                  
+
                   <div className="space-y-2">
                     <Label htmlFor="pi_officeAddressPincode" className="text-sm font-medium">Office Address Pincode</Label>
                     <Input
@@ -343,9 +357,11 @@ export default function PrivateInstitutionalHighlight() {
                       className="mt-2 block w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm"
                     >
                       <option value="">Select Loan Type</option>
-                      <option value="Home">Home</option>
-                      <option value="Personal">Personal</option>
-                      <option value="Mortgage">Mortgage</option>
+                      {
+                        loanCategories.map((loan,idx)=>(
+                            <option key={idx} value={loan}>{loan}</option>
+                        ))
+                      }
                     </select>
                     {errors.loanType?.message && (
                       <p className="text-xs text-destructive">{errors.loanType.message}</p>

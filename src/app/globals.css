@@ -285,3 +285,9 @@
     animation: pulse-subtle 2s ease-in-out infinite;
   }
 }
+
+
+.date-gray-icon::-webkit-calendar-picker-indicator {
+  filter: invert(30%);
+  cursor: pointer;
+}

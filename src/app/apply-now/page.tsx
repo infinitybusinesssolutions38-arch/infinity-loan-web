@@ -61,7 +61,7 @@ const ApplyNowPage = () => {
                 },
                 { withCredentials: true }
             );
-
+            console.log(response.data);
             if (response.data?.success) {
                 alert("Application submitted successfully!");
                 window.location.href = "/";
@@ -118,8 +118,6 @@ const ApplyNowPage = () => {
                 <div className="bg-gray-50 p-8 lg:p-12 flex flex-col justify-center">
                     {/* Form */}
                     
-                    
-                        
                         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
                             <div>
                                 <label htmlFor="product" className="block text-sm font-semibold text-gray-700 mb-2">

@@ -4,6 +4,8 @@ import type React from "react";
 import { useState } from "react";
 import { createPortal } from "react-dom";
 import { X, Upload, User, Mail, MapPin, CreditCard, FileCheck, Loader2 } from "lucide-react";
+import axios from "axios";
+import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -42,37 +44,42 @@ type FormState = {
   passportNumber: string;
 };
 
-type FormErrors = Partial<Record<keyof FormState, string>>;
-
 export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, categoryKey }: ApplyNowModalProps) {
   // Employment type selector for determining which form to show
   const [employmentType, setEmploymentType] = useState<"" | "salaried" | "self-employed">("");
-  
+
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formData, setFormData] = useState<FormState>({
-    firstName: "",
-    middleName: "",
-    lastName: "",
-    mobileNumber: "",
-    alternateMobile: "",
-    businessEmail: "",
-    personalEmail: "",
-    currentResidentialAddress: "",
-    currentResidentialPincode: "",
-    currentOfficeAddress: "",
-    currentOfficePincode: "",
-    requiredLoanAmount: "",
-    residentialStatus: "",
-    businessPremisesStatus: "",
-    yearsAtCurrentResidentialAddress: "",
-    yearsAtCurrentBusinessAddress: "",
-    aadhaarNumber: "",
-    panNumber: "",
-    voterIdNumber: "",
-    drivingLicense: "",
-    passportNumber: "",
+  const {
+    register,
+    handleSubmit: handleNonSalariedSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<FormState>({
+    defaultValues: {
+      firstName: "",
+      middleName: "",
+      lastName: "",
+      mobileNumber: "",
+      alternateMobile: "",
+      businessEmail: "",
+      personalEmail: "",
+      currentResidentialAddress: "",
+      currentResidentialPincode: "",
+      currentOfficeAddress: "",
+      currentOfficePincode: "",
+      requiredLoanAmount: "",
+      residentialStatus: "",
+      businessPremisesStatus: "",
+      yearsAtCurrentResidentialAddress: "",
+      yearsAtCurrentBusinessAddress: "",
+      aadhaarNumber: "",
+      panNumber: "",
+      voterIdNumber: "",
+      drivingLicense: "",
+      passportNumber: "",
+    },
+    mode: "onBlur",
   });
-  const [errors, setErrors] = useState<FormErrors>({});
   const [focusedField, setFocusedField] = useState<string | null>(null);
 
   const [aadhaarFront, setAadhaarFront] = useState<File | null>(null);
@@ -90,6 +97,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
   const [officeIdPhoto, setOfficeIdPhoto] = useState<File | null>(null);
   const [salarySlips, setSalarySlips] = useState<File | null>(null);
   const [bankStatement, setBankStatement] = useState<File | null>(null);
+  const [loanSanctionLetter, setLoanSanctionLetter] = useState<File | null>(null);
   const [cibilReportFile, setCibilReportFile] = useState<File | null>(null);
   const [lastElectricityBill, setLastElectricityBill] = useState<File | null>(null);
   const [permElectricityBill, setPermElectricityBill] = useState<File | null>(null);
@@ -155,49 +163,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-
-    const error = validateField(name as keyof FormState, value);
-    setErrors((prev) => ({ ...prev, [name]: error }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const newErrors: FormErrors = {};
-    const requiredFields: (keyof FormState)[] = [
-      "firstName",
-      "lastName",
-      "mobileNumber",
-      "personalEmail",
-      "currentResidentialAddress",
-      "currentResidentialPincode",
-      "currentOfficeAddress",
-      "currentOfficePincode",
-      "requiredLoanAmount",
-      "residentialStatus",
-      "businessPremisesStatus",
-      "yearsAtCurrentResidentialAddress",
-      "yearsAtCurrentBusinessAddress",
-      "aadhaarNumber",
-      "panNumber",
-    ];
-
-    requiredFields.forEach((field) => {
-      const error = validateField(field, formData[field] || "");
-      if (error || !formData[field]) {
-        newErrors[field] = error || "This field is required";
-      }
-    });
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      window.alert("Please fill in all required fields correctly");
-      return;
-    }
-
+  const onSubmitNonSalaried = async (data: FormState) => {
     // Ensure required documents are uploaded
     if (!aadhaarFront || !aadhaarBack || !panFront || !residentialBill || !shopBill) {
       window.alert(
@@ -212,53 +178,53 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
       const submissionFormData = new globalThis.FormData();
 
       // Add form fields
-      submissionFormData.append("firstName", formData.firstName);
-      submissionFormData.append("middleName", formData.middleName || "");
-      submissionFormData.append("lastName", formData.lastName);
-      submissionFormData.append("mobileNumber", formData.mobileNumber);
-      submissionFormData.append("alternateMobile", formData.alternateMobile || "");
-      submissionFormData.append("businessEmail", formData.businessEmail || "");
-      submissionFormData.append("personalEmail", formData.personalEmail);
-      submissionFormData.append("currentResidentialAddress", formData.currentResidentialAddress);
-      submissionFormData.append("currentResidentialPincode", formData.currentResidentialPincode);
-      submissionFormData.append("currentOfficeAddress", formData.currentOfficeAddress);
-      submissionFormData.append("currentOfficePincode", formData.currentOfficePincode);
-      submissionFormData.append("requiredLoanAmount", formData.requiredLoanAmount as string);
-      submissionFormData.append("residentialStatus", formData.residentialStatus as string);
-      submissionFormData.append("businessPremisesStatus", formData.businessPremisesStatus as string);
-      submissionFormData.append("yearsAtCurrentResidentialAddress", formData.yearsAtCurrentResidentialAddress as string);
-      submissionFormData.append("yearsAtCurrentBusinessAddress", formData.yearsAtCurrentBusinessAddress as string);
-      submissionFormData.append("aadhaarNumber", formData.aadhaarNumber);
-      submissionFormData.append("panNumber", formData.panNumber);
-      submissionFormData.append("voterIdNumber", formData.voterIdNumber || "");
-      submissionFormData.append("drivingLicense", formData.drivingLicense || "");
-      submissionFormData.append("passportNumber", formData.passportNumber || "");
-      submissionFormData.append("loanType", loanTypeKey || loanType);
+      submissionFormData.append("firstName", data.firstName);
+      submissionFormData.append("middleName", data.middleName || "");
+      submissionFormData.append("lastName", data.lastName);
+      submissionFormData.append("mobileNumber", data.mobileNumber);
+      submissionFormData.append("alternateMobile", data.alternateMobile || "");
+      submissionFormData.append("businessEmail", data.businessEmail || "");
+      submissionFormData.append("personalEmail", data.personalEmail);
+      submissionFormData.append("currentResidentialAddress", data.currentResidentialAddress);
+      submissionFormData.append("currentResidentialPincode", data.currentResidentialPincode);
+      submissionFormData.append("currentOfficeAddress", data.currentOfficeAddress);
+      submissionFormData.append("currentOfficePincode", data.currentOfficePincode);
+      submissionFormData.append("requiredLoanAmount", data.requiredLoanAmount as string);
+      submissionFormData.append("residentialStatus", data.residentialStatus as string);
+      submissionFormData.append("businessPremisesStatus", data.businessPremisesStatus as string);
+      submissionFormData.append("yearsAtCurrentResidentialAddress", data.yearsAtCurrentResidentialAddress as string);
+      submissionFormData.append("yearsAtCurrentBusinessAddress", data.yearsAtCurrentBusinessAddress as string);
+      submissionFormData.append("aadhaarNumber", data.aadhaarNumber);
+      submissionFormData.append("panNumber", (data.panNumber || "").toUpperCase());
+      submissionFormData.append("voterIdNumber", data.voterIdNumber || "");
+      submissionFormData.append("drivingLicense", data.drivingLicense || "");
+      submissionFormData.append("passportNumber", data.passportNumber || "");
+      submissionFormData.append("loanType", "personal");
 
       // Add files
-      if (aadhaarFront) submissionFormData.append("aadhaarFront", aadhaarFront);
-      if (aadhaarBack) submissionFormData.append("aadhaarBack", aadhaarBack);
-      if (panFront) submissionFormData.append("panCardFront", panFront);
-      if (residentialBill) submissionFormData.append("residentialBill", residentialBill);
-      if (shopBill) submissionFormData.append("shopBill", shopBill);
+      submissionFormData.append("aadhaarFront", aadhaarFront);
+      submissionFormData.append("aadhaarBack", aadhaarBack);
+      submissionFormData.append("panCardFront", panFront);
+      submissionFormData.append("residentialBill", residentialBill);
+      submissionFormData.append("shopBill", shopBill);
 
-      const response = await fetch("/api/apply-now", {
-        method: "POST",
-        body: submissionFormData,
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.message || "Application submission failed");
-      }
+      const response = await axios.post("/api/apply-now", submissionFormData);
+      console.log("click was button");
+      console.log(response.data);
 
       setIsSubmitting(false);
-      window.alert(`Application submitted successfully!\nApplication Reference: ${result.applicationRef}`);
+      window.alert(`Application submitted successfully!\nApplication Reference: ${response.data?.applicationRef}`);
+      reset();
       onClose();
     } catch (error) {
       setIsSubmitting(false);
-      window.alert(`Error: ${error instanceof Error ? error.message : "Unknown error occurred"}`);
+      const message =
+        axios.isAxiosError(error)
+          ? (error.response?.data as any)?.message || error.message
+          : error instanceof Error
+            ? error.message
+            : "Unknown error occurred";
+      window.alert(`Error: ${message}`);
     }
   };
 
@@ -267,9 +233,19 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
     setter: React.Dispatch<React.SetStateAction<File | null>>
   ) => {
     const file = e.target.files?.[0];
-    if (file) {
-      setter(file);
+    if (!file) return setter(null);
+
+    const isImage = file.type.startsWith("image/");
+    if (!isImage) {
+      window.alert("Please upload an image (JPG/PNG)");
+      return setter(null);
     }
+    if (file.size > 1 * 1024 * 1024) {
+      window.alert("Image must be <= 1MB");
+      return setter(null);
+    }
+
+    setter(file);
   };
 
   const isSalaried =
@@ -356,32 +332,36 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
     e.preventDefault();
 
     // Basic required fields validation
-    const required = [
-      "firstName",
-      "lastName",
-      "dob",
-      "gender",
-      "maritalStatus",
-      "mobileNumber",
-      "personalEmail",
-      "panNumber",
-      "aadhaarNumber",
-      "currentResidentialAddress",
-      "state",
-      "city",
-      "companyName",
-      "designation",
-      "employmentType",
-      "dateOfJoining",
-      "monthlyNetSalary",
-      "salaryCreditMode",
-      "salaryAccountBankName",
-      "requiredLoanAmount",
+    const requiredFields: Array<{ key: keyof typeof sForm; label: string }> = [
+      { key: "firstName", label: "First Name" },
+      { key: "lastName", label: "Last Name" },
+      { key: "dob", label: "Date of Birth" },
+      { key: "gender", label: "Gender" },
+      { key: "maritalStatus", label: "Marital Status" },
+      { key: "mobileNumber", label: "Mobile Number" },
+      { key: "personalEmail", label: "Personal Email" },
+      { key: "panNumber", label: "PAN Number" },
+      { key: "aadhaarNumber", label: "Aadhaar Number" },
+      { key: "currentResidentialAddress", label: "Current Residential Address" },
+      { key: "currentResidentialPincode", label: "Current Residential Pincode" },
+      { key: "state", label: "State" },
+      { key: "city", label: "City" },
+      { key: "residenceType", label: "Residence Type" },
+      { key: "companyName", label: "Company Name" },
+      { key: "designation", label: "Designation" },
+      { key: "employmentType", label: "Employment Type" },
+      { key: "dateOfJoining", label: "Date of Joining" },
+      { key: "monthlyNetSalary", label: "Monthly Net Salary" },
+      { key: "salaryCreditMode", label: "Salary Credit Mode" },
+      { key: "salaryAccountBankName", label: "Salary Account Bank Name" },
+      { key: "requiredLoanAmount", label: "Required Loan Amount" },
     ];
 
-    for (const f of required) {
-      if (!sForm[f as keyof typeof sForm]) {
-        window.alert("Please fill all required salaried fields");
+    for (const f of requiredFields) {
+      const raw = sForm[f.key];
+      const value = typeof raw === "string" ? raw.trim() : String(raw || "").trim();
+      if (!value) {
+        window.alert(`Please fill ${f.label}`);
         return;
       }
     }
@@ -437,15 +417,66 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
     if (officeIdPhoto && !validateImage(officeIdPhoto, "Office ID photo")) return;
     if (salarySlips && !validatePdf(salarySlips, "Salary slips")) return;
     if (bankStatement && !validatePdf(bankStatement, "Bank statement")) return;
+    if (loanSanctionLetter && !validatePdf(loanSanctionLetter, "Loan sanction letter")) return;
 
     setIsSubmitting(true);
 
     try {
       const fd = new globalThis.FormData();
-      fd.append("loanType", loanTypeKey || loanType);
-      
+      fd.append("loanType", "salaried");
+
       const { existingLoansData, ...formDataRest } = sForm;
+
+      const normalizedMaritalStatus =
+        String(formDataRest.maritalStatus || "") === "Yes"
+          ? "Married"
+          : String(formDataRest.maritalStatus || "") === "No"
+            ? "Single"
+            : String(formDataRest.maritalStatus || "");
+
+      const normalizedSalaryCreditMode = (() => {
+        const raw = String(formDataRest.salaryCreditMode || "");
+        if (!raw) return "";
+        if (raw === "BankTransfer" || raw === "NEFT_IMPS") return "NEFT";
+        return raw;
+      })();
+
+      const normalizedStayingSinceYears = (() => {
+        const raw = String(formDataRest.stayingSinceYears || "").trim();
+        if (!raw) return "";
+
+        // If UI provides a date (YYYY-MM-DD), convert to years since that date.
+        if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) {
+          const dt = new Date(raw);
+          if (Number.isNaN(dt.getTime())) return "";
+
+          const now = new Date();
+          let years = now.getFullYear() - dt.getFullYear();
+
+          const m = now.getMonth() - dt.getMonth();
+          if (m < 0 || (m === 0 && now.getDate() < dt.getDate())) years -= 1;
+
+          if (years < 0) years = 0;
+          return String(years);
+        }
+
+        // Otherwise, pass through numeric input as-is.
+        return raw;
+      })();
+
       Object.entries(formDataRest).forEach(([k, v]) => {
+        if (k === "maritalStatus") {
+          fd.append(k, normalizedMaritalStatus);
+          return;
+        }
+        if (k === "salaryCreditMode") {
+          fd.append(k, normalizedSalaryCreditMode);
+          return;
+        }
+        if (k === "stayingSinceYears") {
+          fd.append(k, normalizedStayingSinceYears);
+          return;
+        }
         fd.append(k, String(v || ""));
       });
       fd.append("existingLoansData", JSON.stringify(existingLoansData));
@@ -458,24 +489,58 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
       if (officeIdPhoto) fd.append("officeIdPhoto", officeIdPhoto);
       if (salarySlips) fd.append("salarySlips", salarySlips);
       if (bankStatement) fd.append("bankStatement", bankStatement);
+      if (loanSanctionLetter) fd.append("loanSanctionLetter", loanSanctionLetter);
       if (lastElectricityBill) fd.append("lastElectricityBill", lastElectricityBill);
       if (permElectricityBill) fd.append("permElectricityBill", permElectricityBill);
       if (rentAgreement) fd.append("rentAgreement", rentAgreement);
       if (companyAllotmentLetter) fd.append("companyAllotmentLetter", companyAllotmentLetter);
       if (cibilReportFile) fd.append("cibilReport", cibilReportFile);
 
-      const response = await fetch("/api/apply-now", { method: "POST", body: fd });
-      const result = await response.json();
-      if (!response.ok) throw new Error(result.message || "Submission failed");
+      const response = await axios.post("/api/apply-now", fd);
 
       setIsSubmitting(false);
-      window.alert(`Application submitted successfully!\nReference: ${result.applicationRef}`);
+      window.alert(`Application submitted successfully!\nReference: ${response.data?.applicationRef}`);
       onClose();
     } catch (err) {
       setIsSubmitting(false);
-      window.alert(`Error: ${err instanceof Error ? err.message : "Unknown error"}`);
+      const message =
+        axios.isAxiosError(err)
+          ? (err.response?.data as any)?.message || err.message
+          : err instanceof Error
+            ? err.message
+            : "Unknown error";
+      window.alert(`Error: ${message}`);
     }
   };
+
+  const sector = [
+  { "id": 1, "name": "Information Technology (IT) & Software" },
+  { "id": 2, "name": "Healthcare & Medical" },
+  { "id": 3, "name": "Pharmaceuticals" },
+  { "id": 4, "name": "Banking & Financial Services" },
+  { "id": 5, "name": "Insurance" },
+  { "id": 6, "name": "Non-Banking Financial Companies (NBFC)" },
+  { "id": 7, "name": "Education & Training" },
+  { "id": 8, "name": "Real Estate & Construction" },
+  { "id": 9, "name": "Infrastructure" },
+  { "id": 10, "name": "Manufacturing" },
+  { "id": 11, "name": "Automobile & Auto Components" },
+  { "id": 12, "name": "Logistics & Transportation" },
+  { "id": 13, "name": "Retail & Wholesale Trade" },
+  { "id": 14, "name": "E-Commerce" },
+  { "id": 15, "name": "Telecommunications" },
+  { "id": 16, "name": "Media & Entertainment" },
+  { "id": 17, "name": "Hospitality & Tourism" },
+  { "id": 18, "name": "Agriculture & Agribusiness" },
+  { "id": 19, "name": "Food Processing" },
+  { "id": 20, "name": "Energy & Power" },
+  { "id": 21, "name": "Oil & Gas" },
+  { "id": 22, "name": "Renewable Energy" },
+  { "id": 23, "name": "Chemicals & Petrochemicals" },
+  { "id": 24, "name": "Textiles & Garments" },
+  { "id": 25, "name": "Mining & Metals" }
+]
+
 
   if (!isOpen) return null;
 
@@ -499,7 +564,11 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
           </Button>
         </div>
 
-        <form onSubmit={isSalaried ? handleSalariedSubmit : handleSubmit} className="overflow-y-auto max-h-[calc(90vh-140px)] p-6 space-y-8">
+        <form
+          id="applyNowModalForm"
+          onSubmit={isSalaried ? handleSalariedSubmit : handleNonSalariedSubmit(onSubmitNonSalaried)}
+          className="overflow-y-auto max-h-[calc(90vh-140px)] p-6 space-y-8"
+        >
 
           {isSalaried && (
             <>
@@ -600,38 +669,38 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                   </div>
                 </div>
                 <div className="grid gap-4 sm:grid-cols-3">
-                          <div className="space-y-2">
-                            <Label className="text-sm font-medium">PAN Card Photo (Front)* (Max 1MB)</Label>
-                            <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed rounded cursor-pointer hover:border-primary">
-                              <Upload className="h-5 w-5" />
-                              <span className="text-xs text-muted-foreground mt-1">Upload JPG/PNG, Max 1MB</span>
-                              <input type="file" accept="image/png,image/jpeg" className="hidden" onChange={(e) => handleSalariedFileChange(e, setPanPhoto, "image1MB")} />
-                            </label>
-                          </div>
-                          <div className="space-y-2">
-                            <Label className="text-sm font-medium">Aadhaar Photo (Front)* (Max 1MB)</Label>
-                            <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed rounded cursor-pointer hover:border-primary">
-                              <Upload className="h-5 w-5" />
-                              <span className="text-xs text-muted-foreground mt-1">Upload JPG/PNG, Max 1MB</span>
-                              <input type="file" accept="image/png,image/jpeg" className="hidden" onChange={(e) => handleSalariedFileChange(e, setAadhaarPhoto, "image1MB")} />
-                            </label>
-                          </div>
-                          <div className="space-y-2">
-                            <Label className="text-sm font-medium">Aadhaar Photo (Back)* (Max 1MB)</Label>
-                            <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed rounded cursor-pointer hover:border-primary">
-                              <Upload className="h-5 w-5" />
-                              <span className="text-xs text-muted-foreground mt-1">Upload JPG/PNG, Max 1MB</span>
-                              <input type="file" accept="image/png,image/jpeg" className="hidden" onChange={(e) => handleSalariedFileChange(e, setAadhaarBackPhoto, "image1MB")} />
-                            </label>
-                          </div>
-                          <div className="space-y-2">
-                            <Label className="text-sm font-medium">Applicant Photo* (Max 1MB)</Label>
-                            <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed rounded cursor-pointer hover:border-primary">
-                              <Upload className="h-5 w-5" />
-                              <span className="text-xs text-muted-foreground mt-1">Upload JPG/PNG, Max 1MB</span>
-                              <input type="file" accept="image/png,image/jpeg" className="hidden" onChange={(e) => handleSalariedFileChange(e, setApplicantPhoto, "image1MB")} />
-                            </label>
-                          </div>
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium">PAN Card Photo (Front)* (Max 1MB)</Label>
+                    <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed rounded cursor-pointer hover:border-primary">
+                      <Upload className="h-5 w-5" />
+                      <span className="text-xs text-muted-foreground mt-1">{panPhoto ? `${panPhoto.name.slice(0, 18)}...` : "Upload JPG/PNG, Max 1MB"}</span>
+                      <input type="file" accept="image/png,image/jpeg" className="hidden" onChange={(e) => handleSalariedFileChange(e, setPanPhoto, "image1MB")} />
+                    </label>
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium">Aadhaar Photo (Front)* (Max 1MB)</Label>
+                    <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed rounded cursor-pointer hover:border-primary">
+                      <Upload className="h-5 w-5" />
+                      <span className="text-xs text-muted-foreground mt-1">{aadhaarPhoto ? `${aadhaarPhoto.name.slice(0, 18)}...` : "Upload JPG/PNG, Max 1MB"}</span>
+                      <input type="file" accept="image/png,image/jpeg" className="hidden" onChange={(e) => handleSalariedFileChange(e, setAadhaarPhoto, "image1MB")} />
+                    </label>
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium">Aadhaar Photo (Back)* (Max 1MB)</Label>
+                    <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed rounded cursor-pointer hover:border-primary">
+                      <Upload className="h-5 w-5" />
+                      <span className="text-xs text-muted-foreground mt-1">{aadhaarBackPhoto ? `${aadhaarBackPhoto.name.slice(0, 18)}...` : "Upload JPG/PNG, Max 1MB"}</span>
+                      <input type="file" accept="image/png,image/jpeg" className="hidden" onChange={(e) => handleSalariedFileChange(e, setAadhaarBackPhoto, "image1MB")} />
+                    </label>
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium">Applicant Photo* (Max 1MB)</Label>
+                    <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed rounded cursor-pointer hover:border-primary">
+                      <Upload className="h-5 w-5" />
+                      <span className="text-xs text-muted-foreground mt-1">{applicantPhoto ? `${applicantPhoto.name.slice(0, 18)}...` : "Upload JPG/PNG, Max 1MB"}</span>
+                      <input type="file" accept="image/png,image/jpeg" className="hidden" onChange={(e) => handleSalariedFileChange(e, setApplicantPhoto, "image1MB")} />
+                    </label>
+                  </div>
                 </div>
               </fieldset>
 
@@ -698,7 +767,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="s_stayingSinceYears" className="text-sm font-medium">Staying Since (Years)</Label>
-                    <Input id="s_stayingSinceYears" name="stayingSinceYears" type="number" placeholder="Staying Since (Years)" value={sForm.stayingSinceYears} onChange={handleSalariedChange} className="border-gray-300" />
+                    <Input id="s_stayingSinceYears" name="stayingSinceYears" type="date" placeholder="Staying Since (Years)" value={sForm.stayingSinceYears} onChange={handleSalariedChange} className="border-gray-300 date-gray-icon" />
                   </div>
                 </div>
                 {/* Conditional optional residential uploads based on Residence Type */}
@@ -708,7 +777,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                       <Label htmlFor="s_lastElectricityBill" className="text-sm font-medium">Upload latest electricity bill (optional) <span className="text-xs text-muted-foreground">(Max 1MB)</span></Label>
                       <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed rounded cursor-pointer hover:border-primary">
                         <Upload className="h-5 w-5" />
-                        <span className="text-xs text-muted-foreground mt-1">Upload JPG/PNG, Max 1MB</span>
+                        <span className="text-xs text-muted-foreground mt-1">{lastElectricityBill ? `${lastElectricityBill.name.slice(0, 18)}...` : "Upload JPG/PNG, Max 1MB"}</span>
                         <input type="file" accept="image/png,image/jpeg" className="hidden" onChange={(e) => handleSalariedFileChange(e, setLastElectricityBill, "image1MB")} />
                       </label>
                     </div>
@@ -726,7 +795,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                       <Label className="text-sm font-medium">Permanent Address Electricity Bill (optional) <span className="text-xs text-muted-foreground">(Max 1MB)</span></Label>
                       <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed rounded cursor-pointer hover:border-primary">
                         <Upload className="h-5 w-5" />
-                        <span className="text-xs text-muted-foreground mt-1">Upload JPG/PNG, Max 1MB</span>
+                        <span className="text-xs text-muted-foreground mt-1">{permElectricityBill ? `${permElectricityBill.name.slice(0, 18)}...` : "Upload JPG/PNG, Max 1MB"}</span>
                         <input type="file" accept="image/png,image/jpeg" className="hidden" onChange={(e) => handleSalariedFileChange(e, setPermElectricityBill, "image1MB")} />
                       </label>
                     </div>
@@ -735,7 +804,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                       <Label className="text-sm font-medium">Rent Agreement (optional) <span className="text-xs text-muted-foreground">(PDF, Max 2MB)</span></Label>
                       <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed rounded cursor-pointer hover:border-primary">
                         <Upload className="h-5 w-5" />
-                        <span className="text-xs text-muted-foreground mt-1">Upload PDF, Max 2MB</span>
+                        <span className="text-xs text-muted-foreground mt-1">{rentAgreement ? `${rentAgreement.name.slice(0, 18)}...` : "Upload PDF, Max 2MB"}</span>
                         <input type="file" accept="application/pdf" className="hidden" onChange={(e) => handleSalariedFileChange(e, setRentAgreement, "pdf2MB")} />
                       </label>
                     </div>
@@ -752,7 +821,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                       <Label className="text-sm font-medium">Permanent Address Electricity Bill (optional) <span className="text-xs text-muted-foreground">(Max 1MB)</span></Label>
                       <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed rounded cursor-pointer hover:border-primary">
                         <Upload className="h-5 w-5" />
-                        <span className="text-xs text-muted-foreground mt-1">Upload JPG/PNG, Max 1MB</span>
+                        <span className="text-xs text-muted-foreground mt-1">{permElectricityBill ? `${permElectricityBill.name.slice(0, 18)}...` : "Upload JPG/PNG, Max 1MB"}</span>
                         <input type="file" accept="image/png,image/jpeg" className="hidden" onChange={(e) => handleSalariedFileChange(e, setPermElectricityBill, "image1MB")} />
                       </label>
                     </div>
@@ -760,7 +829,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                       <Label className="text-sm font-medium">Company Allotment Letter (optional) <span className="text-xs text-muted-foreground">(PDF, Max 2MB)</span></Label>
                       <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed rounded cursor-pointer hover:border-primary">
                         <Upload className="h-5 w-5" />
-                        <span className="text-xs text-muted-foreground mt-1">Upload PDF, Max 2MB</span>
+                        <span className="text-xs text-muted-foreground mt-1">{companyAllotmentLetter ? `${companyAllotmentLetter.name.slice(0, 18)}...` : "Upload PDF, Max 2MB"}</span>
                         <input type="file" accept="application/pdf" className="hidden" onChange={(e) => handleSalariedFileChange(e, setCompanyAllotmentLetter, "pdf2MB")} />
                       </label>
                     </div>
@@ -779,27 +848,24 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                   <div className="space-y-2">
                     <Label htmlFor="s_organizationType" className="text-sm font-medium">Organization Type</Label>
                     <select id="s_organizationType" name="organizationType" value={sForm.organizationType} onChange={handleSalariedChange} className="mt-2 block w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm">
-                    <option value="">Organization Type</option>
-                    <option value="Private">Private Limited</option>
-                    <option value="MNC">MNC</option>
-                    <option value="Govt">Government</option>
-                    <option value="PSU">PSU</option>
-                    <option value="Partnership">Partnership</option>
-                    <option value="Proprietorship">Proprietorship</option>
-                    <option value="Other">Other</option>
-                  </select>
+                      <option value="">Organization Type</option>
+                      <option value="Private">Private Limited</option>
+                      <option value="MNC">MNC</option>
+                      <option value="Govt">Government</option>
+                      <option value="PSU">PSU</option>
+                      <option value="Partnership">Partnership</option>
+                      <option value="Proprietorship">Proprietorship</option>
+                      <option value="Other">Other</option>
+                    </select>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="s_industry" className="text-sm font-medium">Industry / Sector</Label>
                     <select id="s_industry" name="industry" value={sForm.industry} onChange={handleSalariedChange} className="mt-2 block w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm">
-                    <option value="">Industry / Sector</option>
-                    <option value="IT">IT / Software</option>
-                    <option value="BFSI">BFSI</option>
-                    <option value="Manufacturing">Manufacturing</option>
-                    <option value="Healthcare">Healthcare</option>
-                    <option value="Education">Education</option>
-                    <option value="Other">Other</option>
-                  </select>
+                      <option value="">Industry / Sector</option>
+                      {sector.map((sector)=>(
+                          <option key={sector.id} value={sector.name}>{sector.name}</option>
+                      ))}
+                    </select>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="s_designation" className="text-sm font-medium">Designation</Label>
@@ -808,12 +874,12 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                   <div className="space-y-2">
                     <Label htmlFor="s_employmentType" className="text-sm font-medium">Employment Type</Label>
                     <select id="s_employmentType" name="employmentType" value={sForm.employmentType} onChange={handleSalariedChange} className="mt-2 block w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm">
-                    <option value="">Employment Type</option>
-                    <option value="Permanent">Permanent</option>
-                    <option value="Contract">Contract</option>
-                    <option value="Probation">Probation</option>
-                    <option value="PartTime">Part Time</option>
-                  </select>
+                      <option value="">Employment Type</option>
+                      <option value="Permanent">Permanent</option>
+                      <option value="Contract">Contract</option>
+                      <option value="Probation">Probation</option>
+                      <option value="PartTime">Part Time</option>
+                    </select>
                   </div>
                   <DateInput
                     id="s_dateOfJoining"
@@ -843,7 +909,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                   <Label className="text-sm font-medium">Office ID Card Photo <span className="text-xs text-muted-foreground">(Max 1MB)</span></Label>
                   <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed rounded cursor-pointer hover:border-primary">
                     <Upload className="h-5 w-5" />
-                    <span className="text-xs text-muted-foreground mt-1">Upload JPG/PNG, Max 1MB</span>
+                    <span className="text-xs text-muted-foreground mt-1">{officeIdPhoto ? `${officeIdPhoto.name.slice(0, 18)}...` : "Upload JPG/PNG, Max 1MB"}</span>
                     <input type="file" accept="image/png,image/jpeg" className="hidden" onChange={(e) => handleSalariedFileChange(e, setOfficeIdPhoto, "image1MB")} />
                   </label>
                 </div>
@@ -877,7 +943,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                     <Label className="text-sm font-medium">Last 3 Months Salary Slips* <span className="text-xs text-muted-foreground">(PDF, Max 2MB)</span></Label>
                     <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed rounded cursor-pointer hover:border-primary">
                       <Upload className="h-5 w-5" />
-                      <span className="text-xs text-muted-foreground mt-1">Upload PDF, Max 2MB</span>
+                      <span className="text-xs text-muted-foreground mt-1">{salarySlips ? `${salarySlips.name.slice(0, 18)}...` : "Upload PDF, Max 2MB"}</span>
                       <input type="file" accept="application/pdf" className="hidden" onChange={(e) => handleSalariedFileChange(e, setSalarySlips, "pdf2MB")} />
                     </label>
                   </div>
@@ -885,10 +951,18 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                     <Label className="text-sm font-medium">Last 6 Months Bank Statement* <span className="text-xs text-muted-foreground">(PDF, Max 2MB)</span></Label>
                     <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed rounded cursor-pointer hover:border-primary">
                       <Upload className="h-5 w-5" />
-                      <span className="text-xs text-muted-foreground mt-1">Upload PDF, Max 2MB</span>
+                      <span className="text-xs text-muted-foreground mt-1">{bankStatement ? `${bankStatement.name.slice(0, 18)}...` : "Upload PDF, Max 2MB"}</span>
                       <input type="file" accept="application/pdf" className="hidden" onChange={(e) => handleSalariedFileChange(e, setBankStatement, "pdf2MB")} />
                     </label>
                   </div>
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Upload Loan Sanction Letter <span className="text-xs text-muted-foreground">(PDF, Max 2MB)</span></Label>
+                  <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed rounded cursor-pointer hover:border-primary">
+                    <Upload className="h-5 w-5" />
+                    <span className="text-xs text-muted-foreground mt-1">{loanSanctionLetter ? `${loanSanctionLetter.name.slice(0, 18)}...` : "Upload PDF, Max 2MB"}</span>
+                    <input type="file" accept="application/pdf" className="hidden" onChange={(e) => handleSalariedFileChange(e, setLoanSanctionLetter, "pdf2MB")} />
+                  </label>
                 </div>
               </fieldset>
 
@@ -974,37 +1048,37 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
               {/* G. CREDIT SCORE */}
               <fieldset className="space-y-4">
                 <legend className="text-lg font-bold text-foreground mb-4">G. Credit Score</legend>
-                  <div className="space-y-3">
-                    <div className="space-y-2">
-                      <Label className="text-sm font-medium">CIBIL (Credit Score)</Label>
-                      <div className="flex items-center gap-3">
-                        <label className="flex items-center gap-2">
-                          <input id="s_hasCibil_yes" type="radio" name="hasCibil" value="Yes" checked={sForm.hasCibil === "Yes"} onChange={handleSalariedChange} />
-                          <span className="ml-1">I have a CIBIL score</span>
-                        </label>
-                        <label className="flex items-center gap-2">
-                          <input id="s_hasCibil_no" type="radio" name="hasCibil" value="No" checked={sForm.hasCibil === "No"} onChange={handleSalariedChange} />
-                          <span className="ml-1">I don't have a CIBIL score</span>
+                <div className="space-y-3">
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium">CIBIL (Credit Score)</Label>
+                    <div className="flex items-center gap-3">
+                      <label className="flex items-center gap-2">
+                        <input id="s_hasCibil_yes" type="radio" name="hasCibil" value="Yes" checked={sForm.hasCibil === "Yes"} onChange={handleSalariedChange} />
+                        <span className="ml-1">I have a CIBIL score</span>
+                      </label>
+                      <label className="flex items-center gap-2">
+                        <input id="s_hasCibil_no" type="radio" name="hasCibil" value="No" checked={sForm.hasCibil === "No"} onChange={handleSalariedChange} />
+                        <span className="ml-1">I don't have a CIBIL score</span>
+                      </label>
+                    </div>
+                  </div>
+                  {sForm.hasCibil === "Yes" && (
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <div className="space-y-2">
+                        <Label htmlFor="s_cibilScore" className="text-sm font-medium">CIBIL Score</Label>
+                        <Input id="s_cibilScore" name="cibilScore" type="number" placeholder="CIBIL Score" value={sForm.cibilScore} onChange={handleSalariedChange} className="border-gray-300" />
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium">CIBIL Report (PDF)</Label>
+                        <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed rounded cursor-pointer hover:border-primary">
+                          <Upload className="h-5 w-5" />
+                          <span className="text-xs mt-1">{cibilReportFile ? `${cibilReportFile.name.slice(0, 18)}...` : "Upload"}</span>
+                          <input type="file" accept="application/pdf" className="hidden" onChange={(e) => handleSalariedFileChange(e, setCibilReportFile, "pdf2MB")} />
                         </label>
                       </div>
                     </div>
-                    {sForm.hasCibil === "Yes" && (
-                      <div className="grid gap-4 sm:grid-cols-2">
-                        <div className="space-y-2">
-                          <Label htmlFor="s_cibilScore" className="text-sm font-medium">CIBIL Score</Label>
-                          <Input id="s_cibilScore" name="cibilScore" type="number" placeholder="CIBIL Score" value={sForm.cibilScore} onChange={handleSalariedChange} className="border-gray-300" />
-                        </div>
-                        <div className="space-y-2">
-                          <Label className="text-sm font-medium">CIBIL Report (PDF)</Label>
-                          <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed rounded cursor-pointer hover:border-primary">
-                            <Upload className="h-5 w-5" />
-                            <span className="text-xs mt-1">{cibilReportFile ? "✓" : "Upload"}</span>
-                            <input type="file" accept="application/pdf" className="hidden" onChange={(e) => handleSalariedFileChange(e, setCibilReportFile, "pdf2MB")} />
-                          </label>
-                        </div>
-                      </div>
-                    )}
-                  </div>
+                  )}
+                </div>
               </fieldset>
 
               {/* H. LOAN REQUIREMENT */}
@@ -1061,589 +1135,572 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
           )}
 
           {!isSalaried && <>
-          <fieldset className="space-y-4">
-            <legend className="flex items-center gap-2 text-lg font-bold text-foreground mb-4">
-              <User className="h-5 w-5 text-primary" />
-              Personal Information
-            </legend>
+            <fieldset className="space-y-4">
+              <legend className="flex items-center gap-2 text-lg font-bold text-foreground mb-4">
+                <User className="h-5 w-5 text-primary" />
+                Personal Information
+              </legend>
 
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="space-y-2">
-                <Label htmlFor="firstName" className="text-sm font-medium">
-                  First Name <span className="text-destructive">*</span>
-                </Label>
-                <Input
-                  id="firstName"
-                  name="firstName"
-                  value={formData.firstName}
-                  onChange={handleChange}
-                  onFocus={() => setFocusedField("firstName")}
-                  onBlur={() => setFocusedField(null)}
-                  className={`transition-all duration-300 ${
-                    focusedField === "firstName" ? "ring-2 ring-primary shadow-glow-primary" : ""
-                  } ${errors.firstName ? "border-destructive animate-shake" : ""}`}
-                  placeholder="John"
-                />
-                {errors.firstName && <p className="text-xs text-destructive animate-fade-in">{errors.firstName}</p>}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="middleName" className="text-sm font-medium">
-                  Middle Name
-                </Label>
-                <Input
-                  id="middleName"
-                  name="middleName"
-                  value={formData.middleName as string}
-                  onChange={handleChange}
-                  onFocus={() => setFocusedField("middleName")}
-                  onBlur={() => setFocusedField(null)}
-                  className={`transition-all duration-300 ${
-                    focusedField === "middleName" ? "ring-2 ring-primary shadow-glow-primary" : ""
-                  } ${errors.middleName ? "border-destructive animate-shake" : ""}`}
-                  placeholder="Optional"
-                />
-                {errors.middleName && <p className="text-xs text-destructive animate-fade-in">{errors.middleName}</p>}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="lastName" className="text-sm font-medium">
-                  Last Name <span className="text-destructive">*</span>
-                </Label>
-                <Input
-                  id="lastName"
-                  name="lastName"
-                  value={formData.lastName}
-                  onChange={handleChange}
-                  onFocus={() => setFocusedField("lastName")}
-                  onBlur={() => setFocusedField(null)}
-                  className={`transition-all duration-300 ${
-                    focusedField === "lastName" ? "ring-2 ring-primary shadow-glow-primary" : ""
-                  } ${errors.lastName ? "border-destructive animate-shake" : ""}`}
-                  placeholder="Doe"
-                />
-                {errors.lastName && <p className="text-xs text-destructive animate-fade-in">{errors.lastName}</p>}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="mobileNumber" className="text-sm font-medium">
-                  Mobile Number <span className="text-destructive">*</span>
-                </Label>
-                <Input
-                  id="mobileNumber"
-                  name="mobileNumber"
-                  type="tel"
-                  maxLength={10}
-                  value={formData.mobileNumber}
-                  onChange={handleChange}
-                  onFocus={() => setFocusedField("mobileNumber")}
-                  onBlur={() => setFocusedField(null)}
-                  className={`transition-all duration-300 ${
-                    focusedField === "mobileNumber" ? "ring-2 ring-primary shadow-glow-primary" : ""
-                  } ${errors.mobileNumber ? "border-destructive animate-shake" : ""}`}
-                  placeholder="9876543210"
-                />
-                {errors.mobileNumber && (
-                  <p className="text-xs text-destructive animate-fade-in">{errors.mobileNumber}</p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="alternateMobile" className="text-sm font-medium">
-                  Alternate Mobile
-                </Label>
-                <Input
-                  id="alternateMobile"
-                  name="alternateMobile"
-                  type="tel"
-                  maxLength={10}
-                  value={formData.alternateMobile}
-                  onChange={handleChange}
-                  onFocus={() => setFocusedField("alternateMobile")}
-                  onBlur={() => setFocusedField(null)}
-                  className={`transition-all duration-300 ${
-                    focusedField === "alternateMobile" ? "ring-2 ring-primary shadow-glow-primary" : ""
-                  } ${errors.alternateMobile ? "border-destructive animate-shake" : ""}`}
-                  placeholder="Optional"
-                />
-                {errors.alternateMobile && (
-                  <p className="text-xs text-destructive animate-fade-in">{errors.alternateMobile}</p>
-                )}
-              </div>
-            </div>
-          </fieldset>
-
-          <fieldset className="space-y-4">
-            <legend className="flex items-center gap-2 text-lg font-bold text-foreground mb-4">
-              <CreditCard className="h-5 w-5 text-primary" />
-              Loan & Tenure Details
-            </legend>
-
-            <div className="grid gap-4 sm:grid-cols-3">
-              <div className="space-y-2">
-                <Label htmlFor="requiredLoanAmount" className="text-sm font-medium">
-                  Required Loan Amount <span className="text-destructive">*</span>
-                </Label>
-                <Input
-                  id="requiredLoanAmount"
-                  name="requiredLoanAmount"
-                  type="number"
-                  min={0}
-                  value={formData.requiredLoanAmount as string}
-                  onChange={handleChange}
-                  onFocus={() => setFocusedField("requiredLoanAmount")}
-                  onBlur={() => setFocusedField(null)}
-                  className={`transition-all duration-300 ${
-                    focusedField === "requiredLoanAmount" ? "ring-2 ring-primary shadow-glow-primary" : ""
-                  } ${errors.requiredLoanAmount ? "border-destructive animate-shake" : ""}`}
-                  placeholder="e.g., 500000"
-                />
-                {errors.requiredLoanAmount && (
-                  <p className="text-xs text-destructive animate-fade-in">{errors.requiredLoanAmount}</p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="residentialStatus" className="text-sm font-medium">
-                  Residential Status <span className="text-destructive">*</span>
-                </Label>
-                <select
-                  id="residentialStatus"
-                  name="residentialStatus"
-                  value={formData.residentialStatus as string}
-                  onChange={handleChange}
-                  className={`mt-2 block w-full rounded-md border bg-transparent px-3 py-2 text-sm transition-all duration-200 ${
-                    errors.residentialStatus ? "border-destructive" : ""
-                  }`}
-                >
-                  <option value="">Select</option>
-                  <option value="Owned">Owned</option>
-                  <option value="Rented">Rented</option>
-                </select>
-                {errors.residentialStatus && (
-                  <p className="text-xs text-destructive animate-fade-in">{errors.residentialStatus}</p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="businessPremisesStatus" className="text-sm font-medium">
-                  Business Premises Status <span className="text-destructive">*</span>
-                </Label>
-                <select
-                  id="businessPremisesStatus"
-                  name="businessPremisesStatus"
-                  value={formData.businessPremisesStatus as string}
-                  onChange={handleChange}
-                  className={`mt-2 block w-full rounded-md border bg-transparent px-3 py-2 text-sm transition-all duration-200 ${
-                    errors.businessPremisesStatus ? "border-destructive" : ""
-                  }`}
-                >
-                  <option value="">Select</option>
-                  <option value="Owned">Owned</option>
-                  <option value="Rented">Rented</option>
-                </select>
-                {errors.businessPremisesStatus && (
-                  <p className="text-xs text-destructive animate-fade-in">{errors.businessPremisesStatus}</p>
-                )}
-              </div>
-            </div>
-
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="space-y-2">
-                <Label htmlFor="yearsAtCurrentResidentialAddress" className="text-sm font-medium">
-                  Years at Current Residential Address <span className="text-destructive">*</span>
-                </Label>
-                <Input
-                  id="yearsAtCurrentResidentialAddress"
-                  name="yearsAtCurrentResidentialAddress"
-                  type="number"
-                  min={0}
-                  max={99}
-                  value={formData.yearsAtCurrentResidentialAddress as string}
-                  onChange={handleChange}
-                  onFocus={() => setFocusedField("yearsAtCurrentResidentialAddress")}
-                  onBlur={() => setFocusedField(null)}
-                  className={`transition-all duration-300 ${
-                    focusedField === "yearsAtCurrentResidentialAddress" ? "ring-2 ring-primary shadow-glow-primary" : ""
-                  } ${errors.yearsAtCurrentResidentialAddress ? "border-destructive animate-shake" : ""}`}
-                  placeholder="e.g., 3"
-                />
-                {errors.yearsAtCurrentResidentialAddress && (
-                  <p className="text-xs text-destructive animate-fade-in">{errors.yearsAtCurrentResidentialAddress}</p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="yearsAtCurrentBusinessAddress" className="text-sm font-medium">
-                  Years at Current Business Address <span className="text-destructive">*</span>
-                </Label>
-                <Input
-                  id="yearsAtCurrentBusinessAddress"
-                  name="yearsAtCurrentBusinessAddress"
-                  type="number"
-                  min={0}
-                  max={99}
-                  value={formData.yearsAtCurrentBusinessAddress as string}
-                  onChange={handleChange}
-                  onFocus={() => setFocusedField("yearsAtCurrentBusinessAddress")}
-                  onBlur={() => setFocusedField(null)}
-                  className={`transition-all duration-300 ${
-                    focusedField === "yearsAtCurrentBusinessAddress" ? "ring-2 ring-primary shadow-glow-primary" : ""
-                  } ${errors.yearsAtCurrentBusinessAddress ? "border-destructive animate-shake" : ""}`}
-                  placeholder="e.g., 5"
-                />
-                {errors.yearsAtCurrentBusinessAddress && (
-                  <p className="text-xs text-destructive animate-fade-in">{errors.yearsAtCurrentBusinessAddress}</p>
-                )}
-              </div>
-            </div>
-          </fieldset>
-
-          <fieldset className="space-y-4">
-            <legend className="flex items-center gap-2 text-lg font-bold text-foreground mb-4">
-              <Mail className="h-5 w-5 text-primary" />
-              Email Information
-            </legend>
-
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="space-y-2">
-                <Label htmlFor="businessEmail" className="text-sm font-medium">
-                  Business Email
-                </Label>
-                <Input
-                  id="businessEmail"
-                  name="businessEmail"
-                  type="email"
-                  value={formData.businessEmail}
-                  onChange={handleChange}
-                  onFocus={() => setFocusedField("businessEmail")}
-                  onBlur={() => setFocusedField(null)}
-                  className={`transition-all duration-300 ${
-                    focusedField === "businessEmail" ? "ring-2 ring-primary shadow-glow-primary" : ""
-                  } ${errors.businessEmail ? "border-destructive animate-shake" : ""}`}
-                  placeholder="john@company.com"
-                />
-                {errors.businessEmail && (
-                  <p className="text-xs text-destructive animate-fade-in">{errors.businessEmail}</p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="personalEmail" className="text-sm font-medium">
-                  Personal Email <span className="text-destructive">*</span>
-                </Label>
-                <Input
-                  id="personalEmail"
-                  name="personalEmail"
-                  type="email"
-                  value={formData.personalEmail}
-                  onChange={handleChange}
-                  onFocus={() => setFocusedField("personalEmail")}
-                  onBlur={() => setFocusedField(null)}
-                  className={`transition-all duration-300 ${
-                    focusedField === "personalEmail" ? "ring-2 ring-primary shadow-glow-primary" : ""
-                  } ${errors.personalEmail ? "border-destructive animate-shake" : ""}`}
-                  placeholder="john.doe@gmail.com"
-                />
-                {errors.personalEmail && (
-                  <p className="text-xs text-destructive animate-fade-in">{errors.personalEmail}</p>
-                )}
-              </div>
-            </div>
-          </fieldset>
-
-          <fieldset className="space-y-4">
-            <legend className="flex items-center gap-2 text-lg font-bold text-foreground mb-4">
-              <MapPin className="h-5 w-5 text-primary" />
-              Address Details
-            </legend>
-
-            <div className="space-y-4">
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
-                  <Label htmlFor="currentResidentialAddress" className="text-sm font-medium">
-                    Current Residential Address <span className="text-destructive">*</span>
+                  <Label htmlFor="firstName" className="text-sm font-medium">
+                    First Name <span className="text-destructive">*</span>
                   </Label>
                   <Input
-                    id="currentResidentialAddress"
-                    name="currentResidentialAddress"
-                    value={formData.currentResidentialAddress}
-                    onChange={handleChange}
-                    onFocus={() => setFocusedField("currentResidentialAddress")}
+                    id="firstName"
+                    {...register("firstName", {
+                      required: "This field is required",
+                      validate: (v) => validateField("firstName", String(v || "")) || true,
+                    })}
+                    onFocus={() => setFocusedField("firstName")}
                     onBlur={() => setFocusedField(null)}
-                    className={`transition-all duration-300 ${
-                      focusedField === "currentResidentialAddress" ? "ring-2 ring-primary shadow-glow-primary" : ""
-                    } ${errors.currentResidentialAddress ? "border-destructive animate-shake" : ""}`}
-                    placeholder="House No, Street, Area, City, State"
+                    className={`transition-all duration-300 ${focusedField === "firstName" ? "ring-2 ring-primary shadow-glow-primary" : ""
+                      } ${errors.firstName ? "border-destructive animate-shake" : ""}`}
+                    placeholder="John"
                   />
-                  {errors.currentResidentialAddress && (
-                    <p className="text-xs text-destructive animate-fade-in">{errors.currentResidentialAddress}</p>
+                  {errors.firstName && (
+                    <p className="text-xs text-destructive animate-fade-in">{String(errors.firstName.message || "")}</p>
                   )}
                 </div>
 
-                <div className="w-full sm:w-1/3">
-                  <Label htmlFor="currentResidentialPincode" className="text-sm font-medium">
-                    Current Residential Address PIN Code <span className="text-destructive">*</span>
+                <div className="space-y-2">
+                  <Label htmlFor="middleName" className="text-sm font-medium">
+                    Middle Name
                   </Label>
                   <Input
-                    id="currentResidentialPincode"
-                    name="currentResidentialPincode"
-                    maxLength={6}
-                    value={formData.currentResidentialPincode}
-                    onChange={handleChange}
-                    onFocus={() => setFocusedField("currentResidentialPincode")}
+                    id="middleName"
+                    {...register("middleName")}
+                    onFocus={() => setFocusedField("middleName")}
                     onBlur={() => setFocusedField(null)}
-                    className={`mt-2 transition-all duration-300 ${
-                      focusedField === "currentResidentialPincode" ? "ring-2 ring-primary shadow-glow-primary" : ""
-                    } ${errors.currentResidentialPincode ? "border-destructive animate-shake" : ""}`}
-                    placeholder="400001"
+                    className={`transition-all duration-300 ${focusedField === "middleName" ? "ring-2 ring-primary shadow-glow-primary" : ""
+                      } ${errors.middleName ? "border-destructive animate-shake" : ""}`}
+                    placeholder="Optional"
                   />
-                  {errors.currentResidentialPincode && (
-                    <p className="text-xs text-destructive animate-fade-in">{errors.currentResidentialPincode}</p>
+                  {errors.middleName && (
+                    <p className="text-xs text-destructive animate-fade-in">{String(errors.middleName.message || "")}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="lastName" className="text-sm font-medium">
+                    Last Name <span className="text-destructive">*</span>
+                  </Label>
+                  <Input
+                    id="lastName"
+                    {...register("lastName", {
+                      required: "This field is required",
+                      validate: (v) => validateField("lastName", String(v || "")) || true,
+                    })}
+                    onFocus={() => setFocusedField("lastName")}
+                    onBlur={() => setFocusedField(null)}
+                    className={`transition-all duration-300 ${focusedField === "lastName" ? "ring-2 ring-primary shadow-glow-primary" : ""
+                      } ${errors.lastName ? "border-destructive animate-shake" : ""}`}
+                    placeholder="Doe"
+                  />
+                  {errors.lastName && (
+                    <p className="text-xs text-destructive animate-fade-in">{String(errors.lastName.message || "")}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="mobileNumber" className="text-sm font-medium">
+                    Mobile Number <span className="text-destructive">*</span>
+                  </Label>
+                  <Input
+                    id="mobileNumber"
+                    type="tel"
+                    maxLength={10}
+                    {...register("mobileNumber", {
+                      required: "This field is required",
+                      validate: (v) => validateField("mobileNumber", String(v || "")) || true,
+                    })}
+                    onFocus={() => setFocusedField("mobileNumber")}
+                    onBlur={() => setFocusedField(null)}
+                    className={`transition-all duration-300 ${focusedField === "mobileNumber" ? "ring-2 ring-primary shadow-glow-primary" : ""
+                      } ${errors.mobileNumber ? "border-destructive animate-shake" : ""}`}
+                    placeholder="9876543210"
+                  />
+                  {errors.mobileNumber && (
+                    <p className="text-xs text-destructive animate-fade-in">{String(errors.mobileNumber.message || "")}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="alternateMobile" className="text-sm font-medium">
+                    Alternate Mobile
+                  </Label>
+                  <Input
+                    id="alternateMobile"
+                    type="tel"
+                    maxLength={10}
+                    {...register("alternateMobile", {
+                      validate: (v) => validateField("alternateMobile", String(v || "")) || true,
+                    })}
+                    onFocus={() => setFocusedField("alternateMobile")}
+                    onBlur={() => setFocusedField(null)}
+                    className={`transition-all duration-300 ${focusedField === "alternateMobile" ? "ring-2 ring-primary shadow-glow-primary" : ""
+                      } ${errors.alternateMobile ? "border-destructive animate-shake" : ""}`}
+                    placeholder="Optional"
+                  />
+                  {errors.alternateMobile && (
+                    <p className="text-xs text-destructive animate-fade-in">{String(errors.alternateMobile.message || "")}</p>
+                  )}
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset className="space-y-4">
+              <legend className="flex items-center gap-2 text-lg font-bold text-foreground mb-4">
+                <CreditCard className="h-5 w-5 text-primary" />
+                Loan & Tenure Details
+              </legend>
+
+              <div className="grid gap-4 sm:grid-cols-3">
+                <div className="space-y-2">
+                  <Label htmlFor="requiredLoanAmount" className="text-sm font-medium">
+                    Required Loan Amount <span className="text-destructive">*</span>
+                  </Label>
+                  <Input
+                    id="requiredLoanAmount"
+                    type="number"
+                    min={0}
+                    {...register("requiredLoanAmount", {
+                      required: "This field is required",
+                      validate: (v) => validateField("requiredLoanAmount", String(v || "")) || true,
+                    })}
+                    onFocus={() => setFocusedField("requiredLoanAmount")}
+                    onBlur={() => setFocusedField(null)}
+                    className={`transition-all duration-300 ${focusedField === "requiredLoanAmount" ? "ring-2 ring-primary shadow-glow-primary" : ""
+                      } ${errors.requiredLoanAmount ? "border-destructive animate-shake" : ""}`}
+                    placeholder="e.g., 500000"
+                  />
+                  {errors.requiredLoanAmount && (
+                    <p className="text-xs text-destructive animate-fade-in">{String(errors.requiredLoanAmount.message || "")}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="residentialStatus" className="text-sm font-medium">
+                    Residential Status <span className="text-destructive">*</span>
+                  </Label>
+                  <select
+                    id="residentialStatus"
+                    {...register("residentialStatus", { required: "This field is required" })}
+                    className={`mt-2 block w-full rounded-md border bg-transparent px-3 py-2 text-sm transition-all duration-200 ${errors.residentialStatus ? "border-destructive" : ""
+                      }`}
+                  >
+                    <option value="">Select</option>
+                    <option value="Owned">Owned</option>
+                    <option value="Rented">Rented</option>
+                  </select>
+                  {errors.residentialStatus && (
+                    <p className="text-xs text-destructive animate-fade-in">{String(errors.residentialStatus.message || "")}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="businessPremisesStatus" className="text-sm font-medium">
+                    Business Premises Status <span className="text-destructive">*</span>
+                  </Label>
+                  <select
+                    id="businessPremisesStatus"
+                    {...register("businessPremisesStatus", { required: "This field is required" })}
+                    className={`mt-2 block w-full rounded-md border bg-transparent px-3 py-2 text-sm transition-all duration-200 ${errors.businessPremisesStatus ? "border-destructive" : ""
+                      }`}
+                  >
+                    <option value="">Select</option>
+                    <option value="Owned">Owned</option>
+                    <option value="Rented">Rented</option>
+                  </select>
+                  {errors.businessPremisesStatus && (
+                    <p className="text-xs text-destructive animate-fade-in">{String(errors.businessPremisesStatus.message || "")}</p>
                   )}
                 </div>
               </div>
 
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
-                  <Label htmlFor="currentOfficeAddress" className="text-sm font-medium">
-                    Current Office / Shop Address <span className="text-destructive">*</span>
+                  <Label htmlFor="yearsAtCurrentResidentialAddress" className="text-sm font-medium">
+                    Years at Current Residential Address <span className="text-destructive">*</span>
                   </Label>
                   <Input
-                    id="currentOfficeAddress"
-                    name="currentOfficeAddress"
-                    value={formData.currentOfficeAddress}
-                    onChange={handleChange}
-                    onFocus={() => setFocusedField("currentOfficeAddress")}
+                    id="yearsAtCurrentResidentialAddress"
+                    type="number"
+                    min={0}
+                    max={99}
+                    {...register("yearsAtCurrentResidentialAddress", {
+                      required: "This field is required",
+                      validate: (v) => validateField("yearsAtCurrentResidentialAddress", String(v || "")) || true,
+                    })}
+                    onFocus={() => setFocusedField("yearsAtCurrentResidentialAddress")}
                     onBlur={() => setFocusedField(null)}
-                    className={`transition-all duration-300 ${
-                      focusedField === "currentOfficeAddress" ? "ring-2 ring-primary shadow-glow-primary" : ""
-                    } ${errors.currentOfficeAddress ? "border-destructive animate-shake" : ""}`}
-                    placeholder="Office/Shop, Street, Area, City, State"
+                    className={`transition-all duration-300 ${focusedField === "yearsAtCurrentResidentialAddress" ? "ring-2 ring-primary shadow-glow-primary" : ""
+                      } ${errors.yearsAtCurrentResidentialAddress ? "border-destructive animate-shake" : ""}`}
+                    placeholder="e.g., 3"
                   />
-                  {errors.currentOfficeAddress && (
-                    <p className="text-xs text-destructive animate-fade-in">{errors.currentOfficeAddress}</p>
+                  {errors.yearsAtCurrentResidentialAddress && (
+                    <p className="text-xs text-destructive animate-fade-in">{String(errors.yearsAtCurrentResidentialAddress.message || "")}</p>
                   )}
                 </div>
 
-                <div className="w-full sm:w-1/3">
-                  <Label htmlFor="currentOfficePincode" className="text-sm font-medium">
-                    Current Office / Shop Address PIN Code <span className="text-destructive">*</span>
+                <div className="space-y-2">
+                  <Label htmlFor="yearsAtCurrentBusinessAddress" className="text-sm font-medium">
+                    Years at Current Business Address <span className="text-destructive">*</span>
                   </Label>
                   <Input
-                    id="currentOfficePincode"
-                    name="currentOfficePincode"
-                    maxLength={6}
-                    value={formData.currentOfficePincode}
-                    onChange={handleChange}
-                    onFocus={() => setFocusedField("currentOfficePincode")}
+                    id="yearsAtCurrentBusinessAddress"
+                    type="number"
+                    min={0}
+                    max={99}
+                    {...register("yearsAtCurrentBusinessAddress", {
+                      required: "This field is required",
+                      validate: (v) => validateField("yearsAtCurrentBusinessAddress", String(v || "")) || true,
+                    })}
+                    onFocus={() => setFocusedField("yearsAtCurrentBusinessAddress")}
                     onBlur={() => setFocusedField(null)}
-                    className={`mt-2 transition-all duration-300 ${
-                      focusedField === "currentOfficePincode" ? "ring-2 ring-primary shadow-glow-primary" : ""
-                    } ${errors.currentOfficePincode ? "border-destructive animate-shake" : ""}`}
-                    placeholder="400001"
+                    className={`transition-all duration-300 ${focusedField === "yearsAtCurrentBusinessAddress" ? "ring-2 ring-primary shadow-glow-primary" : ""
+                      } ${errors.yearsAtCurrentBusinessAddress ? "border-destructive animate-shake" : ""}`}
+                    placeholder="e.g., 5"
                   />
-                  {errors.currentOfficePincode && (
-                    <p className="text-xs text-destructive animate-fade-in">{errors.currentOfficePincode}</p>
+                  {errors.yearsAtCurrentBusinessAddress && (
+                    <p className="text-xs text-destructive animate-fade-in">{String(errors.yearsAtCurrentBusinessAddress.message || "")}</p>
                   )}
                 </div>
               </div>
-            </div>
-          </fieldset>
+            </fieldset>
 
-          <fieldset className="space-y-4">
-            <legend className="flex items-center gap-2 text-lg font-bold text-foreground mb-4">
-              <CreditCard className="h-5 w-5 text-primary" />
-              Identity Details
-            </legend>
+            <fieldset className="space-y-4">
+              <legend className="flex items-center gap-2 text-lg font-bold text-foreground mb-4">
+                <Mail className="h-5 w-5 text-primary" />
+                Email Information
+              </legend>
 
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="space-y-2">
-                <Label htmlFor="aadhaarNumber" className="text-sm font-medium">
-                  Aadhaar Number <span className="text-destructive">*</span>
-                </Label>
-                <Input
-                  id="aadhaarNumber"
-                  name="aadhaarNumber"
-                  maxLength={12}
-                  value={formData.aadhaarNumber}
-                  onChange={handleChange}
-                  onFocus={() => setFocusedField("aadhaarNumber")}
-                  onBlur={() => setFocusedField(null)}
-                  className={`transition-all duration-300 ${
-                    focusedField === "aadhaarNumber" ? "ring-2 ring-primary shadow-glow-primary" : ""
-                  } ${errors.aadhaarNumber ? "border-destructive animate-shake" : ""}`}
-                  placeholder="1234 5678 9012"
-                />
-                {errors.aadhaarNumber && (
-                  <p className="text-xs text-destructive animate-fade-in">{errors.aadhaarNumber}</p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="panNumber" className="text-sm font-medium">
-                  PAN Card Number <span className="text-destructive">*</span>
-                </Label>
-                <Input
-                  id="panNumber"
-                  name="panNumber"
-                  maxLength={10}
-                  value={formData.panNumber}
-                  onChange={handleChange}
-                  onFocus={() => setFocusedField("panNumber")}
-                  onBlur={() => setFocusedField(null)}
-                  className={`uppercase transition-all duration-300 ${
-                    focusedField === "panNumber" ? "ring-2 ring-primary shadow-glow-primary" : ""
-                  } ${errors.panNumber ? "border-destructive animate-shake" : ""}`}
-                  placeholder="ABCDE1234F"
-                />
-                {errors.panNumber && <p className="text-xs text-destructive animate-fade-in">{errors.panNumber}</p>}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="voterIdNumber" className="text-sm font-medium">
-                  Voter ID Number
-                </Label>
-                <Input
-                  id="voterIdNumber"
-                  name="voterIdNumber"
-                  value={formData.voterIdNumber}
-                  onChange={handleChange}
-                  onFocus={() => setFocusedField("voterIdNumber")}
-                  onBlur={() => setFocusedField(null)}
-                  className={`transition-all duration-300 ${
-                    focusedField === "voterIdNumber" ? "ring-2 ring-primary shadow-glow-primary" : ""
-                  }`}
-                  placeholder="Optional"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="drivingLicense" className="text-sm font-medium">
-                  Driving License Number
-                </Label>
-                <Input
-                  id="drivingLicense"
-                  name="drivingLicense"
-                  value={formData.drivingLicense}
-                  onChange={handleChange}
-                  onFocus={() => setFocusedField("drivingLicense")}
-                  onBlur={() => setFocusedField(null)}
-                  className={`transition-all duration-300 ${
-                    focusedField === "drivingLicense" ? "ring-2 ring-primary shadow-glow-primary" : ""
-                  }`}
-                  placeholder="Optional"
-                />
-              </div>
-
-              <div className="space-y-2 sm:col-span-2 sm:w-1/2">
-                <Label htmlFor="passportNumber" className="text-sm font-medium">
-                  Passport Number
-                </Label>
-                <Input
-                  id="passportNumber"
-                  name="passportNumber"
-                  value={formData.passportNumber}
-                  onChange={handleChange}
-                  onFocus={() => setFocusedField("passportNumber")}
-                  onBlur={() => setFocusedField(null)}
-                  className={`transition-all duration-300 ${
-                    focusedField === "passportNumber" ? "ring-2 ring-primary shadow-glow-primary" : ""
-                  }`}
-                  placeholder="Optional"
-                />
-              </div>
-            </div>
-          </fieldset>
-
-          <fieldset className="space-y-4">
-            <legend className="flex items-center gap-2 text-lg font-bold text-foreground mb-4">
-              <FileCheck className="h-5 w-5 text-primary" />
-              Document Uploads
-            </legend>
-
-            <div className="grid gap-4 sm:grid-cols-3">
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Aadhaar Front <span className="text-destructive">*</span></Label>
-                <label className="flex flex-col items-center justify-center h-24 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary/5 group">
-                  <Upload className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors" />
-                  <span className="mt-1 text-xs text-muted-foreground group-hover:text-primary">
-                    {aadhaarFront ? `${aadhaarFront.name.slice(0, 15)}...` : "Upload"}
-                  </span>
-                  <input
-                    type="file"
-                    accept="image/*,.pdf"
-                    className="hidden"
-                    onChange={(e) => handleFileChange(e, setAadhaarFront)}
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor="businessEmail" className="text-sm font-medium">
+                    Business Email
+                  </Label>
+                  <Input
+                    id="businessEmail"
+                    type="email"
+                    {...register("businessEmail", {
+                      validate: (v) => validateField("businessEmail", String(v || "")) || true,
+                    })}
+                    onFocus={() => setFocusedField("businessEmail")}
+                    onBlur={() => setFocusedField(null)}
+                    className={`transition-all duration-300 ${focusedField === "businessEmail" ? "ring-2 ring-primary shadow-glow-primary" : ""
+                      } ${errors.businessEmail ? "border-destructive animate-shake" : ""}`}
+                    placeholder="john@company.com"
                   />
-                </label>
-              </div>
+                  {errors.businessEmail && (
+                    <p className="text-xs text-destructive animate-fade-in">{String(errors.businessEmail.message || "")}</p>
+                  )}
+                </div>
 
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Aadhaar Back <span className="text-destructive">*</span></Label>
-                <label className="flex flex-col items-center justify-center h-24 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary/5 group">
-                  <Upload className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors" />
-                  <span className="mt-1 text-xs text-muted-foreground group-hover:text-primary">
-                    {aadhaarBack ? `${aadhaarBack.name.slice(0, 15)}...` : "Upload"}
-                  </span>
-                  <input
-                    type="file"
-                    accept="image/*,.pdf"
-                    className="hidden"
-                    onChange={(e) => handleFileChange(e, setAadhaarBack)}
+                <div className="space-y-2">
+                  <Label htmlFor="personalEmail" className="text-sm font-medium">
+                    Personal Email <span className="text-destructive">*</span>
+                  </Label>
+                  <Input
+                    id="personalEmail"
+                    type="email"
+                    {...register("personalEmail", {
+                      required: "This field is required",
+                      validate: (v) => validateField("personalEmail", String(v || "")) || true,
+                    })}
+                    onFocus={() => setFocusedField("personalEmail")}
+                    onBlur={() => setFocusedField(null)}
+                    className={`transition-all duration-300 ${focusedField === "personalEmail" ? "ring-2 ring-primary shadow-glow-primary" : ""
+                      } ${errors.personalEmail ? "border-destructive animate-shake" : ""}`}
+                    placeholder="john.doe@gmail.com"
                   />
-                </label>
+                  {errors.personalEmail && (
+                    <p className="text-xs text-destructive animate-fade-in">{String(errors.personalEmail.message || "")}</p>
+                  )}
+                </div>
               </div>
+            </fieldset>
 
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">PAN Card Front <span className="text-destructive">*</span></Label>
-                <label className="flex flex-col items-center justify-center h-24 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary/5 group">
-                  <Upload className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors" />
-                  <span className="mt-1 text-xs text-muted-foreground group-hover:text-primary">
-                    {panFront ? `${panFront.name.slice(0, 15)}...` : "Upload"}
-                  </span>
-                  <input
-                    type="file"
-                    accept="image/*,.pdf"
-                    className="hidden"
-                    onChange={(e) => handleFileChange(e, setPanFront)}
-                  />
-                </label>
-              </div>
+            <fieldset className="space-y-4">
+              <legend className="flex items-center gap-2 text-lg font-bold text-foreground mb-4">
+                <MapPin className="h-5 w-5 text-primary" />
+                Address Details
+              </legend>
 
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Latest Residential Electricity Bill <span className="text-destructive">*</span></Label>
-                <label className="flex flex-col items-center justify-center h-24 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary/5 group">
-                  <Upload className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors" />
-                  <span className="mt-1 text-xs text-muted-foreground group-hover:text-primary">
-                    {residentialBill ? `${residentialBill.name.slice(0, 15)}...` : "Upload"}
-                  </span>
-                  <input
-                    type="file"
-                    accept="image/*,.pdf"
-                    className="hidden"
-                    onChange={(e) => handleFileChange(e, setResidentialBill)}
-                  />
-                </label>
-              </div>
+              <div className="space-y-4">
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label htmlFor="currentResidentialAddress" className="text-sm font-medium">
+                      Current Residential Address <span className="text-destructive">*</span>
+                    </Label>
+                    <Input
+                      id="currentResidentialAddress"
+                      {...register("currentResidentialAddress", { required: "This field is required" })}
+                      onFocus={() => setFocusedField("currentResidentialAddress")}
+                      onBlur={() => setFocusedField(null)}
+                      className={`transition-all duration-300 ${focusedField === "currentResidentialAddress" ? "ring-2 ring-primary shadow-glow-primary" : ""
+                        } ${errors.currentResidentialAddress ? "border-destructive animate-shake" : ""}`}
+                      placeholder="House No, Street, Area, City, State"
+                    />
+                    {errors.currentResidentialAddress && (
+                      <p className="text-xs text-destructive animate-fade-in">{String(errors.currentResidentialAddress.message || "")}</p>
+                    )}
+                  </div>
 
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Latest Shop/Office Electricity Bill <span className="text-destructive">*</span></Label>
-                <label className="flex flex-col items-center justify-center h-24 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary/5 group">
-                  <Upload className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors" />
-                  <span className="mt-1 text-xs text-muted-foreground group-hover:text-primary">
-                    {shopBill ? `${shopBill.name.slice(0, 15)}...` : "Upload"}
-                  </span>
-                  <input
-                    type="file"
-                    accept="image/*,.pdf"
-                    className="hidden"
-                    onChange={(e) => handleFileChange(e, setShopBill)}
-                  />
-                </label>
+                  <div className="w-full sm:w-1/3">
+                    <Label htmlFor="currentResidentialPincode" className="text-sm font-medium">
+                      Current Residential Address PIN Code <span className="text-destructive">*</span>
+                    </Label>
+                    <Input
+                      id="currentResidentialPincode"
+                      maxLength={6}
+                      {...register("currentResidentialPincode", {
+                        required: "This field is required",
+                        validate: (v) => validateField("currentResidentialPincode", String(v || "")) || true,
+                      })}
+                      onFocus={() => setFocusedField("currentResidentialPincode")}
+                      onBlur={() => setFocusedField(null)}
+                      className={`mt-2 transition-all duration-300 ${focusedField === "currentResidentialPincode" ? "ring-2 ring-primary shadow-glow-primary" : ""
+                        } ${errors.currentResidentialPincode ? "border-destructive animate-shake" : ""}`}
+                      placeholder="400001"
+                    />
+                    {errors.currentResidentialPincode && (
+                      <p className="text-xs text-destructive animate-fade-in">{String(errors.currentResidentialPincode.message || "")}</p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label htmlFor="currentOfficeAddress" className="text-sm font-medium">
+                      Current Office / Shop Address <span className="text-destructive">*</span>
+                    </Label>
+                    <Input
+                      id="currentOfficeAddress"
+                      {...register("currentOfficeAddress", { required: "This field is required" })}
+                      onFocus={() => setFocusedField("currentOfficeAddress")}
+                      onBlur={() => setFocusedField(null)}
+                      className={`transition-all duration-300 ${focusedField === "currentOfficeAddress" ? "ring-2 ring-primary shadow-glow-primary" : ""
+                        } ${errors.currentOfficeAddress ? "border-destructive animate-shake" : ""}`}
+                      placeholder="Office/Shop, Street, Area, City, State"
+                    />
+                    {errors.currentOfficeAddress && (
+                      <p className="text-xs text-destructive animate-fade-in">{String(errors.currentOfficeAddress.message || "")}</p>
+                    )}
+                  </div>
+
+                  <div className="w-full sm:w-1/3">
+                    <Label htmlFor="currentOfficePincode" className="text-sm font-medium">
+                      Current Office / Shop Address PIN Code <span className="text-destructive">*</span>
+                    </Label>
+                    <Input
+                      id="currentOfficePincode"
+                      maxLength={6}
+                      {...register("currentOfficePincode", {
+                        required: "This field is required",
+                        validate: (v) => validateField("currentOfficePincode", String(v || "")) || true,
+                      })}
+                      onFocus={() => setFocusedField("currentOfficePincode")}
+                      onBlur={() => setFocusedField(null)}
+                      className={`mt-2 transition-all duration-300 ${focusedField === "currentOfficePincode" ? "ring-2 ring-primary shadow-glow-primary" : ""
+                        } ${errors.currentOfficePincode ? "border-destructive animate-shake" : ""}`}
+                      placeholder="400001"
+                    />
+                    {errors.currentOfficePincode && (
+                      <p className="text-xs text-destructive animate-fade-in">{String(errors.currentOfficePincode.message || "")}</p>
+                    )}
+                  </div>
+                </div>
               </div>
-            </div>
-          </fieldset>
+            </fieldset>
+
+            <fieldset className="space-y-4">
+              <legend className="flex items-center gap-2 text-lg font-bold text-foreground mb-4">
+                <CreditCard className="h-5 w-5 text-primary" />
+                Identity Details
+              </legend>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor="aadhaarNumber" className="text-sm font-medium">
+                    Aadhaar Number <span className="text-destructive">*</span>
+                  </Label>
+                  <Input
+                    id="aadhaarNumber"
+                    maxLength={12}
+                    {...register("aadhaarNumber", {
+                      required: "This field is required",
+                      validate: (v) => validateField("aadhaarNumber", String(v || "")) || true,
+                    })}
+                    onFocus={() => setFocusedField("aadhaarNumber")}
+                    onBlur={() => setFocusedField(null)}
+                    className={`transition-all duration-300 ${focusedField === "aadhaarNumber" ? "ring-2 ring-primary shadow-glow-primary" : ""
+                      } ${errors.aadhaarNumber ? "border-destructive animate-shake" : ""}`}
+                    placeholder="1234 5678 9012"
+                  />
+                  {errors.aadhaarNumber && (
+                    <p className="text-xs text-destructive animate-fade-in">{String(errors.aadhaarNumber.message || "")}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="panNumber" className="text-sm font-medium">
+                    PAN Card Number <span className="text-destructive">*</span>
+                  </Label>
+                  <Input
+                    id="panNumber"
+                    maxLength={10}
+                    {...register("panNumber", {
+                      required: "This field is required",
+                      setValueAs: (v) => String(v || "").toUpperCase(),
+                      validate: (v) => validateField("panNumber", String(v || "")) || true,
+                    })}
+                    onFocus={() => setFocusedField("panNumber")}
+                    onBlur={() => setFocusedField(null)}
+                    className={`uppercase transition-all duration-300 ${focusedField === "panNumber" ? "ring-2 ring-primary shadow-glow-primary" : ""
+                      } ${errors.panNumber ? "border-destructive animate-shake" : ""}`}
+                    placeholder="ABCDE1234F"
+                  />
+                  {errors.panNumber && (
+                    <p className="text-xs text-destructive animate-fade-in">{String(errors.panNumber.message || "")}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="voterIdNumber" className="text-sm font-medium">
+                    Voter ID Number
+                  </Label>
+                  <Input
+                    id="voterIdNumber"
+                    {...register("voterIdNumber")}
+                    onFocus={() => setFocusedField("voterIdNumber")}
+                    onBlur={() => setFocusedField(null)}
+                    className={`transition-all duration-300 ${focusedField === "voterIdNumber" ? "ring-2 ring-primary shadow-glow-primary" : ""
+                      }`}
+                    placeholder="Optional"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="drivingLicense" className="text-sm font-medium">
+                    Driving License Number
+                  </Label>
+                  <Input
+                    id="drivingLicense"
+                    {...register("drivingLicense")}
+                    onFocus={() => setFocusedField("drivingLicense")}
+                    onBlur={() => setFocusedField(null)}
+                    className={`transition-all duration-300 ${focusedField === "drivingLicense" ? "ring-2 ring-primary shadow-glow-primary" : ""
+                      }`}
+                    placeholder="Optional"
+                  />
+                </div>
+
+                <div className="space-y-2 sm:col-span-2 sm:w-1/2">
+                  <Label htmlFor="passportNumber" className="text-sm font-medium">
+                    Passport Number
+                  </Label>
+                  <Input
+                    id="passportNumber"
+                    {...register("passportNumber")}
+                    onFocus={() => setFocusedField("passportNumber")}
+                    onBlur={() => setFocusedField(null)}
+                    className={`transition-all duration-300 ${focusedField === "passportNumber" ? "ring-2 ring-primary shadow-glow-primary" : ""
+                      }`}
+                    placeholder="Optional"
+                  />
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset className="space-y-4">
+              <legend className="flex items-center gap-2 text-lg font-bold text-foreground mb-4">
+                <FileCheck className="h-5 w-5 text-primary" />
+                Document Uploads
+              </legend>
+
+              <div className="grid gap-4 sm:grid-cols-3">
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Aadhaar Front <span className="text-destructive">*</span></Label>
+                  <label className="flex flex-col items-center justify-center h-24 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary/5 group">
+                    <Upload className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors" />
+                    <span className="mt-1 text-xs text-muted-foreground group-hover:text-primary">
+                      {aadhaarFront ? `${aadhaarFront.name.slice(0, 15)}...` : "Upload"}
+                    </span>
+                    <input
+                      type="file"
+                      accept="image/*,.pdf"
+                      className="hidden"
+                      onChange={(e) => handleFileChange(e, setAadhaarFront)}
+                    />
+                  </label>
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Aadhaar Back <span className="text-destructive">*</span></Label>
+                  <label className="flex flex-col items-center justify-center h-24 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary/5 group">
+                    <Upload className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors" />
+                    <span className="mt-1 text-xs text-muted-foreground group-hover:text-primary">
+                      {aadhaarBack ? `${aadhaarBack.name.slice(0, 15)}...` : "Upload"}
+                    </span>
+                    <input
+                      type="file"
+                      accept="image/*,.pdf"
+                      className="hidden"
+                      onChange={(e) => handleFileChange(e, setAadhaarBack)}
+                    />
+                  </label>
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">PAN Card Front <span className="text-destructive">*</span></Label>
+                  <label className="flex flex-col items-center justify-center h-24 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary/5 group">
+                    <Upload className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors" />
+                    <span className="mt-1 text-xs text-muted-foreground group-hover:text-primary">
+                      {panFront ? `${panFront.name.slice(0, 15)}...` : "Upload"}
+                    </span>
+                    <input
+                      type="file"
+                      accept="image/*,.pdf"
+                      className="hidden"
+                      onChange={(e) => handleFileChange(e, setPanFront)}
+                    />
+                  </label>
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Latest Residential Electricity Bill <span className="text-destructive">*</span></Label>
+                  <label className="flex flex-col items-center justify-center h-24 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary/5 group">
+                    <Upload className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors" />
+                    <span className="mt-1 text-xs text-muted-foreground group-hover:text-primary">
+                      {residentialBill ? `${residentialBill.name.slice(0, 15)}...` : "Upload"}
+                    </span>
+                    <input
+                      type="file"
+                      accept="image/*,.pdf"
+                      className="hidden"
+                      onChange={(e) => handleFileChange(e, setResidentialBill)}
+                    />
+                  </label>
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Latest Shop/Office Electricity Bill <span className="text-destructive">*</span></Label>
+                  <label className="flex flex-col items-center justify-center h-24 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary/5 group">
+                    <Upload className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors" />
+                    <span className="mt-1 text-xs text-muted-foreground group-hover:text-primary">
+                      {shopBill ? `${shopBill.name.slice(0, 15)}...` : "Upload"}
+                    </span>
+                    <input
+                      type="file"
+                      accept="image/*,.pdf"
+                      className="hidden"
+                      onChange={(e) => handleFileChange(e, setShopBill)}
+                    />
+                  </label>
+                </div>
+              </div>
+            </fieldset>
           </>}
         </form>
 
@@ -1652,7 +1709,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
             <Button type="button" variant="outline" onClick={onClose} className="flex-1">
               Cancel
             </Button>
-            <Button type="submit" variant="cta" disabled={isSubmitting} className="flex-1 animate-pulse-subtle">
+            <Button form="applyNowModalForm" type="submit" variant="cta" disabled={isSubmitting} className="flex-1 animate-pulse-subtle">
               {isSubmitting ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin" />
