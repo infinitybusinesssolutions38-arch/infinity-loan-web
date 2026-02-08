@@ -1869,9 +1869,9 @@ export default function ServicesHubClient() {
                           <Image
                             src={getCardImageSrc({ service, fallbackCategory: activeCategory })}
                             alt={service.title}
-                            fill
+                            fill={true}
                             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                            className="object-cover opacity-80 transition-transform duration-500 group-hover:scale-105"
+                            className="object-cover object-[30%_23%] opacity-80 transition-transform duration-500 group-hover:scale-105"
                           />
                           <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
                         </div>
@@ -1933,7 +1933,7 @@ export default function ServicesHubClient() {
                       alt={service.title}
                       fill
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                      className="object-cover opacity-80 transition-transform duration-500 group-hover:scale-105"
+                      className="object-cover object-[50%_15%] opacity-80 transition-transform duration-500 group-hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
                   </div>
