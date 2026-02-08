@@ -7,6 +7,9 @@ import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Minus, Mail, Phone, MapPin, Send, CheckCircle2 } from "lucide-react";
 import PrivateInstitutionalHighlight from "@/app/components/PrivateInstitutionalHighlight";
+import PoorCibilHighlight from "@/app/components/PoorCibilHighlight";
+import EmiRestructuringHighlight from "@/app/components/Emirestructuringhighlight";
+import PropertyLoanHighlight from "@/app/components/Propertyloanhighlight";
 
 type FormData = {
     firstname: string;
@@ -132,6 +135,9 @@ const ContactPage = () => {
                 </div>
 
                 <PrivateInstitutionalHighlight />
+                <PoorCibilHighlight />
+                <EmiRestructuringHighlight />
+                <PropertyLoanHighlight />
 
                 <div className="grid lg:grid-cols-2 gap-12">
                     {/* LEFT SIDE - FAQ Section */}

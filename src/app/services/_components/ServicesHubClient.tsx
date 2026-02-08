@@ -30,6 +30,9 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import PrivateInstitutionalHighlight from "@/app/components/PrivateInstitutionalHighlight";
+import EmiRestructuringHighlight from "@/app/components/Emirestructuringhighlight";
+import PropertyLoanHighlight from "@/app/components/Propertyloanhighlight";
+import PoorCibilHighlight from "@/app/components/PoorCibilHighlight";
 
 type HubCategoryKey =
   | "salaried-employees"
@@ -70,6 +73,109 @@ const getCardImageSrc = (params: {
   service: ServiceCardItem;
   fallbackCategory: HubCategoryKey;
 }) => params.service.imageSrc ?? CATEGORY_FALLBACK_IMAGE[params.fallbackCategory];
+
+const SALARIED_TITLE_TO_FILE_NAME: Record<string, string> = {
+  "Personal Loan": "personal loan.png",
+  "Digital / Paperless Loan": "Digital  Paperless Loan.png",
+  "Open Plot / Plot Purchase Loan": "Open Plot  Plot Purchase Loan.png",
+  "Salary Advance / Short-Term Loan": "Salary Advance  Short-Term.png",
+  "Travel / Holiday Loan": "Travel  Holiday Loan.png",
+  "Used / Resale Car Loan": "Used  Resale Car Loan.png",
+};
+
+const getSalariedCardImageSrc = (title: string) => {
+  const fileName = SALARIED_TITLE_TO_FILE_NAME[title] ?? `${title.replace(" / ", "  ")}.png`;
+  return `/salaried/${encodeURIComponent(fileName)}`;
+};
+
+const BUSINESS_KEY_TO_FILE_NAME: Record<string, string> = {
+  "business-audience": "Enterprises _&_Corporates.png",
+  "business-working-capital-loan": "working_capital.png",
+  "business-cash-credit-cc-facility": "cash_credit.png",
+  "business-overdraft-od-facility": "overdraft_od.png",
+  "business-short-term-business-loan": "short_term.png",
+  "business-msme-business-loan": "msme.png",
+  "business-sme-term-loan": "sme.png",
+  "business-startup-business-loan": "startup_bussiness.png",
+  "business-proprietorship-business-loan": "Proprietorship.png",
+  "business-partnership-firm-loan": "partnership_ferm.png",
+  "business-unsecured-business-loan": "unsecured.png",
+  "business-collateral-free-business-loan": "collateral.png",
+  "business-loan-against-property-business-lap": "loan_against_property.png",
+  "business-machinery-equipment-loan": "machinary_equipment.png",
+  "business-commercial-vehicle-loan": "commercial_vechicle.png",
+  "business-industrial-term-loan": "industrial.png",
+  "business-manufacturing-unit-loan": "manufacturing.png",
+  "business-raw-material-procurement-loan": "raw_material.png",
+  "business-business-expansion-loan": "business_expansion.png",
+  "business-capacity-expansion-loan": "capacity_expansion.png",
+  "business-franchise-branch-expansion-loan": "franchise.png",
+  "business-trade-finance-loan": "trade_finance.png",
+  "business-invoice-bill-discounting": "invoice.png",
+  "business-import-finance-loan": "import_finance.png",
+  "business-export-finance-loan": "export_finance.png",
+  "business-corporate-term-loan": "Corporate_Term .png",
+  "business-project-finance": "project_finance.png",
+  "business-structured-corporate-finance": "structured_corporate.png",
+  "business-syndicated-loan": "Syndicated.png",
+  "business-bridge-finance-for-corporates": "bridge_finance.png",
+  "business-pre-approved-business-loan": "pre-apporved.png",
+  "business-digital-paperless-business-loan": "digital.png",
+};
+
+const getBusinessCardImageSrc = (key: string) => {
+  const fileName = BUSINESS_KEY_TO_FILE_NAME[key];
+  if (!fileName) return undefined;
+  return `/all-business/smart_loan_&_funding/${encodeURIComponent(fileName)}`;
+};
+
+const PROFESSIONAL_TITLE_TO_FILE_NAME: Record<string, string> = {
+  "Clinic / Office Purchase Loan": "Clinic & Office Purchase Loan.png",
+  "Clinic / Office Renovation Loan": "Clinic  Office Renovation Loan.png",
+  "Lawyer / Advocate Loan": "Lawyer  Advocate Loan.png",
+};
+
+const getProfessionalCardImageSrc = (title: string) => {
+  const folderName = "Smart Loan & Funding Solutions for All Professionals";
+  const fileName =
+    PROFESSIONAL_TITLE_TO_FILE_NAME[title] ?? `${title.replace(" / ", "  ")}.png`;
+  return `/all-prof/${encodeURIComponent(folderName)}/${encodeURIComponent(fileName)}`;
+};
+
+const GOVT_EMPLOYEE_TITLE_TO_FILE_NAME: Record<string, string> = {};
+
+const getGovtEmployeeCardImageSrc = (title: string) => {
+  const fileName = GOVT_EMPLOYEE_TITLE_TO_FILE_NAME[title] ?? `${title}.png`;
+  return `/government_emp/${encodeURIComponent(fileName)}`;
+};
+
+const GOVT_SCHEME_TITLE_TO_FILE_NAME: Record<string, string> = {
+  "SC / ST Category Business Loan": "SC _ ST Category Business Loan.png",
+};
+
+const getGovtSchemeCardImageSrc = (title: string) => {
+  const fileName = GOVT_SCHEME_TITLE_TO_FILE_NAME[title] ?? `${title}.png`;
+  return `/government_schemes/${encodeURIComponent(fileName)}`;
+};
+
+const BUILDER_DEVELOPER_TITLE_TO_FILE_NAME: Record<string, string> = {
+  "Project Restructuring / Takeover Loan": "Project Restructuring  Takeover Loan.png",
+};
+
+const getBuilderDeveloperCardImageSrc = (title: string) => {
+  const folderName = "Smart Loan & Project Funding Solutions for Builders & Developers";
+  const fileName = BUILDER_DEVELOPER_TITLE_TO_FILE_NAME[title] ?? `${title}.png`;
+  return `/developers/${encodeURIComponent(folderName)}/${encodeURIComponent(fileName)}`;
+};
+
+const CREDIT_CARD_TITLE_TO_FILE_NAME: Record<string, string> = {
+  "Credit Line / Flexi Loan": "Credit Line  Flexi Loan.png",
+};
+
+const getCreditCardImageSrc = (title: string) => {
+  const fileName = CREDIT_CARD_TITLE_TO_FILE_NAME[title] ?? `${title}.png`;
+  return `/cards/${encodeURIComponent(fileName)}`;
+};
 
 const slugify = (value: string) =>
   value
@@ -631,7 +737,7 @@ const SERVICES: Record<HubCategoryKey, ServiceCardItem[]> = {
       applyHref: "/apply-now?product=subscription-financing",
       infoHref: "/services/credit-cards",
     },
-  ],
+  ].map((item) => ({ ...item, imageSrc: getCreditCardImageSrc(item.title) })),
   "government-schemes": [
     {
       key: "pm-mudra",
@@ -783,7 +889,7 @@ const SALARIED_EMPLOYEE_LOAN_OFFERS: ServiceGroup = {
         "Tax-Saving Home Loan",
         "PMAY-Linked Home Loan (Eligible Salaried Employees)",
       ],
-    }),
+    }).map((item) => ({ ...item, imageSrc: getSalariedCardImageSrc(item.title) })),
   ],
 };
 
@@ -1016,7 +1122,7 @@ const BUSINESS_LOAN_SERVICES: ServiceGroup = {
       applyHref: "/apply-now?product=business-digital-paperless-business-loan",
       infoHref: "/business-loan",
     },
-  ],
+  ].map((item) => ({ ...item, imageSrc: getBusinessCardImageSrc(item.key) })),
 };
 
 const PROFESSIONAL_LOAN_SERVICES: ServiceGroup = {
@@ -1171,7 +1277,7 @@ const PROFESSIONAL_LOAN_SERVICES: ServiceGroup = {
       applyHref: "/apply-now?product=professional-tax-saving-loan-for-professionals",
       infoHref: "/personal-loan",
     },
-  ],
+  ].map((item) => ({ ...item, imageSrc: getProfessionalCardImageSrc(item.title) })),
 };
 
 const GOVT_EMPLOYEE_LOAN_SERVICES: ServiceGroup = {
@@ -1306,7 +1412,7 @@ const GOVT_EMPLOYEE_LOAN_SERVICES: ServiceGroup = {
       applyHref: "/apply-now?product=govt-employee-special-scheme-loan-for-govt-employees",
       infoHref: "/personal-loan",
     },
-  ],
+  ].map((item) => ({ ...item, imageSrc: getGovtEmployeeCardImageSrc(item.title) })),
 };
 
 const GOVT_SCHEME_SERVICES: ServiceGroup = {
@@ -1428,7 +1534,7 @@ const GOVT_SCHEME_SERVICES: ServiceGroup = {
       infoHref: "/services/government-schemes",
       badge: "Scheme",
     },
-  ],
+  ].map((item) => ({ ...item, imageSrc: getGovtSchemeCardImageSrc(item.title) })),
 };
 
 const BUILDER_DEVELOPER_SERVICES: ServiceGroup = {
@@ -1564,7 +1670,7 @@ const BUILDER_DEVELOPER_SERVICES: ServiceGroup = {
       applyHref: "/apply-now?product=builder-project-restructuring-takeover-loan",
       infoHref: "/business-loan",
     },
-  ],
+  ].map((item) => ({ ...item, imageSrc: getBuilderDeveloperCardImageSrc(item.title) })),
 };
 
 const GROUPED_SERVICES: Partial<Record<HubCategoryKey, ServiceGroup[]>> = {
@@ -1647,6 +1753,9 @@ export default function ServicesHubClient() {
       </section>
 
       <PrivateInstitutionalHighlight />
+      <PoorCibilHighlight />
+      <EmiRestructuringHighlight />
+      <PropertyLoanHighlight />
 
       <section className="relative -mt-8 z-20">
         <div className="container mx-auto px-4">
