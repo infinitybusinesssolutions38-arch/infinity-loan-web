@@ -137,11 +137,10 @@ export default function ModernSections() {
     const [openFaqId, setOpenFaqId] = useState<string | null>(null);
 
     return (
-        <div className="w-full bg-gradient-to-b from-black via-gray-900 to-gray-800">
+        <div className="w-full">
             {/* HOW IT WORKS SECTION */}
             <section className="py-16 lg:py-24 relative overflow-hidden">
-                {/* Background Elements */}
-                <div className="absolute inset-0 bg-gradient-to-b from-black via-gray-900 to-gray-800" />
+                {/* Background Elements (removed parent dark gradient to inherit page background) */}
                 <div className="absolute top-0 right-0 w-96 h-96 bg-[#F97415]/10 rounded-full blur-3xl" />
                 <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#F97415]/10 rounded-full blur-3xl" />
 
@@ -266,7 +265,7 @@ export default function ModernSections() {
                                     style={{ animationDelay: `${idx * 80}ms` }}
                                 >
                                     <div
-                                        className={`bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-md border-2 transition-all duration-300 overflow-hidden ${
+                                        className={`bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl shadow-md border-2 transition-all duration-300 overflow-hidden ${
                                             isOpen
                                                 ? "border-[#F97415] shadow-lg shadow-[#F97415]/10"
                                                 : "border-gray-700 hover:border-[#F97415]/50 hover:shadow-lg"
@@ -349,7 +348,7 @@ export default function ModernSections() {
                     </div>
 
                     <div className="max-w-3xl mx-auto mt-8 animate-fade-in-up">
-                        <div className="bg-gray-900/50 rounded-xl shadow-md border-2 border-[#F97415]/40 overflow-hidden">
+                        <div className="bg-gray-900/50 rounded-2xl shadow-md border-2 border-[#F97415]/40 overflow-hidden">
                             <div className="px-5 py-4 flex items-start gap-3">
                                 <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-gradient-to-br from-[#F97415] to-orange-600 flex items-center justify-center">
                                     <Shield className="w-4 h-4 text-white" />
@@ -368,7 +367,7 @@ export default function ModernSections() {
 
                     {/* Help Footer */}
                     <div className="mt-10 text-center animate-fade-in-up animation-delay-400">
-                        <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-gray-900 to-gray-800 rounded-xl border border-[#F97415]/40">
+                        <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-gray-900 to-gray-800 rounded-2xl border border-[#F97415]/40">
                             <Shield className="w-5 h-5 text-[#F97415]" />
                             <p className="text-sm font-semibold text-gray-300">
                                 Still have questions?{" "}
