@@ -724,10 +724,10 @@ export default function HomePageClient() {
           <div className="container relative z-10 mx-auto px-4">
             <div className="flex min-h-[560px] items-end py-14 sm:min-h-[640px] sm:py-20 lg:min-h-[740px]">
               <div className="mx-auto w-full max-w-4xl text-center">
-                <Badge className="mb-4 bg-accent/20 text-accent-foreground border-accent/30 backdrop-blur">
+                {/* <Badge className="mb-4 bg-accent/20 text-accent-foreground border-accent/30 backdrop-blur">
                   <Sparkles className="mr-1 h-3 w-3" />
                   {activeHeroContent.badge}
-                </Badge>
+                </Badge> */}
 
                 <h1 className="text-4xl font-extrabold tracking-tight text-primary-foreground sm:text-5xl lg:text-5xl">
                   <span className="inline-flex items-center justify-center gap-3">
@@ -743,11 +743,8 @@ export default function HomePageClient() {
                   {activeHeroContent.description}
                 </p> */}
 
-                <div className="mt-8 flex flex-wrap justify-center gap-4">
-                  {/* <ApplyNowCTAButton size="xl" className="group">
-                    Contact Us
-                    <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-                  </ApplyNowCTAButton> */}
+                {/* <div className="mt-8 flex flex-wrap justify-center gap-4">
+                  
                   <Button
                     asChild
                     variant="hero-outline"
@@ -756,9 +753,9 @@ export default function HomePageClient() {
                   >
                     <Link href="/contact#contact-form">Talk to an Expert</Link>
                   </Button>
-                </div>
+                </div> */}
 
-                <div className="mt-10 flex items-center justify-center gap-2" aria-label="Slide pagination">
+                {/* <div className="mt-10 flex items-center justify-center gap-2" aria-label="Slide pagination">
                   {slides.map((_, i) => {
                     const isActive = i === activeIndex;
                     return (
@@ -777,7 +774,7 @@ export default function HomePageClient() {
                       />
                     );
                   })}
-                </div>
+                </div> */}
 
 
               </div>
@@ -787,8 +784,14 @@ export default function HomePageClient() {
       </section>
 
 
-      <div>
-        OUR KEY STRENGTHS - OUR KEY BUSINESS VERTICALS
+      <div className="container mx-auto px-4">
+        <h2 className="mt-10 text-center text-3xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl">
+          <span className="inline-block rounded-2xl bg-gradient-to-r from-black via-zinc-900 to-zinc-700 px-5 py-3 text-white shadow-[0_12px_30px_rgba(0,0,0,0.35)] sm:px-7 sm:py-4">
+            <span className="text-[#F97415]">Our Key Strengths</span>
+            <span className="mx-2 text-white/70">-</span>
+            <span className="text-white">Our Key Business Verticals</span>
+          </span>
+        </h2>
       </div>
 
       <PrivateInstitutionalHighlight />
