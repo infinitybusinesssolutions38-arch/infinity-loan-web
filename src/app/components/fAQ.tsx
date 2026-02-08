@@ -147,7 +147,7 @@ export default function ModernSections() {
                 <div className="container mx-auto px-4 lg:px-8 relative z-10">
                     {/* Header */}
                     <div className="text-center max-w-3xl mx-auto mb-16">
-                        <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-gray-800/50 border-2 border-[#F97415]/50 rounded-full mb-6 shadow-sm animate-fade-in">
+                        <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-black via-gray-800/60 to-gray-700/40 border-2 border-[#F97415]/50 rounded-full mb-6 shadow-sm animate-fade-in">
                             <Sparkles className="h-4 w-4 text-[#F97415]" />
                             <span className="text-sm font-bold text-[#F97415] uppercase tracking-wide">
                                 Simple Process
@@ -158,7 +158,7 @@ export default function ModernSections() {
                             How It Works
                         </h2>
 
-                        <p className="text-lg text-gray-300 animate-fade-in-up animation-delay-100">
+                        <p className="text-lg text-black animate-fade-in-up animation-delay-100">
                             A simple, guided process tailored to your selected service
                         </p>
                     </div>
@@ -233,7 +233,7 @@ export default function ModernSections() {
             </section>
 
             {/* FAQ SECTION */}
-            <section className="py-16 lg:py-24 bg-gradient-to-b from-gray-800 via-gray-900 to-black relative">
+            <section className="py-16 lg:py-24 bg-gradient-to-b from-gray-800 via-gray-900 to-black relative rounded-3xl">
                 <div className="container mx-auto px-4 lg:px-8">
                     {/* Header */}
                     <div className="text-center max-w-3xl mx-auto mb-12">
