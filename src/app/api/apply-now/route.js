@@ -247,12 +247,12 @@ export async function POST(req) {
       const website = process.env.COMPANY_WEBSITE || "www.infinityloanservices.com";
 
       const transporter = nodemailer.createTransport({
-        host: process.env.EMAIL_HOST,
+        host: process.env.EMAIL_HOST || process.env.EMAIL_HOSTNAME || "smtp.gmail.com",
         port: Number(process.env.EMAIL_PORT || 465),
-        secure: String(process.env.EMAIL_SECURE || "true").toLowerCase() === "true",
+        secure: typeof process.env.EMAIL_SECURE !== "undefined" ? String(process.env.EMAIL_SECURE).toLowerCase() === "true" : Number(process.env.EMAIL_PORT || 465) === 465,
         auth: {
-          user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASS,
+          user: process.env.EMAIL_USER || process.env.EMAIL_HOST_USER || process.env.EMAIL_HOST_USER_NAME,
+          pass: process.env.EMAIL_PASS || process.env.EMAIL_HOST_PASSWORD || process.env.EMAIL_HOST_PASS,
         },
       });
 
@@ -263,11 +263,11 @@ export async function POST(req) {
         .split(",")
         .map((s) => s.trim())
         .filter(Boolean);
+      const adminEnvList = [process.env.SUPPORT_EMAIL, process.env.ADMIN_USER, process.env.ADMIN_EMAIL, process.env.DIRECTOR_EMAIL];
       const adminRecipients = Array.from(
         new Set(
           [
-            process.env.SUPPORT_EMAIL,
-            process.env.ADMIN_USER,
+            ...adminEnvList,
             ...extraAdminRecipients,
             "infinitybusinesssolutions38@gmail.com",
           ].filter(Boolean)
@@ -496,8 +496,28 @@ export async function POST(req) {
         if (!applicantEmailResult?.success) {
           console.error("apply-now applicant email template failed:", applicantEmailResult?.error);
         }
+        
       } catch (e) {
         console.error("apply-now applicant email template error:", e?.message || e);
+      }
+      
+      // Also send confirmation to official email if provided
+      try {
+        const officialEmail = String(formData.get("officialEmail") || "").trim();
+        if (officialEmail) {
+          const officialRes = await sendLoanApplicationConfirmationEmail(officialEmail, {
+            customerName: String(firstName || "").trim() || "Customer",
+            applicationNumber: applicationRef,
+            applicationDate: applicationDate,
+            loanType: String(loanType || "").trim(),
+            loanAmount: String(loanAmount || "").trim(),
+          });
+          if (!officialRes?.success) {
+            console.error("apply-now official email failed:", officialRes?.error);
+          }
+        }
+      } catch (e) {
+        console.error("apply-now official email error:", e?.message || e);
       }
 
       if (from && adminRecipients.length > 0) {

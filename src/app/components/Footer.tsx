@@ -200,19 +200,19 @@ export function Footer() {
             </p>
             <div className="flex flex-wrap gap-6 justify-center">
               <Link 
-                href="" 
+                href="/privacy-policy" 
                 className="text-sm text-white/60 hover:text-[#F97415] transition-colors"
               >
                 Privacy Policy
               </Link>
               <Link 
-                href="" 
+                href="/terms-of-services" 
                 className="text-sm text-white/60 hover:text-[#F97415] transition-colors"
               >
                 Terms of Service
               </Link>
               <Link 
-                href="" 
+                href="/disclaimer" 
                 className="text-sm text-white/60 hover:text-[#F97415] transition-colors"
               >
                 Disclaimer

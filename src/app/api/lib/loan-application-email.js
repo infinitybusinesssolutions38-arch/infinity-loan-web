@@ -2,13 +2,19 @@ import nodemailer from "nodemailer";
 
 // Create email transporter
 const createTransporter = () => {
+  const host = process.env.EMAIL_HOST || process.env.EMAIL_HOSTNAME || "smtp.gmail.com";
+  const port = parseInt(process.env.EMAIL_PORT || "465", 10);
+  const user = process.env.EMAIL_USER || process.env.EMAIL_HOST_USER || process.env.EMAIL_HOST_USER_NAME || process.env.EMAIL_HOSTNAME_USER;
+  const pass = process.env.EMAIL_PASS || process.env.EMAIL_HOST_PASSWORD || process.env.EMAIL_HOST_PASS || process.env.EMAIL_HOST_PASSWORD_RAW;
+  const secureEnv = typeof process.env.EMAIL_SECURE !== "undefined" ? String(process.env.EMAIL_SECURE).toLowerCase() === "true" : port === 465;
+
   return nodemailer.createTransport({
-    host: process.env.EMAIL_HOST,
-    port: parseInt(process.env.EMAIL_PORT),
-    secure: process.env.EMAIL_SECURE === "true",
+    host,
+    port,
+    secure: secureEnv,
     auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
+      user,
+      pass,
     },
   });
 };

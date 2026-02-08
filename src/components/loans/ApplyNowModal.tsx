@@ -959,7 +959,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                     onChange={handleSalariedChange}
                   />
                   <div className="space-y-2">
-                    <Label htmlFor="s_totalExperienceYears" className="text-sm font-medium">Total Experience (Years)</Label>
+                    <Label htmlFor="s_totalExperienceYears" className="text-sm font-medium">Total Work Experience (Years)</Label>
                     <Input id="s_totalExperienceYears" name="totalExperienceYears" type="number" placeholder="Total Experience (Years)" value={sForm.totalExperienceYears} onChange={handleSalariedChange} className="border-gray-300" />
                   </div>
                   <div className="space-y-2">
@@ -1004,7 +1004,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                     </select>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="s_salaryAccountBankName" className="text-sm font-medium">Salary Account Bank</Label>
+                    <Label htmlFor="s_salaryAccountBankName" className="text-sm font-medium">Salary Credit Account Bank Name</Label>
                     <Input id="s_salaryAccountBankName" name="salaryAccountBankName" placeholder="Salary Account Bank" value={sForm.salaryAccountBankName} onChange={handleSalariedChange} className="border-gray-300" />
                   </div>
                 </div>
