@@ -58,14 +58,14 @@ const Navbar = () => {
     }`;
 
   return (
-    <div className="sticky top-0 z-50 w-full px-3 py-3">
-      <div className="navbar mx-auto max-w-7xl rounded-2xl border border-white/10 bg-black/30 px-4 py-2 shadow-lg backdrop-blur-lg supports-[backdrop-filter]:bg-black/30 sm:px-6 ">
+    <div className="sticky top-0 z-50 w-full">
+      <div className="navbar mx-auto max-w-full border border-white/10 bg-black/40 px-4 py-2 shadow-lg backdrop-blur-lg supports-[backdrop-filter]:bg-black/40 sm:px-6 ">
         {/* LOGO */}
         <Link
           href="/"
-          className="flex w-[150px] shrink-0 items-center transition-transform duration-300 hover:scale-105"
+          className="flex w-[150px] shrink-0 items-center transition-transform duration-300 hover:scale-109"
         >
-          <Image src="/logo2.png" alt="logo" width={150} height={50} />
+          <Image src="/logo2.png" alt="logo" width={180} height={60} />
         </Link>
 
         {/* MENU  testing changes */}
@@ -152,14 +152,14 @@ const Navbar = () => {
         </div>
 
         {/* RIGHT */}
-        <div className="flex shrink-0">
+        {/* <div className="flex shrink-0">
           <Link
             href="/login"
             className="btn btn-md border-none bg-[#F97415] text-white transition-all duration-300 hover:bg-[#F97415]/90 hover:shadow-lg hover:-translate-y-0.5"
           >
             Login
           </Link>
-        </div>
+        </div> */}
       </div>
     </div>
   );
