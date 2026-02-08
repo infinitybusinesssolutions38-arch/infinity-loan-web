@@ -11,6 +11,7 @@ const BorrowerPersonalSchema = new mongoose.Schema(
 
         // Contact
         mobileNumber: { type: String, required: true },
+        whatsappNumber: { type: String, required: false },
         alternateMobile: { type: String, required: false },
         personalEmail: { type: String, required: true, unique: true, sparse: true },
         businessEmail: { type: String, required: false },

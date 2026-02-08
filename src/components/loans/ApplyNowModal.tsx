@@ -25,6 +25,7 @@ type FormState = {
   middleName?: string;
   lastName: string;
   mobileNumber: string;
+  whatsappNumber?: string;
   alternateMobile: string;
   businessEmail: string;
   personalEmail: string;
@@ -42,6 +43,7 @@ type FormState = {
   voterIdNumber: string;
   drivingLicense: string;
   passportNumber: string;
+  loanType?: string;
 };
 
 export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, categoryKey }: ApplyNowModalProps) {
@@ -60,6 +62,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
       middleName: "",
       lastName: "",
       mobileNumber: "",
+      whatsappNumber: "",
       alternateMobile: "",
       businessEmail: "",
       personalEmail: "",
@@ -87,6 +90,11 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
   const [panFront, setPanFront] = useState<File | null>(null);
   const [residentialBill, setResidentialBill] = useState<File | null>(null);
   const [shopBill, setShopBill] = useState<File | null>(null);
+  const [aadhaarFrontError, setAadhaarFrontError] = useState<string | null>(null);
+  const [aadhaarBackError, setAadhaarBackError] = useState<string | null>(null);
+  const [panFrontError, setPanFrontError] = useState<string | null>(null);
+  const [residentialBillError, setResidentialBillError] = useState<string | null>(null);
+  const [shopBillError, setShopBillError] = useState<string | null>(null);
 
   // Salaried-specific files
   const [panPhoto, setPanPhoto] = useState<File | null>(null);
@@ -102,6 +110,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
   const [lastElectricityBill, setLastElectricityBill] = useState<File | null>(null);
   const [permElectricityBill, setPermElectricityBill] = useState<File | null>(null);
   const [rentAgreement, setRentAgreement] = useState<File | null>(null);
+  const [rentAgreementShop, setRentAgreementShop] = useState<File | null>(null);
   const [companyAllotmentLetter, setCompanyAllotmentLetter] = useState<File | null>(null);
 
   // helper for salaried file validation
@@ -182,6 +191,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
       submissionFormData.append("middleName", data.middleName || "");
       submissionFormData.append("lastName", data.lastName);
       submissionFormData.append("mobileNumber", data.mobileNumber);
+      submissionFormData.append("whatsappNumber", data.whatsappNumber || "");
       submissionFormData.append("alternateMobile", data.alternateMobile || "");
       submissionFormData.append("businessEmail", data.businessEmail || "");
       submissionFormData.append("personalEmail", data.personalEmail);
@@ -230,21 +240,62 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
 
   const handleFileChange = (
     e: React.ChangeEvent<HTMLInputElement>,
-    setter: React.Dispatch<React.SetStateAction<File | null>>
+    setter: React.Dispatch<React.SetStateAction<File | null>>,
+    type: "image" | "pdf" | "auto" = "auto",
+    errSetter?: React.Dispatch<React.SetStateAction<string | null>>
   ) => {
     const file = e.target.files?.[0];
-    if (!file) return setter(null);
-
-    const isImage = file.type.startsWith("image/");
-    if (!isImage) {
-      window.alert("Please upload an image (JPG/PNG)");
-      return setter(null);
-    }
-    if (file.size > 1 * 1024 * 1024) {
-      window.alert("Image must be <= 1MB");
+    if (!file) {
+      if (errSetter) errSetter(null);
       return setter(null);
     }
 
+    // clear previous error
+    if (errSetter) errSetter(null);
+
+    const setError = (msg: string) => {
+      if (errSetter) errSetter(msg);
+      else window.alert(msg);
+    };
+
+    if (type === "image") {
+      const isImage = file.type.startsWith("image/");
+      if (!isImage) {
+        setError("Please upload an image (JPG/JPEG/PNG)");
+        return setter(null);
+      }
+      if (file.size > 1 * 1024 * 1024) {
+        setError("Image must be <= 1MB");
+        return setter(null);
+      }
+    } else if (type === "pdf") {
+      if (file.type !== "application/pdf") {
+        setError("Please upload a PDF file");
+        return setter(null);
+      }
+      if (file.size > 2 * 1024 * 1024) {
+        setError("PDF must be <= 2MB");
+        return setter(null);
+      }
+    } else if (type === "auto") {
+      if (file.type.startsWith("image/")) {
+        if (file.size > 1 * 1024 * 1024) {
+          setError("Image must be <= 1MB");
+          return setter(null);
+        }
+      } else if (file.type === "application/pdf") {
+        if (file.size > 2 * 1024 * 1024) {
+          setError("PDF must be <= 2MB");
+          return setter(null);
+        }
+      } else {
+        setError("Please upload an image (JPG/JPEG/PNG) or a PDF file");
+        return setter(null);
+      }
+    }
+
+    // success
+    if (errSetter) errSetter(null);
     setter(file);
   };
 
@@ -254,7 +305,6 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
     (loanTypeKey && loanTypeKey.toLowerCase().includes("salaried")) ||
     loanType.toLowerCase().includes("salaried");
 
-  // Salaried form state
   const [sForm, setSForm] = useState({
     firstName: "",
     middleName: "",
@@ -281,6 +331,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
     companyName: "",
     organizationType: "",
     industry: "",
+    industryOther: "",
     designation: "",
     employmentType: "",
     dateOfJoining: "",
@@ -300,6 +351,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
     requiredLoanAmount: "",
     preferredTenure: "",
     purpose: "",
+    loanType: "",
     coApplicantName: "",
     coApplicantRelation: "",
     coApplicantEmploymentType: "",
@@ -849,13 +901,24 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                     <Label htmlFor="s_organizationType" className="text-sm font-medium">Organization Type</Label>
                     <select id="s_organizationType" name="organizationType" value={sForm.organizationType} onChange={handleSalariedChange} className="mt-2 block w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm">
                       <option value="">Organization Type</option>
-                      <option value="Private">Private Limited</option>
-                      <option value="MNC">MNC</option>
-                      <option value="Govt">Government</option>
-                      <option value="PSU">PSU</option>
-                      <option value="Partnership">Partnership</option>
                       <option value="Proprietorship">Proprietorship</option>
-                      <option value="Other">Other</option>
+                      <option value="Partnership">Partnership</option>
+                      <option value="HUF">HUF Unregistered</option>
+                      <option value="CooperativeSociety">Co-operative Society</option>
+                      <option value="LLP">LLP Registered</option>
+                      <option value="OPC">OPC Registered</option>
+                      <option value="PrivateLimited">Private Limited Company</option>
+                      <option value="PublicLimited">Public Limited Company</option>
+                      <option value="Section8">Section 8 Company</option>
+                      <option value="ProducerCompany">Producer Company</option>
+                      <option value="Nidhi">Nidhi Company</option>
+                      <option value="Government">Government Company</option>
+                      <option value="HoldingCompany">Holding Company</option>
+                      <option value="SubsidiaryCompany">Subsidiary Company</option>
+                      <option value="AssociateCompany">Associate Company</option>
+                      <option value="ForeignCompany">Foreign Company</option>
+                      <option value="JointVenture">Joint Venture</option>
+                      <option value="NBFC">NBFC</option>
                     </select>
                   </div>
                   <div className="space-y-2">
@@ -865,8 +928,15 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                       {sector.map((sector)=>(
                           <option key={sector.id} value={sector.name}>{sector.name}</option>
                       ))}
+                      <option value="Other">Other</option>
                     </select>
                   </div>
+                  {sForm.industry === "Other" && (
+                    <div className="space-y-2">
+                      <Label htmlFor="s_industryCustom" className="text-sm font-medium">Please specify your Industry / Sector</Label>
+                      <Input id="s_industryCustom" name="industryOther" placeholder="Enter your industry sector" value={sForm.industryOther} onChange={handleSalariedChange} className="border-gray-300" />
+                    </div>
+                  )}
                   <div className="space-y-2">
                     <Label htmlFor="s_designation" className="text-sm font-medium">Designation</Label>
                     <Input id="s_designation" name="designation" placeholder="Designation" value={sForm.designation} onChange={handleSalariedChange} className="border-gray-300" />
@@ -1204,7 +1274,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
 
                 <div className="space-y-2">
                   <Label htmlFor="mobileNumber" className="text-sm font-medium">
-                    Mobile Number <span className="text-destructive">*</span>
+                    Primary Mobile Number <span className="text-destructive">*</span>
                   </Label>
                   <Input
                     id="mobileNumber"
@@ -1223,6 +1293,22 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                   {errors.mobileNumber && (
                     <p className="text-xs text-destructive animate-fade-in">{String(errors.mobileNumber.message || "")}</p>
                   )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="whatsappNumber" className="text-sm font-medium">
+                    WhatsApp Number
+                  </Label>
+                  <Input
+                    id="whatsappNumber"
+                    type="tel"
+                    maxLength={10}
+                    {...register("whatsappNumber")}
+                    onFocus={() => setFocusedField("whatsappNumber")}
+                    onBlur={() => setFocusedField(null)}
+                    className={`transition-all duration-300 ${focusedField === "whatsappNumber" ? "ring-2 ring-primary shadow-glow-primary" : ""}`}
+                    placeholder="Optional"
+                  />
                 </div>
 
                 <div className="space-y-2">
@@ -1247,12 +1333,13 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                   )}
                 </div>
               </div>
+              
             </fieldset>
 
             <fieldset className="space-y-4">
               <legend className="flex items-center gap-2 text-lg font-bold text-foreground mb-4">
                 <CreditCard className="h-5 w-5 text-primary" />
-                Loan & Tenure Details
+                Loan Details
               </legend>
 
               <div className="grid gap-4 sm:grid-cols-3">
@@ -1280,6 +1367,28 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 </div>
 
                 <div className="space-y-2">
+                  <Label htmlFor="loanType" className="text-sm font-medium">
+                    Loan Type <span className="text-destructive">*</span>
+                  </Label>
+                  <Input
+                    id="loanType"
+                    type="text"
+                    {...register("loanType", {
+                      required: "This field is required",
+                      validate: (v) => validateField("loanType", String(v || "")) || true,
+                    })}
+                    onFocus={() => setFocusedField("loanType")}
+                    onBlur={() => setFocusedField(null)}
+                    className={`transition-all duration-300 ${focusedField === "loanType" ? "ring-2 ring-primary shadow-glow-primary" : ""
+                      } ${errors.loanType ? "border-destructive animate-shake" : ""}`}
+                    placeholder="e.g., Personal Loan"
+                  />
+                  {errors.loanType && (
+                    <p className="text-xs text-destructive animate-fade-in">{String(errors.loanType.message || "")}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
                   <Label htmlFor="residentialStatus" className="text-sm font-medium">
                     Residential Status <span className="text-destructive">*</span>
                   </Label>
@@ -1295,25 +1404,6 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                   </select>
                   {errors.residentialStatus && (
                     <p className="text-xs text-destructive animate-fade-in">{String(errors.residentialStatus.message || "")}</p>
-                  )}
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="businessPremisesStatus" className="text-sm font-medium">
-                    Business Premises Status <span className="text-destructive">*</span>
-                  </Label>
-                  <select
-                    id="businessPremisesStatus"
-                    {...register("businessPremisesStatus", { required: "This field is required" })}
-                    className={`mt-2 block w-full rounded-md border bg-transparent px-3 py-2 text-sm transition-all duration-200 ${errors.businessPremisesStatus ? "border-destructive" : ""
-                      }`}
-                  >
-                    <option value="">Select</option>
-                    <option value="Owned">Owned</option>
-                    <option value="Rented">Rented</option>
-                  </select>
-                  {errors.businessPremisesStatus && (
-                    <p className="text-xs text-destructive animate-fade-in">{String(errors.businessPremisesStatus.message || "")}</p>
                   )}
                 </div>
               </div>
@@ -1510,6 +1600,23 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                       <p className="text-xs text-destructive animate-fade-in">{String(errors.currentOfficePincode.message || "")}</p>
                     )}
                   </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="rentAgreementShop" className="text-sm font-medium">Upload Rent Agreement (Office / Shop)</Label>
+                    <label className="flex flex-col items-center justify-center h-24 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary/5 group">
+                      <Upload className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors" />
+                      <span className="mt-1 text-xs text-muted-foreground group-hover:text-primary">
+                        {rentAgreementShop ? `${rentAgreementShop.name.slice(0, 20)}...` : "Upload (Image JPG/PNG max 1MB or PDF max 2MB)"}
+                      </span>
+                      <input
+                        id="rentAgreementShop"
+                        type="file"
+                        accept="image/*,.pdf"
+                        className="hidden"
+                        onChange={(e) => handleFileChange(e, setRentAgreementShop, "auto")}
+                      />
+                    </label>
+                  </div>
                 </div>
               </div>
             </fieldset>
@@ -1631,9 +1738,11 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                       type="file"
                       accept="image/*,.pdf"
                       className="hidden"
-                      onChange={(e) => handleFileChange(e, setAadhaarFront)}
+                      onChange={(e) => handleFileChange(e, setAadhaarFront, "auto", setAadhaarFrontError)}
                     />
                   </label>
+                  <p className="text-xs text-muted-foreground">Allowed: JPG, JPEG, PNG (Max 1MB) or PDF (Max 2MB)</p>
+                  {aadhaarFrontError && <p className="text-xs text-destructive">{aadhaarFrontError}</p>}
                 </div>
 
                 <div className="space-y-2">
@@ -1647,9 +1756,11 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                       type="file"
                       accept="image/*,.pdf"
                       className="hidden"
-                      onChange={(e) => handleFileChange(e, setAadhaarBack)}
+                      onChange={(e) => handleFileChange(e, setAadhaarBack, "auto", setAadhaarBackError)}
                     />
                   </label>
+                  <p className="text-xs text-muted-foreground">Allowed: JPG, JPEG, PNG (Max 1MB) or PDF (Max 2MB)</p>
+                  {aadhaarBackError && <p className="text-xs text-destructive">{aadhaarBackError}</p>}
                 </div>
 
                 <div className="space-y-2">
@@ -1663,9 +1774,11 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                       type="file"
                       accept="image/*,.pdf"
                       className="hidden"
-                      onChange={(e) => handleFileChange(e, setPanFront)}
+                      onChange={(e) => handleFileChange(e, setPanFront, "auto", setPanFrontError)}
                     />
                   </label>
+                  <p className="text-xs text-muted-foreground">Allowed: JPG, JPEG, PNG (Max 1MB) or PDF (Max 2MB)</p>
+                  {panFrontError && <p className="text-xs text-destructive">{panFrontError}</p>}
                 </div>
 
                 <div className="space-y-2">
@@ -1679,9 +1792,11 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                       type="file"
                       accept="image/*,.pdf"
                       className="hidden"
-                      onChange={(e) => handleFileChange(e, setResidentialBill)}
+                      onChange={(e) => handleFileChange(e, setResidentialBill, "auto", setResidentialBillError)}
                     />
                   </label>
+                  <p className="text-xs text-muted-foreground">Allowed: JPG, JPEG, PNG (Max 1MB) or PDF (Max 2MB)</p>
+                  {residentialBillError && <p className="text-xs text-destructive">{residentialBillError}</p>}
                 </div>
 
                 <div className="space-y-2">
@@ -1695,9 +1810,11 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                       type="file"
                       accept="image/*,.pdf"
                       className="hidden"
-                      onChange={(e) => handleFileChange(e, setShopBill)}
+                      onChange={(e) => handleFileChange(e, setShopBill, "auto", setShopBillError)}
                     />
                   </label>
+                  <p className="text-xs text-muted-foreground">Allowed: JPG, JPEG, PNG (Max 1MB) or PDF (Max 2MB)</p>
+                  {shopBillError && <p className="text-xs text-destructive">{shopBillError}</p>}
                 </div>
               </div>
             </fieldset>
