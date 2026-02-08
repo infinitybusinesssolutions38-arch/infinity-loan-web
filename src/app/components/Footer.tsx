@@ -10,7 +10,7 @@ export function Footer() {
         <div className="absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-white/10 blur-3xl" />
       </div>
       <div className="container relative z-10 mx-auto px-4 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
           {/* Brand Section */}
           <div className="space-y-4">
             <div className="flex items-center">
@@ -64,15 +64,6 @@ export function Footer() {
                   Services
                 </Link>
               </li>
-              
-              {/* <li>
-                <Link 
-                  href="/contact" 
-                  className="text-sm text-muted-foreground hover:text-primary transition-colors"
-                >
-                  Contact
-                </Link>
-              </li> */}
             </ul>
           </div>
 
@@ -81,7 +72,7 @@ export function Footer() {
             <h4 className="font-semibold mb-4 text-base">Contact Us</h4>
             <ul className="space-y-4">
               <li className="flex items-start gap-3">
-                <Phone className="w-5 h-5 mt-0.5 text-[#F97415] flex-shrink-0" />
+                <Phone className="w-6 h-6 mt-0.5 text-[#F97415] flex-shrink-0" />
                 <div className="text-sm">
                   <p className="text-white/70 mb-1">Call us at</p>
                   <Link 
@@ -93,7 +84,7 @@ export function Footer() {
                 </div>
               </li>
               <li className="flex items-start gap-3">
-                <Mail className="w-5 h-5 mt-0.5 text-[#F97415] flex-shrink-0" />
+                <Mail className="w-6 h-6 mt-0.5 text-[#F97415] flex-shrink-0" />
                 <div className="text-sm">
                   <p className="text-white/70 mb-1">Email us</p>
                   <Link 
@@ -104,11 +95,50 @@ export function Footer() {
                   </Link>
                 </div>
               </li>
+            </ul>
+          </div>
+
+          {/* Offices */}
+          <div>
+            <h4 className="font-semibold mb-4 text-base">Offices</h4>
+            <ul className="space-y-5">
               <li className="flex items-start gap-3">
-                <MapPin className="w-5 h-5 mt-0.5 text-[#F97415] flex-shrink-0" />
+                <MapPin className="w-6 h-6 mt-0.5 text-[#F97415] flex-shrink-0" />
                 <div className="text-sm">
-                  <p className="text-white/70 mb-1">Visit us</p>
-                  <p className="font-medium">Mumbai, Maharashtra, India</p>
+                  <p className="font-medium">Corporate & Registered Office</p>
+                  <p className="text-white/70">
+                    8th Floor, Magnum Tower – 1,
+                    <br />
+                    Golf Course Extension Road, Sector 58,
+                    <br />
+                    Gurugram, Haryana – 122098, India
+                  </p>
+                </div>
+              </li>
+              <li className="flex items-start gap-3">
+                <MapPin className="w-6 h-6 mt-0.5 text-[#F97415] flex-shrink-0" />
+                <div className="text-sm">
+                  <p className="font-medium">New Delhi Office</p>
+                  <p className="text-white/70">
+                    505, Surya Kiran Building,
+                    <br />
+                    15, Kasturba Gandhi Marg,
+                    <br />
+                    New Delhi – 110001, India
+                  </p>
+                </div>
+              </li>
+              <li className="flex items-start gap-3">
+                <MapPin className="w-6 h-6 mt-0.5 text-[#F97415] flex-shrink-0" />
+                <div className="text-sm">
+                  <p className="font-medium">Hyderabad Office</p>
+                  <p className="text-white/70">
+                    6-3-247/22/8,
+                    <br />
+                    Dwarakapuri Colony, Punjagutta,
+                    <br />
+                    Hyderabad, Telangana – 500082, India
+                  </p>
                 </div>
               </li>
             </ul>
@@ -119,7 +149,7 @@ export function Footer() {
         <div className="mt-12 pt-8 border-t border-white/10">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-sm text-white/60 text-center md:text-left">
-              {new Date().getFullYear()} LoanEase. All rights reserved.
+              {new Date().getFullYear()} Infinity Loans & Business Solutions. All rights reserved.
             </p>
             <div className="flex flex-wrap gap-6 justify-center">
               <Link 

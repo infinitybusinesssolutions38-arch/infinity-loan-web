@@ -23,15 +23,15 @@ import {
 const activeHowItWorks = [
     {
         title: "Apply Online",
-        description: "Fill out our simple online application form with your basic details. Takes just 5 minutes!",
+        description: "Fill out our simple online application form with your basic details. Takes just 10 minutes!",
     },
     {
-        title: "Upload Documents",
+        title: "Upload Documents or Share Documents",
         description: "Submit required documents digitally through our secure platform. Quick and hassle-free.",
     },
     {
-        title: "Quick Verification",
-        description: "Our team verifies your application within 24 hours. We keep you updated at every step.",
+        title: "Quick & Easy Verification",
+        description: "Our team verifies your application within 48 hours. We keep you updated at every step.",
     },
     {
         title: "Get Approved",
@@ -159,7 +159,7 @@ export default function ModernSections() {
                         </h2>
 
                         <p className="text-lg text-black animate-fade-in-up animation-delay-100">
-                            A simple, guided process tailored to your selected service
+                            A simple step by step, guided process tailored to your selected service
                         </p>
                     </div>
 
@@ -224,7 +224,7 @@ export default function ModernSections() {
                         <div className="mt-12 text-center animate-fade-in-up animation-delay-400">
                             <Link href="/services" className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-[#F97415] to-orange-600 text-white font-bold text-lg rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 group">
                                 <MousePointerClick className="w-5 h-5" />
-                                Get Started Now
+                                Get Started Now On Yur Loan Journey
                                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                             </Link>
                         </div>
@@ -371,9 +371,9 @@ export default function ModernSections() {
                             <Shield className="w-5 h-5 text-[#F97415]" />
                             <p className="text-sm font-semibold text-gray-300">
                                 Still have questions?{" "}
-                                <span className="text-[#F97415] underline cursor-pointer hover:text-orange-400 transition-colors">
+                                <Link href={"/contact"} className="text-[#F97415] underline cursor-pointer hover:text-orange-400 transition-colors">
                                     Contact our support team
-                                </span>
+                                </Link>
                             </p>
                         </div>
                     </div>

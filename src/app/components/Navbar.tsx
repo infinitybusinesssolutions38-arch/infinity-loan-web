@@ -58,8 +58,8 @@ const Navbar = () => {
     }`;
 
   return (
-    <div className="sticky top-0 z-50 border-b border-[#F97415]/10 bg-white/90 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-white/70">
-      <div className="navbar mx-auto max-w-7xl px-4 sm:px-6">
+    <div className="sticky top-0 z-50 w-full px-3 py-3">
+      <div className="navbar mx-auto max-w-7xl rounded-2xl border border-white/10 bg-black/30 px-4 py-2 shadow-lg backdrop-blur-lg supports-[backdrop-filter]:bg-black/30 sm:px-6 ">
         {/* LOGO */}
         <Link
           href="/"
@@ -70,7 +70,7 @@ const Navbar = () => {
 
         {/* MENU  testing changes */}
         <div className="flex-1 flex justify-center">
-          <ul className="menu menu-horizontal gap-6 uppercase font-semibold text-gray-800">
+          <ul className="menu menu-horizontal gap-6 uppercase font-semibold text-white/90">
             <li>
               <Link
                 href="/"
@@ -86,7 +86,7 @@ const Navbar = () => {
               </span>
 
               <div className="absolute top-full left-1/2 -translate-x-1/2 pt-4 hidden group-hover:block">
-                <div className="w-[min(720px,calc(100vw-2rem))] rounded-2xl bg-white p-5 shadow-2xl border border-[#F97415]/10 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+                <div className="w-[min(720px,calc(100vw-2rem))] rounded-2xl bg-black/95 p-5 shadow-2xl border border-white/10 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 backdrop-blur-lg">
                   <div className="grid grid-cols-1 gap-2 text-sm normal-case sm:grid-cols-2">
                     {SERVICES_DROPDOWN_ITEMS.map((item) => {
                       const Icon = item.icon;
@@ -94,7 +94,7 @@ const Navbar = () => {
                         <Link
                           key={item.key}
                           href={`/services?category=${item.key}`}
-                          className="flex items-center gap-2 rounded-md px-3 py-2 transition-all duration-200 hover:bg-orange-50 hover:text-[#F97415]"
+                          className="flex items-center gap-2 rounded-md px-3 py-2 text-white/90 transition-all duration-200 hover:bg-white/10 hover:text-white"
                         >
                           <Icon className="h-4 w-4 text-[#F97415]" />
                           <span className="leading-snug">{item.title}</span>
@@ -105,7 +105,7 @@ const Navbar = () => {
                     <div className="sm:col-span-2 pt-2">
                       <Link
                         href="/services"
-                        className="inline-flex items-center rounded-lg border border-[#F97415]/20 bg-orange-50 px-3 py-2 font-semibold text-[#F97415] transition-all duration-200 hover:bg-orange-100"
+                        className="inline-flex items-center rounded-lg border border-[#F97415]/30 bg-[#F97415]/10 px-3 py-2 font-semibold text-[#F97415] transition-all duration-200 hover:bg-[#F97415]/15"
                       >
                         View All Services
                       </Link>

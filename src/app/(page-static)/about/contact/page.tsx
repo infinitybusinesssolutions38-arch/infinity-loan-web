@@ -243,6 +243,7 @@ const ContactPage = () => {
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.3 }}
                         className="bg-white rounded-2xl p-8 shadow-2xl border-2 border-gray-100"
+                        id="contact-form"
                     >
                         <h2 className="text-3xl font-bold text-black mb-2">
                             Send us a <span className="text-[#F97415]">Message</span>

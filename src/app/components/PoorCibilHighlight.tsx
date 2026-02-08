@@ -130,18 +130,6 @@ export default function PoorCibilHighlight() {
                   We consider loan applications with poor CIBIL scores, EMI bounces, and past credit issues, only when there is a genuine and valid reason.
                 </p>
 
-                {!isExpanded && (
-                  <button
-                    onClick={() => setIsExpanded(true)}
-                    className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[#F97415] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#F97415]/90"
-                  >
-                    Read More
-                    <ChevronDown className="h-4 w-4" />
-                  </button>
-                )}
-
-                {isExpanded && (
-                  <>
                 <div className="flex items-center gap-2 mt-6">
                   <CheckCircle2 className="h-6 w-6 text-green-400" />
                   <h3 className="text-xl font-bold text-white">
@@ -188,6 +176,20 @@ export default function PoorCibilHighlight() {
                     </p>
                   </div>
                 </div>
+
+                {!isExpanded && (
+                  <button
+                    type="button"
+                    onClick={() => setIsExpanded(true)}
+                    className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[#F97415] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#F97415]/90"
+                  >
+                    Read More
+                    <ChevronDown className="h-4 w-4" />
+                  </button>
+                )}
+
+                {isExpanded && (
+                  <>
 
                 <div className="flex items-center gap-2 mt-6">
                   <Sparkles className="h-6 w-6 text-[#F97415]" />
@@ -375,13 +377,14 @@ export default function PoorCibilHighlight() {
                 </div>
 
                 <button
+                  type="button"
                   onClick={() => setIsExpanded(false)}
                   className="mt-6 inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/5 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
                 >
                   Show Less
                   <ChevronUp className="h-4 w-4" />
                 </button>
-                </>
+                  </>
                 )}
               </div>
 
