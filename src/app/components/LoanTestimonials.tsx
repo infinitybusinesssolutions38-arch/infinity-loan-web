@@ -108,26 +108,34 @@ const LoanTestimonials: React.FC = () => {
             {[...testimonials, ...testimonials].map((t, index) => (
               <div
                 key={`${t.name}-${t.role}-${index}`}
-                className="bg-white p-6 rounded-2xl shadow-md hover:shadow-xl transition duration-300 border border-gray-100 flex flex-col shrink-0"
+                className="bg-gradient-to-br from-black via-gray-900 to-gray-800 p-8 rounded-2xl shadow-lg hover:shadow-2xl transition duration-300 border border-gray-700/50 hover:border-[#F97415]/50 flex flex-col shrink-0 w-96 h-auto hover:-translate-y-2"
               >
                 {/* Stars */}
-                <div className="flex mb-3 text-[#F97415]">
+                <div className="flex mb-4 text-[#F97415]">
                   {[...Array(5)].map((_, i) => (
-                    <Star key={i} size={16} fill="#F97415" />
+                    <Star key={i} size={18} fill="#F97415" />
                   ))}
                 </div>
 
                 {/* Message */}
-                <p className="text-gray-600 text-sm flex-grow leading-relaxed">
+                <p className="text-gray-200 text-base leading-relaxed flex-grow mb-6 font-medium">
                   “{t.message}”
                 </p>
 
-                {/* User */}
-                <div className="mt-5 border-t pt-4">
-                  <h4 className="font-semibold text-gray-800">{t.name}</h4>
-                  <span className="text-xs text-[#F97415] font-medium">
-                    {t.role}
-                  </span>
+                {/* User Section */}
+                <div className="border-t border-gray-700 pt-6 flex items-center gap-4">
+                  {/* Avatar */}
+                  <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[#F97415] to-orange-600 flex items-center justify-center flex-shrink-0 shadow-lg">
+                    <span className="text-white font-bold text-lg">{t.name.split(" ").map((word) => word[0]).join("").toUpperCase()}</span>
+                  </div>
+
+                  {/* User Info */}
+                  <div className="flex-1">
+                    <h4 className="font-bold text-white text-lg">{t.name}</h4>
+                    <span className="text-sm text-[#F97415] font-semibold">
+                      {t.role}
+                    </span>
+                  </div>
                 </div>
               </div>
             ))}
