@@ -4,6 +4,9 @@ import { ArrowLeft, Sparkles, TrendingUp, Users, Award, Shield, Clock, CheckCirc
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import PrivateInstitutionalHighlight from "@/app/components/PrivateInstitutionalHighlight";
+import PoorCibilHighlight from "@/app/components/PoorCibilHighlight";
+import EmiRestructuringHighlight from "@/app/components/Emirestructuringhighlight";
+import PropertyLoanHighlight from "@/app/components/Propertyloanhighlight";
 
 export const metadata: Metadata = {
   title: "About Us - Infinity Loans & Business Solutions",
@@ -110,6 +113,9 @@ export default function AboutUsPage() {
       </section>
 
       <PrivateInstitutionalHighlight />
+      <PoorCibilHighlight />
+      <EmiRestructuringHighlight />
+      <PropertyLoanHighlight />
 
       <section className="py-20 lg:py-32 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
         <div className="absolute inset-0 opacity-[0.03]">
