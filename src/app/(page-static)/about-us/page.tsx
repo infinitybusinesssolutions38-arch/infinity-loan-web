@@ -4,6 +4,9 @@ import { ArrowLeft, Sparkles, TrendingUp, Users, Award, Shield, Clock, CheckCirc
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import PrivateInstitutionalHighlight from "@/app/components/PrivateInstitutionalHighlight";
+import PoorCibilHighlight from "@/app/components/PoorCibilHighlight";
+import EmiRestructuringHighlight from "@/app/components/Emirestructuringhighlight";
+import PropertyLoanHighlight from "@/app/components/Propertyloanhighlight";
 
 export const metadata: Metadata = {
   title: "About Us - Infinity Loans & Business Solutions",
@@ -110,6 +113,9 @@ export default function AboutUsPage() {
       </section>
 
       <PrivateInstitutionalHighlight />
+      <PoorCibilHighlight />
+      <EmiRestructuringHighlight />
+      <PropertyLoanHighlight />
 
       <section className="py-20 lg:py-32 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
         <div className="absolute inset-0 opacity-[0.03]">
@@ -134,29 +140,29 @@ export default function AboutUsPage() {
           </div>
 
           <div className="grid gap-8 lg:grid-cols-2 max-w-6xl mx-auto">
-            <article className="group relative rounded-3xl bg-white/80 backdrop-blur-xl border border-gray-200/50 p-8 shadow-xl hover:shadow-2xl transition-all duration-500">
+            <article className="group relative rounded-3xl bg-gradient-to-br from-black via-gray-900 to-gray-800 backdrop-blur-xl border border-gray-700/50 p-8 shadow-xl hover:shadow-2xl transition-all duration-500">
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#F97415] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-gray-100 to-gray-50 border border-gray-200 flex items-center justify-center">
-                  <Shield className="h-6 w-6 text-black" />
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-gray-800 to-gray-700 border border-gray-600 flex items-center justify-center">
+                  <Shield className="h-6 w-6 text-[#F97415]" />
                 </div>
-                <h3 className="text-2xl font-bold text-black">Our Mission</h3>
+                <h3 className="text-2xl font-bold text-white">Our Mission</h3>
               </div>
 
-              <p className="text-gray-600 leading-relaxed mb-6">
+              <p className="text-gray-300 leading-relaxed mb-6">
                 Our mission is to provide trusted, transparent, and expert-driven financial advisory services that empower individuals and businesses to access the most suitable funding solutions with clarity and confidence.
               </p>
 
-              <div className="rounded-2xl bg-gradient-to-br from-gray-50 to-white p-6 border border-gray-200">
-                <p className="text-sm font-semibold text-black mb-4">We are committed to:</p>
+              <div className="rounded-2xl bg-gradient-to-br from-gray-800 to-gray-900 p-6 border border-gray-700">
+                <p className="text-sm font-semibold text-white mb-4">We are committed to:</p>
                 <ul className="space-y-3">
                   <li className="flex gap-3 items-start group/item">
                     <div className="w-5 h-5 rounded-full bg-[#F97415]/10 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover/item:bg-[#F97415]/20 transition-colors">
                       <div className="w-2 h-2 rounded-full bg-[#F97415]" />
                     </div>
-                    <div className="text-gray-600 leading-relaxed">
-                      <div className="font-semibold text-black">In-depth credit assessment and financial analysis</div>
+                    <div className="text-gray-300 leading-relaxed">
+                      <div className="font-semibold text-white">In-depth credit assessment and financial analysis</div>
                       <div>Ensuring every recommendation is backed by thorough evaluation and insight.</div>
                     </div>
                   </li>
@@ -164,8 +170,8 @@ export default function AboutUsPage() {
                     <div className="w-5 h-5 rounded-full bg-[#F97415]/10 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover/item:bg-[#F97415]/20 transition-colors">
                       <div className="w-2 h-2 rounded-full bg-[#F97415]" />
                     </div>
-                    <div className="text-gray-600 leading-relaxed">
-                      <div className="font-semibold text-black">Ethical, unbiased, and client-first advisory</div>
+                    <div className="text-gray-300 leading-relaxed">
+                      <div className="font-semibold text-white">Ethical, unbiased, and client-first advisory</div>
                       <div>Placing our clients’ long-term interests at the center of every decision.</div>
                     </div>
                   </li>
@@ -173,8 +179,8 @@ export default function AboutUsPage() {
                     <div className="w-5 h-5 rounded-full bg-[#F97415]/10 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover/item:bg-[#F97415]/20 transition-colors">
                       <div className="w-2 h-2 rounded-full bg-[#F97415]" />
                     </div>
-                    <div className="text-gray-600 leading-relaxed">
-                      <div className="font-semibold text-black">Accurate loan structuring aligned with lender policies</div>
+                    <div className="text-gray-300 leading-relaxed">
+                      <div className="font-semibold text-white">Accurate loan structuring aligned with lender policies</div>
                       <div>Designing solutions that meet both client objectives and bank/NBFC requirements.</div>
                     </div>
                   </li>
@@ -182,8 +188,8 @@ export default function AboutUsPage() {
                     <div className="w-5 h-5 rounded-full bg-[#F97415]/10 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover/item:bg-[#F97415]/20 transition-colors">
                       <div className="w-2 h-2 rounded-full bg-[#F97415]" />
                     </div>
-                    <div className="text-gray-600 leading-relaxed">
-                      <div className="font-semibold text-black">Complete transparency and regulatory compliance</div>
+                    <div className="text-gray-300 leading-relaxed">
+                      <div className="font-semibold text-white">Complete transparency and regulatory compliance</div>
                       <div>Maintaining the highest standards of integrity, disclosure, and compliance.</div>
                     </div>
                   </li>
@@ -191,42 +197,42 @@ export default function AboutUsPage() {
                     <div className="w-5 h-5 rounded-full bg-[#F97415]/10 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover/item:bg-[#F97415]/20 transition-colors">
                       <div className="w-2 h-2 rounded-full bg-[#F97415]" />
                     </div>
-                    <div className="text-gray-600 leading-relaxed">
-                      <div className="font-semibold text-black">Long-term value creation for every client</div>
+                    <div className="text-gray-300 leading-relaxed">
+                      <div className="font-semibold text-white">Long-term value creation for every client</div>
                       <div>Focusing on sustainable financial outcomes rather than short-term transactions.</div>
                     </div>
                   </li>
                 </ul>
               </div>
 
-              <p className="mt-6 text-gray-600 leading-relaxed">
+              <p className="mt-6 text-gray-300 leading-relaxed">
                 Our objective goes beyond loan facilitation—we strive to build enduring financial partnerships based on trust, expertise, and accountability.
               </p>
             </article>
 
-            <article className="group relative rounded-3xl bg-white/80 backdrop-blur-xl border border-gray-200/50 p-8 shadow-xl hover:shadow-2xl transition-all duration-500">
+            <article className="group relative rounded-3xl bg-gradient-to-br from-black via-gray-900 to-gray-800 backdrop-blur-xl border border-gray-700/50 p-8 shadow-xl hover:shadow-2xl transition-all duration-500">
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#F97415] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-gray-100 to-gray-50 border border-gray-200 flex items-center justify-center">
-                  <Award className="h-6 w-6 text-black" />
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-gray-800 to-gray-700 border border-gray-600 flex items-center justify-center">
+                  <Award className="h-6 w-6 text-[#F97415]" />
                 </div>
-                <h3 className="text-2xl font-bold text-black">Our Vision</h3>
+                <h3 className="text-2xl font-bold text-white">Our Vision</h3>
               </div>
 
-              <p className="text-gray-600 leading-relaxed mb-6">
+              <p className="text-gray-300 leading-relaxed mb-6">
                 Our vision is to build a globally trusted financial advisory institution, recognized for integrity, transparency, deep banking expertise, and excellence in structured credit advisory—supported by scalable, compliant, and technology-driven operations.
               </p>
 
-              <div className="rounded-2xl bg-gradient-to-br from-gray-50 to-white p-6 border border-gray-200">
-                <p className="text-sm font-semibold text-black mb-4">We aim to:</p>
+              <div className="rounded-2xl bg-gradient-to-br from-gray-800 to-gray-900 p-6 border border-gray-700">
+                <p className="text-sm font-semibold text-white mb-4">We aim to:</p>
                 <ul className="space-y-3">
                   <li className="flex gap-3 items-start group/item">
                     <div className="w-5 h-5 rounded-full bg-[#F97415]/10 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover/item:bg-[#F97415]/20 transition-colors">
                       <div className="w-2 h-2 rounded-full bg-[#F97415]" />
                     </div>
-                    <div className="text-gray-600 leading-relaxed">
-                      <div className="font-semibold text-black">Set industry benchmarks in loan structuring and credit advisory</div>
+                    <div className="text-gray-300 leading-relaxed">
+                      <div className="font-semibold text-white">Set industry benchmarks in loan structuring and credit advisory</div>
                       <div>By delivering consistently high standards of analysis, execution, and outcomes.</div>
                     </div>
                   </li>
@@ -234,8 +240,8 @@ export default function AboutUsPage() {
                     <div className="w-5 h-5 rounded-full bg-[#F97415]/10 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover/item:bg-[#F97415]/20 transition-colors">
                       <div className="w-2 h-2 rounded-full bg-[#F97415]" />
                     </div>
-                    <div className="text-gray-600 leading-relaxed">
-                      <div className="font-semibold text-black">Expand across Pan-India and select international markets</div>
+                    <div className="text-gray-300 leading-relaxed">
+                      <div className="font-semibold text-white">Expand across Pan-India and select international markets</div>
                       <div>Establishing a strong and credible presence across geographies.</div>
                     </div>
                   </li>
@@ -243,8 +249,8 @@ export default function AboutUsPage() {
                     <div className="w-5 h-5 rounded-full bg-[#F97415]/10 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover/item:bg-[#F97415]/20 transition-colors">
                       <div className="w-2 h-2 rounded-full bg-[#F97415]" />
                     </div>
-                    <div className="text-gray-600 leading-relaxed">
-                      <div className="font-semibold text-black">Leverage advanced analytics, technology, and expert talent</div>
+                    <div className="text-gray-300 leading-relaxed">
+                      <div className="font-semibold text-white">Leverage advanced analytics, technology, and expert talent</div>
                       <div>To enhance decision-making, efficiency, and client experience.</div>
                     </div>
                   </li>
@@ -252,15 +258,15 @@ export default function AboutUsPage() {
                     <div className="w-5 h-5 rounded-full bg-[#F97415]/10 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover/item:bg-[#F97415]/20 transition-colors">
                       <div className="w-2 h-2 rounded-full bg-[#F97415]" />
                     </div>
-                    <div className="text-gray-600 leading-relaxed">
-                      <div className="font-semibold text-black">Promote responsible financial access and inclusion</div>
+                    <div className="text-gray-300 leading-relaxed">
+                      <div className="font-semibold text-white">Promote responsible financial access and inclusion</div>
                       <div>Serving individuals, startups, MSMEs, and enterprises across all stages of growth.</div>
                     </div>
                   </li>
                 </ul>
               </div>
 
-              <p className="mt-6 text-gray-600 leading-relaxed">
+              <p className="mt-6 text-gray-300 leading-relaxed">
                 Our vision is driven by a long-term commitment to trust, innovation, and sustainable value creation for clients, partners, and stakeholders.
               </p>
             </article>
@@ -290,82 +296,82 @@ export default function AboutUsPage() {
 
           <div className="grid gap-8 lg:grid-cols-2 max-w-6xl mx-auto">
             {/* Vision Card */}
-            <article className="group relative rounded-3xl bg-white/80 backdrop-blur-xl border border-gray-200/50 p-8 shadow-xl hover:shadow-2xl transition-all duration-500">
+            <article className="group relative rounded-3xl bg-gradient-to-br from-black via-gray-900 to-gray-800 backdrop-blur-xl border border-gray-700/50 p-8 shadow-xl hover:shadow-2xl transition-all duration-500">
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#F97415] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-gray-100 to-gray-50 border border-gray-200 flex items-center justify-center">
-                  <Award className="h-6 w-6 text-black" />
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-gray-800 to-gray-700 border border-gray-600 flex items-center justify-center">
+                  <Award className="h-6 w-6 text-[#F97415]" />
                 </div>
-                <h3 className="text-2xl font-bold text-black">Founder’s Vision</h3>
+                <h3 className="text-2xl font-bold text-white">Founder's Vision</h3>
               </div>
 
-              <p className="text-gray-600 leading-relaxed mb-6">
+              <p className="text-gray-300 leading-relaxed mb-6">
                 Aamin Khan, Founder & Director, brings over 17 years of cross-sector experience spanning banking, loans, insurance, taxation, business coaching, and real estate. His vision is rooted in building a financial advisory platform defined by integrity, deep domain expertise, and absolute clarity in execution.
               </p>
 
-              <p className="text-gray-600 leading-relaxed mb-6">
+              <p className="text-gray-300 leading-relaxed mb-6">
                 Under his leadership, the firm is guided by a disciplined advisory philosophy—focused on understanding client needs through rigorous analysis, structuring solutions aligned with lender frameworks, and ensuring the right institutional fit for every case.
               </p>
               
-              <div className="rounded-2xl bg-gradient-to-br from-gray-50 to-white p-5 border border-gray-200">
-                <p className="text-sm font-semibold text-black flex items-center gap-2">
+              <div className="rounded-2xl bg-gradient-to-br from-gray-800 to-gray-900 p-5 border border-gray-700">
+                <p className="text-sm font-semibold text-white flex items-center gap-2">
                   <Sparkles className="h-4 w-4 text-[#F97415]" />
                   Right Analysis. Right Structuring. Right Bank.
                 </p>
               </div>
 
-              <p className="mt-6 text-gray-600 leading-relaxed">
+              <p className="mt-6 text-gray-300 leading-relaxed">
                 This vision reflects a commitment to ethical advisory, transparent processes, and long-term value creation for clients, partners, and stakeholders.
               </p>
             </article>
 
             {/* Mission Card */}
-            <article className="group relative rounded-3xl bg-white/80 backdrop-blur-xl border border-gray-200/50 p-8 shadow-xl hover:shadow-2xl transition-all duration-500">
+            <article className="group relative rounded-3xl bg-gradient-to-br from-black via-gray-900 to-gray-800 backdrop-blur-xl border border-gray-700/50 p-8 shadow-xl hover:shadow-2xl transition-all duration-500">
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#F97415] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-gray-100 to-gray-50 border border-gray-200 flex items-center justify-center">
-                  <Shield className="h-6 w-6 text-black" />
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-gray-800 to-gray-700 border border-gray-600 flex items-center justify-center">
+                  <Shield className="h-6 w-6 text-[#F97415]" />
                 </div>
-                <h3 className="text-2xl font-bold text-black">Growth Roadmap</h3>
+                <h3 className="text-2xl font-bold text-white">Growth Roadmap</h3>
               </div>
 
               <div className="space-y-4">
-                <p className="text-gray-600 leading-relaxed">
+                <p className="text-gray-300 leading-relaxed">
                   Infinity Loans & Business Solutions is progressing on a clearly defined, institution-led growth trajectory focused on scale, governance, and long-term sustainability.
                 </p>
 
-                <p className="text-gray-600 leading-relaxed">Our strategic roadmap includes:</p>
+                <p className="text-gray-300 leading-relaxed">Our strategic roadmap includes:</p>
 
                 <div className="space-y-3">
                   <div>
-                    <p className="font-semibold text-black">Planned transition from proprietorship to a Private Limited structure</p>
-                    <p className="text-gray-600 leading-relaxed">To strengthen corporate governance, transparency, and operational discipline.</p>
+                    <p className="font-semibold text-white">Planned transition from proprietorship to a Private Limited structure</p>
+                    <p className="text-gray-300 leading-relaxed">To strengthen corporate governance, transparency, and operational discipline.</p>
                   </div>
 
                   <div>
-                    <p className="font-semibold text-black">Enhanced regulatory and compliance frameworks</p>
-                    <p className="text-gray-600 leading-relaxed">Aligning operations with evolving regulatory standards and best practices.</p>
+                    <p className="font-semibold text-white">Enhanced regulatory and compliance frameworks</p>
+                    <p className="text-gray-300 leading-relaxed">Aligning operations with evolving regulatory standards and best practices.</p>
                   </div>
 
                   <div>
-                    <p className="font-semibold text-black">Scalable and process-driven operations</p>
-                    <p className="text-gray-600 leading-relaxed">Building systems and teams that support sustainable growth across geographies.</p>
+                    <p className="font-semibold text-white">Scalable and process-driven operations</p>
+                    <p className="text-gray-300 leading-relaxed">Building systems and teams that support sustainable growth across geographies.</p>
                   </div>
 
                   <div>
-                    <p className="font-semibold text-black">Strengthened institutional credibility</p>
-                    <p className="text-gray-600 leading-relaxed">Creating a robust brand trusted by clients, partners, and stakeholders.</p>
+                    <p className="font-semibold text-white">Strengthened institutional credibility</p>
+                    <p className="text-gray-300 leading-relaxed">Creating a robust brand trusted by clients, partners, and stakeholders.</p>
                   </div>
 
                   <div>
-                    <p className="font-semibold text-black">Deeper and long-term partnerships with Banks, NBFCs, and investors</p>
-                    <p className="text-gray-600 leading-relaxed">Enabling broader product access, improved execution, and strategic capital alignment.</p>
+                    <p className="font-semibold text-white">Deeper and long-term partnerships with Banks, NBFCs, and investors</p>
+                    <p className="text-gray-300 leading-relaxed">Enabling broader product access, improved execution, and strategic capital alignment.</p>
                   </div>
                 </div>
 
-                <p className="text-gray-600 leading-relaxed">
+                <p className="text-gray-300 leading-relaxed">
                   Our growth strategy is anchored in responsible expansion, strong governance, and a commitment to building a resilient financial advisory institution.
                 </p>
               </div>

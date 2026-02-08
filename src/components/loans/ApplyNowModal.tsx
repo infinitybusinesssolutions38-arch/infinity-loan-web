@@ -767,7 +767,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="s_stayingSinceYears" className="text-sm font-medium">Staying Since (Years)</Label>
-                    <Input id="s_stayingSinceYears" name="stayingSinceYears" type="date" placeholder="Staying Since (Years)" value={sForm.stayingSinceYears} onChange={handleSalariedChange} className="border-gray-300 date-gray-icon" />
+                    <Input id="s_stayingSinceYears" name="stayingSinceYears" type="number" placeholder="Staying Since (Years)" value={sForm.stayingSinceYears} onChange={handleSalariedChange} className="border-gray-300" />
                   </div>
                 </div>
                 {/* Conditional optional residential uploads based on Residence Type */}

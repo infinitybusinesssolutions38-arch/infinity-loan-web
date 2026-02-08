@@ -207,57 +207,32 @@ const LoanTestimonials: React.FC = () => {
 
 
         {/* Grid */}
+        <div className="relative overflow-hidden">
+          <div className="flex w-max gap-6 py-1 loan-testimonials-marquee">
+            {[...testimonials, ...testimonials].map((t, index) => (
+              <div
+                key={`${t.name}-${t.role}-${index}`}
+                className="bg-white p-6 rounded-2xl shadow-md hover:shadow-xl transition duration-300 border border-gray-100 flex flex-col shrink-0"
+              >
+                {/* Stars */}
+                <div className="flex mb-3 text-[#F97415]">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} size={16} fill="#F97415" />
+                  ))}
+                </div>
 
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 animate-[loanTestimonialsSlide_0.8s_ease-out_both]">
+                {/* Message */}
+                <p className="text-gray-600 text-sm flex-grow leading-relaxed">
+                  “{t.message}”
+                </p>
 
-
-
-          {testimonials.map((t, index) => (
-
-            <div
-
-              key={index}
-
-              className="bg-white p-6 rounded-2xl shadow-md hover:shadow-xl transition duration-300 border border-gray-100 flex flex-col"
-
-            >
-
-              {/* Stars */}
-
-              <div className="flex mb-3 text-[#F97415]">
-
-                {[...Array(5)].map((_, i) => (
-
-                  <Star key={i} size={16} fill="#F97415" />
-
-                ))}
-
-              </div>
-
-
-
-              {/* Message */}
-
-              <p className="text-gray-600 text-sm flex-grow leading-relaxed">
-
-                “{t.message}”
-
-              </p>
-
-
-
-              {/* User */}
-
-              <div className="mt-5 border-t pt-4">
-
-                <h4 className="font-semibold text-gray-800">{t.name}</h4>
-
-                <span className="text-xs text-[#F97415] font-medium">
-
-                  {t.role}
-
-                </span>
-
+                {/* User */}
+                <div className="mt-5 border-t pt-4">
+                  <h4 className="font-semibold text-gray-800">{t.name}</h4>
+                  <span className="text-xs text-[#F97415] font-medium">
+                    {t.role}
+                  </span>
+                </div>
               </div>
 
             </div>

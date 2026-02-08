@@ -6,7 +6,6 @@ import Link from "next/link";
 import {
   ArrowRight,
   Banknote,
-  Briefcase,
   Building2,
   CheckCircle2,
   Clock,
@@ -14,7 +13,6 @@ import {
   FileCheck,
   FileText,
   Shield,
-  Smile,
   Sparkles,
   TrendingUp,
   User,
@@ -29,7 +27,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import LogoCloud from "@/components/logo-cloud";
 import ModernSections from "./fAQ";
 import PrivateInstitutionalHighlight from "./PrivateInstitutionalHighlight";
-import LoanTestimonials from "./LoanTestimonials";
+import PoorCibilHighlight from "./PoorCibilHighlight";
+import EmiRestructuringHighlight from "./Emirestructuringhighlight";
+import PropertyLoanHighlight from "./Propertyloanhighlight";
+import LogoCloud2 from "@/components/logocloud2";
+
 
 type HubCategoryKey = "loans" | "insurance" | "credit-cards" | "government-schemes";
 
@@ -79,8 +81,6 @@ const TRUST_INDICATORS = [
   { icon: TrendingUp, value: "₹600 Cr+", label: "Loans Disbursed" },
   { icon: Clock, value: "48 Hours", label: "Average Approval" },
   { icon: FileCheck, value: "96%", label: "Success Rate" },
-  { icon: Briefcase, value: "100+", label: "Bank  & NBFC Partners" },
-  { icon: Smile, value: "99%", label: "Client Satisfaction" },
 ];
 
 const LOAN_SERVICES: ServiceGroup[] = [
@@ -279,84 +279,39 @@ export default function HomePageClient() {
   ];
 
   const slides = useMemo(
-    () => [
-      {
-        src: "/home/salaried-emp-1.jpeg",
-        alt: "Loan Offers for Salaried Employees",
-      },
-      {
-        src: "/home/businesses-2.jpeg",
-        alt: "Smart Loan & Funding Solutions for All Businesses",
-      },
-      {
-        src: "/home/professionals-1.jpeg",
-        alt: "Smart Loan & Funding Solutions for All Professionals",
-      },
-      {
-        src: "/home/central-state-govt-emp-1.png",
-        alt: "Smart Loan & Funding Solutions for Central & State Government Employees",
-      },
-      {
-        src: "/home/central-state-govt-schema-1.jpeg",
-        alt: "End-to-End Financing Support for Central & State Government Schemes",
-      },
-      {
-        src: "/home/builder-developers-1.jpeg",
-        alt: "Smart Loan & Project Funding Solutions for Builders & Developers",
-      },
-      {
-        src: "/home/salaried-emp-2.jpeg",
-        alt: "Government scheme guidance",
-      },
-      {
-        src: "/home/businesses-3.jpeg",
-        alt: "Smart Loan & Funding Solutions for All Businesses",
-      },
-      {
-        src: "/home/professionals-2.png",
-        alt: "Smart Loan & Funding Solutions for All Professionals",
-      },
-      {
-        src: "/home-img/home1.jpeg",
-        alt: "Personal finance solutions",
-      },
-      {
-        src: "/home-img/home2.jpeg",
-        alt: "Government scheme guidance",
-      },
-      {
-        src: "/home-img/home3.jpeg",
-        alt: "Secure documentation and approvals",
-      },
-      {
-        src: "/home/salaried-emp-3.jpeg",
-        alt: "Business lending support",
-      },
-      {
-        src: "/home/businesses-1.jpeg",
-        alt: "Smart Loan & Funding Solutions for All Businesses",
-      },
-      {
-        src: "/home/professionals-3.jpeg",
-        alt: "Smart Loan & Funding Solutions for All Professionals",
-      },
-      {
-        src: "/home-img/home4.jpeg",
-        alt: "Secure documentation and approvals",
-      },
-      {
-        src: "/home-img/home1.jpeg",
-        alt: "Business lending support",
-      },
-      {
-        src: "/home-img/home2.jpeg",
-        alt: "Personal finance solutions",
-      },
-    ],
+    () => {
+      const fileNames = [
+        "2024-India-Outlook-IMAGE.jpg.jpeg",
+        "960x0.jpg.jpeg",
+        "Agronomist-Liquid-Fertiliercomp.jpg.jpeg",
+        "ChatGPT Image Feb 8, 2026, 11_41_02 AM.png",
+        "ChatGPT Image Feb 8, 2026, 12_16_16 PM.png",
+        "ChatGPT-Image-Jun-3-2025-03_56_54-PM.png",
+        "The-5-KPIs-Every-Hospital-Should-Be-Tracking-in-2025.jpg.jpeg",
+        "Untitled-design-6.png",
+        "blogcube-father-6813857.jpg.jpeg",
+        "business-mentor-indian-family-business.jpg.jpeg",
+        "co-workers-working-together-sketch.jpg.jpeg",
+        "construction-engineers-reviewing-plans.jpg (1).jpeg",
+        "focused-design-professional-presenting-renovation-project.jpg (1).jpeg",
+        "hover_422032048.jpg.jpeg",
+        "indian-happy-bank-manager-arm-600nw-2441923621.webp",
+        "joyful-military-father-uniform-returning-family-holding-two-kids-arms-woman-adjusting-husbands-cap-family-reunion-returning-home-concept.jpg.jpeg",
+        "serious-young-businessman-showing-presentation-pc-tablet.jpg.jpeg",
+        "two-successful-entrepreneur-helmet-with-project-laptop-new-buildings-stay-near-glass-roof.jpg.jpeg",
+      ];
+
+      return fileNames.map((fileName) => ({
+        src: `/home2/${encodeURIComponent(fileName)}`,
+        alt: "Infinity Loan Services",
+      }));
+    },
     []
   );
 
   const [activeIndex, setActiveIndex] = useState(0);
+  const [previousIndex, setPreviousIndex] = useState<number | null>(null);
+  const [isSlideAnimating, setIsSlideAnimating] = useState(false);
   const activeSlide = slides[activeIndex];
 
   const heroContentGroups = useMemo(
@@ -408,21 +363,49 @@ export default function HomePageClient() {
   const intervalRef = useRef<number | null>(null);
 
   const nextSlide = useCallback(() => {
-    setActiveIndex((i) => (i + 1) % slides.length);
+    setActiveIndex((i) => {
+      setPreviousIndex(i);
+      return (i + 1) % slides.length;
+    });
   }, [slides.length]);
 
   const prevSlide = useCallback(() => {
-    setActiveIndex((i) => (i - 1 + slides.length) % slides.length);
+    setActiveIndex((i) => {
+      setPreviousIndex(i);
+      return (i - 1 + slides.length) % slides.length;
+    });
   }, [slides.length]);
 
   const goToSlide = useCallback(
     (index: number) => {
       const len = slides.length;
       const safe = ((index % len) + len) % len;
-      setActiveIndex(safe);
+      setActiveIndex((i) => {
+        setPreviousIndex(i);
+        return safe;
+      });
     },
     [slides.length]
   );
+
+  useEffect(() => {
+    if (previousIndex === null) return;
+
+    setIsSlideAnimating(false);
+    const raf = window.requestAnimationFrame(() => {
+      setIsSlideAnimating(true);
+    });
+
+    const t = window.setTimeout(() => {
+      setPreviousIndex(null);
+      setIsSlideAnimating(false);
+    }, 720);
+
+    return () => {
+      window.cancelAnimationFrame(raf);
+      window.clearTimeout(t);
+    };
+  }, [previousIndex]);
 
   useEffect(() => {
     intervalRef.current = window.setInterval(() => {
@@ -693,28 +676,43 @@ export default function HomePageClient() {
         onMouseLeave={onMouseLeave}
       >
         <div className="absolute inset-0">
-          {slides.map((slide, i) => {
-            const isActive = i === activeIndex;
-            return (
-              <div
-                key={i}
-                className={cx(
-                  "absolute inset-0 transition-opacity duration-700 ease-out",
-                  isActive ? "opacity-100" : "opacity-0"
-                )}
-                aria-hidden={!isActive}
-              >
-                <Image
-                  src={slide.src}
-                  alt={slide.alt}
-                  fill
-                  priority={i === 0}
-                  sizes="100vw"
-                  className="object-content "
-                />
-              </div>
-            );
-          })}
+          {previousIndex !== null && slides[previousIndex] && (
+            <div
+              key={`prev-${previousIndex}`}
+              className="absolute inset-0 transition-transform duration-700 ease-out will-change-transform"
+              style={{ transform: isSlideAnimating ? "translateX(-100%)" : "translateX(0%)" }}
+              aria-hidden
+            >
+              <Image
+                src={slides[previousIndex].src}
+                alt={slides[previousIndex].alt}
+                fill
+                priority={false}
+                sizes="100vw"
+                className="object-cover"
+              />
+            </div>
+          )}
+
+          <div
+            key={`active-${activeIndex}`}
+            className="absolute inset-0 transition-transform duration-700 ease-out will-change-transform"
+            style={
+              previousIndex === null
+                ? { transform: "translateX(0%)" }
+                : { transform: isSlideAnimating ? "translateX(0%)" : "translateX(100%)" }
+            }
+          >
+            <Image
+              src={activeSlide.src}
+              alt={activeSlide.alt}
+              fill
+              priority={activeIndex === 0}
+              sizes="100vw"
+              className="object-cover"
+            />
+          </div>
+
           <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/45 to-black/70" />
           <div className="absolute inset-0 bg-gradient-to-r from-primary/55 via-black/30 to-accent/30" />
           <div className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-accent/20 blur-3xl" />
@@ -815,10 +813,13 @@ export default function HomePageClient() {
       </section>
 
       <PrivateInstitutionalHighlight />
+      <PoorCibilHighlight />
+      <EmiRestructuringHighlight />
+      <PropertyLoanHighlight />
 
       <section className="relative -mt-8 z-20">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 gap-4  lg:grid-cols-6">
+          <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
             {TRUST_INDICATORS.map((item, idx) => (
               <div
                 key={idx}
@@ -829,7 +830,7 @@ export default function HomePageClient() {
                   <item.icon className="h-6 w-6 text-primary" />
                 </div>
                 <div>
-                  <p className="text-xl font-bold text-foreground">{item.value}</p>
+                  <p className="text-2xl font-bold text-foreground">{item.value}</p>
                   <p className="text-sm text-muted-foreground">{item.label}</p>
                 </div>
               </div>
@@ -843,7 +844,6 @@ export default function HomePageClient() {
       <section className="py-16 lg:py-24">
         <div className="container mx-auto px-4">
           <div className="relative text-center mb-12 rounded-2xl p-6 shadow-xl border border-2 border-gray-100 hover:border-blue-200 bg-background overflow-hidden transition-colors duration-300">
-            <div className="pointer-events-none absolute left-0 top-0 z-20 h-10 w-10 border-l-2 border-t-2 border-blue-200 rounded-tl-2xl animate-[patchBlink_3s_linear_infinite]" />
 
             <div className="relative z-10">
               <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-6xl">
@@ -864,9 +864,259 @@ export default function HomePageClient() {
             </div>
           </div>
 
+          {/* <div className="flex flex-wrap justify-center gap-3 mb-10">
+            {CATEGORY_META.map((cat) => {
+              const Icon = cat.icon;
+              const isActive = cat.key === activeCategory;
+
+              return (
+                <Button
+                  key={cat.key}
+                  type="button"
+                  size="lg"
+                  variant={isActive ? (cat.key as any) : "tab-inactive"}
+                  onClick={() => setActiveCategory(cat.key)}
+                  className={`gap-2 transition-all duration-300 border ${
+                    isActive
+                      ? "scale-105 bg-[#F97415] text-white border-[#F97415] hover:bg-[#F97415]/90"
+                      : ""
+                  }`}
+                >
+                  <Icon className="h-5 w-5" />
+                  {cat.title}
+                </Button>
+              );
+            })}
+          </div>
+
+          {activeCategory === "loans" ? (
+            <div className="space-y-10">
+              <div className="flex items-center justify-between gap-4 rounded-2xl border border-[#F97415]/25 bg-[#F97415]/10 px-5 py-4">
+                <div className="text-sm font-semibold text-[#F97415]">
+                  Explore all services in one place
+                </div>
+                <Button
+                  asChild
+                  size="lg"
+                  className="bg-[#F97415] text-white hover:bg-[#F97415]/90 shadow-md"
+                >
+                  <Link href="/services">View All Services</Link>
+                </Button>
+              </div>
+
+              {LOAN_SERVICES.map((group, groupIndex) => (
+                <div key={group.title} className="space-y-6">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-2xl font-bold tracking-tight text-foreground">{group.title}</h3>
+                  </div>
+
+                  <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                    {group.items.slice(0, 4).map((service, idx) => (
+                      <Card
+                        key={service.key}
+                        className={`group relative overflow-hidden border-2 bg-gradient-to-br from-black via-neutral-900 to-neutral-700 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${
+                          service.highlight ? "border-primary/30" : "border-transparent"
+                        }`}
+                        style={{ animationDelay: `${(groupIndex * 4 + idx) * 50}ms` }}
+                      >
+                        {service.badge && (
+                          <Badge
+                            className={`absolute top-4 right-4 ${
+                              service.highlight
+                                ? "bg-primary text-primary-foreground"
+                                : "bg-secondary text-secondary-foreground"
+                            }`}
+                          >
+                            {service.badge}
+                          </Badge>
+                        )}
+                        <CardHeader className="pb-3">
+                          <CardTitle className="text-xl font-bold text-white pr-16">{service.title}</CardTitle>
+                          <CardDescription className="text-white/70 mt-2 line-clamp-2">
+                            {service.description}
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="flex flex-col gap-3">
+                            <ApplyNowCTAButton
+                              loanType={service.title}
+                              className="w-full group-hover:shadow-glow-cta"
+                              size="lg"
+                            >
+                              Apply Now
+                              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                            </ApplyNowCTAButton>
+                            <Button asChild variant="outline" className="w-full">
+                              <Link href={service.infoHref}>Learn More</Link>
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="space-y-10">
+              <div className="flex items-center justify-between gap-4 rounded-2xl border border-[#F97415]/25 bg-[#F97415]/10 px-5 py-4">
+                <div className="text-sm font-semibold text-[#F97415]">
+                  Explore all services in one place
+                </div>
+                <Button
+                  asChild
+                  size="lg"
+                  className="bg-[#F97415] text-white hover:bg-[#F97415]/90 shadow-md"
+                >
+                  <Link
+                    href={
+                      activeCategory === "insurance"
+                        ? "/services/insurance"
+                        : activeCategory === "credit-cards"
+                        ? "/services/credit-cards"
+                        : "/services/government-schemes"
+                    }
+                  >
+                    View All
+                  </Link>
+                </Button>
+              </div>
+
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                {activeCards.slice(0, 4).map((service, idx) => (
+                  <Card
+                    key={service.key}
+                    className={`group relative overflow-hidden border-2 bg-gradient-to-br from-black via-neutral-900 to-neutral-700 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${
+                      service.highlight ? "border-primary/30" : "border-transparent"
+                    }`}
+                    style={{ animationDelay: `${idx * 50}ms` }}
+                  >
+                    {service.badge && (
+                      <Badge
+                        className={`absolute top-4 right-4 ${
+                          service.highlight
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-secondary text-secondary-foreground"
+                        }`}
+                      >
+                        {service.badge}
+                      </Badge>
+                    )}
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-xl font-bold text-white pr-16">{service.title}</CardTitle>
+                      <CardDescription className="text-white/70 mt-2 line-clamp-2">
+                        {service.description}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex flex-col gap-3">
+                        <ApplyNowCTAButton loanType={service.title} className="w-full group-hover:shadow-glow-cta" size="lg">
+                          Apply Now
+                          <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                        </ApplyNowCTAButton>
+                        <Button asChild variant="outline" className="w-full">
+                          <Link href={service.infoHref}>Learn More</Link>
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          )} */}
 
           <ModernSections />
+          {/* <div className="mt-14 space-y-12">
+            <section className="rounded-3xl bg-secondary/40 p-6 sm:p-10">
+              <div className="text-center mb-10 animate-fade-in-up">
+                <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">How It Works</h2>
+                <p className="mt-3 text-lg text-muted-foreground">A simple, guided process tailored to your selected service</p>
+              </div>
 
+              <div className="grid gap-6 md:grid-cols-4">
+                {activeHowItWorks.map((step, idx) => (
+                  <div
+                    key={step.id}
+                    className="relative rounded-2xl bg-card p-6 shadow-lg border border-border/60 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 animate-fade-in-up"
+                    style={{ animationDelay: `${idx * 80}ms` }}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10">
+                        <step.icon className="h-6 w-6 text-primary" />
+                      </div>
+                      <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-primary-foreground text-sm font-bold">
+                        {idx + 1}
+                      </div>
+                    </div>
+                    <h3 className="mt-5 text-lg font-bold text-foreground">{step.title}</h3>
+                    <p className="mt-2 text-sm text-muted-foreground">{step.description}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            <section className="rounded-3xl bg-card p-6 sm:p-10 border border-border/60">
+              <div className="text-center mb-10 animate-fade-in-up">
+                <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">FAQs</h2>
+                <p className="mt-3 text-lg text-muted-foreground">Quick answers based on the service you’re viewing</p>
+              </div>
+
+              <div className="mx-auto max-w-3xl space-y-3">
+                {activeFaqItems.map((item, idx) => {
+                  const isOpen = openFaqId === item.id;
+
+                  return (
+                    <div
+                      key={item.id}
+                      className="overflow-hidden rounded-2xl border border-border/70 bg-secondary/20 shadow-sm animate-fade-in-up"
+                      style={{ animationDelay: `${idx * 60}ms` }}
+                    >
+                      <button
+                        type="button"
+                        aria-expanded={isOpen}
+                        aria-controls={`panel-${item.id}`}
+                        id={`tab-${item.id}`}
+                        onClick={() => setOpenFaqId((prev) => (prev === item.id ? null : item.id))}
+                        className="w-full px-5 py-4 text-left flex items-center justify-between gap-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                      >
+                        <span className="text-base sm:text-lg font-semibold text-foreground">{item.question}</span>
+                        <svg
+                          className={cx(
+                            "h-5 w-5 shrink-0 text-muted-foreground transition-transform duration-200",
+                            isOpen && "rotate-180"
+                          )}
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                          aria-hidden="true"
+                        >
+                          <path
+                            d="M6 9l6 6 6-6"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </button>
+
+                      <div
+                        id={`panel-${item.id}`}
+                        role="region"
+                        aria-labelledby={`tab-${item.id}`}
+                        className={cx(
+                          "px-5 pb-5 transition-[max-height,opacity] duration-300 ease-in-out overflow-hidden",
+                          isOpen ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0"
+                        )}
+                      >
+                        <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">{item.answer}</p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
+          </div> */}
         </div>
       </section>
 
@@ -918,9 +1168,9 @@ export default function HomePageClient() {
                 }}
               >
                 {/* Glass Card */}
-                <div className="relative h-full rounded-2xl bg-white/60 backdrop-blur-xl border border-gray-200/50 shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden">
+                <div className="relative h-full rounded-2xl bg-gradient-to-br from-black via-gray-900 to-gray-800 border border-gray-700 shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden">
                   {/* Hover Gradient Effect */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-gray-50/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-60 transition-opacity duration-500" />
 
                   {/* Orange Accent Line */}
                   <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#F97415] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -930,8 +1180,8 @@ export default function HomePageClient() {
                     <div className="flex items-start justify-between mb-6">
                       <div className="relative">
                         {/* Icon Background */}
-                        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-gray-100 to-gray-50 border border-gray-200/50 shadow-inner group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
-                          <benefit.icon className="h-8 w-8 text-black group-hover:text-[#F97415] transition-colors duration-500" strokeWidth={1.5} />
+                        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#F97415]/10 to-[#F97415]/5 border border-gray-700/40 shadow-inner group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
+                          <benefit.icon className="h-8 w-8 text-[#F97415] transition-colors duration-500" strokeWidth={1.5} />
                         </div>
 
                         {/* Animated Ring */}
@@ -940,10 +1190,10 @@ export default function HomePageClient() {
 
                       {/* Stat Badge */}
                       <div className="text-right">
-                        <div className="text-2xl font-bold text-black group-hover:text-[#F97415] transition-colors duration-300">
+                        <div className="text-2xl font-bold text-[#F97415] transition-colors duration-300">
                           {benefit.stat}
                         </div>
-                        <div className="text-xs text-gray-500 font-medium mt-1">
+                        <div className="text-xs text-[#F97415] font-medium mt-1">
                           {benefit.label}
                         </div>
                       </div>
@@ -951,10 +1201,10 @@ export default function HomePageClient() {
 
                     {/* Content */}
                     <div className="space-y-3">
-                      <h3 className="text-xl font-bold text-black group-hover:text-gray-900 transition-colors duration-300">
+                      <h3 className="text-xl font-bold text-[#F97415] transition-colors duration-300">
                         {benefit.title}
                       </h3>
-                      <p className="text-gray-600 leading-relaxed group-hover:text-gray-700 transition-colors duration-300">
+                      <p className="text-gray-300 leading-relaxed group-hover:text-gray-200 transition-colors duration-300">
                         {benefit.description}
                       </p>
                     </div>
@@ -995,15 +1245,6 @@ export default function HomePageClient() {
           }
         }
 
-        :global(@keyframes patchBlink) {
-          0%, 49% {
-            opacity: 1;
-          }
-          50%, 100% {
-            opacity: 0;
-          }
-        }
-
         @keyframes blob {
           0%, 100% {
             transform: translate(0, 0) scale(1);
@@ -1029,7 +1270,7 @@ export default function HomePageClient() {
         }
       `}</style>
       </section>
-      <LoanTestimonials />
+
       <section className="py-16 lg:py-24">
         <div className="container mx-auto px-4">
           <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-primary via-primary to-accent p-8 lg:p-16 text-center">
