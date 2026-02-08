@@ -224,7 +224,7 @@ export default function ModernSections() {
                         <div className="mt-12 text-center animate-fade-in-up animation-delay-400">
                             <Link href="/services" className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-[#F97415] to-orange-600 text-white font-bold text-lg rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 group">
                                 <MousePointerClick className="w-5 h-5" />
-                                Get Started Now On Yur Loan Journey
+                                Get Started Now On Your Loan Journey
                                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                             </Link>
                         </div>

@@ -65,38 +65,71 @@ const ContactPage = () => {
 
     const faqs = [
         {
-            question: "Eligibility Criteria",
+            question: "🔐 Privacy & Data Security Policy",
             answer: [
-                "To apply for a loan, you must meet the following requirements:",
-                "• Be a resident of India",
-                "• At least 21 years of age",
-                "• Be an earning member with verifiable income",
-                "• Possess valid identity proof",
-                "• Provide income documentation",
-                "• Maintain an active bank account"
+                "The Company places the highest importance on safeguarding the privacy, confidentiality, and security of its users’ personal and financial information. In accordance with applicable laws and industry best practices, the following measures are implemented to ensure data protection:",
+                "",
+                "🗄️ Secure Data Storage",
+                "All user data is stored in secure, access-controlled, and encrypted data centers, designed to prevent unauthorized access, loss, or misuse of information.",
+                "",
+                "🔑 End-to-End Encryption",
+                "The Company employs end-to-end encryption protocols to protect user data throughout the entire session, including login, usage, and logout.",
+                "",
+                "⚖️ Regulatory Compliance",
+                "Data processing and storage practices strictly comply with applicable data protection laws, regulatory guidelines, and statutory requirements in force from time to time.",
+                "",
+                "🛡️ Security Audits & Monitoring",
+                "Periodic security audits, vulnerability assessments, and continuous system monitoring are conducted to identify, assess, and mitigate potential risks.",
+                "",
+                "🤝 Data Sharing & Confidentiality",
+                "User information shall not be disclosed, shared, or transferred to any third party without the user’s prior consent, except where such disclosure is required under applicable law, regulation, court order, or by a competent authority.",
             ],
         },
         {
-            question: "Privacy & Security",
+            question: "✅ Eligibility Criteria for Loan Application",
             answer: [
-                "Your security is our top priority:",
-                "• All data stored in secure, encrypted data centers",
-                "• End-to-end encryption from login to logout",
-                "• Strict compliance with data protection regulations",
-                "• Regular security audits and monitoring",
-                "• Your information is never shared without consent"
+                "To be eligible to apply for a loan, the applicant must fulfill the following criteria:",
+                "",
+                "🇮🇳 Indian Residency",
+                "The applicant must be a resident of India.",
+                "",
+                "🎂 Minimum Age Requirement",
+                "The applicant should be 21 years of age or above at the time of application.",
+                "",
+                "💼 Income Eligibility",
+                "Must be an earning individual with a stable and verifiable source of income.",
+                "",
+                "🪪 Valid Identity Proof",
+                "Should possess valid government-issued identity proof.",
+                "",
+                "📄 Income Documentation",
+                "Must submit required income documents as per the lender’s policy.",
+                "",
+                "🏦 Active Bank Account",
+                "Should maintain an active bank account in the applicant’s name for loan transactions and disbursement.",
             ],
         },
         {
-            question: "Required Documents",
+            question: "📑 Required Documents",
             answer: [
-                "For successful registration, please prepare:",
-                "• Government-issued photo ID (Aadhaar/PAN/Passport)",
-                "• Address proof (Utility bill/Rent agreement)",
-                "• Income proof (Salary slips/ITR/Bank statements)",
-                "• Recent passport-size photographs",
-                "• Bank account details and statements",
-                "Click the link below for the complete checklist"
+                "For the purpose of successful registration, identity verification, and loan processing, the applicant shall be required to submit the following documents, as applicable and as may be prescribed by the Company and/or the Lender from time to time:",
+                "",
+                "🪪 Government-Issued Photo Identity Proof",
+                "Valid Aadhaar Card, Permanent Account Number (PAN) Card, Passport, or any other identity document recognized under applicable law.",
+                "",
+                "🏠 Proof of Address",
+                "Valid utility bill, rent/lease agreement, or any other address proof acceptable as per regulatory or lender requirements.",
+                "",
+                "💼 Proof of Income",
+                "Recent salary slips, Income Tax Returns (ITR), bank statements, or such other income documents as may be required under the lender’s credit policy.",
+                "",
+                "📸 Photographs",
+                "Recent passport-size photographs of the applicant, as specified by the Company and/or the Lender.",
+                "",
+                "🏦 Bank Account Details",
+                "Details of an active bank account held in the applicant’s name, along with recent bank statements for verification and disbursement purposes.",
+                "",
+                "👉 The applicant is advised to refer to the link provided below for the complete and updated document checklist, as requirements may vary based on the loan product, applicant profile, and applicable regulatory guidelines.",
             ],
         },
         // {
@@ -211,7 +244,18 @@ const ContactPage = () => {
                                 </div>
                                 <div>
                                     <p className="text-gray-400 text-sm">Email Us</p>
-                                    <p className="text-white font-medium">business@infinityloanservices.com</p>
+                                    <a
+                                        href="mailto:business@infinityloanservices.com"
+                                        className="text-white font-medium hover:text-[#F97415] transition-colors break-all"
+                                    >
+                                        business@infinityloanservices.com
+                                    </a>
+                                    <a
+                                        href="mailto:businessservicesinfinity@gmail.com"
+                                        className="mt-1 block text-white font-medium hover:text-[#F97415] transition-colors break-all"
+                                    >
+                                        businessservicesinfinity@gmail.com
+                                    </a>
                                 </div>
                             </div>
 
@@ -221,19 +265,20 @@ const ContactPage = () => {
                                 </div>
                                 <div>
                                     <p className="text-gray-400 text-sm">Call Us</p>
-                                    <p className="text-white font-medium">+91 9579880841</p>
+                                    <a
+                                        href="tel:+919579880841"
+                                        className="text-white font-medium hover:text-[#F97415] transition-colors"
+                                    >
+                                        +91 9579880841
+                                    </a>
+                                    <a
+                                        href="tel:+919766169660"
+                                        className="mt-1 block text-white font-medium hover:text-[#F97415] transition-colors"
+                                    >
+                                        +91 9766169660
+                                    </a>
                                 </div>
                             </div>
-
-                            {/* <div className="flex items-center gap-4 p-4 bg-gray-900 rounded-lg border border-gray-800">
-                                <div className="w-12 h-12 bg-[#F97415] rounded-full flex items-center justify-center flex-shrink-0">
-                                    <MapPin className="text-white" size={20} />
-                                </div>
-                                <div>
-                                    <p className="text-gray-400 text-sm">Visit Us</p>
-                                    <p className="text-white font-medium">Mon-Sat, 9 AM - 6 PM IST</p>
-                                </div>
-                            </div> */}
                         </div>
                     </motion.div>
 
