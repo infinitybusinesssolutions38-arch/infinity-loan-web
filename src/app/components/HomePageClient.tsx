@@ -918,9 +918,9 @@ export default function HomePageClient() {
                 }}
               >
                 {/* Glass Card */}
-                <div className="relative h-full rounded-2xl bg-white/60 backdrop-blur-xl border border-gray-200/50 shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden">
+                <div className="relative h-full rounded-2xl bg-gradient-to-br from-black via-gray-900 to-gray-800 border border-gray-700 shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden">
                   {/* Hover Gradient Effect */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-gray-50/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-60 transition-opacity duration-500" />
 
                   {/* Orange Accent Line */}
                   <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#F97415] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -930,8 +930,8 @@ export default function HomePageClient() {
                     <div className="flex items-start justify-between mb-6">
                       <div className="relative">
                         {/* Icon Background */}
-                        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-gray-100 to-gray-50 border border-gray-200/50 shadow-inner group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
-                          <benefit.icon className="h-8 w-8 text-black group-hover:text-[#F97415] transition-colors duration-500" strokeWidth={1.5} />
+                        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#F97415]/10 to-[#F97415]/5 border border-gray-700/40 shadow-inner group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
+                          <benefit.icon className="h-8 w-8 text-white group-hover:text-[#F97415] transition-colors duration-500" strokeWidth={1.5} />
                         </div>
 
                         {/* Animated Ring */}
@@ -951,10 +951,10 @@ export default function HomePageClient() {
 
                     {/* Content */}
                     <div className="space-y-3">
-                      <h3 className="text-xl font-bold text-black group-hover:text-gray-900 transition-colors duration-300">
+                      <h3 className="text-xl font-bold text-white group-hover:text-[#F97415] transition-colors duration-300">
                         {benefit.title}
                       </h3>
-                      <p className="text-gray-600 leading-relaxed group-hover:text-gray-700 transition-colors duration-300">
+                      <p className="text-gray-300 leading-relaxed group-hover:text-gray-200 transition-colors duration-300">
                         {benefit.description}
                       </p>
                     </div>
