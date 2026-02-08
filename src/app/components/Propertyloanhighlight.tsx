@@ -141,6 +141,36 @@ export default function PropertyLoanHighlight() {
                   All our services are delivered strictly in accordance with banking regulations and lender policies.
                 </p>
 
+                <div className="flex items-center gap-2 mt-6">
+                  <Home className="h-6 w-6 text-[#F97415]" />
+                  <h3 className="text-xl font-bold text-white">
+                    Property Valuation – Our Clear Policy
+                  </h3>
+                </div>
+
+                <p className="mt-4 text-sm leading-relaxed text-gray-200 sm:text-base">
+                  Property valuation for loan purposes is conducted strictly as per current market value, based on independent and authorised valuer reports.
+                </p>
+
+                <div className="mt-4 space-y-2">
+                  <div className="flex items-start gap-3">
+                    <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
+                    <p className="text-sm text-gray-200">Valuation is based on the present market value at the time of loan application</p>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
+                    <p className="text-sm text-gray-200">Future or expected appreciation is not considered during initial loan approval</p>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
+                    <p className="text-sm text-gray-200">Artificial or inflated valuation is neither supported nor encouraged</p>
+                  </div>
+                </div>
+
+                <p className="mt-4 text-sm leading-relaxed text-gray-200 sm:text-base">
+                  All valuations and loan structures follow the guidelines issued by the Reserve Bank of India (RBI) and respective bank/NBFC policies.
+                </p>
+
                 {!isExpanded && (
                   <button
                     onClick={() => setIsExpanded(true)}
@@ -153,36 +183,6 @@ export default function PropertyLoanHighlight() {
 
                 {isExpanded && (
                   <>
-                    <div className="flex items-center gap-2 mt-6">
-                      <Home className="h-6 w-6 text-[#F97415]" />
-                      <h3 className="text-xl font-bold text-white">
-                        Property Valuation – Our Clear Policy
-                      </h3>
-                    </div>
-
-                    <p className="mt-4 text-sm leading-relaxed text-gray-200 sm:text-base">
-                      Property valuation for loan purposes is conducted strictly as per current market value, based on independent and authorised valuer reports.
-                    </p>
-
-                    <div className="mt-4 space-y-2">
-                      <div className="flex items-start gap-3">
-                        <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
-                        <p className="text-sm text-gray-200">Valuation is based on the present market value at the time of loan application</p>
-                      </div>
-                      <div className="flex items-start gap-3">
-                        <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
-                        <p className="text-sm text-gray-200">Future or expected appreciation is not considered during initial loan approval</p>
-                      </div>
-                      <div className="flex items-start gap-3">
-                        <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
-                        <p className="text-sm text-gray-200">Artificial or inflated valuation is neither supported nor encouraged</p>
-                      </div>
-                    </div>
-
-                    <p className="mt-4 text-sm leading-relaxed text-gray-200 sm:text-base">
-                      All valuations and loan structures follow the guidelines issued by the Reserve Bank of India (RBI) and respective bank/NBFC policies.
-                    </p>
-
                     <div className="flex items-center gap-2 mt-6">
                       <BarChart3 className="h-6 w-6 text-[#F97415]" />
                       <h3 className="text-xl font-bold text-white">

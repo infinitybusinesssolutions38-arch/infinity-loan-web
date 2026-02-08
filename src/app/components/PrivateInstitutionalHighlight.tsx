@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { createPortal } from "react-dom";
-import { BriefcaseBusiness, TrendingUp } from "lucide-react";
+import { BriefcaseBusiness, TrendingUp, ChevronDown, ChevronUp } from "lucide-react";
 import axios from "axios";
 import { useForm } from "react-hook-form";
 
@@ -28,6 +28,7 @@ type PrivateApplyFormValues = {
 export default function PrivateInstitutionalHighlight() {
   const [isApplyOpen, setIsApplyOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isReadMoreOpen, setIsReadMoreOpen] = useState(false);
 
   const {
     register,
@@ -112,20 +113,82 @@ export default function PrivateInstitutionalHighlight() {
                 </p>
 
                 <h2 className="mt-4 text-2xl font-bold tracking-tight text-white sm:text-3xl">
-                  Structured private lending for complex capital requirements
+                  🏦 Structured Private Lending for Complex Capital Requirements
                 </h2>
 
-                <p className="mt-4 text-sm leading-relaxed text-gray-200 sm:text-base">
-                  Comprehensive secured and unsecured private lending solutions designed for businesses with diverse and complex capital requirements. We facilitate lending through private lenders, Venture Capital (VC) networks, strategic investors, and HNI & UHNI channels, supported by structured deal frameworks and strong governance standards.
-                </p>
+                <div className="mt-4 space-y-4 text-sm leading-relaxed text-gray-200 sm:text-base">
+                  <p>
+                    💼 Comprehensive secured and unsecured private lending solutions designed for businesses with diverse and complex capital needs.
+                    <br />
+                    We facilitate lending through Private Lenders, Venture Capital (VC) Networks, Strategic Investors, and HNI & UHNI channels, supported by structured deal frameworks and strong governance standards.
+                  </p>
 
-                <p className="mt-4 text-sm leading-relaxed text-gray-200 sm:text-base">
-                  Our solutions include institutional, professional, and private lender-led lending, with customized lending structures developed through detailed eligibility assessment, credit evaluation, and due diligence. We support growth capital, expansion lending, and strategic lending requirements, aligned with long-term business objectives and sustainability.
-                </p>
+                  <p className="font-semibold text-white">🔍 Our Lending Capabilities</p>
+                  <div className="space-y-1">
+                    <p>🏛️ Institutional & Professional Lending</p>
+                    <p>🤝 Private Lender–Led Funding Structures</p>
+                    <p>🧩 Customized Deal Structuring based on detailed eligibility assessment</p>
+                  </div>
 
-                <p className="mt-4 text-sm leading-relaxed text-gray-200 sm:text-base">
-                  Private lending solutions for small and large businesses, SMEs, corporates, factory owners, and industrialists, subject to profile evaluation and due diligence.
-                </p>
+                  {!isReadMoreOpen && (
+                    <button
+                      type="button"
+                      onClick={() => setIsReadMoreOpen(true)}
+                      className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[#F97415] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#F97415]/90"
+                    >
+                      Read more
+                      <ChevronDown className="h-4 w-4" />
+                    </button>
+                  )}
+
+                  {isReadMoreOpen && (
+                    <>
+                      <p className="mt-2">All lending structures are developed through:</p>
+                      <div className="space-y-1">
+                        <p>✔️ Credit Evaluation</p>
+                        <p>✔️ Due Diligence</p>
+                        <p>✔️ Risk & Compliance Review</p>
+                      </div>
+
+                      <p className="font-semibold text-white">🚀 Capital Solutions We Support</p>
+                      <div className="space-y-1">
+                        <p>📈 Growth Capital</p>
+                        <p>🏗️ Expansion & Scale-Up Lending</p>
+                        <p>🎯 Strategic & Special Situation Funding</p>
+                      </div>
+
+                      <p>
+                        All solutions are aligned with long-term business objectives and sustainable growth.
+                      </p>
+
+                      <p className="font-semibold text-white">🏭 Who We Serve</p>
+                      <div className="space-y-1">
+                        <p>🏢 Small & Large Businesses</p>
+                        <p>🏭 SMEs & Corporates</p>
+                        <p>🏗️ Factory Owners & Industrialists</p>
+                      </div>
+
+                      <p className="text-white/90">📌 All lending solutions are subject to profile evaluation and due diligence.</p>
+
+                      <div className="mt-4 rounded-2xl border border-white/10 bg-white/5 p-4">
+                        <p className="text-white/90 font-semibold">💡 Optional Short Version (for cards / sections)</p>
+                        <p className="mt-2">🔒 Structured Private Lending</p>
+                        <p className="mt-2 text-white/70">
+                          Tailored secured and unsecured funding solutions for businesses with complex capital requirements—powered by private lenders, strategic investors, and strong governance.
+                        </p>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => setIsReadMoreOpen(false)}
+                        className="inline-flex items-center justify-center rounded-xl border border-white/20 bg-white/5 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
+                      >
+                        Show less
+                        <ChevronUp className="h-4 w-4" />
+                      </button>
+                    </>
+                  )}
+                </div>
               </div>
 
               <div className="w-full max-w-xl lg:max-w-sm">

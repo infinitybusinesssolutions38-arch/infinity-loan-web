@@ -257,7 +257,7 @@ export default function LogoCloud() {
                 {/* Bottom CTA */}
                 <div className="mt-10 text-center animate-fade-in-up animation-delay-500">
                     <p className="text-sm text-gray-500 font-medium">
-                        * Partner availability may vary based on location and loan eligibility
+                        * Partner availability may vary based on location and loan eligibility criteria.
                     </p>
                 </div>
             </div>

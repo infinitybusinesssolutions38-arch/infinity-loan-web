@@ -128,8 +128,58 @@ export default function EmiRestructuringHighlight() {
                   If your monthly EMIs are too high and causing financial pressure, you can approach us for EMI restructuring and EMI burden reduction, provided your situation is supported by a genuine financial reason.
                 </p>
 
+                <div className="flex items-center gap-2 mt-6">
+                  <Target className="h-6 w-6 text-[#F97415]" />
+                  <h3 className="text-xl font-bold text-white">Who Should Contact Us</h3>
+                </div>
+
+                <div className="mt-4 space-y-2">
+                  <div className="flex items-start gap-3">
+                    <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
+                    <p className="text-sm text-gray-200">High monthly EMI pressure</p>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
+                    <p className="text-sm text-gray-200">Difficulty managing multiple loan EMIs</p>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
+                    <p className="text-sm text-gray-200">Reduced income impacting EMI payments</p>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
+                    <p className="text-sm text-gray-200">Financial stress due to medical or family emergencies</p>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
+                    <p className="text-sm text-gray-200">Temporary financial setback with recovery in progress</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 mt-6">
+                  <Sparkles className="h-6 w-6 text-[#F97415]" />
+                  <h3 className="text-xl font-bold text-white">Our Core Strength</h3>
+                </div>
+
+                <div className="mt-4 space-y-2">
+                  <div className="flex items-start gap-3">
+                    <Sparkles className="h-5 w-5 text-[#F97415] mt-0.5 flex-shrink-0" />
+                    <p className="text-sm text-gray-200">We specialise exclusively in EMI restructuring & EMI stress reduction</p>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <Sparkles className="h-5 w-5 text-[#F97415] mt-0.5 flex-shrink-0" />
+                    <p className="text-sm text-gray-200">We focus on realistic, policy-based solutions — not false promises</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 mt-6">
+                  <RefreshCw className="h-6 w-6 text-[#F97415]" />
+                  <h3 className="text-xl font-bold text-white">EMI Restructuring & Relief Support</h3>
+                </div>
+
                 {!isExpanded && (
                   <button
+                    type="button"
                     onClick={() => setIsExpanded(true)}
                     className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[#F97415] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#F97415]/90"
                   >
@@ -140,61 +190,6 @@ export default function EmiRestructuringHighlight() {
 
                 {isExpanded && (
                   <>
-                    <div className="flex items-center gap-2 mt-6">
-                      <Target className="h-6 w-6 text-[#F97415]" />
-                      <h3 className="text-xl font-bold text-white">
-                        Who Should Contact Us
-                      </h3>
-                    </div>
-
-                    <div className="mt-4 space-y-2">
-                      <div className="flex items-start gap-3">
-                        <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
-                        <p className="text-sm text-gray-200">High monthly EMI pressure</p>
-                      </div>
-                      <div className="flex items-start gap-3">
-                        <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
-                        <p className="text-sm text-gray-200">Difficulty managing multiple loan EMIs</p>
-                      </div>
-                      <div className="flex items-start gap-3">
-                        <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
-                        <p className="text-sm text-gray-200">Reduced income impacting EMI payments</p>
-                      </div>
-                      <div className="flex items-start gap-3">
-                        <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
-                        <p className="text-sm text-gray-200">Financial stress due to medical or family emergencies</p>
-                      </div>
-                      <div className="flex items-start gap-3">
-                        <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
-                        <p className="text-sm text-gray-200">Temporary financial setback with recovery in progress</p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-2 mt-6">
-                      <Sparkles className="h-6 w-6 text-[#F97415]" />
-                      <h3 className="text-xl font-bold text-white">
-                        Our Core Strength
-                      </h3>
-                    </div>
-
-                    <div className="mt-4 space-y-2">
-                      <div className="flex items-start gap-3">
-                        <Sparkles className="h-5 w-5 text-[#F97415] mt-0.5 flex-shrink-0" />
-                        <p className="text-sm text-gray-200">We specialise exclusively in EMI restructuring & EMI stress reduction</p>
-                      </div>
-                      <div className="flex items-start gap-3">
-                        <Sparkles className="h-5 w-5 text-[#F97415] mt-0.5 flex-shrink-0" />
-                        <p className="text-sm text-gray-200">We focus on realistic, policy-based solutions — not false promises</p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-2 mt-6">
-                      <RefreshCw className="h-6 w-6 text-[#F97415]" />
-                      <h3 className="text-xl font-bold text-white">
-                        EMI Restructuring & Relief Support
-                      </h3>
-                    </div>
-
                     <p className="mt-3 text-sm leading-relaxed text-gray-200 sm:text-base">
                       We assist clients with:
                     </p>
@@ -342,6 +337,7 @@ export default function EmiRestructuringHighlight() {
                     </div>
 
                     <button
+                      type="button"
                       onClick={() => setIsExpanded(false)}
                       className="mt-6 inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/5 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
                     >

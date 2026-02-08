@@ -1,17 +1,21 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ComponentType } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowRight,
   Banknote,
   Building2,
+  Briefcase,
   CheckCircle2,
   Clock,
   CreditCard,
   FileCheck,
   FileText,
+  Hammer,
+  Landmark,
+  ScrollText,
   Shield,
   Sparkles,
   TrendingUp,
@@ -59,7 +63,7 @@ type HowItWorksStep = {
   id: string;
   title: string;
   description: string;
-  icon: React.ComponentType<{ className?: string }>;
+  icon: ComponentType<{ className?: string }>;
 };
 
 const AUTOPLAY_MS = 3000;
@@ -67,7 +71,7 @@ const AUTOPLAY_MS = 3000;
 const CATEGORY_META: Array<{
   key: HubCategoryKey;
   title: string;
-  icon: React.ComponentType<{ className?: string }>;
+  icon: ComponentType<{ className?: string }>;
   gradient: string;
 }> = [
     { key: "loans", title: "Loans", icon: Banknote, gradient: "bg-gradient-loans" },
@@ -257,9 +261,9 @@ export default function HomePageClient() {
   const benefits = [
     {
       icon: Clock,
-      title: "Quick Approvals",
-      description: "Get approvals in as little as 24 hours with minimal documentation",
-      stat: "24hrs",
+      title: "Quick & Easy Approvals",
+      description: "Get approvals in as little as 48 hours with minimal documentation",
+      stat: "48hrs",
       label: "Average Response"
     },
     {
@@ -318,39 +322,35 @@ export default function HomePageClient() {
     () => [
       {
         badge: "Trusted Financial Partner",
-        title: "Loan Offers for Salaried Employees",
-        // emphasis: "For Everyone",
-        // description:
-        //   "1.Loan Offers for Salaried Employees | 2.Smart Loan & Funding Solutions for All Businesses — Proprietorships, Mid-Sized SMEs, Industrial Enterprises, and Corporates",
+        icon: Users,
+        title: "Loan Offers for Salaried Employees",  
 
       },
       {
         badge: "Quick & Transparent",
-        title: "Smart Loan & Funding Solutions for All Businesses",
-        // emphasis: "For Professionals",
-        // description:
-        //   "3.Smart Loan & Funding Solutions for All Professionals — Doctors, Chartered Accountants, Architects, Engineers, Lawyers, Consultants, and Self-Employed Professionals | 4.Smart Loan & Funding Solutions for Central & State Government Employees — Civil Services, Public Sector Staff, Defence Personnel, and Other Government Employees",
+        icon: Banknote,
+        title: "Smart Loan & Funding Solutions for All Businesses — Proprietorships, Mid-Sized SMEs, Industrial Enterprises, and Corporates,",
 
       },
       {
         badge: "Eligibility-led Guidance",
-        title: "Smart Loan & Funding Solutions for All Professionals",
-        // emphasis: "Project Support",
-        // description:
-        //   "5. End-to-End Financing Support for Central & State Government Schemes | 6. Smart Loan & Project Funding Solutions for Builders & Developers",
-
+        icon: Briefcase,
+        title: "Smart Loan & Funding Solutions for All Professionals — Doctors, Chartered Accountants, Architects, Engineers, Lawyers, Consultants, and Self-Employed Professionals",
       },
       {
         badge: "Eligibility-led Guidance",
-        title: "Smart Loan & Funding Solutions for Central & State Government Employees",
+        icon: Landmark,
+        title: "Smart Loan & Funding Solutions for Central & State Government Employees — Civil Services, Public Sector Staff, Defence Personnel, and Other Government Employees",
       },
       {
         badge: "Eligibility-led Guidance",
+        icon: ScrollText,
         title: "End-to-End Financing Support for Central & State Government Schemes",
       },
       {
         badge: "Eligibility-led Guidance",
-        title: "Smart Loan & Project Funding Solutions for Builders & Developers",
+        icon: Hammer,
+        title: "Smart Loan & Project Funding Solutions for Builders & Developer",
       },
 
 
@@ -359,6 +359,7 @@ export default function HomePageClient() {
   );
 
   const activeHeroContent = heroContentGroups[activeIndex % heroContentGroups.length];
+  const ActiveHeroIcon = activeHeroContent.icon;
   const isPausedRef = useRef(false);
   const intervalRef = useRef<number | null>(null);
 
@@ -721,7 +722,7 @@ export default function HomePageClient() {
 
         <div className="relative">
           <div className="container relative z-10 mx-auto px-4">
-            <div className="flex min-h-[560px] items-center py-14 sm:min-h-[640px] sm:py-20 lg:min-h-[740px]">
+            <div className="flex min-h-[560px] items-end py-14 sm:min-h-[640px] sm:py-20 lg:min-h-[740px]">
               <div className="mx-auto w-full max-w-4xl text-center">
                 <Badge className="mb-4 bg-accent/20 text-accent-foreground border-accent/30 backdrop-blur">
                   <Sparkles className="mr-1 h-3 w-3" />
@@ -729,7 +730,12 @@ export default function HomePageClient() {
                 </Badge>
 
                 <h1 className="text-4xl font-extrabold tracking-tight text-primary-foreground sm:text-5xl lg:text-5xl">
-                  {activeHeroContent.title}{" "}
+                  <span className="inline-flex items-center justify-center gap-3">
+                    <span className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/15 bg-white/10 sm:h-16 sm:w-16">
+                      <ActiveHeroIcon className="h-7 w-7 text-[#F97415] sm:h-9 sm:w-9" strokeWidth={2.5} />
+                    </span>
+                    <span>{activeHeroContent.title}</span>
+                  </span>{" "}
                   {/* <span className="text-accent">{activeHeroContent.emphasis}</span> */}
                 </h1>
 
@@ -748,7 +754,7 @@ export default function HomePageClient() {
                     size="xl"
                     className="text-white bg-[#F97415]"
                   >
-                    <Link href="/contact">Talk to an Expert</Link>
+                    <Link href="/contact#contact-form">Talk to an Expert</Link>
                   </Button>
                 </div>
 
@@ -773,44 +779,17 @@ export default function HomePageClient() {
                   })}
                 </div>
 
-                <div className="mt-8 flex items-center justify-center gap-3">
-                  <button
-                    type="button"
-                    onClick={prevSlide}
-                    className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 px-3 py-2 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/15 focus:outline-none focus:ring-4 focus:ring-white/20"
-                    aria-label="Previous slide"
-                  >
-                    <ArrowIcon className="h-5 w-5" />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={nextSlide}
-                    className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 px-3 py-2 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/15 focus:outline-none focus:ring-4 focus:ring-white/20"
-                    aria-label="Next slide"
-                  >
-                    <ArrowIcon className="h-5 w-5 rotate-180" />
-                  </button>
-                </div>
+
               </div>
             </div>
           </div>
-
-          <div className="pointer-events-none absolute bottom-0 left-0 right-0">
-            <svg
-              viewBox="0 0 1440 120"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className="w-full"
-              aria-hidden="true"
-            >
-              <path
-                d="M0 120L60 105C120 90 240 60 360 45C480 30 600 30 720 37.5C840 45 960 60 1080 67.5C1200 75 1320 75 1380 75L1440 75V120H0Z"
-                fill="#ffffff"
-              />
-            </svg>
-          </div>
         </div>
       </section>
+
+
+      <div>
+        OUR KEY STRENGTHS - OUR KEY BUSINESS VERTICALS
+      </div>
 
       <PrivateInstitutionalHighlight />
       <PoorCibilHighlight />
@@ -857,7 +836,7 @@ export default function HomePageClient() {
               <div className="mt-8">
                 <Link href="/services">
                   <button className="cursor-pointer px-8 py-3 bg-[#f97415] text-white font-semibold rounded-lg shadow-md hover:bg-[#e8630f] transition duration-300">
-                    View All Services
+                    View All Loan Services
                   </button>
                 </Link>
               </div>
@@ -1227,7 +1206,7 @@ export default function HomePageClient() {
           <div className="mt-16 text-center">
             <div className="inline-flex items-center gap-2 text-sm text-gray-600">
               <Shield className="w-4 h-4 text-[#F97415]" />
-              <span>Trusted by over 10,000+ customers nationwide</span>
+              <span>Trusted by over 60,000+ customers nationwide</span>
             </div>
           </div>
         </div>
@@ -1278,7 +1257,7 @@ export default function HomePageClient() {
             <div className="relative z-10">
               <h2 className="text-3xl font-bold text-primary-foreground sm:text-4xl lg:text-5xl">Ready to Get Started?</h2>
               <p className="mt-4 text-lg text-primary-foreground/80 max-w-2xl mx-auto">
-                Apply now and get a decision within 24 hours. No hidden fees, no surprises.
+                Apply now and get a decision within 48 hours. No hidden fees, no surprises.
               </p>
               <div className="mt-8 flex flex-wrap justify-center gap-4">
                 <ApplyNowCTAButton loanType="Loan" className="shadow-2xl" size="xl">
@@ -1286,7 +1265,7 @@ export default function HomePageClient() {
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </ApplyNowCTAButton>
                 <Button asChild variant="hero-outline" size="xl">
-                  <Link href="/contact">Talk to an Expert</Link>
+                  <Link href="/contact#contact-form">Talk to an Expert</Link>
                 </Button>
               </div>
             </div>
