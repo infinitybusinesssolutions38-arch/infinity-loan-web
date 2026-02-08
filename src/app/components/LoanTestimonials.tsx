@@ -235,10 +235,8 @@ const LoanTestimonials: React.FC = () => {
                 </div>
               </div>
 
-            </div>
-
-          ))}
-
+            ))}
+          </div>
         </div>
 
       </div>
