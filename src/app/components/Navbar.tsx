@@ -140,6 +140,14 @@ const Navbar = () => {
                 EMI Calculator
               </Link>
             </li>
+             <li>
+              <Link
+                href="/join-us"
+                className={navLinkClass(pathname === "/emi-calculator")}
+              >
+                Join Us
+              </Link>
+            </li>
           </ul>
         </div>
 
