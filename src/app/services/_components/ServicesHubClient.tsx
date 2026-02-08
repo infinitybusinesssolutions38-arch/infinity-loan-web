@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import {
@@ -43,6 +44,7 @@ type ServiceCardItem = {
   key: string;
   title: string;
   description: string;
+  imageSrc?: string;
   applyHref: string;
   infoHref: string;
   highlight?: boolean;
@@ -53,6 +55,21 @@ type ServiceGroup = {
   title: string;
   items: ServiceCardItem[];
 };
+
+const CATEGORY_FALLBACK_IMAGE: Record<HubCategoryKey, string> = {
+  "salaried-employees": "/home/salaried-emp-1.jpeg",
+  businesses: "/home/businesses-1.jpeg",
+  professionals: "/home/professionals-1.jpeg",
+  "govt-employees": "/home/central-state-govt-emp-1.png",
+  "government-schemes": "/home/central-state-govt-schema-1.jpeg",
+  "builders-developers": "/home/builder-developers-1.jpeg",
+  "credit-cards": "/home-img/home1.jpeg",
+};
+
+const getCardImageSrc = (params: {
+  service: ServiceCardItem;
+  fallbackCategory: HubCategoryKey;
+}) => params.service.imageSrc ?? CATEGORY_FALLBACK_IMAGE[params.fallbackCategory];
 
 const slugify = (value: string) =>
   value
@@ -1676,14 +1693,40 @@ export default function ServicesHubClient() {
                   size="lg"
                   variant="tab-inactive"
                   onClick={() => setActiveCategory(cat.key)}
-                  className={`h-auto w-full justify-start gap-3 py-4 transition-all duration-300 whitespace-normal text-left leading-snug text-base sm:text-lg ${
+                  className={`group h-auto w-full justify-start gap-4 rounded-2xl border-2 px-5 py-5 transition-all duration-300 whitespace-normal text-left leading-snug text-base sm:text-lg hover:-translate-y-0.5 hover:shadow-lg focus-visible:ring-2 focus-visible:ring-[#F97415]/40 ${
                     isActive
-                      ? "scale-105 bg-[#F97415] text-white border border-[#F97415] hover:bg-[#F97415]/90"
-                      : ""
+                      ? "scale-[1.02] border-[#F97415] bg-gradient-to-br from-black via-neutral-900 to-black text-white"
+                      : "border-white/10 bg-gradient-to-br from-black via-neutral-900 to-black text-white hover:border-[#F97415]/40"
                   }`}
                 >
-                  <Icon className="h-7 w-7" />
-                  {cat.title}
+                  <span
+                    className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border transition-all duration-300 ${
+                      isActive
+                        ? "border-[#F97415]/30 bg-[#F97415] text-white"
+                        : "border-[#F97415]/15 bg-[#F97415]/10 text-[#F97415] group-hover:bg-[#F97415] group-hover:text-white"
+                    }`}
+                  >
+                    <Icon className="h-6 w-6" />
+                  </span>
+
+                  <span className="min-w-0 flex-1">
+                    <span className="block font-bold text-white group-hover:text-[#F97415] transition-colors duration-300">
+                      {cat.title}
+                    </span>
+                    <span className="mt-1 block text-xs font-medium text-white/60">
+                      Click to view services
+                    </span>
+                  </span>
+
+                  <span
+                    className={`inline-flex shrink-0 items-center rounded-full px-3 py-1 text-xs font-semibold transition-all duration-300 ${
+                      isActive
+                        ? "bg-[#F97415] text-white"
+                        : "bg-[#F97415]/10 text-[#F97415] group-hover:bg-[#F97415] group-hover:text-white"
+                    }`}
+                  >
+                    View
+                  </span>
                 </Button>
               );
             })}
@@ -1713,6 +1756,16 @@ export default function ServicesHubClient() {
                         }`}
                         style={{ animationDelay: `${groupIndex * 120 + idx * 50}ms` }}
                       >
+                        <div className="relative h-32 w-full overflow-hidden">
+                          <Image
+                            src={getCardImageSrc({ service, fallbackCategory: activeCategory })}
+                            alt={service.title}
+                            fill
+                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                            className="object-cover opacity-80 transition-transform duration-500 group-hover:scale-105"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
+                        </div>
                         {service.badge && (
                           <Badge
                             className={`absolute top-4 right-4 ${
@@ -1724,8 +1777,8 @@ export default function ServicesHubClient() {
                             {service.badge}
                           </Badge>
                         )}
-                        <CardHeader className="pb-3">
-                          <CardTitle className="text-xl font-bold text-white pr-16">
+                        <CardHeader className="pb-3 pt-5">
+                          <CardTitle className="text-lg font-bold text-white pr-16">
                             {service.title}
                           </CardTitle>
                           <CardDescription className="text-gray-300 mt-2 line-clamp-2">
@@ -1763,8 +1816,18 @@ export default function ServicesHubClient() {
                   className={`group relative overflow-hidden border-2 bg-gradient-to-br from-black via-neutral-900 to-neutral-700 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${
                     service.highlight ? "border-primary/30" : "border-transparent"
                   }`}
-                  style={{ animationDelay: `${idx * 50}ms` }}
+                  style={{ animationDelay: `${idx * 60}ms` }}
                 >
+                  <div className="relative h-32 w-full overflow-hidden">
+                    <Image
+                      src={getCardImageSrc({ service, fallbackCategory: activeCategory })}
+                      alt={service.title}
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                      className="object-cover opacity-80 transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
+                  </div>
                   {service.badge && (
                     <Badge
                       className={`absolute top-4 right-4 ${
@@ -1776,8 +1839,8 @@ export default function ServicesHubClient() {
                       {service.badge}
                     </Badge>
                   )}
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-xl font-bold text-white pr-16">{service.title}</CardTitle>
+                  <CardHeader className="pb-3 pt-5">
+                    <CardTitle className="text-lg font-bold text-white pr-16">{service.title}</CardTitle>
                     <CardDescription className="text-gray-300 mt-2 line-clamp-2">
                       {service.description}
                     </CardDescription>
