@@ -180,10 +180,13 @@ export default function JoinUsPage() {
             <div className="rounded-3xl bg-white/5 backdrop-blur-xl p-8 border border-white/10 shadow-2xl h-fit sticky top-32">
               <div className="mb-6">
                 <h2 className="text-2xl font-bold text-white mb-2">
-                  Partner Registration
+                  📝 Partner Registration
                 </h2>
+                <p className="text-sm text-gray-300 font-semibold mb-3">
+                  Register to Become a Loan Partner
+                </p>
                 <p className="text-sm text-gray-400">
-                  Complete the form to join our network
+                  Complete the form below to join our loan partner network and start earning through successful loan disbursements.
                 </p>
               </div>
 
@@ -366,24 +369,28 @@ export default function JoinUsPage() {
                   desc: "Start your loan business without any upfront cost.",
                 },
                 {
-                  title: "Attractive Commission Structure",
+                  title: "Attractive and Transparent Commission Structure",
                   desc: "Clearly defined commissions with complete visibility on earnings.",
                 },
                 {
-                  title: "Instant Payouts",
+                  title: "Instant and Timely Payouts",
                   desc: "Fast and reliable payouts after every successful loan disbursement.",
                 },
                 {
-                  title: "Multiple Bank Partnerships",
+                  title: "Multiple Banks and NBFC Partnerships",
                   desc: "Access to a wide network of leading banks and NBFCs.",
                 },
                 {
-                  title: "Paperless Process",
+                  title: "Simple, Fast, and Paperless Process",
                   desc: "Streamlined digital processes to save time and reduce paperwork.",
                 },
                 {
-                  title: "Dedicated Support",
+                  title: "Dedicated Partner Support Team",
                   desc: "Professional assistance to support you at every stage.",
+                },
+                {
+                  title: "Flexible Working Model",
+                  desc: "Work part-time or full-time, based on your availability and goals.",
                 },
               ].map((benefit, idx) => (
                 <div
@@ -397,6 +404,10 @@ export default function JoinUsPage() {
                 </div>
               ))}
             </div>
+
+            <p className="text-center text-gray-600 mt-8 text-sm">
+              Our platform supports both experienced DSAs and individuals who are new to the loan business, with complete onboarding and ongoing support.
+            </p>
           </div>
 
           {/* How It Works */}
@@ -423,18 +434,18 @@ export default function JoinUsPage() {
                 },
                 {
                   step: "2️⃣",
-                  title: "Processing & Coordination",
-                  desc: "Our team manages documentation, follow-ups, and coordination with banks.",
+                  title: "Processing & Bank Coordination",
+                  desc: "Our team manages documentation, follow-ups, and coordination with the respective banks and NBFCs.",
                 },
                 {
                   step: "3️⃣",
                   title: "Approval & Disbursement",
-                  desc: "The loan is reviewed, approved, and disbursed by the bank or NBFC.",
+                  desc: "The loan is reviewed, approved, and disbursed directly by the bank or NBFC.",
                 },
                 {
                   step: "4️⃣",
-                  title: "Instant Commission",
-                  desc: "Your commission is credited promptly after successful disbursement.",
+                  title: "Instant Commission Payout",
+                  desc: "Your commission is credited promptly after successful loan disbursement.",
                 },
               ].map((item, idx) => (
                 <div
@@ -449,6 +460,10 @@ export default function JoinUsPage() {
                 </div>
               ))}
             </div>
+
+            <p className="text-center text-gray-600 mt-8 text-sm">
+              💸 Earn competitive payouts on every successfully disbursed loan with complete transparency.
+            </p>
           </div>
 
           {/* Who Can Partner */}
@@ -510,7 +525,7 @@ export default function JoinUsPage() {
               {/* Security */}
               <div>
                 <h2 className="text-3xl font-bold mb-6">
-                  🔒 Secure & Transparent
+                  🔒 Secure, Reliable, and Transparent
                 </h2>
                 <div className="space-y-4">
                   {[
@@ -533,8 +548,11 @@ export default function JoinUsPage() {
                   📞 Partner Support
                 </h2>
                 <p className="text-gray-400 mb-6">
+                  Need Help or Have Questions?
+                </p>
+                <p className="text-gray-400 mb-6">
                   Our dedicated partner support team is here to assist you at
-                  every stage of your journey.
+                  every stage of your journey — from registration to successful loan disbursements.
                 </p>
                 <div className="space-y-3 text-gray-300">
                   <p>
