@@ -27,7 +27,7 @@ export const sendPartnerConfirmationEmail = async (
         <!-- Header -->
         <div style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); padding: 40px 20px; text-align: center; color: white;">
           <h1 style="margin: 0; color: #F97415; font-size: 28px; font-weight: bold;">🤝 Channel Partner Program</h1>
-          <p style="margin: 10px 0 0 0; color: #e0e0e0; font-size: 16px;">Welcome to Infinity Loans & Business Solutions</p>
+          <p style="margin: 10px 0 0 0; color: #000000; font-size: 16px;">Welcome to Infinity Loans & Business Solutions</p>
         </div>
 
         <!-- Main Content -->
