@@ -23,81 +23,135 @@ export const sendPartnerConfirmationEmail = async (
     const transporter = createTransporter();
 
     const htmlContent = `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-        <div style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); padding: 30px; border-radius: 10px; color: white; margin-bottom: 30px;">
-          <h1 style="margin: 0; color: #F97415;">Welcome to Infinity Loans Partner Network!</h1>
-          <p style="margin: 10px 0 0 0; color: #e0e0e0;">Your Registration is Confirmed</p>
+      <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 700px; margin: 0 auto; padding: 0;">
+        <!-- Header -->
+        <div style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); padding: 40px 20px; text-align: center; color: white;">
+          <h1 style="margin: 0; color: #F97415; font-size: 28px; font-weight: bold;">🤝 Channel Partner Program</h1>
+          <p style="margin: 10px 0 0 0; color: #e0e0e0; font-size: 16px;">Welcome to Infinity Loans & Business Solutions</p>
         </div>
 
-        <div style="color: #333; line-height: 1.6;">
+        <!-- Main Content -->
+        <div style="padding: 30px 20px; background: white; color: #333; line-height: 1.8;">
           <p>Dear <strong>${partnerName}</strong>,</p>
 
-          <p>Thank you for registering as a partner with <strong>Infinity Loan Services</strong>! We're excited to have you join our trusted loan distribution network.</p>
+          <p>Greetings from Infinity Loans & Business Solutions.</p>
 
-          <div style="background: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <h3 style="margin-top: 0; color: #F97415;">Registration Details:</h3>
-            <table style="width: 100%;">
-              <tr>
-                <td style="padding: 8px 0;"><strong>Name:</strong></td>
-                <td style="padding: 8px 0;">${partnerData.fullName}</td>
-              </tr>
-              <tr>
-                <td style="padding: 8px 0;"><strong>Email:</strong></td>
-                <td style="padding: 8px 0;">${partnerData.email}</td>
-              </tr>
-              <tr>
-                <td style="padding: 8px 0;"><strong>Mobile:</strong></td>
-                <td style="padding: 8px 0;">${partnerData.mobileNumber}</td>
-              </tr>
-              <tr>
-                <td style="padding: 8px 0;"><strong>City:</strong></td>
-                <td style="padding: 8px 0;">${partnerData.city}</td>
-              </tr>
-              ${partnerData.experience !== "Not provided" ? `
-              <tr>
-                <td style="padding: 8px 0;"><strong>Experience:</strong></td>
-                <td style="padding: 8px 0;">${partnerData.experience}</td>
-              </tr>
-              ` : ""}
-              ${partnerData.preferredCategory !== "Not specified" ? `
-              <tr>
-                <td style="padding: 8px 0;"><strong>Preferred Category:</strong></td>
-                <td style="padding: 8px 0;">${partnerData.preferredCategory}</td>
-              </tr>
-              ` : ""}
-            </table>
+          <p>We are pleased to inform you that we have successfully received your application for the <strong>Loan Channel Partner Program</strong>. We sincerely appreciate your interest in associating with us and are confident that this collaboration will result in a strong, transparent, and successful business relationship.</p>
+
+          <!-- Support & Working Assistance -->
+          <div style="background: #f8f8f8; padding: 20px; border-radius: 8px; margin: 25px 0; border-left: 4px solid #F97415;">
+            <h3 style="margin-top: 0; color: #F97415;">📞 Support & Working Assistance</h3>
+            <p style="margin: 10px 0;">Please be assured that our team and directors are available from <strong>9:00 AM to 9:00 PM</strong> to assist you with any queries, guidance, or operational support you may require.</p>
+            <p style="margin: 10px 0;"><strong>⚡ Important Note:</strong> You are requested to focus exclusively on <strong>file sourcing and client referrals</strong>. All other activities, including processing, coordination, verification, approvals, and disbursement support, will be handled entirely by our internal team.</p>
           </div>
 
-          <div style="background: #f0f8ff; padding: 20px; border-left: 4px solid #F97415; border-radius: 4px; margin: 20px 0;">
-            <h3 style="margin-top: 0;">What's Next?</h3>
-            <ul style="margin: 0; padding-left: 20px;">
-              <li>Our team will review your registration within 24-48 hours</li>
-              <li>You'll receive a confirmation call or email with onboarding details</li>
-              <li>Complete the KYC process to activate your partner account</li>
-              <li>Start earning commissions on successful loan disbursements</li>
+          <!-- Channel Partner Onboarding Requirements -->
+          <div style="background: #f0f8ff; padding: 20px; border-radius: 8px; margin: 25px 0;">
+            <h3 style="margin-top: 0; color: #F97415;">📋 Channel Partner Onboarding Requirements</h3>
+            <p>To complete your onboarding, kindly share the following documents for verification and record purposes:</p>
+            <ul style="margin: 10px 0; padding-left: 25px;">
+              <li>Copy of Aadhaar Card</li>
+              <li>Copy of PAN Card</li>
+              <li>Cancelled Cheque (for commission payout and banking records)</li>
+            </ul>
+            <p><strong>Upon successful onboarding, you will receive from our side:</strong></p>
+            <ul style="margin: 10px 0; padding-left: 25px;">
+              <li>Your official Channel Partner ID Card</li>
+              <li>Marketing and promotional materials to support your business activities</li>
             </ul>
           </div>
 
-          <div style="margin: 30px 0; padding: 20px; background: #f9f9f9; border-radius: 8px;">
-            <h3 style="margin-top: 0;">Need Help?</h3>
-            <p>Have questions? Our dedicated partner support team is here to help!</p>
-            <ul style="margin: 10px 0; padding-left: 20px;">
-              <li><strong>Phone/WhatsApp:</strong> ${process.env.NEXT_PUBLIC_PARTNER_SUPPORT_PHONE}</li>
-              <li><strong>Email:</strong> ${process.env.NEXT_PUBLIC_PARTNER_SUPPORT_EMAIL}</li>
-              <li><strong>Support Hours:</strong> ${process.env.NEXT_PUBLIC_PARTNER_SUPPORT_HOURS}</li>
+          <!-- Commission Structure -->
+          <div style="background: #fef5e7; padding: 20px; border-radius: 8px; margin: 25px 0;">
+            <h3 style="margin-top: 0; color: #F97415;">💰 Commission Structure</h3>
+            <p>Please note that the commission payable to you will depend on the <strong>volume and quality of business</strong> generated by you. Our Channel Partner Program follows a <strong>slab-wise commission structure</strong>, and detailed commission slabs will be communicated separately in accordance with company policies.</p>
+            <p style="color: #d9534f; font-weight: bold;">⚠️ No commission, payout, or income assurance is implied unless expressly communicated in writing.</p>
+          </div>
+
+          <!-- Compliance & Usage Notice -->
+          <div style="background: #f5f5f5; padding: 20px; border-radius: 8px; margin: 25px 0; border: 1px solid #ddd;">
+            <h3 style="margin-top: 0; color: #F97415;">✅ Compliance & Usage Notice</h3>
+            <p>You are requested to note that:</p>
+            <ul style="margin: 10px 0; padding-left: 25px; font-size: 13px;">
+              <li>Submission of documents or application does not constitute final approval or partnership</li>
+              <li>You shall not represent yourself as an employee or authorized agent of Infinity Loans & Business Solutions unless approved in writing</li>
+              <li>The Company's name, brand, logo, or goodwill shall not be misused or misrepresented in any manner</li>
+              <li>Any association shall be governed strictly by the executed Channel Partner Agreement, Company Terms & Conditions, Privacy Policy, and applicable laws in force in India.</li>
             </ul>
           </div>
 
-          <p>We're excited to partner with you and help you build a successful loan distribution business!</p>
+          <!-- PAN-India Presence -->
+          <div style="background: #e8f5e9; padding: 20px; border-radius: 8px; margin: 25px 0;">
+            <h3 style="margin-top: 0; color: #F97415;">🌍 PAN-India Presence</h3>
+            <p>Under our Channel Partner Program, Infinity Loans & Business Solutions operates on a <strong>PAN-India basis</strong> across all States and Union Territories of India through a robust operational network.</p>
+            <p>The Company is actively expanding its <strong>physical branch presence across 20+ states and over 100 cities</strong>, subject to business feasibility and regulatory approvals.</p>
+          </div>
 
-          <p>Best regards,<br/>
-          <strong>Infinity Loans & Business Solutions</strong><br/>
-          <a href="${process.env.COMPANY_WEBSITE}" style="color: #F97415; text-decoration: none;">${process.env.COMPANY_WEBSITE}</a></p>
+          <!-- Contact Information -->
+          <div style="background: #f3e5f5; padding: 20px; border-radius: 8px; margin: 25px 0;">
+            <h3 style="margin-top: 0; color: #F97415;">📞 Contact Information & Office Locations</h3>
+            
+            <p><strong>Customer Support - For any queries, assistance, or support:</strong></p>
+            <p style="margin: 5px 0;">
+              <strong>Phone:</strong><br/>
+              +91 95798 80841<br/>
+              +91 97661 69660
+            </p>
+            <p style="margin: 15px 0;">
+              <strong>📧 Email Support (Official + Gmail):</strong><br/>
+              business@infinityloanservices.com<br/>
+              businessservicesinfinity@gmail.com
+            </p>
+            <p style="margin: 15px 0;">
+              <strong>🌐 Website:</strong><br/>
+              www.infinityloanservices.com
+            </p>
+
+            <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;" />
+
+            <p><strong>🏢 Office Locations</strong></p>
+            
+            <p style="margin: 10px 0;">
+              <strong>Corporate & Registered Office</strong><br/>
+              8th Floor, Magnum Tower – 1<br/>
+              Golf Course Extension Road, Sector 58<br/>
+              Gurugram, Haryana – 122098<br/>
+              India
+            </p>
+            
+            <p style="margin: 10px 0;">
+              <strong>New Delhi Office</strong><br/>
+              505, Surya Kiran Building<br/>
+              15, Kasturba Gandhi Marg<br/>
+              New Delhi – 110001<br/>
+              India
+            </p>
+            
+            <p style="margin: 10px 0;">
+              <strong>Hyderabad Office</strong><br/>
+              6-3-247/22/8<br/>
+              Dwarakapuri Colony, Punjagutta<br/>
+              Hyderabad, Telangana – 500082<br/>
+              India
+            </p>
+          </div>
+
+          <!-- Closing -->
+          <p style="margin-top: 30px;">If you require any clarification or assistance, please feel free to contact us using the details above. We look forward to working with you and supporting your growth as a valued Channel Partner.</p>
+
+          <p style="margin-top: 20px;">
+            <strong>Warm regards,</strong><br/>
+            <strong style="color: #F97415;">Team Infinity Loans & Business Solutions</strong><br/>
+            📧 business@infinityloanservices.com | businessservicesinfinity@gmail.com<br/>
+            📞 +91 95798 80841 | +91 97661 69660<br/>
+            🌐 www.infinityloanservices.com
+          </p>
         </div>
 
-        <div style="border-top: 1px solid #ddd; margin-top: 30px; padding-top: 20px; text-align: center; color: #666; font-size: 12px;">
-          <p>© ${new Date().getFullYear()} Infinity Loan Services. All rights reserved.</p>
-          <p>This is an automated email. Please do not reply directly to this email.</p>
+        <!-- Footer -->
+        <div style="background: #f5f5f5; border-top: 1px solid #ddd; padding: 20px; text-align: center; color: #666; font-size: 11px;">
+          <p style="margin: 5px 0;">© ${new Date().getFullYear()} Infinity Loan Services. All rights reserved.</p>
+          <p style="margin: 5px 0;">This is an automated email. Please do not reply directly to this email.</p>
         </div>
       </div>
     `;
@@ -105,7 +159,7 @@ export const sendPartnerConfirmationEmail = async (
     await transporter.sendMail({
       from: process.env.EMAIL_FROM,
       to: partnerEmail,
-      subject: "Welcome to Infinity Loans Partner Network - Registration Confirmed",
+      subject: "Channel Partner Program - Registration Confirmed | Infinity Loans & Business Solutions",
       html: htmlContent,
     });
 
