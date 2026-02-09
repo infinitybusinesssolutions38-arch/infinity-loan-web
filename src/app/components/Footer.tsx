@@ -19,7 +19,7 @@ export function Footer() {
                 alt="LoanEase logo" 
                 width={150} 
                 height={150}
-                className="h-26 w-auto"
+                className="h-12 w-auto"
               />
             </div>
             <div className="space-y-3">

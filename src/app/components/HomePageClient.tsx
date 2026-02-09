@@ -690,7 +690,7 @@ export default function HomePageClient() {
                 fill
                 priority={false}
                 sizes="100vw"
-                className="object-cover"
+                className="object-cover object-top"
               />
             </div>
           )}
@@ -710,7 +710,7 @@ export default function HomePageClient() {
               fill
               priority={activeIndex === 0}
               sizes="100vw"
-              className="object-cover"
+              className="object-cover object-top"
             />
           </div>
 
@@ -723,15 +723,15 @@ export default function HomePageClient() {
         <div className="relative">
           <div className="container relative z-10 mx-auto px-4">
             <div className="flex min-h-[560px] items-end py-14 sm:min-h-[640px] sm:py-20 lg:min-h-[740px]">
-              <div className="mx-auto w-full max-w-4xl text-center">
+              <div className="mx-auto w-full max-w-6xl text-center lg:max-w-7xl">
                 {/* <Badge className="mb-4 bg-accent/20 text-accent-foreground border-accent/30 backdrop-blur">
                   <Sparkles className="mr-1 h-3 w-3" />
                   {activeHeroContent.badge}
                 </Badge> */}
 
-                <h1 className="text-4xl font-extrabold tracking-tight text-primary-foreground sm:text-5xl lg:text-5xl">
-                  <span className="inline-flex items-center justify-center gap-3">
-                    <span className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/15 bg-white/10 sm:h-16 sm:w-16">
+                <h1 className="text-4xl font-extrabold tracking-tight text-primary-foreground sm:text-5xl lg:text-3xl">
+                  <span className="flex w-full items-center justify-center gap-3">
+                    <span className="flex items-center justify-center rounded-2xl border border-white/15 bg-white/10 sm:h-16 sm:w-16">
                       <ActiveHeroIcon className="h-7 w-7 text-[#F97415] sm:h-9 sm:w-9" strokeWidth={2.5} />
                     </span>
                     <span>{activeHeroContent.title}</span>

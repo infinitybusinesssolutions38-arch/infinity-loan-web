@@ -223,14 +223,14 @@ export default function PrivateInstitutionalHighlight() {
                     </a>
                     <a
                       href="/services?category=businesses"
-                      className="inline-flex h-11 items-center justify-center rounded-xl border border-white/20 bg-white/5 px-5 text-sm font-semibold text-white transition hover:bg-white/10"
+                      className="inline-flex h-11 items-center justify-center rounded-xl bg-[#F97415] px-5 text-sm font-semibold text-white transition hover:bg-[#F97415]/90"
                     >
                       Explore Our Loan  Services
                     </a>
                     <button
                       type="button"
                       onClick={() => setIsApplyOpen(true)}
-                      className="inline-flex h-11 items-center justify-center rounded-xl border border-white/20 bg-white/5 px-5 text-sm font-semibold text-white transition hover:bg-white/10"
+                      className="inline-flex h-11 items-center justify-center rounded-xl bg-[#F97415] px-5 text-sm font-semibold text-white transition hover:bg-[#F97415]/90"
                     >
                       Apply Now
                     </button>
