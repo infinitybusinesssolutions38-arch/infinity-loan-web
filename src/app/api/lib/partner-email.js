@@ -375,4 +375,7 @@ export const sendPartnerNotificationToAdminEmails = async (partnerData) => {
     console.error("Error sending partner notification to admin emails:", error);
     return { success: false, error: error.message };
   }
-};
+}
+
+// Export Gmail transporter function for use in other modules
+export { createGmailTransporter };

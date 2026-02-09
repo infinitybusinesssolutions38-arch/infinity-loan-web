@@ -8,12 +8,31 @@ import SalariedLoanModel from "../models/salaried-loan-schema";
 import { v2 as cloudinary } from "cloudinary";
 import nodemailer from "nodemailer";
 import { sendLoanApplicationConfirmationEmail } from "../lib/loan-application-email";
+import { createGmailTransporter } from "../lib/apply-now-email";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
+
+// Helper function to get proper loan type name
+const getLoanTypeName = (loanType) => {
+  const loanTypeMap = {
+    'salaried': 'Salaried Employee Loan',
+    'business': 'Business Loan',
+    'personal': 'Personal Loan',
+    'home': 'Home Loan',
+    'car': 'Car Loan',
+    'education': 'Education Loan',
+    'property': 'Property Loan',
+    'professional': 'Professional Loan',
+    'doctor': 'Doctor Loan',
+    'ca': 'CA Loan',
+    'architect': 'Architect Loan'
+  };
+  return loanTypeMap[loanType] || loanType.charAt(0).toUpperCase() + loanType.slice(1) + ' Loan';
+};
 
 export async function POST(req) {
   try {
@@ -56,7 +75,13 @@ export async function POST(req) {
 
     const loanType = (formData.get("loanType") || "").trim().toLowerCase();
 
-    const applicationRef = `aplic_${Date.now()}`;
+    // Generate unique sequential application reference
+    const totalPersonal = await PersonalLoanModel.countDocuments({});
+    const totalBusiness = await BusinessLoanModel.countDocuments({});
+    const totalSalaried = await SalariedLoanModel.countDocuments({});
+    const totalApplications = totalPersonal + totalBusiness + totalSalaried;
+    const nextNumber = totalApplications + 1;
+    const applicationRef = `application_${String(nextNumber).padStart(4, "0")}`;
 
     /* =====================================================
        BASIC VALIDATION
@@ -74,6 +99,20 @@ export async function POST(req) {
        ================= SALARIED =================
     ===================================================== */
     if (loanType === "salaried") {
+      // Handle existing loans data with sanction letters
+      const existingLoansData = JSON.parse(formData.get("existingLoansData") || "[]");
+      const updatedExistingLoansData = await Promise.all(
+        existingLoansData.map(async (loan, index) => {
+          const sanctionLetterFile = formData.get(`existingLoanSanctionLetter_${index}`);
+          const loanSanctionLetterUrl = sanctionLetterFile ? await upload(sanctionLetterFile) : null;
+          
+          return {
+            ...loan,
+            loanSanctionLetterUrl,
+          };
+        })
+      );
+
       newApplication = new SalariedLoanModel({
         applicationRef,
 
@@ -109,6 +148,7 @@ export async function POST(req) {
         companyName: formData.get("companyName"),
         organizationType: formData.get("organizationType"),
         industry: formData.get("industry"),
+        industryOther: formData.get("industryOther"),
         designation: formData.get("designation"),
         employmentType: formData.get("employmentType"),
         dateOfJoining: formData.get("dateOfJoining"),
@@ -124,9 +164,15 @@ export async function POST(req) {
         hasCibil: formData.get("hasCibil"),
         cibilScore: formData.get("cibilScore"),
 
+        // Existing loans data
+        numberOfExistingLoans: parseInt(formData.get("numberOfExistingLoans") || "0"),
+        existingLoansData: updatedExistingLoansData,
+
         requiredLoanAmount: formData.get("requiredLoanAmount"),
         preferredTenure: formData.get("preferredTenure"),
         purpose: formData.get("purpose"),
+        isBuyingGoods: formData.get("isBuyingGoods"),
+        quotationAmount: formData.get("quotationAmount"),
 
         coApplicantName: formData.get("coApplicantName"),
         coApplicantRelation: formData.get("coApplicantRelation"),
@@ -141,7 +187,8 @@ export async function POST(req) {
         officeIdPhotoUrl: await upload(formData.get("officeIdPhoto")),
         salarySlipsUrl: await upload(formData.get("salarySlips")),
         bankStatementUrl: await upload(formData.get("bankStatement")),
-        loanSanctionLetterUrl: await upload(formData.get("loanSanctionLetter")),
+        quotationFileUrl: await upload(formData.get("quotationFile")),
+        proformaInvoiceFileUrl: await upload(formData.get("proformaInvoiceFile")),
 
         loan_type: "salaried",
         application_status: "pending",
@@ -489,7 +536,7 @@ export async function POST(req) {
           customerName: String(firstName || "").trim() || "Customer",
           applicationNumber: applicationRef,
           applicationDate,
-          loanType: String(loanType || "").trim(),
+          loanType: getLoanTypeName(loanType),
           loanAmount: String(loanAmount || "").trim(),
         });
 
@@ -508,8 +555,8 @@ export async function POST(req) {
           const officialRes = await sendLoanApplicationConfirmationEmail(officialEmail, {
             customerName: String(firstName || "").trim() || "Customer",
             applicationNumber: applicationRef,
-            applicationDate: applicationDate,
-            loanType: String(loanType || "").trim(),
+            applicationDate,
+            loanType: getLoanTypeName(loanType),
             loanAmount: String(loanAmount || "").trim(),
           });
           if (!officialRes?.success) {
@@ -518,6 +565,105 @@ export async function POST(req) {
         }
       } catch (e) {
         console.error("apply-now official email error:", e?.message || e);
+      }
+
+      // Send admin notifications using Gmail SMTP
+      try {
+        const gmailTransporter = createGmailTransporter();
+        
+        const adminEmail = process.env.ADMIN_EMAIL;
+        const directorEmail = process.env.DIRECTOR_EMAIL;
+        
+        const adminRecipients = [];
+        if (adminEmail) adminRecipients.push(adminEmail);
+        if (directorEmail) adminRecipients.push(directorEmail);
+
+        if (adminRecipients.length > 0) {
+          const adminHtmlContent = `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+              <div style="background: linear-gradient(135deg, #F97415 0%, #E06410 100%); padding: 30px; border-radius: 10px; color: white; margin-bottom: 30px;">
+                <h1 style="margin: 0;">New Loan Application</h1>
+                <p style="margin: 10px 0 0 0;">Action Required - Review & Process</p>
+              </div>
+
+              <div style="color: #333; line-height: 1.6;">
+                <p>A new loan application has been submitted on the Infinity Loans platform. Please review the details below and take appropriate action.</p>
+
+                <div style="background: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                  <h3 style="margin-top: 0; color: #F97415;">Application Details:</h3>
+                  <table style="width: 100%; border-collapse: collapse;">
+                    <tr style="border-bottom: 1px solid #ddd;">
+                      <td style="padding: 10px 0; font-weight: bold; width: 30%;">Application ID:</td>
+                      <td style="padding: 10px 0;">${applicationRef}</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #ddd;">
+                      <td style="padding: 10px 0; font-weight: bold;">Applicant Name:</td>
+                      <td style="padding: 10px 0;">${firstName} ${middleName} ${lastName}</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #ddd;">
+                      <td style="padding: 10px 0; font-weight: bold;">Email:</td>
+                      <td style="padding: 10px 0;"><a href="mailto:${personalEmail}">${personalEmail}</a></td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #ddd;">
+                      <td style="padding: 10px 0; font-weight: bold;">Mobile:</td>
+                      <td style="padding: 10px 0;"><a href="tel:${mobileNumber}">${mobileNumber}</a></td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #ddd;">
+                      <td style="padding: 10px 0; font-weight: bold;">Loan Type:</td>
+                      <td style="padding: 10px 0;">${getLoanTypeName(loanType)}</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #ddd;">
+                      <td style="padding: 10px 0; font-weight: bold;">Loan Amount:</td>
+                      <td style="padding: 10px 0;">₹${loanAmount}</td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 10px 0; font-weight: bold;">Submitted:</td>
+                      <td style="padding: 10px 0;">${new Date().toLocaleString()}</td>
+                    </tr>
+                  </table>
+                </div>
+
+                <div style="margin: 20px 0; padding: 15px; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 4px;">
+                  <strong>Next Steps:</strong>
+                  <ul style="margin: 10px 0; padding-left: 20px;">
+                    <li>Review application details</li>
+                    <li>Verify uploaded documents</li>
+                    <li>Conduct credit check if needed</li>
+                    <li>Contact applicant for clarification</li>
+                    <li>Approve/Reject application in dashboard</li>
+                  </ul>
+                </div>
+
+                <p>Access the loan management dashboard to process this application.</p>
+
+                <p>
+                  Best regards,<br/>
+                  <strong>Infinity Loans System</strong>
+                </p>
+              </div>
+
+              <div style="border-top: 1px solid #ddd; margin-top: 30px; padding-top: 20px; text-align: center; color: #666; font-size: 12px;">
+                <p>© ${new Date().getFullYear()} Infinity Loan Services. All rights reserved.</p>
+                <p>This is an automated email from your loan application system.</p>
+              </div>
+            </div>
+          `;
+
+          // Send to all admin emails
+          const emailPromises = adminRecipients.map(email => 
+            gmailTransporter.sendMail({
+              from: process.env.EMAIL_HOST_USER,
+              to: email,
+              subject: `New Loan Application - ${applicationRef} - ${firstName} ${lastName}`,
+              html: adminHtmlContent,
+            })
+          );
+
+          await Promise.all(emailPromises);
+          console.log("Admin Gmail notifications sent successfully");
+        }
+      } catch (gmailError) {
+        console.error("Failed to send admin Gmail notifications:", gmailError);
       }
 
       if (from && adminRecipients.length > 0) {
@@ -826,7 +972,7 @@ export async function POST(req) {
 //                 salaryCreditMode: salariedData.salaryCreditMode,
 //                 salaryAccountBankName: salariedData.salaryAccountBankName,
 //                 numberOfExistingLoans: salariedData.numberOfExistingLoans,
-//                 existingLoansData: salariedData.existingLoansData,
+//                 existingLoansData: updatedExistingLoansData,
 //                 hasCibil: salariedData.hasCibil,
 //                 cibilScore: salariedData.cibilScore,
 //                 requiredLoanAmount,

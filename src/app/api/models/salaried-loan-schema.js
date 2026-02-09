@@ -49,6 +49,7 @@ const SalariedLoanSchema = new mongoose.Schema(
     companyName: { type: String, required: true },
     organizationType: { type: String, required: false },
     industry: { type: String, required: false },
+    industryOther: { type: String, required: false },
     designation: { type: String, required: true },
     employmentType: {
         type: String,
@@ -80,6 +81,7 @@ const SalariedLoanSchema = new mongoose.Schema(
             loanType: { type: String, required: false },
             bankName: { type: String, required: false },
             emiDelayPast3Months: { type: String, required: false },
+            loanSanctionLetterUrl: { type: String, required: false },
         }
     ],
 
@@ -91,6 +93,8 @@ const SalariedLoanSchema = new mongoose.Schema(
     requiredLoanAmount: { type: String, required: true },
     preferredTenure: { type: String, required: false },
     purpose: { type: String, required: false },
+    isBuyingGoods: { type: String, enum: ["Yes", "No"], required: false },
+    quotationAmount: { type: String, required: false },
 
     // Co-applicant
     coApplicantName: { type: String, required: false },
@@ -106,12 +110,13 @@ const SalariedLoanSchema = new mongoose.Schema(
     officeIdPhotoUrl: { type: String, required: false },
     salarySlipsUrl: { type: String, required: false },
     bankStatementUrl: { type: String, required: false },
-    loanSanctionLetterUrl: { type: String, required: false },
     cibilReportUrl: { type: String, required: false },
     lastElectricityBillUrl: { type: String, required: false },
     permElectricityBillUrl: { type: String, required: false },
     rentAgreementUrl: { type: String, required: false },
     companyAllotmentLetterUrl: { type: String, required: false },
+    quotationFileUrl: { type: String, required: false },
+    proformaInvoiceFileUrl: { type: String, required: false },
 
     // Meta
     loan_type: { type: String, required: true, default: "salaried" },
