@@ -141,7 +141,7 @@ export async function POST(req) {
         state: formData.get("state"),
         city: formData.get("city"),
         residenceType: formData.get("residenceType"),
-        stayingSinceYears: formData.get("stayingSinceYears"),
+        stayingSinceDate: formData.get("stayingSinceDate"),
 
         permanentAddress: formData.get("permanentAddress"),
 

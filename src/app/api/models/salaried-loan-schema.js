@@ -40,7 +40,7 @@ const SalariedLoanSchema = new mongoose.Schema(
         enum: ["Owned", "Rented", "Company Provided"],
         required: true
     },
-    stayingSinceYears: { type: Number, required: false },
+    stayingSinceDate: { type: String, required: false },
 
     // Permanent address
     permanentAddress: { type: String, required: false },
@@ -184,7 +184,7 @@ export default SalariedLoanModel;
 //     state: { type: String, required: true },
 //     city: { type: String, required: true },
 //     residenceType: { type: String, enum: ["Owned", "Rented", "Company Provided"], required: true },
-//     stayingSinceYears: { type: Number, required: false },
+//     stayingSinceDate: { type: String, required: false },
     
 //     // permanent address
 //     permanentAddress: { type: String, required: false },
