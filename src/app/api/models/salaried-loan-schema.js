@@ -41,6 +41,7 @@ const SalariedLoanSchema = new mongoose.Schema(
         required: true
     },
     stayingSinceDate: { type: String, required: false },
+    jobBusiness: { type: String, required: false },
 
     // Permanent address
     permanentAddress: { type: String, required: false },

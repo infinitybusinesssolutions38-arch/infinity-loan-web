@@ -393,6 +393,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
     coApplicantEmploymentType: "",
     isBuyingGoods: "",
     quotationAmount: "",
+    jobBusiness: "",
   });
 
   const handleSalariedChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -861,6 +862,22 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                     />
                   </div>
                 </div>
+
+                {/* Job/Business field for Credit Card category */}
+                {(categoryKey === "credit-cards" || loanType.toLowerCase().includes("credit")) && (
+                  <div className="space-y-2">
+                    <Label htmlFor="s_jobBusiness" className="text-sm font-medium">Current Employment Status</Label>
+                    <select id="s_jobBusiness" name="jobBusiness" value={sForm.jobBusiness} onChange={handleSalariedChange} className="mt-2 block w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm">
+                      <option value="">Select Employment Status</option>
+                      <option value="Salaried Employee">Salaried Employee</option>
+                      <option value="Self Employed Business">Self Employed Business</option>
+                      <option value="Self Employed Professional">Self Employed Professional</option>
+                      <option value="Student">Student</option>
+                      <option value="Retired">Retired</option>
+                      <option value="Homemaker">Homemaker</option>
+                    </select>
+                  </div>
+                )}
                 {/* Conditional optional residential uploads based on Residence Type */}
                 {sForm.residenceType === "Owned" && (
                   <div className="space-y-4">
