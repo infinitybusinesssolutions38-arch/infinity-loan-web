@@ -44,6 +44,7 @@ type FormState = {
   drivingLicense: string;
   passportNumber: string;
   loanType?: string;
+  jobBusiness?: string;
 };
 
 export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, categoryKey }: ApplyNowModalProps) {
@@ -80,6 +81,8 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
       voterIdNumber: "",
       drivingLicense: "",
       passportNumber: "",
+      loanType: "",
+      jobBusiness: "",
     },
     mode: "onBlur",
   });
@@ -246,6 +249,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
       submissionFormData.append("drivingLicense", data.drivingLicense || "");
       submissionFormData.append("passportNumber", data.passportNumber || "");
       submissionFormData.append("loanType", "personal");
+      submissionFormData.append("jobBusiness", data.jobBusiness || "");
 
       // Add files
       submissionFormData.append("aadhaarFront", aadhaarFront);
@@ -386,14 +390,14 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
     cibilScore: "",
     requiredLoanAmount: "",
     preferredTenure: "",
-    purpose: "",
+    passportNumber: "",
     loanType: "",
+    jobBusiness: "Job",
     coApplicantName: "",
     coApplicantRelation: "",
     coApplicantEmploymentType: "",
     isBuyingGoods: "",
     quotationAmount: "",
-    jobBusiness: "",
   });
 
   const handleSalariedChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -863,22 +867,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                   </div>
                 </div>
 
-                {/* Job/Business field for Credit Card category */}
-                {(categoryKey === "credit-cards" || loanType.toLowerCase().includes("credit")) && (
-                  <div className="space-y-2">
-                    <Label htmlFor="s_jobBusiness" className="text-sm font-medium">Current Employment Status</Label>
-                    <select id="s_jobBusiness" name="jobBusiness" value={sForm.jobBusiness} onChange={handleSalariedChange} className="mt-2 block w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm">
-                      <option value="">Select Employment Status</option>
-                      <option value="Salaried Employee">Salaried Employee</option>
-                      <option value="Self Employed Business">Self Employed Business</option>
-                      <option value="Self Employed Professional">Self Employed Professional</option>
-                      <option value="Student">Student</option>
-                      <option value="Retired">Retired</option>
-                      <option value="Homemaker">Homemaker</option>
-                    </select>
-                  </div>
-                )}
-                {/* Conditional optional residential uploads based on Residence Type */}
+                                {/* Conditional optional residential uploads based on Residence Type */}
                 {sForm.residenceType === "Owned" && (
                   <div className="space-y-4">
                     <div className="space-y-2">
@@ -1430,6 +1419,28 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
               </div>
               
             </fieldset>
+
+            {/* Job/Business field for Credit Card category */}
+            {(categoryKey === "credit-cards" || loanType.toLowerCase().includes("credit")) && (
+              <fieldset className="space-y-4">
+                <legend className="flex items-center gap-2 text-lg font-bold text-foreground mb-4">
+                  <User className="h-5 w-5 text-primary" />
+                  Employment Information
+                </legend>
+                <div className="space-y-2">
+                  <Label htmlFor="jobBusiness" className="text-sm font-medium">Current Employment Status</Label>
+                  <select id="jobBusiness" name="jobBusiness" {...register("jobBusiness")} className="mt-2 block w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm">
+                    <option value="">Select Employment Status</option>
+                    <option value="Salaried Employee">Salaried Employee</option>
+                    <option value="Self Employed Business">Self Employed Business</option>
+                    <option value="Self Employed Professional">Self Employed Professional</option>
+                    <option value="Student">Student</option>
+                    <option value="Retired">Retired</option>
+                    <option value="Homemaker">Homemaker</option>
+                  </select>
+                </div>
+              </fieldset>
+            )}
 
             <fieldset className="space-y-4">
               <legend className="flex items-center gap-2 text-lg font-bold text-foreground mb-4">
