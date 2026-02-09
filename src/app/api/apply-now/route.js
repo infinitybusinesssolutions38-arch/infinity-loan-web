@@ -69,6 +69,7 @@ export async function POST(req) {
     const alternateMobile = formData.get("alternateMobile") || "";
 
     const personalEmail = formData.get("personalEmail");
+    const jobBusiness = formData.get("jobBusiness");
 
     const aadhaarNumber = formData.get("aadhaarNumber");
     const panNumber = formData.get("panNumber");
@@ -142,6 +143,7 @@ export async function POST(req) {
         city: formData.get("city"),
         residenceType: formData.get("residenceType"),
         stayingSinceDate: formData.get("stayingSinceDate"),
+        jobBusiness: formData.get("jobBusiness"),
 
         permanentAddress: formData.get("permanentAddress"),
 
@@ -612,6 +614,12 @@ export async function POST(req) {
                       <td style="padding: 10px 0; font-weight: bold;">Loan Type:</td>
                       <td style="padding: 10px 0;">${getLoanTypeName(loanType)}</td>
                     </tr>
+                    ${jobBusiness ? `
+                    <tr style="border-bottom: 1px solid #ddd;">
+                      <td style="padding: 10px 0; font-weight: bold;">Employment Status:</td>
+                      <td style="padding: 10px 0;">${jobBusiness}</td>
+                    </tr>
+                    ` : ''}
                     <tr style="border-bottom: 1px solid #ddd;">
                       <td style="padding: 10px 0; font-weight: bold;">Loan Amount:</td>
                       <td style="padding: 10px 0;">₹${loanAmount}</td>
