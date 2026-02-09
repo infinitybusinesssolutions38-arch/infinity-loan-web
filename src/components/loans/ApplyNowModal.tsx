@@ -105,13 +105,15 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
   const [officeIdPhoto, setOfficeIdPhoto] = useState<File | null>(null);
   const [salarySlips, setSalarySlips] = useState<File | null>(null);
   const [bankStatement, setBankStatement] = useState<File | null>(null);
-  const [loanSanctionLetter, setLoanSanctionLetter] = useState<File | null>(null);
   const [cibilReportFile, setCibilReportFile] = useState<File | null>(null);
   const [lastElectricityBill, setLastElectricityBill] = useState<File | null>(null);
   const [permElectricityBill, setPermElectricityBill] = useState<File | null>(null);
   const [rentAgreement, setRentAgreement] = useState<File | null>(null);
   const [rentAgreementShop, setRentAgreementShop] = useState<File | null>(null);
   const [companyAllotmentLetter, setCompanyAllotmentLetter] = useState<File | null>(null);
+  const [quotationFile, setQuotationFile] = useState<File | null>(null);
+  const [proformaInvoiceFile, setProformaInvoiceFile] = useState<File | null>(null);
+  const [existingLoanSanctionLetters, setExistingLoanSanctionLetters] = useState<File[]>([]);
 
   // helper for salaried file validation
   const handleSalariedFileChange = (
@@ -134,6 +136,40 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
     }
 
     setter(file);
+  };
+
+  // handler for existing loan sanction letters
+  const handleExistingLoanSanctionLetterChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    loanIndex: number
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) {
+      // Remove file if none selected
+      setExistingLoanSanctionLetters(prev => {
+        const updated = [...prev];
+        updated[loanIndex] = null as any;
+        return updated;
+      });
+      return;
+    }
+
+    // Validate file
+    if (file.type !== "application/pdf") {
+      window.alert("Please upload a PDF file");
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      window.alert("PDF must be <= 2MB");
+      return;
+    }
+
+    // Update the file at the specific index
+    setExistingLoanSanctionLetters(prev => {
+      const updated = [...prev];
+      updated[loanIndex] = file;
+      return updated;
+    });
   };
 
   const validateField = (name: keyof FormState, value: string): string => {
@@ -355,6 +391,8 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
     coApplicantName: "",
     coApplicantRelation: "",
     coApplicantEmploymentType: "",
+    isBuyingGoods: "",
+    quotationAmount: "",
   });
 
   const handleSalariedChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -378,6 +416,8 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
       const loansData = Array.from({ length: num }, (_, i) => p.existingLoansData[i] || { totalLoanAmount: "", totalMonthlyEmi: "", loanType: "", bankName: "", emiDelayPast3Months: "" });
       return { ...p, numberOfExistingLoans: String(num), existingLoansData: loansData };
     });
+    // Reset loan sanction letters array
+    setExistingLoanSanctionLetters(Array(num).fill(null));
   };
 
   const handleSalariedSubmit = async (e: React.FormEvent) => {
@@ -469,7 +509,6 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
     if (officeIdPhoto && !validateImage(officeIdPhoto, "Office ID photo")) return;
     if (salarySlips && !validatePdf(salarySlips, "Salary slips")) return;
     if (bankStatement && !validatePdf(bankStatement, "Bank statement")) return;
-    if (loanSanctionLetter && !validatePdf(loanSanctionLetter, "Loan sanction letter")) return;
 
     setIsSubmitting(true);
 
@@ -541,12 +580,20 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
       if (officeIdPhoto) fd.append("officeIdPhoto", officeIdPhoto);
       if (salarySlips) fd.append("salarySlips", salarySlips);
       if (bankStatement) fd.append("bankStatement", bankStatement);
-      if (loanSanctionLetter) fd.append("loanSanctionLetter", loanSanctionLetter);
       if (lastElectricityBill) fd.append("lastElectricityBill", lastElectricityBill);
       if (permElectricityBill) fd.append("permElectricityBill", permElectricityBill);
       if (rentAgreement) fd.append("rentAgreement", rentAgreement);
       if (companyAllotmentLetter) fd.append("companyAllotmentLetter", companyAllotmentLetter);
       if (cibilReportFile) fd.append("cibilReport", cibilReportFile);
+      if (quotationFile) fd.append("quotationFile", quotationFile);
+      if (proformaInvoiceFile) fd.append("proformaInvoiceFile", proformaInvoiceFile);
+      
+      // Add existing loan sanction letters
+      existingLoanSanctionLetters.forEach((file, index) => {
+        if (file) {
+          fd.append(`existingLoanSanctionLetter_${index}`, file);
+        }
+      });
 
       const response = await axios.post("/api/apply-now", fd);
 
@@ -1026,14 +1073,6 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                     </label>
                   </div>
                 </div>
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium">Upload Loan Sanction Letter <span className="text-xs text-muted-foreground">(PDF, Max 2MB)</span></Label>
-                  <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed rounded cursor-pointer hover:border-primary">
-                    <Upload className="h-5 w-5" />
-                    <span className="text-xs text-muted-foreground mt-1">{loanSanctionLetter ? `${loanSanctionLetter.name.slice(0, 18)}...` : "Upload PDF, Max 2MB"}</span>
-                    <input type="file" accept="application/pdf" className="hidden" onChange={(e) => handleSalariedFileChange(e, setLoanSanctionLetter, "pdf2MB")} />
-                  </label>
-                </div>
               </fieldset>
 
               {/* F. EXISTING LOAN & CREDIT DETAILS */}
@@ -1108,6 +1147,21 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                               className="border-gray-300"
                             />
                           </div>
+                          <div className="space-y-2 sm:col-span-2">
+                            <Label className="text-sm font-medium">Upload Loan Sanction Letter (PDF, Max 2MB)</Label>
+                            <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed rounded cursor-pointer hover:border-primary">
+                              <Upload className="h-5 w-5" />
+                              <span className="text-xs text-muted-foreground mt-1">
+                                {existingLoanSanctionLetters[index] ? `${existingLoanSanctionLetters[index].name.slice(0, 18)}...` : "Upload PDF, Max 2MB"}
+                              </span>
+                              <input 
+                                type="file" 
+                                accept="application/pdf" 
+                                className="hidden" 
+                                onChange={(e) => handleExistingLoanSanctionLetterChange(e, index)} 
+                              />
+                            </label>
+                          </div>
                         </div>
                       </div>
                     ))}
@@ -1167,6 +1221,38 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                     <Label htmlFor="s_purpose" className="text-sm font-medium">Purpose of Loan</Label>
                     <Input id="s_purpose" name="purpose" placeholder="Purpose of Loan" value={sForm.purpose} onChange={handleSalariedChange} className="border-gray-300" />
                   </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="s_isBuyingGoods" className="text-sm font-medium">Are you buying any goods?</Label>
+                    <select id="s_isBuyingGoods" name="isBuyingGoods" value={sForm.isBuyingGoods} onChange={handleSalariedChange} className="mt-2 block w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm">
+                      <option value="">Select Option</option>
+                      <option value="Yes">Yes</option>
+                      <option value="No">No</option>
+                    </select>
+                  </div>
+                  {sForm.isBuyingGoods === "Yes" && (
+                    <>
+                      <div className="space-y-2">
+                        <Label htmlFor="s_quotationAmount" className="text-sm font-medium">Quotation Amount (₹)</Label>
+                        <Input id="s_quotationAmount" name="quotationAmount" type="number" placeholder="Quotation Amount (₹)" value={sForm.quotationAmount} onChange={handleSalariedChange} className="border-gray-300" />
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium">Upload Quotation (PDF, Max 2MB)</Label>
+                        <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed rounded cursor-pointer hover:border-primary">
+                          <Upload className="h-5 w-5" />
+                          <span className="text-xs text-muted-foreground mt-1">{quotationFile ? `${quotationFile.name.slice(0, 18)}...` : "Upload PDF, Max 2MB"}</span>
+                          <input type="file" accept="application/pdf" className="hidden" onChange={(e) => handleSalariedFileChange(e, setQuotationFile, "pdf2MB")} />
+                        </label>
+                      </div>
+                      <div className="space-y-2 sm:col-span-2">
+                        <Label className="text-sm font-medium">Upload Proforma Invoice (PDF, Max 2MB)</Label>
+                        <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed rounded cursor-pointer hover:border-primary">
+                          <Upload className="h-5 w-5" />
+                          <span className="text-xs text-muted-foreground mt-1">{proformaInvoiceFile ? `${proformaInvoiceFile.name.slice(0, 18)}...` : "Upload PDF, Max 2MB"}</span>
+                          <input type="file" accept="application/pdf" className="hidden" onChange={(e) => handleSalariedFileChange(e, setProformaInvoiceFile, "pdf2MB")} />
+                        </label>
+                      </div>
+                    </>
+                  )}
                 </div>
               </fieldset>
 
