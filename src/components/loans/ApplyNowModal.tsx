@@ -395,6 +395,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
     coApplicantName: "",
     coApplicantRelation: "",
     coApplicantEmploymentType: "",
+    purpose: "",
     isBuyingGoods: "",
     quotationAmount: "",
   });
@@ -1428,7 +1429,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 </legend>
                 <div className="space-y-2">
                   <Label htmlFor="jobBusiness" className="text-sm font-medium">Current Employment Status</Label>
-                  <select id="jobBusiness" name="jobBusiness" {...register("jobBusiness")} className="mt-2 block w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm">
+                  <select id="jobBusiness" {...register("jobBusiness")} className="mt-2 block w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm">
                     <option value="">Select Employment Status</option>
                     <option value="Salaried Employee">Salaried Employee</option>
                     <option value="Self Employed Business">Self Employed Business</option>

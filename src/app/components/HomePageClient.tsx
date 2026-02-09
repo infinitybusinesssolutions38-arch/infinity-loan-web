@@ -805,7 +805,7 @@ export default function HomePageClient() {
             {TRUST_INDICATORS.map((item, idx) => (
               <div
                 key={idx}
-                className="flex items-center gap-4 rounded-2xl bg-card p-6 shadow-xl animate-fade-in"
+                className="flex items-center gap-4 rounded-2xl bg-card p-6 shadow-xl animate-fade-in border border-2 border-blue-200"
                 style={{ animationDelay: `${idx * 100}ms` }}
               >
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
@@ -825,7 +825,7 @@ export default function HomePageClient() {
 
       <section className="py-16 lg:py-24">
         <div className="container mx-auto px-4">
-          <div className="relative text-center mb-12 rounded-2xl p-6 shadow-xl border border-2 border-gray-100 hover:border-blue-200 bg-background overflow-hidden transition-colors duration-300">
+          <div className="relative text-center mb-12 rounded-2xl p-6 shadow-xl border border-2 border-blue-200 bg-background overflow-hidden transition-colors duration-300">
 
             <div className="relative z-10">
               <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-6xl">

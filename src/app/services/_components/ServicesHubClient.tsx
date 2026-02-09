@@ -213,44 +213,44 @@ const CATEGORY_META: Array<{
   icon: React.ComponentType<{ className?: string }>;
   gradient: string;
 }> = [
-  {
-    key: "salaried-employees",
-    title: "Loan Offers for Salaried Employees",
-    icon: Users,
-    gradient: "bg-gradient-loans",
-  },
-  {
-    key: "businesses",
-    title: "Smart Loan & Funding Solutions for All Businesses",
-    icon: Banknote,
-    gradient: "bg-gradient-loans",
-  },
-  {
-    key: "professionals",
-    title: "Smart Loan & Funding Solutions for All Professionals",
-    icon: Briefcase,
-    gradient: "bg-gradient-loans",
-  },
-  {
-    key: "govt-employees",
-    title: "Smart Loan & Funding Solutions for Central & State Government Employees",
-    icon: Building2,
-    gradient: "bg-gradient-government",
-  },
-  {
-    key: "government-schemes",
-    title: "End-to-End Financing Support for Central & State Government Schemes",
-    icon: Building2,
-    gradient: "bg-gradient-government",
-  },
-  {
-    key: "builders-developers",
-    title: "Smart Loan & Project Funding Solutions for Builders & Developers",
-    icon: Building2,
-    gradient: "bg-gradient-loans",
-  },
-  { key: "credit-cards", title: "Credits & Cards", icon: CreditCard, gradient: "bg-gradient-credit" },
-];
+    {
+      key: "salaried-employees",
+      title: "Loan Offers for Salaried Employees",
+      icon: Users,
+      gradient: "bg-gradient-loans",
+    },
+    {
+      key: "businesses",
+      title: "Smart Loan & Funding Solutions for All Businesses",
+      icon: Banknote,
+      gradient: "bg-gradient-loans",
+    },
+    {
+      key: "professionals",
+      title: "Smart Loan & Funding Solutions for All Professionals",
+      icon: Briefcase,
+      gradient: "bg-gradient-loans",
+    },
+    {
+      key: "govt-employees",
+      title: "Smart Loan & Funding Solutions for Central & State Government Employees",
+      icon: Building2,
+      gradient: "bg-gradient-government",
+    },
+    {
+      key: "government-schemes",
+      title: "End-to-End Financing Support for Central & State Government Schemes",
+      icon: Building2,
+      gradient: "bg-gradient-government",
+    },
+    {
+      key: "builders-developers",
+      title: "Smart Loan & Project Funding Solutions for Builders & Developers",
+      icon: Building2,
+      gradient: "bg-gradient-loans",
+    },
+    { key: "credit-cards", title: "Credits & Cards", icon: CreditCard, gradient: "bg-gradient-credit" },
+  ];
 
 const LOAN_SERVICES: ServiceGroup[] = [
   {
@@ -1534,6 +1534,25 @@ const GOVT_SCHEME_SERVICES: ServiceGroup = {
       infoHref: "/services/government-schemes",
       badge: "Scheme",
     },
+    {
+      "key": "venture-capital",
+      "title": "Venture Capital",
+      "description": "Equity and funding support for startups and high-growth businesses to scale operations and innovation.",
+      "applyHref": "/apply-now?product=venture-capital",
+      "infoHref": "/services/government-schemes",
+      "highlight": false,
+      "badge": "Funding"
+    },
+    {
+      "key": "maha-udyog-financing",
+      "title": "Maha Udyog",
+      "description": "End-to-end financing support for central and state government schemes including subsidies, term loans, and working capital assistance.",
+      "applyHref": "/apply-now?product=maha-udyog-financing",
+      "infoHref": "/services/government-schemes",
+      "highlight": true,
+      "badge": "Govt Support"
+    }
+
   ].map((item) => ({ ...item, imageSrc: getGovtSchemeCardImageSrc(item.title) })),
 };
 
@@ -1683,10 +1702,10 @@ const GROUPED_SERVICES: Partial<Record<HubCategoryKey, ServiceGroup[]>> = {
 };
 
 const TRUST_INDICATORS = [
-  { icon: Users, value: "50,000+", label: "Happy Customers" },
-  { icon: TrendingUp, value: "₹500 Cr+", label: "Loans Disbursed" },
-  { icon: Clock, value: "24 Hours", label: "Average Approval" },
-  { icon: FileCheck, value: "99%", label: "Success Rate" },
+  { icon: Users, value: "60,000+", label: "Happy Customers" },
+  { icon: TrendingUp, value: "₹600 Cr+", label: "Loans Disbursed" },
+  { icon: Clock, value: "48 Hours", label: "Average Approval" },
+  { icon: FileCheck, value: "96%", label: "Success Rate" },
 ];
 
 export default function ServicesHubClient() {
@@ -1759,11 +1778,11 @@ export default function ServicesHubClient() {
 
       <section className="relative -mt-8 z-20">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-4 lg:grid-cols-4  ">
             {TRUST_INDICATORS.map((item, idx) => (
               <div
                 key={idx}
-                className="flex items-center gap-4 rounded-2xl bg-card p-6 shadow-xl animate-fade-in"
+                className="flex items-center gap-4 rounded-2xl bg-card p-6 shadow-xl animate-fade-in border border-2 border-blue-200"
                 style={{ animationDelay: `${idx * 100}ms` }}
               >
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
@@ -1781,13 +1800,19 @@ export default function ServicesHubClient() {
 
       <section className="py-16 lg:py-24">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
-              Explore Our Services
-            </h2>
-            <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-              Choose from a wide range of financial products tailored to your needs
-            </p>
+          <div className="container mx-auto px-4">
+            <div className="relative text-center mb-12 rounded-2xl p-6 shadow-xl border border-2  border-blue-200 bg-background overflow-hidden transition-colors duration-300">
+
+              <div className="relative z-10 py-10">
+                <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-6xl">
+                  Explore Our <span className="text-[#f97415] text-7xl">Loan</span> Services
+                </h2>
+
+                <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
+                  Explore a comprehensive range of financial solutions tailored to your specific needs.
+                </p>
+              </div>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 gap-3 mb-10 sm:grid-cols-2 lg:grid-cols-3">
@@ -1802,18 +1827,16 @@ export default function ServicesHubClient() {
                   size="lg"
                   variant="tab-inactive"
                   onClick={() => setActiveCategory(cat.key)}
-                  className={`group h-auto w-full justify-start gap-4 rounded-2xl border-2 px-5 py-5 transition-all duration-300 whitespace-normal text-left leading-snug text-base sm:text-lg hover:-translate-y-0.5 hover:shadow-lg focus-visible:ring-2 focus-visible:ring-[#F97415]/40 ${
-                    isActive
-                      ? "scale-[1.02] border-[#F97415] bg-gradient-to-br from-black via-neutral-900 to-black text-white"
-                      : "border-white/10 bg-gradient-to-br from-black via-neutral-900 to-black text-white hover:border-[#F97415]/40"
-                  }`}
+                  className={`group h-auto w-full justify-start gap-4 rounded-2xl border-2 px-5 py-5 transition-all duration-300 whitespace-normal text-left leading-snug text-base sm:text-lg hover:-translate-y-0.5 hover:shadow-lg focus-visible:ring-2 focus-visible:ring-[#F97415]/40 ${isActive
+                    ? "scale-[1.02] border-[#F97415] bg-gradient-to-br from-black via-neutral-900 to-black text-white"
+                    : "border-white/10 bg-gradient-to-br from-black via-neutral-900 to-black text-white hover:border-[#F97415]/40"
+                    }`}
                 >
                   <span
-                    className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border transition-all duration-300 ${
-                      isActive
-                        ? "border-[#F97415]/30 bg-[#F97415] text-white"
-                        : "border-[#F97415]/15 bg-[#F97415]/10 text-[#F97415] group-hover:bg-[#F97415] group-hover:text-white"
-                    }`}
+                    className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border transition-all duration-300 ${isActive
+                      ? "border-[#F97415]/30 bg-[#F97415] text-white"
+                      : "border-[#F97415]/15 bg-[#F97415]/10 text-[#F97415] group-hover:bg-[#F97415] group-hover:text-white"
+                      }`}
                   >
                     <Icon className="h-6 w-6" />
                   </span>
@@ -1828,11 +1851,10 @@ export default function ServicesHubClient() {
                   </span>
 
                   <span
-                    className={`inline-flex shrink-0 items-center rounded-full px-3 py-1 text-xs font-semibold transition-all duration-300 ${
-                      isActive
-                        ? "bg-[#F97415] text-white"
-                        : "bg-[#F97415]/10 text-[#F97415] group-hover:bg-[#F97415] group-hover:text-white"
-                    }`}
+                    className={`inline-flex shrink-0 items-center rounded-full px-3 py-1 text-xs font-semibold transition-all duration-300 ${isActive
+                      ? "bg-[#F97415] text-white"
+                      : "bg-[#F97415]/10 text-[#F97415] group-hover:bg-[#F97415] group-hover:text-white"
+                      }`}
                   >
                     View
                   </span>
@@ -1846,23 +1868,22 @@ export default function ServicesHubClient() {
               {activeGroups.map((group, groupIndex) => (
                 <div key={group.title} className="space-y-6">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-2xl font-bold text-foreground">{group.title}</h3>
-                    <Link
-                      href="/services/loans"
-                      className="text-sm font-medium text-primary hover:text-primary/80 inline-flex items-center gap-1"
-                    >
-                      View all
-                      <ArrowRight className="h-4 w-4" />
-                    </Link>
+                    <div className="w-full py-5 bg-[#F97415] mx-4 rounded-2xl"><h3 className="text-4xl text-center font-bold text-gray-900  text-foreground">{group.title}</h3></div>
+                    {/* <Link
+                        href="/services/loans"
+                        className="text-sm font-medium text-primary hover:text-primary/80 inline-flex items-center gap-1"
+                      >
+                        View all
+                        <ArrowRight className="h-4 w-4" />
+                      </Link> */}
                   </div>
 
                   <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                     {group.items.map((service, idx) => (
                       <Card
                         key={service.key}
-                        className={`group relative overflow-hidden border-2 bg-gradient-to-br from-black via-neutral-900 to-neutral-700 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${
-                          service.highlight ? "border-primary/30" : "border-transparent"
-                        }`}
+                        className={`group relative overflow-hidden border-2 bg-gradient-to-br from-black via-neutral-900 to-neutral-700 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${service.highlight ? "border-primary/30" : "border-transparent"
+                          }`}
                         style={{ animationDelay: `${groupIndex * 120 + idx * 50}ms` }}
                       >
                         <div className="relative h-48 w-full overflow-hidden">
@@ -1873,16 +1894,15 @@ export default function ServicesHubClient() {
                             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                             className="object-cover object-[50%_5%]  opacity-80 transition-transform duration-500 group-hover:scale-105"
                           />
-                         
+
                           <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
                         </div>
                         {service.badge && (
                           <Badge
-                            className={`absolute top-4 right-4 ${
-                              service.highlight
-                                ? "bg-primary text-primary-foreground"
-                                : "bg-secondary text-secondary-foreground"
-                            }`}
+                            className={`absolute top-4 right-4 ${service.highlight
+                              ? "bg-primary text-primary-foreground"
+                              : "bg-secondary text-secondary-foreground"
+                              }`}
                           >
                             {service.badge}
                           </Badge>
@@ -1923,9 +1943,8 @@ export default function ServicesHubClient() {
               {activeCards.map((service, idx) => (
                 <Card
                   key={service.key}
-                  className={`group relative overflow-hidden border-2 bg-gradient-to-br from-black via-neutral-900 to-neutral-700 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${
-                    service.highlight ? "border-primary/30" : "border-transparent"
-                  }`}
+                  className={`group relative overflow-hidden border-2 bg-gradient-to-br from-black via-neutral-900 to-neutral-700 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${service.highlight ? "border-primary/30" : "border-transparent"
+                    }`}
                   style={{ animationDelay: `${idx * 60}ms` }}
                 >
                   <div className="relative h-48 w-full overflow-hidden">
@@ -1940,11 +1959,10 @@ export default function ServicesHubClient() {
                   </div>
                   {service.badge && (
                     <Badge
-                      className={`absolute top-4 right-4 ${
-                        service.highlight
-                          ? "bg-primary text-primary-foreground"
-                          : "bg-secondary text-secondary-foreground"
-                      }`}
+                      className={`absolute top-4 right-4 ${service.highlight
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-secondary text-secondary-foreground"
+                        }`}
                     >
                       {service.badge}
                     </Badge>

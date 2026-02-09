@@ -102,6 +102,11 @@ export default function VehicleLoanEmiCalculator() {
       ? numberToWordsIndian(Math.round(principal))
       : "";
 
+  const emiInWords =
+    Number.isFinite(result.emi) && result.emi > 0
+      ? numberToWordsIndian(Math.round(result.emi))
+      : "";
+
   const handleInputChange = (field: keyof LoanInputs, value: string) => {
     if (field === "loanAmount") {
       const trimmed = value.trim();
@@ -147,7 +152,7 @@ export default function VehicleLoanEmiCalculator() {
             <div className="w-2 h-2 bg-[#F97415] rounded-full animate-pulse" />
             <span className="text-sm font-medium text-white">Loan Calculator</span>
           </div>
-          
+
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-tight mb-4">
             EMI{" "}
             <span className="relative inline-block">
@@ -155,7 +160,7 @@ export default function VehicleLoanEmiCalculator() {
               <span className="absolute bottom-2 left-0 w-full h-3 bg-[#F97415]/20 -rotate-2" />
             </span>
           </h1>
-          
+
           <p className="text-lg text-gray-300 max-w-2xl mx-auto">
             Calculate your loan EMI instantly and plan your finances smartly
           </p>
@@ -233,37 +238,43 @@ export default function VehicleLoanEmiCalculator() {
                   <p className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white">
                     {formatINR(result.emi)}
                   </p>
+
                 </div>
                 <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm">
                   <TrendingUp className="w-6 h-6 text-white" />
                 </div>
               </div>
-              
+
               <div className="flex items-center gap-2 mt-6 text-white/90">
                 <Calendar className="w-4 h-4" />
                 <span className="text-sm font-medium">
                   {inputs.tenureYears} years ({Number(inputs.tenureYears) * 12} months)
                 </span>
               </div>
+              {emiInWords && (
+                <p className="mt-2 text-md text-white/90 italic leading-tight">
+                  {emiInWords}
+                </p>
+              )}
             </div>
 
             {/* Stats Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
               {[
-                { 
-                  label: "Principal Amount", 
+                {
+                  label: "Principal Amount",
                   value: formatINR(principal),
                   icon: PiggyBank,
                   gradient: "from-blue-500/20 to-blue-600/20"
                 },
-                { 
-                  label: "Total Interest", 
+                {
+                  label: "Total Interest",
                   value: formatINR(result.totalInterest),
                   icon: TrendingUp,
                   gradient: "from-purple-500/20 to-purple-600/20"
                 },
-                { 
-                  label: "Total Repayment", 
+                {
+                  label: "Total Repayment",
                   value: formatINR(result.totalPayable),
                   icon: IndianRupee,
                   gradient: "from-green-500/20 to-green-600/20",
@@ -272,9 +283,8 @@ export default function VehicleLoanEmiCalculator() {
               ].map((stat, idx) => (
                 <div
                   key={stat.label}
-                  className={`rounded-2xl bg-white/5 backdrop-blur-xl p-6 border border-white/10 hover:border-[#F97415]/50 transition-all duration-300 hover:scale-105 ${
-                    stat.highlight ? 'sm:col-span-2' : ''
-                  }`}
+                  className={`rounded-2xl bg-white/5 backdrop-blur-xl p-6 border border-white/10 hover:border-[#F97415]/50 transition-all duration-300 hover:scale-105 ${stat.highlight ? 'sm:col-span-2' : ''
+                    }`}
                   style={{ animation: `fadeInUp 0.6s ease-out ${idx * 0.1}s both` }}
                 >
                   <div className="flex items-start justify-between mb-3">
