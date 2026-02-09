@@ -1,3 +1,11 @@
-"use client";
+import type { Metadata } from "next";
 
-export { default } from "../(page-static)/about/contact/page";
+import ContactPage from "../(page-static)/about/contact/page";
+
+export const metadata: Metadata = {
+  title: "Contact Us - Infinity Loans & Business Solutions",
+};
+
+export default function Contact() {
+  return <ContactPage />;
+}

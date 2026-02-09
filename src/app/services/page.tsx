@@ -5,7 +5,7 @@ import { Suspense } from "react";
 import ServicesHubClient from "./_components/ServicesHubClient";
 
 export const metadata: Metadata = {
-  title: "All Services | Infinity Loans",
+  title: "All Services | Infinity Loans & Business Solutions",
   description:
     "Explore loans, credit, government schemes, insurance and tools offered by Infinity Loans.",
 };
