@@ -132,18 +132,18 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
   const handleSalariedFileChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     setter: React.Dispatch<React.SetStateAction<File | null>>,
-    kind: "image1MB" | "pdf2MB"
+    kind: "image1MB" | "image2MB" | "pdf2MB" | "pdf10MB"
   ) => {
     const file = e.target.files?.[0];
     if (!file) return setter(null);
 
     const isImage = file.type.startsWith("image/");
-    if (kind === "image1MB") {
+    if (kind === "image1MB" || kind === "image2MB") {
       if (!isImage) return window.alert("Please upload an image (JPG/PNG)");
       if (file.size > 2 * 1024 * 1024) return window.alert("Image must be <= 2MB");
     }
 
-    if (kind === "pdf2MB") {
+    if (kind === "pdf2MB" || kind === "pdf10MB") {
       if (file.type !== "application/pdf") return window.alert("Please upload a PDF file");
       if (file.size > 10 * 1024 * 1024) return window.alert("PDF must be <= 10MB");
     }
