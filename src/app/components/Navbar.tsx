@@ -59,13 +59,22 @@ const Navbar = () => {
 
   return (
     <div className="sticky top-0 z-50 w-full px-3 py-2">
-      <div className="navbar mx-auto max-w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-2 shadow-lg backdrop-blur-lg supports-[backdrop-filter]:bg-black/40 sm:px-6 ">
+      <div className="navbar mx-auto max-w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-1 shadow-lg backdrop-blur-lg supports-[backdrop-filter]:bg-black/40 sm:px-6 ">
         {/* LOGO */}
         <Link
           href="/"
-          className="flex w-[150px] shrink-0 items-center transition-transform duration-300 hover:scale-110"
+          className="flex shrink-0 items-center transition-transform duration-300 hover:scale-105"
         >
-          <Image src="/logo2.png" alt="logo" width={250} height={250} />
+          <div className="relative h-12 w-[180px] rounded-lg bg-white/80 p-1 shadow-sm backdrop-blur sm:h-20 sm:w-[210px]">
+            <Image
+              src="/logo.png"
+              alt="logo"
+              fill
+              sizes="(max-width: 640px) 180px, 210px"
+              className="object-contain"
+              priority
+            />
+          </div>
         </Link>
 
         {/* MENU  testing changes */}
