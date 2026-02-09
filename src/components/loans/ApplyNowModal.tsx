@@ -923,7 +923,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                     <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed rounded cursor-pointer hover:border-primary">
                       <Upload className="h-5 w-5" />
                       <span className="text-xs text-muted-foreground mt-1">{aadhaarPhoto ? `${aadhaarPhoto.name.slice(0, 18)}...` : "Upload JPG/PNG, Max 2MB"}</span>
-                      <input type="file" accept="image/png,image/jpeg" className="hidden" onChange={(e) => handleSalariedFileChange(e, setAadhaarFrontPhoto, "image2MB")} />
+                      <input type="file" accept="image/png,image/jpeg" className="hidden" onChange={(e) => handleSalariedFileChange(e, setAadhaarPhoto, "image2MB")} />
                     </label>
                   </div>
                   <div className="space-y-2">
