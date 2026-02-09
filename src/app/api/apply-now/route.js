@@ -279,6 +279,97 @@ export async function POST(req) {
       });
     }
 
+    /* =====================================================
+       ================= UNIFIED =================
+    ===================================================== */
+    else if (loanType === "unified") {
+      // Handle multiple file uploads
+      const businessCertificatesFiles = [];
+      const existingLoanStatementFiles = [];
+      
+      // Collect business certificates files
+      for (let [key, value] of formData.entries()) {
+        if (key.startsWith('businessCertificatesFiles_') && value instanceof File) {
+          businessCertificatesFiles.push(await upload(value));
+        }
+      }
+      
+      // Collect existing loan statement files
+      for (let [key, value] of formData.entries()) {
+        if (key.startsWith('existingLoanStatementFiles_') && value instanceof File) {
+          existingLoanStatementFiles.push(await upload(value));
+        }
+      }
+
+      newApplication = new PersonalLoanModel({
+        applicationRef,
+
+        firstname: firstName,
+        middleName,
+        lastname: lastName,
+        mobileNumber: formData.get("aadhaarLinkedMobile"),
+        alternateMobile: formData.get("alternateMobile"),
+        personalEmail: formData.get("personalEmail"),
+        officialEmail: formData.get("officialEmail"),
+
+        panNumber: formData.get("panCardType"),
+        aadhaarNumber: formData.get("aadhaarCardType"),
+
+        currentResidentialAddress: formData.get("currentResidentialAddress"),
+        currentResidentialPincode: formData.get("residentialPincode"),
+        currentOfficeAddress: formData.get("currentOfficeAddress"),
+        currentOfficePincode: formData.get("officePincode"),
+        residentialStatus: "Owned", // Default for unified form
+        businessPremisesStatus: "Owned", // Default for unified form
+        yearsAtCurrentResidentialAddress: "1", // Default
+        yearsAtCurrentBusinessAddress: "1", // Default
+
+        requiredLoanAmount: formData.get("requiredLoanAmount"),
+
+        // Additional unified form fields
+        gender: formData.get("gender"),
+        maritalStatus: formData.get("maritalStatus"),
+        dob: formData.get("dob"),
+        voterIdNumber: formData.get("voterId"),
+        drivingLicense: formData.get("drivingLicense"),
+        passportNumber: formData.get("passport"),
+        residentialState: formData.get("residentialState"),
+        residentialCity: formData.get("residentialCity"),
+        officeState: formData.get("officeState"),
+        officeCity: formData.get("officeCity"),
+        loanTypeText: formData.get("loanType"),
+        bankStatementType: JSON.parse(formData.get("bankStatementType") || "[]"),
+        existingLoansCount: formData.get("existingLoansCount"),
+        totalLoanAmount: formData.get("totalLoanAmount"),
+        totalMonthlyEmi: formData.get("totalMonthlyEmi"),
+        emiDelayPast3Months: formData.get("emiDelayPast3Months"),
+        businessCertificates: JSON.parse(formData.get("businessCertificates") || "[]"),
+        isBuyingGoods: formData.get("isBuyingGoods"),
+        cibilScoreKnown: formData.get("cibilScoreKnown"),
+        cibilScore: formData.get("cibilScore"),
+        consent: formData.get("consent"),
+
+        // Document uploads
+        aadhaarFront: await upload(formData.get("aadhaarFront")),
+        aadhaarBack: await upload(formData.get("aadhaarBack")),
+        panCardFront: await upload(formData.get("panFront")),
+        residentialElectricityBillUrl: await upload(formData.get("residentialBill")),
+        shopElectricityBillUrl: await upload(formData.get("shopBill")),
+        bankStatementFileUrl: await upload(formData.get("bankStatementFile")),
+        incomeTax2023_24FileUrl: await upload(formData.get("incomeTax2023_24File")),
+        incomeTax2024_25FileUrl: await upload(formData.get("incomeTax2024_25File")),
+        incomeTax2025_26FileUrl: await upload(formData.get("incomeTax2025_26File")),
+        proformaInvoiceFileUrl: await upload(formData.get("proformaInvoiceFile")),
+        cibilReportFileUrl: await upload(formData.get("cibilReportFile")),
+        businessCertificatesFiles,
+        existingLoanStatementFiles,
+
+        loan_type: "unified",
+        application_status: "pending",
+        role: "borrower-unified",
+      });
+    }
+
     else {
       return NextResponse.json(
         { success: false, message: "Invalid loan type" },
