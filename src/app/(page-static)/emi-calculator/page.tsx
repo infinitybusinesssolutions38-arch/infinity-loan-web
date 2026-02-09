@@ -103,6 +103,23 @@ export default function VehicleLoanEmiCalculator() {
       : "";
 
   const handleInputChange = (field: keyof LoanInputs, value: string) => {
+    if (field === "loanAmount") {
+      const trimmed = value.trim();
+      if (trimmed === "") {
+        setInputs((prev) => ({ ...prev, [field]: "" }));
+        return;
+      }
+
+      const n = Number(trimmed);
+      if (!Number.isFinite(n)) {
+        setInputs((prev) => ({ ...prev, [field]: "" }));
+        return;
+      }
+
+      setInputs((prev) => ({ ...prev, [field]: String(Math.max(0, n)) }));
+      return;
+    }
+
     setInputs((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -159,6 +176,7 @@ export default function VehicleLoanEmiCalculator() {
               <label className="text-sm font-medium text-gray-300">Loan Amount (₹)</label>
               <input
                 type="number"
+                min={0}
                 value={inputs.loanAmount}
                 onChange={(e) => handleInputChange("loanAmount", e.target.value)}
                 className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:ring-2 focus:ring-[#F97415] focus:border-transparent transition-all backdrop-blur-sm"
