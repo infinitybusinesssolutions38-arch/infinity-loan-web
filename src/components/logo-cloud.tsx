@@ -91,6 +91,9 @@ export default function LogoCloud() {
         [imageFiles]
     );
 
+    const sliderOneLogos = useMemo(() => logos.filter((_, idx) => idx % 2 === 0), [logos]);
+    const sliderTwoLogos = useMemo(() => logos.filter((_, idx) => idx % 2 === 1), [logos]);
+
     const stats = [
         { icon: Handshake, label: "Bank Partners", value: "100+" },
         { icon: Shield, label: "Secure Process", value: "100%" },
@@ -158,7 +161,7 @@ export default function LogoCloud() {
                     {/* Main Slider */}
                     <div className="bg-white rounded-3xl border-2 border-gray-100 shadow-xl overflow-hidden py-8 relative">
                         <InfiniteSlider speed={40} speedOnHover={20} gap={96}>
-                            {logos.map((logo, index) => (
+                            {sliderOneLogos.map((logo, index) => (
                                 <div
                                     key={index}
                                     className="flex items-center group/logo"
@@ -196,7 +199,7 @@ export default function LogoCloud() {
 
                     <div className="bg-white mt-5 rounded-3xl border-2 border-gray-100 shadow-xl overflow-hidden py-8 relative">
                         <InfiniteSlider speed={40} speedOnHover={20} gap={96} reverse>
-                            {logos.map((logo, index) => (
+                            {sliderTwoLogos.map((logo, index) => (
                                 <div
                                     key={index}
                                     className="flex items-center group/logo"
