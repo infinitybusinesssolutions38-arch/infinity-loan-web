@@ -4,6 +4,7 @@ import PartnerRegisterModel from "../models/partner-register-schema";
 import {
   sendPartnerConfirmationEmail,
   sendPartnerNotificationToAdmin,
+  sendPartnerNotificationToAdminEmails,
 } from "../lib/partner-email";
 
 export async function POST(req) {
@@ -91,12 +92,26 @@ export async function POST(req) {
       createdAt: savedPartner.createdAt,
     });
 
+    // Send notification emails to admin addresses using Gmail SMTP
+    const adminGmailResult = await sendPartnerNotificationToAdminEmails({
+      fullName: savedPartner.fullName,
+      email: savedPartner.email,
+      mobileNumber: savedPartner.mobileNumber,
+      city: savedPartner.city,
+      experience: savedPartner.experience,
+      preferredCategory: savedPartner.preferredCategory,
+      createdAt: savedPartner.createdAt,
+    });
+
     // Log email results (don't fail the registration if emails fail)
     if (!partnerEmailResult.success) {
       console.warn("Failed to send partner confirmation email:", partnerEmailResult.error);
     }
     if (!adminEmailResult.success) {
       console.warn("Failed to send admin notification email:", adminEmailResult.error);
+    }
+    if (!adminGmailResult.success) {
+      console.warn("Failed to send admin Gmail notification emails:", adminGmailResult.error);
     }
 
     return NextResponse.json(

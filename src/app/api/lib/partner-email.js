@@ -13,6 +13,19 @@ const createTransporter = () => {
   });
 };
 
+// Create Gmail SMTP transporter for admin emails
+const createGmailTransporter = () => {
+  return nodemailer.createTransport({
+    host: process.env.EMAIL_smtp_HOST,
+    port: parseInt(process.env.EMAIL_smtp_PORT),
+    secure: true, // Gmail uses SSL on port 465
+    auth: {
+      user: process.env.EMAIL_HOST_USER,
+      pass: process.env.EMAIL_HOST_PASSWORD,
+    },
+  });
+};
+
 // Send partner confirmation email to customer
 export const sendPartnerConfirmationEmail = async (
   partnerEmail,
@@ -254,6 +267,112 @@ export const sendPartnerNotificationToAdmin = async (partnerData) => {
     return { success: true };
   } catch (error) {
     console.error("Error sending partner notification to admin:", error);
+    return { success: false, error: error.message };
+  }
+};
+
+// Send partner notification to admin emails using Gmail SMTP
+export const sendPartnerNotificationToAdminEmails = async (partnerData) => {
+  try {
+    const gmailTransporter = createGmailTransporter();
+
+    const htmlContent = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+        <div style="background: linear-gradient(135deg, #F97415 0%, #E06410 100%); padding: 30px; border-radius: 10px; color: white; margin-bottom: 30px;">
+          <h1 style="margin: 0;">New Partner Registration</h1>
+          <p style="margin: 10px 0 0 0;">Action Required - Review & Approve</p>
+        </div>
+
+        <div style="color: #333; line-height: 1.6;">
+          <p>A new partner has registered on the Infinity Loans platform. Please review the details below and take appropriate action.</p>
+
+          <div style="background: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <h3 style="margin-top: 0; color: #F97415;">Partner Registration Details:</h3>
+            <table style="width: 100%; border-collapse: collapse;">
+              <tr style="border-bottom: 1px solid #ddd;">
+                <td style="padding: 10px 0; font-weight: bold; width: 30%;">Name:</td>
+                <td style="padding: 10px 0;">${partnerData.fullName}</td>
+              </tr>
+              <tr style="border-bottom: 1px solid #ddd;">
+                <td style="padding: 10px 0; font-weight: bold;">Email:</td>
+                <td style="padding: 10px 0;"><a href="mailto:${partnerData.email}">${partnerData.email}</a></td>
+              </tr>
+              <tr style="border-bottom: 1px solid #ddd;">
+                <td style="padding: 10px 0; font-weight: bold;">Mobile:</td>
+                <td style="padding: 10px 0;"><a href="tel:${partnerData.mobileNumber}">${partnerData.mobileNumber}</a></td>
+              </tr>
+              <tr style="border-bottom: 1px solid #ddd;">
+                <td style="padding: 10px 0; font-weight: bold;">City:</td>
+                <td style="padding: 10px 0;">${partnerData.city}</td>
+              </tr>
+              <tr style="border-bottom: 1px solid #ddd;">
+                <td style="padding: 10px 0; font-weight: bold;">Experience:</td>
+                <td style="padding: 10px 0;">${partnerData.experience}</td>
+              </tr>
+              <tr style="border-bottom: 1px solid #ddd;">
+                <td style="padding: 10px 0; font-weight: bold;">Preferred Category:</td>
+                <td style="padding: 10px 0;">${partnerData.preferredCategory}</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 0; font-weight: bold;">Registered:</td>
+                <td style="padding: 10px 0;">${new Date(partnerData.createdAt).toLocaleString()}</td>
+              </tr>
+            </table>
+          </div>
+
+          <div style="margin: 20px 0; padding: 15px; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 4px;">
+            <strong>Next Steps:</strong>
+            <ul style="margin: 10px 0; padding-left: 20px;">
+              <li>Review partner registration details</li>
+              <li>Conduct KYC verification</li>
+              <li>Contact partner for onboarding</li>
+              <li>Approve/Reject registration in dashboard</li>
+            </ul>
+          </div>
+
+          <p>Access the partner management dashboard to approve or review this registration.</p>
+
+          <p>
+            Best regards,<br/>
+            <strong>Infinity Loans System</strong>
+          </p>
+        </div>
+
+        <div style="border-top: 1px solid #ddd; margin-top: 30px; padding-top: 20px; text-align: center; color: #666; font-size: 12px;">
+          <p>© ${new Date().getFullYear()} Infinity Loan Services. All rights reserved.</p>
+          <p>This is an automated email from your partner management system.</p>
+        </div>
+      </div>
+    `;
+
+    // Get admin emails
+    const partnerSupportEmail = process.env.NEXT_PUBLIC_PARTNER_SUPPORT_EMAIL;
+    const directorEmail = process.env.DIRECTOR_EMAIL;
+    
+    const adminEmails = [];
+    if (partnerSupportEmail) adminEmails.push(partnerSupportEmail);
+    if (directorEmail) adminEmails.push(directorEmail);
+
+    if (adminEmails.length === 0) {
+      console.warn("No admin emails configured for partner notifications");
+      return { success: false, error: "No admin emails configured" };
+    }
+
+    // Send to all admin emails
+    const emailPromises = adminEmails.map(email => 
+      gmailTransporter.sendMail({
+        from: process.env.EMAIL_HOST_USER,
+        to: email,
+        subject: `New Partner Registration - ${partnerData.fullName}`,
+        html: htmlContent,
+      })
+    );
+
+    await Promise.all(emailPromises);
+
+    return { success: true };
+  } catch (error) {
+    console.error("Error sending partner notification to admin emails:", error);
     return { success: false, error: error.message };
   }
 };
