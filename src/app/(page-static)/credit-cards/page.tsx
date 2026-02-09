@@ -382,7 +382,7 @@ function ProductCard({ product }: { product: Product }) {
         </div>
 
         <div className="flex flex-col gap-2 sm:min-w-[280px]">
-          <ApplyNowCTAButton loanType={product.title} size="lg" className="w-full">
+          <ApplyNowCTAButton loanType={product.title} categoryKey="credit-cards" size="lg" className="w-full">
             Apply Now
           </ApplyNowCTAButton>
           <CtaButton href="#eligibility" intent="secondary">
