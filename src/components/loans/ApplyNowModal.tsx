@@ -823,7 +823,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="s_middleName" className="text-sm font-medium">Middle Name</Label>
+                    <Label htmlFor="s_middleName" className="text-sm font-medium">Middle Name (optional)</Label>
                     <Input id="s_middleName" name="middleName" placeholder="Middle Name" value={sForm.middleName} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
 
@@ -866,7 +866,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="s_whatsappNumber" className="text-sm font-medium">WhatsApp Number</Label>
+                    <Label htmlFor="s_whatsappNumber" className="text-sm font-medium">WhatsApp Number (optional)</Label>
                     <Input id="s_whatsappNumber" name="whatsappNumber" placeholder="WhatsApp Number" value={sForm.whatsappNumber} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
 
@@ -911,35 +911,35 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 </div>
                 <div className="grid gap-4 sm:grid-cols-3">
                   <div className="space-y-2">
-                    <Label className="text-sm font-medium">PAN Card Photo (Front)* (Max 1MB)</Label>
+                    <Label className="text-sm font-medium">PAN Card Photo (Front)* <span className="text-xs text-muted-foreground">(Max 2MB)</span></Label>
                     <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed rounded cursor-pointer hover:border-primary">
                       <Upload className="h-5 w-5" />
                       <span className="text-xs text-muted-foreground mt-1">{panPhoto ? `${panPhoto.name.slice(0, 18)}...` : "Upload JPG/PNG, Max 1MB"}</span>
-                      <input type="file" accept="image/png,image/jpeg" className="hidden" onChange={(e) => handleSalariedFileChange(e, setPanPhoto, "image1MB")} />
+                      <input type="file" accept="image/png,image/jpeg" className="hidden" onChange={(e) => handleSalariedFileChange(e, setPanPhoto, "image2MB")} />
                     </label>
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-sm font-medium">Aadhaar Photo (Front)* (Max 1MB)</Label>
+                    <Label className="text-sm font-medium">Aadhaar Photo (Front)* <span className="text-xs text-muted-foreground">(Max 2MB)</span></Label>
                     <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed rounded cursor-pointer hover:border-primary">
                       <Upload className="h-5 w-5" />
-                      <span className="text-xs text-muted-foreground mt-1">{aadhaarPhoto ? `${aadhaarPhoto.name.slice(0, 18)}...` : "Upload JPG/PNG, Max 1MB"}</span>
-                      <input type="file" accept="image/png,image/jpeg" className="hidden" onChange={(e) => handleSalariedFileChange(e, setAadhaarPhoto, "image1MB")} />
+                      <span className="text-xs text-muted-foreground mt-1">{aadhaarPhoto ? `${aadhaarPhoto.name.slice(0, 18)}...` : "Upload JPG/PNG, Max 2MB"}</span>
+                      <input type="file" accept="image/png,image/jpeg" className="hidden" onChange={(e) => handleSalariedFileChange(e, setAadhaarFrontPhoto, "image2MB")} />
                     </label>
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-sm font-medium">Aadhaar Photo (Back)* (Max 1MB)</Label>
+                    <Label className="text-sm font-medium">Aadhaar Photo (Back)* <span className="text-xs text-muted-foreground">(Max 2MB)</span></Label>
                     <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed rounded cursor-pointer hover:border-primary">
                       <Upload className="h-5 w-5" />
-                      <span className="text-xs text-muted-foreground mt-1">{aadhaarBackPhoto ? `${aadhaarBackPhoto.name.slice(0, 18)}...` : "Upload JPG/PNG, Max 1MB"}</span>
-                      <input type="file" accept="image/png,image/jpeg" className="hidden" onChange={(e) => handleSalariedFileChange(e, setAadhaarBackPhoto, "image1MB")} />
+                      <span className="text-xs text-muted-foreground mt-1">{aadhaarBackPhoto ? `${aadhaarBackPhoto.name.slice(0, 18)}...` : "Upload JPG/PNG, Max 2MB"}</span>
+                      <input type="file" accept="image/png,image/jpeg" className="hidden" onChange={(e) => handleSalariedFileChange(e, setAadhaarBackPhoto, "image2MB")} />
                     </label>
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-sm font-medium">Applicant Photo* (Max 1MB)</Label>
+                    <Label className="text-sm font-medium">Applicant Photo* <span className="text-xs text-muted-foreground">(Max 2MB)</span></Label>
                     <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed rounded cursor-pointer hover:border-primary">
                       <Upload className="h-5 w-5" />
-                      <span className="text-xs text-muted-foreground mt-1">{applicantPhoto ? `${applicantPhoto.name.slice(0, 18)}...` : "Upload JPG/PNG, Max 1MB"}</span>
-                      <input type="file" accept="image/png,image/jpeg" className="hidden" onChange={(e) => handleSalariedFileChange(e, setApplicantPhoto, "image1MB")} />
+                      <span className="text-xs text-muted-foreground mt-1">{applicantPhoto ? `${applicantPhoto.name.slice(0, 18)}...` : "Upload JPG/PNG, Max 2MB"}</span>
+                      <input type="file" accept="image/png,image/jpeg" className="hidden" onChange={(e) => handleSalariedFileChange(e, setApplicantPhoto, "image2MB")} />
                     </label>
                   </div>
                 </div>
@@ -988,17 +988,17 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                     </select>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="s_city" className="text-sm font-medium">City</Label>
+                    <Label htmlFor="s_city" className="text-sm font-medium">City <span className="text-destructive">*</span></Label>
                     <Input id="s_city" name="city" placeholder="City" value={sForm.city} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="s_currentResidentialPincode" className="text-sm font-medium">PIN</Label>
+                    <Label htmlFor="s_currentResidentialPincode" className="text-sm font-medium">PIN <span className="text-destructive">*</span></Label>
                     <Input id="s_currentResidentialPincode" name="currentResidentialPincode" placeholder="PIN" value={sForm.currentResidentialPincode} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
                 </div>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
-                    <Label htmlFor="s_residenceType" className="text-sm font-medium">Residence Type</Label>
+                    <Label htmlFor="s_residenceType" className="text-sm font-medium">Residence Type <span className="text-destructive">*</span></Label>
                     <select id="s_residenceType" name="residenceType" value={sForm.residenceType} onChange={handleSalariedChange} className="mt-2 block w-full rounded-md border border-blue-300 bg-transparent px-3 py-2 text-sm">
                       <option value="">Select Residence Type</option>
                       <option value="Owned">Owned</option>
@@ -1023,11 +1023,11 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 {sForm.residenceType === "Owned" && (
                   <div className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="s_lastElectricityBill" className="text-sm font-medium">Upload latest electricity bill (optional) <span className="text-xs text-muted-foreground">(Max 1MB)</span></Label>
+                      <Label htmlFor="s_lastElectricityBill" className="text-sm font-medium">Upload latest electricity bill (optional) <span className="text-xs text-muted-foreground">(Max 2MB)</span></Label>
                       <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed rounded cursor-pointer hover:border-primary">
                         <Upload className="h-5 w-5" />
-                        <span className="text-xs text-muted-foreground mt-1">{lastElectricityBill ? `${lastElectricityBill.name.slice(0, 18)}...` : "Upload JPG/PNG, Max 1MB"}</span>
-                        <input type="file" accept="image/png,image/jpeg" className="hidden" onChange={(e) => handleSalariedFileChange(e, setLastElectricityBill, "image1MB")} />
+                        <span className="text-xs text-muted-foreground mt-1">{lastElectricityBill ? `${lastElectricityBill.name.slice(0, 18)}...` : "Upload JPG/PNG, Max 2MB"}</span>
+                        <input type="file" accept="image/png,image/jpeg" className="hidden" onChange={(e) => handleSalariedFileChange(e, setLastElectricityBill, "image2MB")} />
                       </label>
                     </div>
                   </div>
@@ -1041,20 +1041,20 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                     </div>
 
                     <div className="space-y-2">
-                      <Label className="text-sm font-medium">Permanent Address Electricity Bill (optional) <span className="text-xs text-muted-foreground">(Max 1MB)</span></Label>
+                      <Label className="text-sm font-medium">Permanent Address Electricity Bill (optional) <span className="text-xs text-muted-foreground">(Max 2MB)</span></Label>
                       <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed rounded cursor-pointer hover:border-primary">
                         <Upload className="h-5 w-5" />
-                        <span className="text-xs text-muted-foreground mt-1">{permElectricityBill ? `${permElectricityBill.name.slice(0, 18)}...` : "Upload JPG/PNG, Max 1MB"}</span>
-                        <input type="file" accept="image/png,image/jpeg" className="hidden" onChange={(e) => handleSalariedFileChange(e, setPermElectricityBill, "image1MB")} />
+                        <span className="text-xs text-muted-foreground mt-1">{permElectricityBill ? `${permElectricityBill.name.slice(0, 18)}...` : "Upload JPG/PNG, Max 2MB"}</span>
+                        <input type="file" accept="image/png,image/jpeg" className="hidden" onChange={(e) => handleSalariedFileChange(e, setPermElectricityBill, "image2MB")} />
                       </label>
                     </div>
 
                     <div className="space-y-2">
-                      <Label className="text-sm font-medium">Rent Agreement (optional) <span className="text-xs text-muted-foreground">(PDF, Max 2MB)</span></Label>
+                      <Label className="text-sm font-medium">Rent Agreement (optional) <span className="text-xs text-muted-foreground">(PDF, Max 10MB)</span></Label>
                       <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed rounded cursor-pointer hover:border-primary">
                         <Upload className="h-5 w-5" />
-                        <span className="text-xs text-muted-foreground mt-1">{rentAgreement ? `${rentAgreement.name.slice(0, 18)}...` : "Upload PDF, Max 2MB"}</span>
-                        <input type="file" accept="application/pdf" className="hidden" onChange={(e) => handleSalariedFileChange(e, setRentAgreement, "pdf2MB")} />
+                        <span className="text-xs text-muted-foreground mt-1">{rentAgreement ? `${rentAgreement.name.slice(0, 18)}...` : "Upload PDF, Max 10MB"}</span>
+                        <input type="file" accept="application/pdf" className="hidden" onChange={(e) => handleSalariedFileChange(e, setRentAgreement, "pdf10MB")} />
                       </label>
                     </div>
                   </div>
@@ -1067,19 +1067,19 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                       <Input id="s_permanentAddress" name="permanentAddress" placeholder="Permanent Address" value={sForm.permanentAddress} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                     </div>
                     <div className="space-y-2">
-                      <Label className="text-sm font-medium">Permanent Address Electricity Bill (optional) <span className="text-xs text-muted-foreground">(Max 1MB)</span></Label>
+                      <Label className="text-sm font-medium">Permanent Address Electricity Bill (optional) <span className="text-xs text-muted-foreground">(Max 2MB)</span></Label>
                       <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed rounded cursor-pointer hover:border-primary">
                         <Upload className="h-5 w-5" />
-                        <span className="text-xs text-muted-foreground mt-1">{permElectricityBill ? `${permElectricityBill.name.slice(0, 18)}...` : "Upload JPG/PNG, Max 1MB"}</span>
-                        <input type="file" accept="image/png,image/jpeg" className="hidden" onChange={(e) => handleSalariedFileChange(e, setPermElectricityBill, "image1MB")} />
+                        <span className="text-xs text-muted-foreground mt-1">{permElectricityBill ? `${permElectricityBill.name.slice(0, 18)}...` : "Upload JPG/PNG, Max 2MB"}</span>
+                        <input type="file" accept="image/png,image/jpeg" className="hidden" onChange={(e) => handleSalariedFileChange(e, setPermElectricityBill, "image2MB")} />
                       </label>
                     </div>
                     <div className="space-y-2">
-                      <Label className="text-sm font-medium">Company Allotment Letter (optional) <span className="text-xs text-muted-foreground">(PDF, Max 2MB)</span></Label>
+                      <Label className="text-sm font-medium">Company Allotment Letter (optional) <span className="text-xs text-muted-foreground">(PDF, Max 10MB)</span></Label>
                       <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed rounded cursor-pointer hover:border-primary">
                         <Upload className="h-5 w-5" />
-                        <span className="text-xs text-muted-foreground mt-1">{companyAllotmentLetter ? `${companyAllotmentLetter.name.slice(0, 18)}...` : "Upload PDF, Max 2MB"}</span>
-                        <input type="file" accept="application/pdf" className="hidden" onChange={(e) => handleSalariedFileChange(e, setCompanyAllotmentLetter, "pdf2MB")} />
+                        <span className="text-xs text-muted-foreground mt-1">{companyAllotmentLetter ? `${companyAllotmentLetter.name.slice(0, 18)}...` : "Upload PDF, Max 10MB"}</span>
+                        <input type="file" accept="application/pdf" className="hidden" onChange={(e) => handleSalariedFileChange(e, setCompanyAllotmentLetter, "pdf10MB")} />
                       </label>
                     </div>
                   </div>
@@ -1091,11 +1091,11 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 <legend className="text-lg font-bold text-foreground mb-4">D. Employment Details</legend>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
-                    <Label htmlFor="s_companyName" className="text-sm font-medium">Company Name</Label>
+                    <Label htmlFor="s_companyName" className="text-sm font-medium">Company Name <span className="text-destructive">*</span></Label>
                     <Input id="s_companyName" name="companyName" placeholder="Company Name" value={sForm.companyName} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="s_organizationType" className="text-sm font-medium">Organization Type</Label>
+                    <Label htmlFor="s_organizationType" className="text-sm font-medium">Organization Type <span className="text-destructive">*</span></Label>
                     <select id="s_organizationType" name="organizationType" value={sForm.organizationType} onChange={handleSalariedChange} className="mt-2 block w-full rounded-md border border-blue-300 bg-transparent px-3 py-2 text-sm">
                       <option value="">Organization Type</option>
                       <option value="Proprietorship">Proprietorship</option>
@@ -1119,7 +1119,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                     </select>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="s_industry" className="text-sm font-medium">Industry / Sector</Label>
+                    <Label htmlFor="s_industry" className="text-sm font-medium">Industry / Sector <span className="text-destructive">*</span></Label>
                     <select id="s_industry" name="industry" value={sForm.industry} onChange={handleSalariedChange} className="mt-2 block w-full rounded-md border border-blue-300 bg-transparent px-3 py-2 text-sm">
                       <option value="">Industry / Sector</option>
                       {sector.map((sector)=>(
@@ -1130,16 +1130,16 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                   </div>
                   {sForm.industry === "Other" && (
                     <div className="space-y-2">
-                      <Label htmlFor="s_industryCustom" className="text-sm font-medium">Please specify your Industry / Sector</Label>
+                      <Label htmlFor="s_industryCustom" className="text-sm font-medium">Please specify your Industry / Sector <span className="text-destructive">*</span></Label>
                       <Input id="s_industryCustom" name="industryOther" placeholder="Enter your industry sector" value={sForm.industryOther} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                     </div>
                   )}
                   <div className="space-y-2">
-                    <Label htmlFor="s_designation" className="text-sm font-medium">Designation</Label>
+                    <Label htmlFor="s_designation" className="text-sm font-medium">Designation <span className="text-destructive">*</span></Label>
                     <Input id="s_designation" name="designation" placeholder="Designation" value={sForm.designation} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="s_employmentType" className="text-sm font-medium">Employment Type</Label>
+                    <Label htmlFor="s_employmentType" className="text-sm font-medium">Employment Type <span className="text-destructive">*</span></Label>
                     <select id="s_employmentType" name="employmentType" value={sForm.employmentType} onChange={handleSalariedChange} className="mt-2 block w-full rounded-md border border-blue-300 bg-transparent px-3 py-2 text-sm">
                       <option value="">Employment Type</option>
                       <option value="Permanent">Permanent</option>
@@ -1156,7 +1156,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                     onChange={handleSalariedChange}
                   />
                   <div className="space-y-2">
-                    <Label htmlFor="s_totalExperienceYears" className="text-sm font-medium">Total Work Experience (Years)</Label>
+                    <Label htmlFor="s_totalExperienceYears" className="text-sm font-medium">Total Work Experience (Years) <span className="text-destructive">*</span></Label>
                     <Input id="s_totalExperienceYears" name="totalExperienceYears" type="number" placeholder="Total Experience (Years)" value={sForm.totalExperienceYears} onChange={(e) => {
                       const value = e.target.value;
                       if (value === '' || parseFloat(value) >= 0) {
@@ -1165,24 +1165,24 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                     }} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="s_officeLocation" className="text-sm font-medium">Office Location / City</Label>
+                    <Label htmlFor="s_officeLocation" className="text-sm font-medium">Current Office full address <span className="text-destructive">*</span></Label>
                     <Input id="s_officeLocation" name="officeLocation" placeholder="Office Location / City" value={sForm.officeLocation} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="s_officePincode" className="text-sm font-medium">Office PIN</Label>
+                    <Label htmlFor="s_officePincode" className="text-sm font-medium">Office PIN <span className="text-destructive">*</span></Label>
                     <Input id="s_officePincode" name="officePincode" placeholder="Office PIN" value={sForm.officePincode} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="s_officialEmail" className="text-sm font-medium">Official Email ID</Label>
+                    <Label htmlFor="s_officialEmail" className="text-sm font-medium">Official Email ID (optional)</Label>
                     <Input id="s_officialEmail" name="officialEmail" type="email" placeholder="Official Email ID" value={sForm.officialEmail} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium">Office ID Card Photo <span className="text-xs text-muted-foreground">(Max 1MB)</span></Label>
+                  <Label className="text-sm font-medium">Office ID Card Photo <span className="text-xs text-muted-foreground">(Max 2MB)</span></Label>
                   <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed rounded cursor-pointer hover:border-primary">
                     <Upload className="h-5 w-5" />
-                    <span className="text-xs text-muted-foreground mt-1">{officeIdPhoto ? `${officeIdPhoto.name.slice(0, 18)}...` : "Upload JPG/PNG, Max 1MB"}</span>
-                    <input type="file" accept="image/png,image/jpeg" className="hidden" onChange={(e) => handleSalariedFileChange(e, setOfficeIdPhoto, "image1MB")} />
+                    <span className="text-xs text-muted-foreground mt-1">{officeIdPhoto ? `${officeIdPhoto.name.slice(0, 18)}...` : "Upload JPG/PNG, Max 2MB"}</span>
+                    <input type="file" accept="image/png,image/jpeg" className="hidden" onChange={(e) => handleSalariedFileChange(e, setOfficeIdPhoto, "image2MB")} />
                   </label>
                 </div>
               </fieldset>
@@ -1192,7 +1192,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 <legend className="text-lg font-bold text-foreground mb-4">E. Income Details</legend>
                 <div className="grid gap-4 sm:grid-cols-3">
                   <div className="space-y-2">
-                    <Label htmlFor="s_monthlyNetSalary" className="text-sm font-medium">Monthly Net Salary (₹)</Label>
+                    <Label htmlFor="s_monthlyNetSalary" className="text-sm font-medium">Monthly Net Salary (₹) <span className="text-destructive">*</span></Label>
                     <Input id="s_monthlyNetSalary" name="monthlyNetSalary" type="number" placeholder="Monthly Net Salary (₹)" value={sForm.monthlyNetSalary} onChange={(e) => {
                       const value = e.target.value;
                       if (value === '' || parseFloat(value) >= 0) {
@@ -1201,7 +1201,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                     }} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="s_salaryCreditMode" className="text-sm font-medium">Salary Credit Mode</Label>
+                    <Label htmlFor="s_salaryCreditMode" className="text-sm font-medium">Salary Credit Mode <span className="text-destructive">*</span></Label>
                     <select id="s_salaryCreditMode" name="salaryCreditMode" value={sForm.salaryCreditMode} onChange={handleSalariedChange} className="mt-2 block w-full rounded-md border border-blue-300 bg-transparent px-3 py-2 text-sm">
                       <option value="">Salary Credit Mode</option>
                       <option value="BankTransfer">Bank Transfer</option>
@@ -1211,25 +1211,25 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                     </select>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="s_salaryAccountBankName" className="text-sm font-medium">Salary Credit Account Bank Name</Label>
+                    <Label htmlFor="s_salaryAccountBankName" className="text-sm font-medium">Salary Credit Account Bank Name <span className="text-destructive">*</span></Label>
                     <Input id="s_salaryAccountBankName" name="salaryAccountBankName" placeholder="Salary Account Bank" value={sForm.salaryAccountBankName} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
                 </div>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
-                    <Label className="text-sm font-medium">Last 3 Months Salary Slips* <span className="text-xs text-muted-foreground">(PDF, Max 2MB)</span></Label>
+                    <Label className="text-sm font-medium">Last 3 Months Salary Slips* <span className="text-xs text-muted-foreground">(PDF, Max 10MB)</span></Label>
                     <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed rounded cursor-pointer hover:border-primary">
                       <Upload className="h-5 w-5" />
                       <span className="text-xs text-muted-foreground mt-1">{salarySlips ? `${salarySlips.name.slice(0, 18)}...` : "Upload PDF, Max 2MB"}</span>
-                      <input type="file" accept="application/pdf" className="hidden" onChange={(e) => handleSalariedFileChange(e, setSalarySlips, "pdf2MB")} />
+                      <input type="file" accept="application/pdf" className="hidden" onChange={(e) => handleSalariedFileChange(e, setSalarySlips, "pdf10MB")} />
                     </label>
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-sm font-medium">Last 6 Months Bank Statement* <span className="text-xs text-muted-foreground">(PDF, Max 2MB)</span></Label>
+                    <Label className="text-sm font-medium">Last 6 Months Bank Statement* <span className="text-xs text-muted-foreground">(PDF, Max 10MB)</span></Label>
                     <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed rounded cursor-pointer hover:border-primary">
                       <Upload className="h-5 w-5" />
                       <span className="text-xs text-muted-foreground mt-1">{bankStatement ? `${bankStatement.name.slice(0, 18)}...` : "Upload PDF, Max 2MB"}</span>
-                      <input type="file" accept="application/pdf" className="hidden" onChange={(e) => handleSalariedFileChange(e, setBankStatement, "pdf2MB")} />
+                      <input type="file" accept="application/pdf" className="hidden" onChange={(e) => handleSalariedFileChange(e, setBankStatement, "pdf10MB")} />
                     </label>
                   </div>
                 </div>
@@ -1242,6 +1242,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                   <Label htmlFor="s_numberOfExistingLoans" className="text-sm font-medium">Number of Existing Loans</Label>
                   <select id="s_numberOfExistingLoans" value={sForm.numberOfExistingLoans} onChange={handleNumberOfLoansChange} className="mt-2 block w-full rounded-md border border-blue-300 bg-transparent px-3 py-2 text-sm">
                     <option value="">Select Number of Loans</option>
+                    <option value="0">0</option>
                     <option value="1">1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
@@ -1318,11 +1319,11 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                             />
                           </div>
                           <div className="space-y-2 sm:col-span-2">
-                            <Label className="text-sm font-medium">Upload Loan Sanction Letter (PDF, Max 2MB)</Label>
+                            <Label className="text-sm font-medium">Upload Loan Account Statement (PDF, Max 10MB)</Label>
                             <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed rounded cursor-pointer hover:border-primary">
                               <Upload className="h-5 w-5" />
                               <span className="text-xs text-muted-foreground mt-1">
-                                {existingLoanSanctionLetters[index] ? `${existingLoanSanctionLetters[index].name.slice(0, 18)}...` : "Upload PDF, Max 2MB"}
+                                {existingLoanSanctionLetters[index] ? `${existingLoanSanctionLetters[index].name.slice(0, 18)}...` : "Upload PDF, Max 10MB"}
                               </span>
                               <input 
                                 type="file" 
@@ -1368,11 +1369,11 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                     }} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                       </div>
                       <div className="space-y-2">
-                        <Label className="text-sm font-medium">CIBIL Report (PDF)</Label>
+                        <Label className="text-sm font-medium">CIBIL Report (PDF) (optional)</Label>
                         <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed rounded cursor-pointer hover:border-primary">
                           <Upload className="h-5 w-5" />
                           <span className="text-xs mt-1">{cibilReportFile ? `${cibilReportFile.name.slice(0, 18)}...` : "Upload"}</span>
-                          <input type="file" accept="application/pdf" className="hidden" onChange={(e) => handleSalariedFileChange(e, setCibilReportFile, "pdf2MB")} />
+                          <input type="file" accept="application/pdf" className="hidden" onChange={(e) => handleSalariedFileChange(e, setCibilReportFile, "pdf10MB")} />
                         </label>
                       </div>
                     </div>
@@ -1410,38 +1411,28 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                     </select>
                   </div>
                   {sForm.isBuyingGoods === "Yes" && (
-                    <>
-                      <div className="space-y-2">
-                        <Label htmlFor="s_quotationAmount" className="text-sm font-medium">Quotation Amount (₹)</Label>
-                        <Input id="s_quotationAmount" name="quotationAmount" type="number" placeholder="Quotation Amount (₹)" value={sForm.quotationAmount} onChange={(e) => {
+                    <div className="space-y-2">
+                      <Label htmlFor="s_quotationAmount" className="text-sm font-medium">Quotation Amount (₹)</Label>
+                      <Input id="s_quotationAmount" name="quotationAmount" type="number" placeholder="Quotation Amount (₹)" value={sForm.quotationAmount} onChange={(e) => {
                       const value = e.target.value;
                       if (value === '' || parseFloat(value) >= 0) {
                         handleSalariedChange(e);
                       }
                     }} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
-                      </div>
-                      <div className="space-y-2">
-                        <Label className="text-sm font-medium">Upload Quotation (PDF, Max 2MB)</Label>
-                        <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed rounded cursor-pointer hover:border-primary">
-                          <Upload className="h-5 w-5" />
-                          <span className="text-xs text-muted-foreground mt-1">{quotationFile ? `${quotationFile.name.slice(0, 18)}...` : "Upload PDF, Max 2MB"}</span>
-                          <input type="file" accept="application/pdf" className="hidden" onChange={(e) => handleSalariedFileChange(e, setQuotationFile, "pdf2MB")} />
-                        </label>
-                      </div>
-                      <div className="space-y-2 sm:col-span-2">
-                        <Label className="text-sm font-medium">Upload Proforma Invoice (PDF, Max 2MB)</Label>
-                        <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed rounded cursor-pointer hover:border-primary">
-                          <Upload className="h-5 w-5" />
-                          <span className="text-xs text-muted-foreground mt-1">{proformaInvoiceFile ? `${proformaInvoiceFile.name.slice(0, 18)}...` : "Upload PDF, Max 2MB"}</span>
-                          <input type="file" accept="application/pdf" className="hidden" onChange={(e) => handleSalariedFileChange(e, setProformaInvoiceFile, "pdf2MB")} />
-                        </label>
-                      </div>
-                    </>
+                    </div>
+                  )}
+                  {sForm.isBuyingGoods === "Yes" && (
+                    <div className="space-y-2 sm:col-span-2">
+                      <Label className="text-sm font-medium">Upload Proforma Invoice (PDF, Max 10MB)</Label>
+                      <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed rounded cursor-pointer hover:border-primary">
+                        <Upload className="h-5 w-5" />
+                        <span className="text-xs text-muted-foreground mt-1">{proformaInvoiceFile ? `${proformaInvoiceFile.name.slice(0, 18)}...` : "Upload PDF, Max 10MB"}</span>
+                        <input type="file" accept="application/pdf" className="hidden" onChange={(e) => handleSalariedFileChange(e, setProformaInvoiceFile, "pdf10MB")} />
+                      </label>
+                    </div>
                   )}
                 </div>
               </fieldset>
-
-              {/* I. CO-APPLICANT DETAILS */}
               <fieldset className="space-y-4">
                 <legend className="text-lg font-bold text-foreground mb-4">I. Co-Applicant Details (If Any)</legend>
                 <div className="grid gap-4 sm:grid-cols-2">
