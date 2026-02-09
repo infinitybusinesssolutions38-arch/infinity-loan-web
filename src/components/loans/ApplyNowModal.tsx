@@ -107,6 +107,8 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
   const [cibilReportFile, setCibilReportFile] = useState<File | null>(null);
   const [businessCertificatesFiles, setBusinessCertificatesFiles] = useState<File[]>([]);
   const [existingLoanStatementFiles, setExistingLoanStatementFiles] = useState<File[]>([]);
+  const [applicantPhotoFile, setApplicantPhotoFile] = useState<File | null>(null);
+  const [otherSupportedDocuments, setOtherSupportedDocuments] = useState<File[]>([]);
 
   // Salaried-specific files
   const [panPhoto, setPanPhoto] = useState<File | null>(null);
@@ -138,12 +140,12 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
     const isImage = file.type.startsWith("image/");
     if (kind === "image1MB") {
       if (!isImage) return window.alert("Please upload an image (JPG/PNG)");
-      if (file.size > 1 * 1024 * 1024) return window.alert("Image must be <= 1MB");
+      if (file.size > 2 * 1024 * 1024) return window.alert("Image must be <= 2MB");
     }
 
     if (kind === "pdf2MB") {
       if (file.type !== "application/pdf") return window.alert("Please upload a PDF file");
-      if (file.size > 2 * 1024 * 1024) return window.alert("PDF must be <= 2MB");
+      if (file.size > 10 * 1024 * 1024) return window.alert("PDF must be <= 10MB");
     }
 
     setter(file);
@@ -170,8 +172,8 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
       window.alert("Please upload a PDF file");
       return;
     }
-    if (file.size > 2 * 1024 * 1024) {
-      window.alert("PDF must be <= 2MB");
+    if (file.size > 10 * 1024 * 1024) {
+      window.alert("PDF must be <= 10MB");
       return;
     }
 
@@ -312,8 +314,8 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
         setError("Please upload an image (JPG/JPEG/PNG)");
         return setter(null);
       }
-      if (file.size > 1 * 1024 * 1024) {
-        setError("Image must be <= 1MB");
+      if (file.size > 2 * 1024 * 1024) {
+        setError("Image must be <= 2MB");
         return setter(null);
       }
     } else if (type === "pdf") {
@@ -321,19 +323,19 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
         setError("Please upload a PDF file");
         return setter(null);
       }
-      if (file.size > 2 * 1024 * 1024) {
-        setError("PDF must be <= 2MB");
+      if (file.size > 10 * 1024 * 1024) {
+        setError("PDF must be <= 10MB");
         return setter(null);
       }
     } else if (type === "auto") {
       if (file.type.startsWith("image/")) {
-        if (file.size > 1 * 1024 * 1024) {
-          setError("Image must be <= 1MB");
+        if (file.size > 2 * 1024 * 1024) {
+          setError("Image must be <= 2MB");
           return setter(null);
         }
       } else if (file.type === "application/pdf") {
-        if (file.size > 2 * 1024 * 1024) {
-          setError("PDF must be <= 2MB");
+        if (file.size > 10 * 1024 * 1024) {
+          setError("PDF must be <= 10MB");
           return setter(null);
         }
       } else {
@@ -446,6 +448,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
     homeElectricityBill: "",
     officeElectricityBill: "",
     bankStatementType: [],
+    bankStatementDetails: [],
     existingLoansCount: "",
     existingLoanDetails: [],
     totalLoanAmount: "",
@@ -455,12 +458,17 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
     incomeTax2024_25: "",
     incomeTax2025_26: "",
     businessCertificates: [],
+    businessCertificateFiles: {},
     isBuyingGoods: "",
+    goodsDescription: "",
     proformaInvoice: "",
     cibilScoreKnown: "",
     cibilScore: "",
     cibilReport: "",
+    otherSupportedDocsCount: "",
+    otherSupportedDocuments: [],
     consent: false,
+    authorizationConsent: false,
   });
 
   const handleUnifiedChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -632,8 +640,8 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
         window.alert(`${name} must be an image (JPG/PNG)`);
         return false;
       }
-      if (f.size > 1 * 1024 * 1024) {
-        window.alert(`${name} must be <= 1MB`);
+      if (f.size > 2 * 1024 * 1024) {
+        window.alert(`${name} must be <= 2MB`);
         return false;
       }
       return true;
@@ -645,8 +653,8 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
         window.alert(`${name} must be a PDF`);
         return false;
       }
-      if (f.size > 2 * 1024 * 1024) {
-        window.alert(`${name} must be <= 2MB`);
+      if (f.size > 10 * 1024 * 1024) {
+        window.alert(`${name} must be <= 10MB`);
         return false;
       }
       return true;
@@ -811,17 +819,17 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 <div className="grid gap-4 sm:grid-cols-3">
                   <div className="space-y-2">
                     <Label htmlFor="s_firstName" className="text-sm font-medium">First Name <span className="text-destructive">*</span></Label>
-                    <Input id="s_firstName" name="firstName" placeholder="First Name (as per PAN)*" value={sForm.firstName} onChange={handleSalariedChange} className="border-gray-300" />
+                    <Input id="s_firstName" name="firstName" placeholder="First Name (as per PAN)*" value={sForm.firstName} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="s_middleName" className="text-sm font-medium">Middle Name</Label>
-                    <Input id="s_middleName" name="middleName" placeholder="Middle Name" value={sForm.middleName} onChange={handleSalariedChange} className="border-gray-300" />
+                    <Input id="s_middleName" name="middleName" placeholder="Middle Name" value={sForm.middleName} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="s_lastName" className="text-sm font-medium">Last Name <span className="text-destructive">*</span></Label>
-                    <Input id="s_lastName" name="lastName" placeholder="Last Name (as per PAN)*" value={sForm.lastName} onChange={handleSalariedChange} className="border-gray-300" />
+                    <Input id="s_lastName" name="lastName" placeholder="Last Name (as per PAN)*" value={sForm.lastName} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
 
                   <DateInput
@@ -835,7 +843,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
 
                   <div className="space-y-2">
                     <Label htmlFor="s_gender" className="text-sm font-medium">Gender <span className="text-destructive">*</span></Label>
-                    <select id="s_gender" name="gender" value={sForm.gender} onChange={handleSalariedChange} required className="mt-2 block w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm">
+                    <select id="s_gender" name="gender" value={sForm.gender} onChange={handleSalariedChange} required className="mt-2 block w-full rounded-md border border-blue-300 bg-transparent px-3 py-2 text-sm">
                       <option value="">Select Gender</option>
                       <option value="Male">Male</option>
                       <option value="Female">Female</option>
@@ -845,7 +853,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
 
                   <div className="space-y-2">
                     <Label htmlFor="s_maritalStatus" className="text-sm font-medium">Marital Status <span className="text-destructive">*</span></Label>
-                    <select id="s_maritalStatus" name="maritalStatus" value={sForm.maritalStatus} onChange={handleSalariedChange} required className="mt-2 block w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm">
+                    <select id="s_maritalStatus" name="maritalStatus" value={sForm.maritalStatus} onChange={handleSalariedChange} required className="mt-2 block w-full rounded-md border border-blue-300 bg-transparent px-3 py-2 text-sm">
                       <option value="">Marital Status</option>
                       <option value="Yes">Yes</option>
                       <option value="No">No</option>
@@ -854,36 +862,36 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
 
                   <div className="space-y-2">
                     <Label htmlFor="s_mobileNumber" className="text-sm font-medium">Adhaar Linked Primary Mobile Number <span className="text-destructive">*</span></Label>
-                    <Input id="s_mobileNumber" name="mobileNumber" placeholder="Mobile Number*" value={sForm.mobileNumber} onChange={handleSalariedChange} className="border-gray-300" />
+                    <Input id="s_mobileNumber" name="mobileNumber" placeholder="Mobile Number*" value={sForm.mobileNumber} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="s_whatsappNumber" className="text-sm font-medium">WhatsApp Number</Label>
-                    <Input id="s_whatsappNumber" name="whatsappNumber" placeholder="WhatsApp Number" value={sForm.whatsappNumber} onChange={handleSalariedChange} className="border-gray-300" />
+                    <Input id="s_whatsappNumber" name="whatsappNumber" placeholder="WhatsApp Number" value={sForm.whatsappNumber} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="s_alternateMobile" className="text-sm font-medium">Alternate Mobile Number (optional)</Label>
-                    <Input id="s_alternateMobile" name="alternateMobile" placeholder="Alternate Mobile Number" value={sForm.alternateMobile} onChange={handleSalariedChange} className="border-gray-300" />
+                    <Input id="s_alternateMobile" name="alternateMobile" placeholder="Alternate Mobile Number" value={sForm.alternateMobile} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="s_personalEmail" className="text-sm font-medium">Personal Email ID <span className="text-destructive">*</span></Label>
-                    <Input id="s_personalEmail" name="personalEmail" type="email" placeholder="Personal Email ID*" value={sForm.personalEmail} onChange={handleSalariedChange} className="border-gray-300" />
+                    <Input id="s_personalEmail" name="personalEmail" type="email" placeholder="Personal Email ID*" value={sForm.personalEmail} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
                 </div>
                 <div className="grid gap-4 sm:grid-cols-3">
                   <div className="space-y-2">
                     <Label htmlFor="s_voterId" className="text-sm font-medium">Voter ID (optional)</Label>
-                    <Input id="s_voterId" name="voterIdNumber" placeholder="Voter ID (optional)" value={sForm.voterIdNumber} onChange={handleSalariedChange} className="border-gray-300" />
+                    <Input id="s_voterId" name="voterIdNumber" placeholder="Voter ID (optional)" value={sForm.voterIdNumber} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="s_drivingLicense" className="text-sm font-medium">Driving License (optional)</Label>
-                    <Input id="s_drivingLicense" name="drivingLicense" placeholder="Driving License (optional)" value={sForm.drivingLicense} onChange={handleSalariedChange} className="border-gray-300" />
+                    <Input id="s_drivingLicense" name="drivingLicense" placeholder="Driving License (optional)" value={sForm.drivingLicense} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="s_passportNumber" className="text-sm font-medium">Passport No. (optional)</Label>
-                    <Input id="s_passportNumber" name="passportNumber" placeholder="Passport No. (optional)" value={sForm.passportNumber} onChange={handleSalariedChange} className="border-gray-300" />
+                    <Input id="s_passportNumber" name="passportNumber" placeholder="Passport No. (optional)" value={sForm.passportNumber} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
                 </div>
               </fieldset>
@@ -894,11 +902,11 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="s_panNumber" className="text-sm font-medium">PAN Card Number <span className="text-destructive">*</span></Label>
-                    <Input id="s_panNumber" name="panNumber" placeholder="PAN Card Number*" value={sForm.panNumber} onChange={handleSalariedChange} className="border-gray-300" />
+                    <Input id="s_panNumber" name="panNumber" placeholder="PAN Card Number*" value={sForm.panNumber} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="s_aadhaarNumber" className="text-sm font-medium">Aadhaar Card Number <span className="text-destructive">*</span></Label>
-                    <Input id="s_aadhaarNumber" name="aadhaarNumber" placeholder="Aadhaar Card Number*" value={sForm.aadhaarNumber} onChange={handleSalariedChange} className="border-gray-300" />
+                    <Input id="s_aadhaarNumber" name="aadhaarNumber" placeholder="Aadhaar Card Number*" value={sForm.aadhaarNumber} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
                 </div>
                 <div className="grid gap-4 sm:grid-cols-3">
@@ -942,12 +950,12 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 <legend className="text-lg font-bold text-foreground mb-4">C. Residential Details</legend>
                 <div className="space-y-2">
                   <Label htmlFor="s_currentResidentialAddress" className="text-sm font-medium">Current Address <span className="text-destructive">*</span></Label>
-                  <Input id="s_currentResidentialAddress" name="currentResidentialAddress" placeholder="Current Address*" value={sForm.currentResidentialAddress} onChange={handleSalariedChange} className="border-gray-300" />
+                  <Input id="s_currentResidentialAddress" name="currentResidentialAddress" placeholder="Current Address*" value={sForm.currentResidentialAddress} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                 </div>
                 <div className="grid gap-4 sm:grid-cols-3">
                   <div className="space-y-2">
                     <Label htmlFor="s_state" className="text-sm font-medium">State <span className="text-destructive">*</span></Label>
-                    <select id="s_state" name="state" value={sForm.state} onChange={handleSalariedChange} className="mt-2 block w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm">
+                    <select id="s_state" name="state" value={sForm.state} onChange={handleSalariedChange} className="mt-2 block w-full rounded-md border border-blue-300 bg-transparent px-3 py-2 text-sm">
                       <option value="">Select State</option>
                       <option value="Andhra Pradesh">Andhra Pradesh</option>
                       <option value="Arunachal Pradesh">Arunachal Pradesh</option>
@@ -981,17 +989,17 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="s_city" className="text-sm font-medium">City</Label>
-                    <Input id="s_city" name="city" placeholder="City" value={sForm.city} onChange={handleSalariedChange} className="border-gray-300" />
+                    <Input id="s_city" name="city" placeholder="City" value={sForm.city} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="s_currentResidentialPincode" className="text-sm font-medium">PIN</Label>
-                    <Input id="s_currentResidentialPincode" name="currentResidentialPincode" placeholder="PIN" value={sForm.currentResidentialPincode} onChange={handleSalariedChange} className="border-gray-300" />
+                    <Input id="s_currentResidentialPincode" name="currentResidentialPincode" placeholder="PIN" value={sForm.currentResidentialPincode} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
                 </div>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="s_residenceType" className="text-sm font-medium">Residence Type</Label>
-                    <select id="s_residenceType" name="residenceType" value={sForm.residenceType} onChange={handleSalariedChange} className="mt-2 block w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm">
+                    <select id="s_residenceType" name="residenceType" value={sForm.residenceType} onChange={handleSalariedChange} className="mt-2 block w-full rounded-md border border-blue-300 bg-transparent px-3 py-2 text-sm">
                       <option value="">Select Residence Type</option>
                       <option value="Owned">Owned</option>
                       <option value="Rented">Rented</option>
@@ -1029,7 +1037,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                   <div className="space-y-4">
                     <div className="space-y-2">
                       <Label htmlFor="s_permanentAddress" className="text-sm font-medium">Permanent Address (optional)</Label>
-                      <Input id="s_permanentAddress" name="permanentAddress" placeholder="Permanent Address" value={sForm.permanentAddress} onChange={handleSalariedChange} className="border-gray-300" />
+                      <Input id="s_permanentAddress" name="permanentAddress" placeholder="Permanent Address" value={sForm.permanentAddress} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                     </div>
 
                     <div className="space-y-2">
@@ -1056,7 +1064,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                   <div className="space-y-4">
                     <div className="space-y-2">
                       <Label htmlFor="s_permanentAddress" className="text-sm font-medium">Permanent Address (optional)</Label>
-                      <Input id="s_permanentAddress" name="permanentAddress" placeholder="Permanent Address" value={sForm.permanentAddress} onChange={handleSalariedChange} className="border-gray-300" />
+                      <Input id="s_permanentAddress" name="permanentAddress" placeholder="Permanent Address" value={sForm.permanentAddress} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                     </div>
                     <div className="space-y-2">
                       <Label className="text-sm font-medium">Permanent Address Electricity Bill (optional) <span className="text-xs text-muted-foreground">(Max 1MB)</span></Label>
@@ -1084,11 +1092,11 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="s_companyName" className="text-sm font-medium">Company Name</Label>
-                    <Input id="s_companyName" name="companyName" placeholder="Company Name" value={sForm.companyName} onChange={handleSalariedChange} className="border-gray-300" />
+                    <Input id="s_companyName" name="companyName" placeholder="Company Name" value={sForm.companyName} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="s_organizationType" className="text-sm font-medium">Organization Type</Label>
-                    <select id="s_organizationType" name="organizationType" value={sForm.organizationType} onChange={handleSalariedChange} className="mt-2 block w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm">
+                    <select id="s_organizationType" name="organizationType" value={sForm.organizationType} onChange={handleSalariedChange} className="mt-2 block w-full rounded-md border border-blue-300 bg-transparent px-3 py-2 text-sm">
                       <option value="">Organization Type</option>
                       <option value="Proprietorship">Proprietorship</option>
                       <option value="Partnership">Partnership</option>
@@ -1112,7 +1120,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="s_industry" className="text-sm font-medium">Industry / Sector</Label>
-                    <select id="s_industry" name="industry" value={sForm.industry} onChange={handleSalariedChange} className="mt-2 block w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm">
+                    <select id="s_industry" name="industry" value={sForm.industry} onChange={handleSalariedChange} className="mt-2 block w-full rounded-md border border-blue-300 bg-transparent px-3 py-2 text-sm">
                       <option value="">Industry / Sector</option>
                       {sector.map((sector)=>(
                           <option key={sector.id} value={sector.name}>{sector.name}</option>
@@ -1123,16 +1131,16 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                   {sForm.industry === "Other" && (
                     <div className="space-y-2">
                       <Label htmlFor="s_industryCustom" className="text-sm font-medium">Please specify your Industry / Sector</Label>
-                      <Input id="s_industryCustom" name="industryOther" placeholder="Enter your industry sector" value={sForm.industryOther} onChange={handleSalariedChange} className="border-gray-300" />
+                      <Input id="s_industryCustom" name="industryOther" placeholder="Enter your industry sector" value={sForm.industryOther} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                     </div>
                   )}
                   <div className="space-y-2">
                     <Label htmlFor="s_designation" className="text-sm font-medium">Designation</Label>
-                    <Input id="s_designation" name="designation" placeholder="Designation" value={sForm.designation} onChange={handleSalariedChange} className="border-gray-300" />
+                    <Input id="s_designation" name="designation" placeholder="Designation" value={sForm.designation} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="s_employmentType" className="text-sm font-medium">Employment Type</Label>
-                    <select id="s_employmentType" name="employmentType" value={sForm.employmentType} onChange={handleSalariedChange} className="mt-2 block w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm">
+                    <select id="s_employmentType" name="employmentType" value={sForm.employmentType} onChange={handleSalariedChange} className="mt-2 block w-full rounded-md border border-blue-300 bg-transparent px-3 py-2 text-sm">
                       <option value="">Employment Type</option>
                       <option value="Permanent">Permanent</option>
                       <option value="Contract">Contract</option>
@@ -1149,19 +1157,24 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                   />
                   <div className="space-y-2">
                     <Label htmlFor="s_totalExperienceYears" className="text-sm font-medium">Total Work Experience (Years)</Label>
-                    <Input id="s_totalExperienceYears" name="totalExperienceYears" type="number" placeholder="Total Experience (Years)" value={sForm.totalExperienceYears} onChange={handleSalariedChange} className="border-gray-300" />
+                    <Input id="s_totalExperienceYears" name="totalExperienceYears" type="number" placeholder="Total Experience (Years)" value={sForm.totalExperienceYears} onChange={(e) => {
+                      const value = e.target.value;
+                      if (value === '' || parseFloat(value) >= 0) {
+                        handleSalariedChange(e);
+                      }
+                    }} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="s_officeLocation" className="text-sm font-medium">Office Location / City</Label>
-                    <Input id="s_officeLocation" name="officeLocation" placeholder="Office Location / City" value={sForm.officeLocation} onChange={handleSalariedChange} className="border-gray-300" />
+                    <Input id="s_officeLocation" name="officeLocation" placeholder="Office Location / City" value={sForm.officeLocation} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="s_officePincode" className="text-sm font-medium">Office PIN</Label>
-                    <Input id="s_officePincode" name="officePincode" placeholder="Office PIN" value={sForm.officePincode} onChange={handleSalariedChange} className="border-gray-300" />
+                    <Input id="s_officePincode" name="officePincode" placeholder="Office PIN" value={sForm.officePincode} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="s_officialEmail" className="text-sm font-medium">Official Email ID</Label>
-                    <Input id="s_officialEmail" name="officialEmail" type="email" placeholder="Official Email ID" value={sForm.officialEmail} onChange={handleSalariedChange} className="border-gray-300" />
+                    <Input id="s_officialEmail" name="officialEmail" type="email" placeholder="Official Email ID" value={sForm.officialEmail} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
                 </div>
                 <div className="space-y-2">
@@ -1180,11 +1193,16 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 <div className="grid gap-4 sm:grid-cols-3">
                   <div className="space-y-2">
                     <Label htmlFor="s_monthlyNetSalary" className="text-sm font-medium">Monthly Net Salary (₹)</Label>
-                    <Input id="s_monthlyNetSalary" name="monthlyNetSalary" type="number" placeholder="Monthly Net Salary (₹)" value={sForm.monthlyNetSalary} onChange={handleSalariedChange} className="border-gray-300" />
+                    <Input id="s_monthlyNetSalary" name="monthlyNetSalary" type="number" placeholder="Monthly Net Salary (₹)" value={sForm.monthlyNetSalary} onChange={(e) => {
+                      const value = e.target.value;
+                      if (value === '' || parseFloat(value) >= 0) {
+                        handleSalariedChange(e);
+                      }
+                    }} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="s_salaryCreditMode" className="text-sm font-medium">Salary Credit Mode</Label>
-                    <select id="s_salaryCreditMode" name="salaryCreditMode" value={sForm.salaryCreditMode} onChange={handleSalariedChange} className="mt-2 block w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm">
+                    <select id="s_salaryCreditMode" name="salaryCreditMode" value={sForm.salaryCreditMode} onChange={handleSalariedChange} className="mt-2 block w-full rounded-md border border-blue-300 bg-transparent px-3 py-2 text-sm">
                       <option value="">Salary Credit Mode</option>
                       <option value="BankTransfer">Bank Transfer</option>
                       <option value="NEFT_IMPS">NEFT / IMPS</option>
@@ -1194,7 +1212,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="s_salaryAccountBankName" className="text-sm font-medium">Salary Credit Account Bank Name</Label>
-                    <Input id="s_salaryAccountBankName" name="salaryAccountBankName" placeholder="Salary Account Bank" value={sForm.salaryAccountBankName} onChange={handleSalariedChange} className="border-gray-300" />
+                    <Input id="s_salaryAccountBankName" name="salaryAccountBankName" placeholder="Salary Account Bank" value={sForm.salaryAccountBankName} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
                 </div>
                 <div className="grid gap-4 sm:grid-cols-2">
@@ -1222,7 +1240,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 <legend className="text-lg font-bold text-foreground mb-4">F. Existing Loan & Credit Details</legend>
                 <div className="space-y-2">
                   <Label htmlFor="s_numberOfExistingLoans" className="text-sm font-medium">Number of Existing Loans</Label>
-                  <select id="s_numberOfExistingLoans" value={sForm.numberOfExistingLoans} onChange={handleNumberOfLoansChange} className="mt-2 block w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm">
+                  <select id="s_numberOfExistingLoans" value={sForm.numberOfExistingLoans} onChange={handleNumberOfLoansChange} className="mt-2 block w-full rounded-md border border-blue-300 bg-transparent px-3 py-2 text-sm">
                     <option value="">Select Number of Loans</option>
                     <option value="1">1</option>
                     <option value="2">2</option>
@@ -1234,7 +1252,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 {sForm.numberOfExistingLoans && parseInt(sForm.numberOfExistingLoans) > 0 && (
                   <div className="space-y-6">
                     {Array.from({ length: parseInt(sForm.numberOfExistingLoans) }).map((_, index) => (
-                      <div key={index} className="border border-gray-300 rounded-lg p-4 space-y-4">
+                      <div key={index} className="border border-blue-300 rounded-lg p-4 space-y-4">
                         <h4 className="text-md font-semibold text-foreground">Loan {index + 1}</h4>
                         <div className="grid gap-4 sm:grid-cols-2">
                           <div className="space-y-2">
@@ -1244,8 +1262,13 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                               type="number"
                               placeholder="Total Loan Amount"
                               value={sForm.existingLoansData[index]?.totalLoanAmount || ""}
-                              onChange={(e) => handleExistingLoanChange(index, "totalLoanAmount", e.target.value)}
-                              className="border-gray-300"
+                              onChange={(e) => {
+                                const value = e.target.value;
+                                if (value === '' || parseFloat(value) >= 0) {
+                                  handleExistingLoanChange(index, "totalLoanAmount", value);
+                                }
+                              }}
+                              className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50"
                             />
                           </div>
                           <div className="space-y-2">
@@ -1255,8 +1278,13 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                               type="number"
                               placeholder="Total Monthly EMI"
                               value={sForm.existingLoansData[index]?.totalMonthlyEmi || ""}
-                              onChange={(e) => handleExistingLoanChange(index, "totalMonthlyEmi", e.target.value)}
-                              className="border-gray-300"
+                              onChange={(e) => {
+                                const value = e.target.value;
+                                if (value === '' || parseFloat(value) >= 0) {
+                                  handleExistingLoanChange(index, "totalMonthlyEmi", value);
+                                }
+                              }}
+                              className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50"
                             />
                           </div>
                           <div className="space-y-2">
@@ -1266,7 +1294,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                               placeholder="e.g., Home Loan, Car Loan"
                               value={sForm.existingLoansData[index]?.loanType || ""}
                               onChange={(e) => handleExistingLoanChange(index, "loanType", e.target.value)}
-                              className="border-gray-300"
+                              className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50"
                             />
                           </div>
                           <div className="space-y-2">
@@ -1276,7 +1304,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                               placeholder="Bank Name"
                               value={sForm.existingLoansData[index]?.bankName || ""}
                               onChange={(e) => handleExistingLoanChange(index, "bankName", e.target.value)}
-                              className="border-gray-300"
+                              className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50"
                             />
                           </div>
                           <div className="space-y-2 sm:col-span-2">
@@ -1286,7 +1314,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                               placeholder="No / Yes (specify details)"
                               value={sForm.existingLoansData[index]?.emiDelayPast3Months || ""}
                               onChange={(e) => handleExistingLoanChange(index, "emiDelayPast3Months", e.target.value)}
-                              className="border-gray-300"
+                              className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50"
                             />
                           </div>
                           <div className="space-y-2 sm:col-span-2">
@@ -1332,7 +1360,12 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                     <div className="grid gap-4 sm:grid-cols-2">
                       <div className="space-y-2">
                         <Label htmlFor="s_cibilScore" className="text-sm font-medium">CIBIL Score</Label>
-                        <Input id="s_cibilScore" name="cibilScore" type="number" placeholder="CIBIL Score" value={sForm.cibilScore} onChange={handleSalariedChange} className="border-gray-300" />
+                        <Input id="s_cibilScore" name="cibilScore" type="number" placeholder="CIBIL Score" value={sForm.cibilScore} onChange={(e) => {
+                      const value = e.target.value;
+                      if (value === '' || parseFloat(value) >= 0) {
+                        handleSalariedChange(e);
+                      }
+                    }} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                       </div>
                       <div className="space-y-2">
                         <Label className="text-sm font-medium">CIBIL Report (PDF)</Label>
@@ -1353,19 +1386,24 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="s_requiredLoanAmount" className="text-sm font-medium">Required Loan Amount (₹)</Label>
-                    <Input id="s_requiredLoanAmount" name="requiredLoanAmount" type="number" placeholder="Required Loan Amount (₹)" value={sForm.requiredLoanAmount} onChange={handleSalariedChange} className="border-gray-300" />
+                    <Input id="s_requiredLoanAmount" name="requiredLoanAmount" type="number" placeholder="Required Loan Amount (₹)" value={sForm.requiredLoanAmount} onChange={(e) => {
+                      const value = e.target.value;
+                      if (value === '' || parseFloat(value) >= 0) {
+                        handleSalariedChange(e);
+                      }
+                    }} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="s_preferredTenure" className="text-sm font-medium">Preferred Loan Tenure</Label>
-                    <Input id="s_preferredTenure" name="preferredTenure" placeholder="Preferred Loan Tenure" value={sForm.preferredTenure} onChange={handleSalariedChange} className="border-gray-300" />
+                    <Input id="s_preferredTenure" name="preferredTenure" placeholder="Preferred Loan Tenure" value={sForm.preferredTenure} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="s_purpose" className="text-sm font-medium">Purpose of Loan</Label>
-                    <Input id="s_purpose" name="purpose" placeholder="Purpose of Loan" value={sForm.purpose} onChange={handleSalariedChange} className="border-gray-300" />
+                    <Input id="s_purpose" name="purpose" placeholder="Purpose of Loan" value={sForm.purpose} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="s_isBuyingGoods" className="text-sm font-medium">Are you buying any goods?</Label>
-                    <select id="s_isBuyingGoods" name="isBuyingGoods" value={sForm.isBuyingGoods} onChange={handleSalariedChange} className="mt-2 block w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm">
+                    <select id="s_isBuyingGoods" name="isBuyingGoods" value={sForm.isBuyingGoods} onChange={handleSalariedChange} className="mt-2 block w-full rounded-md border border-blue-300 bg-transparent px-3 py-2 text-sm">
                       <option value="">Select Option</option>
                       <option value="Yes">Yes</option>
                       <option value="No">No</option>
@@ -1375,7 +1413,12 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                     <>
                       <div className="space-y-2">
                         <Label htmlFor="s_quotationAmount" className="text-sm font-medium">Quotation Amount (₹)</Label>
-                        <Input id="s_quotationAmount" name="quotationAmount" type="number" placeholder="Quotation Amount (₹)" value={sForm.quotationAmount} onChange={handleSalariedChange} className="border-gray-300" />
+                        <Input id="s_quotationAmount" name="quotationAmount" type="number" placeholder="Quotation Amount (₹)" value={sForm.quotationAmount} onChange={(e) => {
+                      const value = e.target.value;
+                      if (value === '' || parseFloat(value) >= 0) {
+                        handleSalariedChange(e);
+                      }
+                    }} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                       </div>
                       <div className="space-y-2">
                         <Label className="text-sm font-medium">Upload Quotation (PDF, Max 2MB)</Label>
@@ -1404,15 +1447,15 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="s_coApplicantName" className="text-sm font-medium">Co-Applicant Name</Label>
-                    <Input id="s_coApplicantName" name="coApplicantName" placeholder="Co-Applicant Name" value={sForm.coApplicantName} onChange={handleSalariedChange} className="border-gray-300" />
+                    <Input id="s_coApplicantName" name="coApplicantName" placeholder="Co-Applicant Name" value={sForm.coApplicantName} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="s_coApplicantRelation" className="text-sm font-medium">Relationship with Applicant</Label>
-                    <Input id="s_coApplicantRelation" name="coApplicantRelation" placeholder="Relationship with Applicant" value={sForm.coApplicantRelation} onChange={handleSalariedChange} className="border-gray-300" />
+                    <Input id="s_coApplicantRelation" name="coApplicantRelation" placeholder="Relationship with Applicant" value={sForm.coApplicantRelation} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="s_coApplicantEmploymentType" className="text-sm font-medium">Co-Applicant Employment Type</Label>
-                    <Input id="s_coApplicantEmploymentType" name="coApplicantEmploymentType" placeholder="Co-Applicant Employment Type" value={sForm.coApplicantEmploymentType} onChange={handleSalariedChange} className="border-gray-300" />
+                    <Input id="s_coApplicantEmploymentType" name="coApplicantEmploymentType" placeholder="Co-Applicant Employment Type" value={sForm.coApplicantEmploymentType} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
                 </div>
               </fieldset>
@@ -1573,7 +1616,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 </legend>
                 <div className="space-y-2">
                   <Label htmlFor="jobBusiness" className="text-sm font-medium">Current Employment Status</Label>
-                  <select id="jobBusiness" {...register("jobBusiness")} className="mt-2 block w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm">
+                  <select id="jobBusiness" {...register("jobBusiness")} className="mt-2 block w-full rounded-md border border-blue-300 bg-transparent px-3 py-2 text-sm">
                     <option value="">Select Employment Status</option>
                     <option value="Salaried Employee">Salaried Employee</option>
                     <option value="Self Employed Business">Self Employed Business</option>
@@ -2078,37 +2121,37 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 <div className="grid gap-4 sm:grid-cols-3">
                   <div className="space-y-2">
                     <Label htmlFor="u_firstName" className="text-sm font-medium">First Name <span className="text-destructive">*</span></Label>
-                    <Input id="u_firstName" name="firstName" placeholder="First Name (as per PAN)*" value={uForm.firstName} onChange={handleUnifiedChange} className="border-gray-300" />
+                    <Input id="u_firstName" name="firstName" placeholder="First Name (as per PAN)*" value={uForm.firstName} onChange={handleUnifiedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="u_middleName" className="text-sm font-medium">Middle Name</Label>
-                    <Input id="u_middleName" name="middleName" placeholder="Middle Name" value={uForm.middleName} onChange={handleUnifiedChange} className="border-gray-300" />
+                    <Input id="u_middleName" name="middleName" placeholder="Middle Name" value={uForm.middleName} onChange={handleUnifiedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="u_lastName" className="text-sm font-medium">Last Name <span className="text-destructive">*</span></Label>
-                    <Input id="u_lastName" name="lastName" placeholder="Last Name (as per PAN)*" value={uForm.lastName} onChange={handleUnifiedChange} className="border-gray-300" />
+                    <Input id="u_lastName" name="lastName" placeholder="Last Name (as per PAN)*" value={uForm.lastName} onChange={handleUnifiedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="u_aadhaarLinkedMobile" className="text-sm font-medium">Aadhaar Linked Primary Mobile Number <span className="text-destructive">*</span></Label>
-                    <Input id="u_aadhaarLinkedMobile" name="aadhaarLinkedMobile" placeholder="Mobile Number*" value={uForm.aadhaarLinkedMobile} onChange={handleUnifiedChange} className="border-gray-300" />
+                    <Input id="u_aadhaarLinkedMobile" name="aadhaarLinkedMobile" placeholder="Mobile Number*" value={uForm.aadhaarLinkedMobile} onChange={handleUnifiedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="u_alternateMobile" className="text-sm font-medium">Alternate Mobile Number</Label>
-                    <Input id="u_alternateMobile" name="alternateMobile" placeholder="Alternate Mobile Number" value={uForm.alternateMobile} onChange={handleUnifiedChange} className="border-gray-300" />
+                    <Label htmlFor="u_alternateMobile" className="text-sm font-medium">Alternate Mobile Number (optional)</Label>
+                    <Input id="u_alternateMobile" name="alternateMobile" placeholder="Alternate Mobile Number" value={uForm.alternateMobile} onChange={handleUnifiedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="u_whatsappNumber" className="text-sm font-medium">WhatsApp Number</Label>
-                    <Input id="u_whatsappNumber" name="whatsappNumber" placeholder="WhatsApp Number" value={uForm.whatsappNumber} onChange={handleUnifiedChange} className="border-gray-300" />
+                    <Label htmlFor="u_whatsappNumber" className="text-sm font-medium">WhatsApp Number (optional)</Label>
+                    <Input id="u_whatsappNumber" name="whatsappNumber" placeholder="WhatsApp Number" value={uForm.whatsappNumber} onChange={handleUnifiedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="u_gender" className="text-sm font-medium">Gender <span className="text-destructive">*</span></Label>
-                    <select id="u_gender" name="gender" value={uForm.gender} onChange={handleUnifiedChange} required className="mt-2 block w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm">
+                    <select id="u_gender" name="gender" value={uForm.gender} onChange={handleUnifiedChange} required className="mt-2 block w-full rounded-md border border-blue-300 bg-transparent px-3 py-2 text-sm">
                       <option value="">Select Gender</option>
                       <option value="Male">Male</option>
                       <option value="Female">Female</option>
@@ -2118,7 +2161,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
 
                   <div className="space-y-2">
                     <Label htmlFor="u_maritalStatus" className="text-sm font-medium">Marital Status <span className="text-destructive">*</span></Label>
-                    <select id="u_maritalStatus" name="maritalStatus" value={uForm.maritalStatus} onChange={handleUnifiedChange} required className="mt-2 block w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm">
+                    <select id="u_maritalStatus" name="maritalStatus" value={uForm.maritalStatus} onChange={handleUnifiedChange} required className="mt-2 block w-full rounded-md border border-blue-300 bg-transparent px-3 py-2 text-sm">
                       <option value="">Marital Status</option>
                       <option value="Yes">Yes</option>
                       <option value="No">No</option>
@@ -2127,32 +2170,32 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
 
                   <div className="space-y-2">
                     <Label htmlFor="u_dob" className="text-sm font-medium">Date of Birth <span className="text-destructive">*</span></Label>
-                    <Input id="u_dob" name="dob" type="date" value={uForm.dob} onChange={handleUnifiedChange} className="border-gray-300" />
+                    <Input id="u_dob" name="dob" type="date" value={uForm.dob} onChange={handleUnifiedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="u_personalEmail" className="text-sm font-medium">Personal Email ID <span className="text-destructive">*</span></Label>
-                    <Input id="u_personalEmail" name="personalEmail" type="email" placeholder="Personal Email ID*" value={uForm.personalEmail} onChange={handleUnifiedChange} className="border-gray-300" />
+                    <Input id="u_personalEmail" name="personalEmail" type="email" placeholder="Personal Email ID*" value={uForm.personalEmail} onChange={handleUnifiedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="u_officialEmail" className="text-sm font-medium">Official Email ID (optional)</Label>
-                    <Input id="u_officialEmail" name="officialEmail" type="email" placeholder="Official Email ID" value={uForm.officialEmail} onChange={handleUnifiedChange} className="border-gray-300" />
+                    <Input id="u_officialEmail" name="officialEmail" type="email" placeholder="Official Email ID" value={uForm.officialEmail} onChange={handleUnifiedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
                 </div>
 
                 <div className="grid gap-4 sm:grid-cols-3">
                   <div className="space-y-2">
                     <Label htmlFor="u_voterId" className="text-sm font-medium">Voter ID (optional)</Label>
-                    <Input id="u_voterId" name="voterId" placeholder="Voter ID (optional)" value={uForm.voterId} onChange={handleUnifiedChange} className="border-gray-300" />
+                    <Input id="u_voterId" name="voterId" placeholder="Voter ID (optional)" value={uForm.voterId} onChange={handleUnifiedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="u_passport" className="text-sm font-medium">Passport (optional)</Label>
-                    <Input id="u_passport" name="passport" placeholder="Passport (optional)" value={uForm.passport} onChange={handleUnifiedChange} className="border-gray-300" />
+                    <Input id="u_passport" name="passport" placeholder="Passport (optional)" value={uForm.passport} onChange={handleUnifiedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="u_drivingLicense" className="text-sm font-medium">Driving License (optional)</Label>
-                    <Input id="u_drivingLicense" name="drivingLicense" placeholder="Driving License (optional)" value={uForm.drivingLicense} onChange={handleUnifiedChange} className="border-gray-300" />
+                    <Input id="u_drivingLicense" name="drivingLicense" placeholder="Driving License (optional)" value={uForm.drivingLicense} onChange={handleUnifiedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
                 </div>
               </fieldset>
@@ -2162,20 +2205,20 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 <legend className="text-lg font-bold text-foreground mb-4">B. Residential Address Details</legend>
                 <div className="space-y-2">
                   <Label htmlFor="u_currentResidentialAddress" className="text-sm font-medium">Current Residential Address <span className="text-destructive">*</span></Label>
-                  <Input id="u_currentResidentialAddress" name="currentResidentialAddress" placeholder="Current Residential Address*" value={uForm.currentResidentialAddress} onChange={handleUnifiedChange} className="border-gray-300" />
+                  <Input id="u_currentResidentialAddress" name="currentResidentialAddress" placeholder="Current Residential Address*" value={uForm.currentResidentialAddress} onChange={handleUnifiedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                 </div>
                 <div className="grid gap-4 sm:grid-cols-3">
                   <div className="space-y-2">
                     <Label htmlFor="u_residentialPincode" className="text-sm font-medium">Pincode <span className="text-destructive">*</span></Label>
-                    <Input id="u_residentialPincode" name="residentialPincode" placeholder="Pincode*" value={uForm.residentialPincode} onChange={handleUnifiedChange} className="border-gray-300" />
+                    <Input id="u_residentialPincode" name="residentialPincode" placeholder="Pincode*" value={uForm.residentialPincode} onChange={handleUnifiedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="u_residentialState" className="text-sm font-medium">State <span className="text-destructive">*</span></Label>
-                    <Input id="u_residentialState" name="residentialState" placeholder="State*" value={uForm.residentialState} onChange={handleUnifiedChange} className="border-gray-300" />
+                    <Input id="u_residentialState" name="residentialState" placeholder="State*" value={uForm.residentialState} onChange={handleUnifiedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="u_residentialCity" className="text-sm font-medium">City <span className="text-destructive">*</span></Label>
-                    <Input id="u_residentialCity" name="residentialCity" placeholder="City*" value={uForm.residentialCity} onChange={handleUnifiedChange} className="border-gray-300" />
+                    <Input id="u_residentialCity" name="residentialCity" placeholder="City*" value={uForm.residentialCity} onChange={handleUnifiedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
                 </div>
               </fieldset>
@@ -2185,20 +2228,20 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 <legend className="text-lg font-bold text-foreground mb-4">C. Office/Shop Address Details</legend>
                 <div className="space-y-2">
                   <Label htmlFor="u_currentOfficeAddress" className="text-sm font-medium">Current Shop/Office Address <span className="text-destructive">*</span></Label>
-                  <Input id="u_currentOfficeAddress" name="currentOfficeAddress" placeholder="Current Shop/Office Address*" value={uForm.currentOfficeAddress} onChange={handleUnifiedChange} className="border-gray-300" />
+                  <Input id="u_currentOfficeAddress" name="currentOfficeAddress" placeholder="Current Shop/Office Address*" value={uForm.currentOfficeAddress} onChange={handleUnifiedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                 </div>
                 <div className="grid gap-4 sm:grid-cols-3">
                   <div className="space-y-2">
                     <Label htmlFor="u_officePincode" className="text-sm font-medium">Pincode <span className="text-destructive">*</span></Label>
-                    <Input id="u_officePincode" name="officePincode" placeholder="Pincode*" value={uForm.officePincode} onChange={handleUnifiedChange} className="border-gray-300" />
+                    <Input id="u_officePincode" name="officePincode" placeholder="Pincode*" value={uForm.officePincode} onChange={handleUnifiedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="u_officeState" className="text-sm font-medium">State <span className="text-destructive">*</span></Label>
-                    <Input id="u_officeState" name="officeState" placeholder="State*" value={uForm.officeState} onChange={handleUnifiedChange} className="border-gray-300" />
+                    <Input id="u_officeState" name="officeState" placeholder="State*" value={uForm.officeState} onChange={handleUnifiedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="u_officeCity" className="text-sm font-medium">City <span className="text-destructive">*</span></Label>
-                    <Input id="u_officeCity" name="officeCity" placeholder="City*" value={uForm.officeCity} onChange={handleUnifiedChange} className="border-gray-300" />
+                    <Input id="u_officeCity" name="officeCity" placeholder="City*" value={uForm.officeCity} onChange={handleUnifiedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
                 </div>
               </fieldset>
@@ -2209,11 +2252,16 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="u_requiredLoanAmount" className="text-sm font-medium">Required Loan Amount <span className="text-destructive">*</span></Label>
-                    <Input id="u_requiredLoanAmount" name="requiredLoanAmount" type="number" placeholder="Required Loan Amount*" value={uForm.requiredLoanAmount} onChange={handleUnifiedChange} className="border-gray-300" />
+                    <Input id="u_requiredLoanAmount" name="requiredLoanAmount" type="number" placeholder="Required Loan Amount*" value={uForm.requiredLoanAmount} onChange={(e) => {
+                      const value = e.target.value;
+                      if (value === '' || parseFloat(value) >= 0) {
+                        handleUnifiedChange(e);
+                      }
+                    }} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="u_loanType" className="text-sm font-medium">Type of Loan <span className="text-destructive">*</span></Label>
-                    <Input id="u_loanType" name="loanType" placeholder="Type of Loan*" value={uForm.loanType} onChange={handleUnifiedChange} className="border-gray-300" />
+                    <Input id="u_loanType" name="loanType" placeholder="Type of Loan*" value={uForm.loanType} onChange={handleUnifiedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
                 </div>
               </fieldset>
@@ -2224,21 +2272,21 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="u_aadhaarCardType" className="text-sm font-medium">Aadhaar Card Type <span className="text-destructive">*</span></Label>
-                    <select id="u_aadhaarCardType" name="aadhaarCardType" value={uForm.aadhaarCardType} onChange={handleUnifiedChange} required className="mt-2 block w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm">
+                    <select id="u_aadhaarCardType" name="aadhaarCardType" value={uForm.aadhaarCardType} onChange={handleUnifiedChange} required className="mt-2 block w-full rounded-md border border-blue-300 bg-transparent px-3 py-2 text-sm">
                       <option value="">Select Aadhaar Card Type</option>
                       <option value="Aadhaar Card">Aadhaar Card</option>
                     </select>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="u_panCardType" className="text-sm font-medium">PAN Card Type <span className="text-destructive">*</span></Label>
-                    <select id="u_panCardType" name="panCardType" value={uForm.panCardType} onChange={handleUnifiedChange} required className="mt-2 block w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm">
+                    <select id="u_panCardType" name="panCardType" value={uForm.panCardType} onChange={handleUnifiedChange} required className="mt-2 block w-full rounded-md border border-blue-300 bg-transparent px-3 py-2 text-sm">
                       <option value="">Select PAN Card Type</option>
                       <option value="PAN Card">PAN Card</option>
                     </select>
                   </div>
                 </div>
 
-                <div className="grid gap-4 sm:grid-cols-3">
+                <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Aadhaar Card Upload <span className="text-destructive">*</span></Label>
                     <label className="flex flex-col items-center justify-center h-24 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary/5 group">
@@ -2253,7 +2301,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                         onChange={(e) => handleFileChange(e, setAadhaarFront, "auto", setAadhaarFrontError)}
                       />
                     </label>
-                    <p className="text-xs text-muted-foreground">Allowed: JPG, JPEG, PNG (Max 1MB) or PDF (Max 2MB)</p>
+                    <p className="text-xs text-muted-foreground">Allowed: JPG, JPEG, PNG (Max 2MB) or PDF (Max 10MB)</p>
                     {aadhaarFrontError && <p className="text-xs text-destructive">{aadhaarFrontError}</p>}
                   </div>
 
@@ -2271,7 +2319,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                         onChange={(e) => handleFileChange(e, setAadhaarBack, "auto", setAadhaarBackError)}
                       />
                     </label>
-                    <p className="text-xs text-muted-foreground">Allowed: JPG, JPEG, PNG (Max 1MB) or PDF (Max 2MB)</p>
+                    <p className="text-xs text-muted-foreground">Allowed: JPG, JPEG, PNG (Max 2MB) or PDF (Max 10MB)</p>
                     {aadhaarBackError && <p className="text-xs text-destructive">{aadhaarBackError}</p>}
                   </div>
 
@@ -2289,8 +2337,25 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                         onChange={(e) => handleFileChange(e, setPanFront, "auto", setPanFrontError)}
                       />
                     </label>
-                    <p className="text-xs text-muted-foreground">Allowed: JPG, JPEG, PNG (Max 1MB) or PDF (Max 2MB)</p>
+                    <p className="text-xs text-muted-foreground">Allowed: JPG, JPEG, PNG (Max 2MB) or PDF (Max 10MB)</p>
                     {panFrontError && <p className="text-xs text-destructive">{panFrontError}</p>}
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium">Applicant Photo <span className="text-destructive">*</span></Label>
+                    <label className="flex flex-col items-center justify-center h-24 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary/5 group">
+                      <Upload className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors" />
+                      <span className="mt-1 text-xs text-muted-foreground group-hover:text-primary">
+                        {applicantPhotoFile ? `${applicantPhotoFile.name.slice(0, 15)}...` : "Upload Applicant Photo"}
+                      </span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => handleFileChange(e, setApplicantPhotoFile, "image")}
+                      />
+                    </label>
+                    <p className="text-xs text-muted-foreground">Allowed: JPG, JPEG, PNG (Max 2MB)</p>
                   </div>
                 </div>
               </fieldset>
@@ -2341,42 +2406,87 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
               <fieldset className="space-y-4">
                 <legend className="text-lg font-bold text-foreground mb-4">G. Bank Statement</legend>
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium">Upload One Year Bank Statement (PDF format) <span className="text-destructive">*</span></Label>
-                  <label className="flex flex-col items-center justify-center h-24 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary/5 group">
-                    <Upload className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors" />
-                    <span className="mt-1 text-xs text-muted-foreground group-hover:text-primary">
-                      {bankStatementFile ? `${bankStatementFile.name.slice(0, 15)}...` : "Upload Bank Statement (PDF)"}
-                    </span>
-                    <input
-                      type="file"
-                      accept="application/pdf"
-                      className="hidden"
-                      onChange={(e) => handleFileChange(e, setBankStatementFile, "pdf")}
-                    />
-                  </label>
-                  <p className="text-xs text-muted-foreground">Allowed: PDF (Max 2MB)</p>
-                </div>
-
-                <div className="space-y-2">
                   <Label className="text-sm font-medium">Account Type <span className="text-destructive">*</span></Label>
                   <div className="space-y-2">
                     {["saving account", "current account", "company account", "joint account with family person", "OD account", "cc account", "partnership account"].map((type) => (
-                      <label key={type} className="flex items-center gap-2">
-                        <input
-                          type="checkbox"
-                          name="bankStatementType"
-                          value={type}
-                          checked={uForm.bankStatementType.includes(type)}
-                          onChange={(e) => {
-                            if (e.target.checked) {
-                              setUForm((p) => ({ ...p, bankStatementType: [...p.bankStatementType, type] }));
-                            } else {
-                              setUForm((p) => ({ ...p, bankStatementType: p.bankStatementType.filter((t: string) => t !== type) }));
-                            }
-                          }}
-                        />
-                        <span className="text-sm">{type}</span>
-                      </label>
+                      <div key={type} className="border border-gray-200 rounded-lg p-3">
+                        <label className="flex items-center gap-2 mb-2">
+                          <input
+                            type="checkbox"
+                            name="bankStatementType"
+                            value={type}
+                            checked={uForm.bankStatementType.includes(type)}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setUForm((p) => ({ 
+                                  ...p, 
+                                  bankStatementType: [...p.bankStatementType, type],
+                                  bankStatementDetails: [...p.bankStatementDetails, { accountType: type, bankName: '', file: null }]
+                                }));
+                              } else {
+                                setUForm((p) => ({ 
+                                  ...p, 
+                                  bankStatementType: p.bankStatementType.filter((t: string) => t !== type),
+                                  bankStatementDetails: p.bankStatementDetails.filter((d: any) => d.accountType !== type)
+                                }));
+                              }
+                            }}
+                          />
+                          <span className="text-sm font-medium">{type}</span>
+                        </label>
+                        
+                        {uForm.bankStatementType.includes(type) && (
+                          <div className="ml-6 space-y-2">
+                            <div className="space-y-1">
+                              <Label className="text-xs font-medium">Bank Name</Label>
+                              <Input
+                                placeholder="Enter bank name"
+                                value={uForm.bankStatementDetails.find((d: any) => d.accountType === type)?.bankName || ''}
+                                onChange={(e) => {
+                                  setUForm((p) => ({
+                                    ...p,
+                                    bankStatementDetails: p.bankStatementDetails.map((d: any) => 
+                                      d.accountType === type ? { ...d, bankName: e.target.value } : d
+                                    )
+                                  }));
+                                }}
+                                className="border-blue-300 text-sm"
+                              />
+                            </div>
+                            <div className="space-y-1">
+                              <Label className="text-xs font-medium">Upload One Year Bank Statement</Label>
+                              <label className="flex flex-col items-center justify-center h-16 border-2 border-dashed rounded cursor-pointer hover:border-primary">
+                                <Upload className="h-4 w-4" />
+                                <span className="text-xs text-muted-foreground mt-1">
+                                  {uForm.bankStatementDetails.find((d: any) => d.accountType === type)?.file?.name 
+                                    ? `${uForm.bankStatementDetails.find((d: any) => d.accountType === type)?.file?.name.slice(0, 15)}...` 
+                                    : "Upload PDF (Max 10MB)"}
+                                </span>
+                                <input
+                                  type="file"
+                                  accept="application/pdf"
+                                  className="hidden"
+                                  onChange={(e) => {
+                                    const file = e.target.files?.[0];
+                                    if (file) {
+                                      if (file.size > 10 * 1024 * 1024) {
+                                        window.alert("PDF must be <= 10MB");
+                                        return;
+                                      }
+                                      setUForm((p) => ({
+                                        ...p,
+                                        bankStatementDetails: p.bankStatementDetails.map((d: any) => 
+                                          d.accountType === type ? { ...d, file } : d
+                                        )
+                                      }));
+                                    }
+                                  }}
+                                />
+                              </label>
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     ))}
                   </div>
                 </div>
@@ -2387,7 +2497,29 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 <legend className="text-lg font-bold text-foreground mb-4">H. Existing Loan Details</legend>
                 <div className="space-y-2">
                   <Label htmlFor="u_existingLoansCount" className="text-sm font-medium">Number of Existing Running Loans (optional)</Label>
-                  <select id="u_existingLoansCount" name="existingLoansCount" value={uForm.existingLoansCount} onChange={handleUnifiedChange} className="mt-2 block w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm">
+                  <select 
+                    id="u_existingLoansCount" 
+                    name="existingLoansCount" 
+                    value={uForm.existingLoansCount} 
+                    onChange={(e) => {
+                      const count = parseInt(e.target.value) || 0;
+                      setUForm((p) => ({
+                        ...p,
+                        existingLoansCount: e.target.value,
+                        existingLoanDetails: Array.from({ length: count }, (_, i) => 
+                          p.existingLoanDetails[i] || { 
+                            totalLoanAmount: "", 
+                            totalMonthlyEmi: "", 
+                            loanType: "", 
+                            bankName: "", 
+                            emiDelayPast3Months: "",
+                            statementFile: null
+                          }
+                        )
+                      }));
+                    }} 
+                    className="mt-2 block w-full rounded-md border border-blue-300 bg-transparent px-3 py-2 text-sm"
+                  >
                     <option value="">Select Number of Loans</option>
                     <option value="0">0</option>
                     <option value="1">1</option>
@@ -2399,47 +2531,136 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 </div>
 
                 {uForm.existingLoansCount && parseInt(uForm.existingLoansCount) > 0 && (
-                  <div className="space-y-4">
-                    <div className="grid gap-4 sm:grid-cols-2">
-                      <div className="space-y-2">
-                        <Label htmlFor="u_totalLoanAmount" className="text-sm font-medium">Total Loan Amount</Label>
-                        <Input id="u_totalLoanAmount" name="totalLoanAmount" type="number" placeholder="Total Loan Amount" value={uForm.totalLoanAmount} onChange={handleUnifiedChange} className="border-gray-300" />
+                  <div className="space-y-6">
+                    {Array.from({ length: parseInt(uForm.existingLoansCount) }).map((_, index) => (
+                      <div key={index} className="border border-blue-300 rounded-lg p-4 space-y-4">
+                        <h4 className="text-md font-semibold text-foreground">Loan {index + 1}</h4>
+                        <div className="grid gap-4 sm:grid-cols-2">
+                          <div className="space-y-2">
+                            <Label htmlFor={`u_loanAmount_${index}`} className="text-sm font-medium">Total Loan Amount (₹) <span className="text-destructive">*</span></Label>
+                            <Input
+                              id={`u_loanAmount_${index}`}
+                              type="number"
+                              placeholder="Total Loan Amount"
+                              value={uForm.existingLoanDetails[index]?.totalLoanAmount || ""}
+                              onChange={(e) => {
+                                const value = e.target.value;
+                                if (value === '' || parseFloat(value) >= 0) {
+                                  setUForm((p) => {
+                                    const updated = [...p.existingLoanDetails];
+                                    updated[index] = { ...updated[index], totalLoanAmount: value };
+                                    return { ...p, existingLoanDetails: updated };
+                                  });
+                                }
+                              }}
+                              className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor={`u_loanEmi_${index}`} className="text-sm font-medium">Total Monthly EMI (₹) <span className="text-destructive">*</span></Label>
+                            <Input
+                              id={`u_loanEmi_${index}`}
+                              type="number"
+                              placeholder="Total Monthly EMI"
+                              value={uForm.existingLoanDetails[index]?.totalMonthlyEmi || ""}
+                              onChange={(e) => {
+                                const value = e.target.value;
+                                if (value === '' || parseFloat(value) >= 0) {
+                                  setUForm((p) => {
+                                    const updated = [...p.existingLoanDetails];
+                                    updated[index] = { ...updated[index], totalMonthlyEmi: value };
+                                    return { ...p, existingLoanDetails: updated };
+                                  });
+                                }
+                              }}
+                              className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor={`u_loanType_${index}`} className="text-sm font-medium">Loan Type <span className="text-destructive">*</span></Label>
+                            <Input
+                              id={`u_loanType_${index}`}
+                              placeholder="Loan Type"
+                              value={uForm.existingLoanDetails[index]?.loanType || ""}
+                              onChange={(e) => {
+                                setUForm((p) => {
+                                  const updated = [...p.existingLoanDetails];
+                                  updated[index] = { ...updated[index], loanType: e.target.value };
+                                  return { ...p, existingLoanDetails: updated };
+                                });
+                              }}
+                              className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor={`u_bankName_${index}`} className="text-sm font-medium">Bank Name <span className="text-destructive">*</span></Label>
+                            <Input
+                              id={`u_bankName_${index}`}
+                              placeholder="Bank Name"
+                              value={uForm.existingLoanDetails[index]?.bankName || ""}
+                              onChange={(e) => {
+                                setUForm((p) => {
+                                  const updated = [...p.existingLoanDetails];
+                                  updated[index] = { ...updated[index], bankName: e.target.value };
+                                  return { ...p, existingLoanDetails: updated };
+                                });
+                              }}
+                              className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50"
+                            />
+                          </div>
+                          <div className="space-y-2 sm:col-span-2">
+                            <Label htmlFor={`u_emiDelay_${index}`} className="text-sm font-medium">Any Delay or Bounce EMI in Past 3 Months <span className="text-destructive">*</span></Label>
+                            <select
+                              id={`u_emiDelay_${index}`}
+                              value={uForm.existingLoanDetails[index]?.emiDelayPast3Months || ""}
+                              onChange={(e) => {
+                                setUForm((p) => {
+                                  const updated = [...p.existingLoanDetails];
+                                  updated[index] = { ...updated[index], emiDelayPast3Months: e.target.value };
+                                  return { ...p, existingLoanDetails: updated };
+                                });
+                              }}
+                              className="mt-2 block w-full rounded-md border border-blue-300 bg-transparent px-3 py-2 text-sm"
+                            >
+                              <option value="">Select Option</option>
+                              <option value="Yes">Yes</option>
+                              <option value="No">No</option>
+                            </select>
+                          </div>
+                          <div className="space-y-2 sm:col-span-2">
+                            <Label className="text-sm font-medium">Upload Loan Account Statement (PDF format) (optional)</Label>
+                            <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed rounded cursor-pointer hover:border-primary">
+                              <Upload className="h-5 w-5" />
+                              <span className="text-xs text-muted-foreground mt-1">
+                                {uForm.existingLoanDetails[index]?.statementFile?.name 
+                                  ? `${uForm.existingLoanDetails[index]?.statementFile.name.slice(0, 15)}...` 
+                                  : "Upload Loan Statement (Max 10MB)"}
+                              </span>
+                              <input
+                                type="file"
+                                accept="application/pdf"
+                                className="hidden"
+                                onChange={(e) => {
+                                  const file = e.target.files?.[0];
+                                  if (file) {
+                                    if (file.size > 10 * 1024 * 1024) {
+                                      window.alert("PDF must be <= 10MB");
+                                      return;
+                                    }
+                                    setUForm((p) => {
+                                      const updated = [...p.existingLoanDetails];
+                                      updated[index] = { ...updated[index], statementFile: file };
+                                      return { ...p, existingLoanDetails: updated };
+                                    });
+                                  }
+                                }}
+                              />
+                            </label>
+                            <p className="text-xs text-muted-foreground">Allowed: PDF (Max 10MB)</p>
+                          </div>
+                        </div>
                       </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="u_totalMonthlyEmi" className="text-sm font-medium">Total Monthly Paid EMI Amount</Label>
-                        <Input id="u_totalMonthlyEmi" name="totalMonthlyEmi" type="number" placeholder="Total Monthly EMI" value={uForm.totalMonthlyEmi} onChange={handleUnifiedChange} className="border-gray-300" />
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="u_emiDelayPast3Months" className="text-sm font-medium">Any Delay or Bounce in Past 3 Months</Label>
-                      <select id="u_emiDelayPast3Months" name="emiDelayPast3Months" value={uForm.emiDelayPast3Months} onChange={handleUnifiedChange} className="mt-2 block w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm">
-                        <option value="">Select Option</option>
-                        <option value="Yes">Yes</option>
-                        <option value="No">No</option>
-                      </select>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label className="text-sm font-medium">Upload Loan Account Statement (PDF format)</Label>
-                      <label className="flex flex-col items-center justify-center h-24 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary/5 group">
-                        <Upload className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors" />
-                        <span className="mt-1 text-xs text-muted-foreground group-hover:text-primary">
-                          {existingLoanStatementFiles.length > 0 ? `${existingLoanStatementFiles.length} file(s) uploaded` : "Upload Loan Statement(s)"}
-                        </span>
-                        <input
-                          type="file"
-                          accept="application/pdf"
-                          multiple
-                          className="hidden"
-                          onChange={(e) => {
-                            const files = Array.from(e.target.files || []);
-                            setExistingLoanStatementFiles(files);
-                          }}
-                        />
-                      </label>
-                      <p className="text-xs text-muted-foreground">Allowed: PDF (Max 2MB each)</p>
-                    </div>
+                    ))}
                   </div>
                 )}
               </fieldset>
@@ -2505,51 +2726,81 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
               <fieldset className="space-y-4">
                 <legend className="text-lg font-bold text-foreground mb-4">J. Business Registration Certificates</legend>
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium">Business Registration Certificates (if available)</Label>
-                  <div className="space-y-2">
+                  <Label className="text-sm font-medium">Business Registration Certificates (optional)</Label>
+                  <div className="space-y-3">
                     {["GST Registration", "MSME Udyam Aadhar", "Shop Act (Ghumsta Licence)", "Trade Licence", "Local Gram Panchayat Business Certificate Licence"].map((cert) => (
-                      <label key={cert} className="flex items-center gap-2">
-                        <input
-                          type="checkbox"
-                          name="businessCertificates"
-                          value={cert}
-                          checked={uForm.businessCertificates.includes(cert)}
-                          onChange={(e) => {
-                            if (e.target.checked) {
-                              setUForm((p) => ({ ...p, businessCertificates: [...p.businessCertificates, cert] }));
-                            } else {
-                              setUForm((p) => ({ ...p, businessCertificates: p.businessCertificates.filter((c: string) => c !== cert) }));
-                            }
-                          }}
-                        />
-                        <span className="text-sm">{cert}</span>
-                      </label>
+                      <div key={cert} className="border border-gray-200 rounded-lg p-3">
+                        <label className="flex items-center gap-2 mb-2">
+                          <input
+                            type="checkbox"
+                            name="businessCertificates"
+                            value={cert}
+                            checked={uForm.businessCertificates.includes(cert)}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setUForm((p) => ({ 
+                                  ...p, 
+                                  businessCertificates: [...p.businessCertificates, cert],
+                                  businessCertificateFiles: { ...p.businessCertificateFiles, [cert]: null }
+                                }));
+                              } else {
+                                setUForm((p) => { 
+                                  const newFiles = { ...p.businessCertificateFiles };
+                                  delete newFiles[cert];
+                                  return { 
+                                    ...p, 
+                                    businessCertificates: p.businessCertificates.filter((c: string) => c !== cert),
+                                    businessCertificateFiles: newFiles
+                                  };
+                                });
+                              }
+                            }}
+                          />
+                          <span className="text-sm font-medium">{cert}</span>
+                        </label>
+                        
+                        {uForm.businessCertificates.includes(cert) && (
+                          <div className="ml-6 space-y-2">
+                            <div className="space-y-1">
+                              <Label className="text-xs font-medium">Upload {cert} Document</Label>
+                              <label className="flex flex-col items-center justify-center h-16 border-2 border-dashed rounded cursor-pointer hover:border-primary">
+                                <Upload className="h-4 w-4" />
+                                <span className="text-xs text-muted-foreground mt-1">
+                                  {uForm.businessCertificateFiles[cert]?.name 
+                                    ? `${uForm.businessCertificateFiles[cert]?.name.slice(0, 15)}...` 
+                                    : `Upload ${cert} (Max 10MB)`}
+                                </span>
+                                <input
+                                  type="file"
+                                  accept="image/*,.pdf"
+                                  className="hidden"
+                                  onChange={(e) => {
+                                    const file = e.target.files?.[0];
+                                    if (file) {
+                                      if (file.type.startsWith("image/") && file.size > 2 * 1024 * 1024) {
+                                        window.alert("Image must be <= 2MB");
+                                        return;
+                                      }
+                                      if (file.type === "application/pdf" && file.size > 10 * 1024 * 1024) {
+                                        window.alert("PDF must be <= 10MB");
+                                        return;
+                                      }
+                                      setUForm((p) => ({
+                                        ...p,
+                                        businessCertificateFiles: { ...p.businessCertificateFiles, [cert]: file }
+                                      }));
+                                    }
+                                  }}
+                                />
+                              </label>
+                              <p className="text-xs text-muted-foreground">Allowed: JPG, JPEG, PNG (Max 2MB) or PDF (Max 10MB)</p>
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     ))}
                   </div>
                 </div>
-
-                {uForm.businessCertificates.length > 0 && (
-                  <div className="space-y-2">
-                    <Label className="text-sm font-medium">Upload Business Certificates</Label>
-                    <label className="flex flex-col items-center justify-center h-24 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary/5 group">
-                      <Upload className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors" />
-                      <span className="mt-1 text-xs text-muted-foreground group-hover:text-primary">
-                        {businessCertificatesFiles.length > 0 ? `${businessCertificatesFiles.length} file(s) uploaded` : "Upload Business Certificates"}
-                      </span>
-                      <input
-                        type="file"
-                        accept="image/*,.pdf"
-                        multiple
-                        className="hidden"
-                        onChange={(e) => {
-                          const files = Array.from(e.target.files || []);
-                          setBusinessCertificatesFiles(files);
-                        }}
-                      />
-                    </label>
-                    <p className="text-xs text-muted-foreground">Allowed: JPG, JPEG, PNG (Max 1MB) or PDF (Max 2MB)</p>
-                  </div>
-                )}
               </fieldset>
 
               {/* K. BUYING GOODS */}
@@ -2557,7 +2808,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 <legend className="text-lg font-bold text-foreground mb-4">K. Buying Goods</legend>
                 <div className="space-y-2">
                   <Label htmlFor="u_isBuyingGoods" className="text-sm font-medium">If Buying Goods</Label>
-                  <select id="u_isBuyingGoods" name="isBuyingGoods" value={uForm.isBuyingGoods} onChange={handleUnifiedChange} className="mt-2 block w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm">
+                  <select id="u_isBuyingGoods" name="isBuyingGoods" value={uForm.isBuyingGoods} onChange={handleUnifiedChange} className="mt-2 block w-full rounded-md border border-blue-300 bg-transparent px-3 py-2 text-sm">
                     <option value="">Select Option</option>
                     <option value="Yes">Yes</option>
                     <option value="No">No</option>
@@ -2565,21 +2816,35 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 </div>
 
                 {uForm.isBuyingGoods === "Yes" && (
-                  <div className="space-y-2">
-                    <Label className="text-sm font-medium">Upload Proforma Invoice</Label>
-                    <label className="flex flex-col items-center justify-center h-24 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary/5 group">
-                      <Upload className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors" />
-                      <span className="mt-1 text-xs text-muted-foreground group-hover:text-primary">
-                        {proformaInvoiceFile ? `${proformaInvoiceFile.name.slice(0, 15)}...` : "Upload Proforma Invoice"}
-                      </span>
-                      <input
-                        type="file"
-                        accept="application/pdf"
-                        className="hidden"
-                        onChange={(e) => handleFileChange(e, setProformaInvoiceFile, "pdf")}
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="u_goodsDescription" className="text-sm font-medium">Describe what goods you are buying</Label>
+                      <Input 
+                        id="u_goodsDescription" 
+                        name="goodsDescription" 
+                        placeholder="Please describe the goods you intend to purchase" 
+                        value={uForm.goodsDescription} 
+                        onChange={handleUnifiedChange} 
+                        className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" 
                       />
-                    </label>
-                    <p className="text-xs text-muted-foreground">Allowed: PDF (Max 2MB)</p>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium">Upload Proforma Invoice</Label>
+                      <label className="flex flex-col items-center justify-center h-24 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary/5 group">
+                        <Upload className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors" />
+                        <span className="mt-1 text-xs text-muted-foreground group-hover:text-primary">
+                          {proformaInvoiceFile ? `${proformaInvoiceFile.name.slice(0, 15)}...` : "Upload Proforma Invoice"}
+                        </span>
+                        <input
+                          type="file"
+                          accept="application/pdf"
+                          className="hidden"
+                          onChange={(e) => handleFileChange(e, setProformaInvoiceFile, "pdf")}
+                        />
+                      </label>
+                      <p className="text-xs text-muted-foreground">Allowed: PDF (Max 10MB)</p>
+                    </div>
                   </div>
                 )}
               </fieldset>
@@ -2589,7 +2854,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 <legend className="text-lg font-bold text-foreground mb-4">L. CIBIL Score</legend>
                 <div className="space-y-2">
                   <Label htmlFor="u_cibilScoreKnown" className="text-sm font-medium">CIBIL Score Known</Label>
-                  <select id="u_cibilScoreKnown" name="cibilScoreKnown" value={uForm.cibilScoreKnown} onChange={handleUnifiedChange} className="mt-2 block w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm">
+                  <select id="u_cibilScoreKnown" name="cibilScoreKnown" value={uForm.cibilScoreKnown} onChange={handleUnifiedChange} className="mt-2 block w-full rounded-md border border-blue-300 bg-transparent px-3 py-2 text-sm">
                     <option value="">Select Option</option>
                     <option value="Yes">Yes</option>
                     <option value="No">No</option>
@@ -2600,7 +2865,12 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                   <div className="space-y-4">
                     <div className="space-y-2">
                       <Label htmlFor="u_cibilScore" className="text-sm font-medium">CIBIL Score</Label>
-                      <Input id="u_cibilScore" name="cibilScore" type="number" placeholder="Enter CIBIL Score" value={uForm.cibilScore} onChange={handleUnifiedChange} className="border-gray-300" />
+                      <Input id="u_cibilScore" name="cibilScore" type="number" placeholder="Enter CIBIL Score" value={uForm.cibilScore} onChange={(e) => {
+                      const value = e.target.value;
+                      if (value === '' || parseFloat(value) >= 0) {
+                        handleUnifiedChange(e);
+                      }
+                    }} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                     </div>
 
                     <div className="space-y-2">
@@ -2623,12 +2893,113 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 )}
               </fieldset>
 
+              {/* L. UPLOAD OTHER SUPPORTED DOCUMENT */}
+              <fieldset className="space-y-4">
+                <legend className="text-lg font-bold text-foreground mb-4">L. Upload Other Supported Document</legend>
+                <div className="space-y-2">
+                  <Label htmlFor="u_otherSupportedDocsCount" className="text-sm font-medium">Number of Other Documents</Label>
+                  <select 
+                    id="u_otherSupportedDocsCount" 
+                    name="otherSupportedDocsCount" 
+                    value={uForm.otherSupportedDocsCount} 
+                    onChange={(e) => {
+                      const count = parseInt(e.target.value) || 0;
+                      setUForm((p) => ({
+                        ...p,
+                        otherSupportedDocsCount: e.target.value,
+                        otherSupportedDocuments: Array.from({ length: count }, (_, i) => 
+                          p.otherSupportedDocuments[i] || { documentName: '', file: null }
+                        )
+                      }));
+                    }} 
+                    className="mt-2 block w-full rounded-md border border-blue-300 bg-transparent px-3 py-2 text-sm"
+                  >
+                    <option value="">Select Number of Documents</option>
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                  </select>
+                </div>
+
+                {uForm.otherSupportedDocsCount && parseInt(uForm.otherSupportedDocsCount) > 0 && (
+                  <div className="space-y-4">
+                    {Array.from({ length: parseInt(uForm.otherSupportedDocsCount) }).map((_, index) => (
+                      <div key={index} className="border border-gray-200 rounded-lg p-4 space-y-3">
+                        <h4 className="text-md font-semibold text-foreground">Document {index + 1}</h4>
+                        <div className="grid gap-4 sm:grid-cols-2">
+                          <div className="space-y-2">
+                            <Label htmlFor={`u_docName_${index}`} className="text-sm font-medium">Document Name</Label>
+                            <Input
+                              id={`u_docName_${index}`}
+                              placeholder="Enter document name"
+                              value={uForm.otherSupportedDocuments[index]?.documentName || ""}
+                              onChange={(e) => {
+                                setUForm((p) => {
+                                  const updated = [...p.otherSupportedDocuments];
+                                  updated[index] = { ...updated[index], documentName: e.target.value };
+                                  return { ...p, otherSupportedDocuments: updated };
+                                });
+                              }}
+                              className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor={`u_docFile_${index}`} className="text-sm font-medium">Upload Document</Label>
+                            <label className="flex flex-col items-center justify-center h-16 border-2 border-dashed rounded cursor-pointer hover:border-primary">
+                              <Upload className="h-4 w-4" />
+                              <span className="text-xs text-muted-foreground mt-1">
+                                {uForm.otherSupportedDocuments[index]?.file?.name 
+                                  ? `${uForm.otherSupportedDocuments[index]?.file?.name.slice(0, 15)}...` 
+                                  : "Upload file (Max 10MB)"}
+                              </span>
+                              <input
+                                id={`u_docFile_${index}`}
+                                type="file"
+                                accept="image/*,.pdf"
+                                className="hidden"
+                                onChange={(e) => {
+                                  const file = e.target.files?.[0];
+                                  if (file) {
+                                    if (file.type.startsWith("image/") && file.size > 2 * 1024 * 1024) {
+                                      window.alert("Image must be <= 2MB");
+                                      return;
+                                    }
+                                    if (file.type === "application/pdf" && file.size > 10 * 1024 * 1024) {
+                                      window.alert("PDF must be <= 10MB");
+                                      return;
+                                    }
+                                    setUForm((p) => {
+                                      const updated = [...p.otherSupportedDocuments];
+                                      updated[index] = { ...updated[index], file };
+                                      return { ...p, otherSupportedDocuments: updated };
+                                    });
+                                  }
+                                }}
+                              />
+                            </label>
+                            <p className="text-xs text-muted-foreground">Allowed: JPG, JPEG, PNG (Max 2MB) or PDF (Max 10MB)</p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </fieldset>
+
               {/* M. CONSENT */}
               <fieldset className="space-y-4">
                 <legend className="text-lg font-bold text-foreground mb-4">M. Consent</legend>
                 <div className="flex items-start gap-3">
                   <input id="u_consent" type="checkbox" name="consent" checked={uForm.consent} onChange={handleUnifiedChange} className="mt-1" required />
-                  <label htmlFor="u_consent" className="text-sm">I agree to the Terms & Conditions and Privacy Policy.</label>
+                  <label htmlFor="u_consent" className="text-sm">I agree to Terms & Conditions and Privacy Policy.</label>
+                </div>
+                <div className="flex items-start gap-3">
+                  <input id="u_authorizationConsent" type="checkbox" name="authorizationConsent" checked={uForm.authorizationConsent} onChange={handleUnifiedChange} className="mt-1" required />
+                  <label htmlFor="u_authorizationConsent" className="text-sm">I authorize Infinity Loans & Business Solutions to verify my details and share my application with Banks / NBFCs for loan evaluation.</label>
                 </div>
               </fieldset>
             </>
