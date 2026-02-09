@@ -2371,7 +2371,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                             if (e.target.checked) {
                               setUForm((p) => ({ ...p, bankStatementType: [...p.bankStatementType, type] }));
                             } else {
-                              setUForm((p) => ({ ...p, bankStatementType: p.bankStatementType.filter((t) => t !== type) }));
+                              setUForm((p) => ({ ...p, bankStatementType: p.bankStatementType.filter((t: string) => t !== type) }));
                             }
                           }}
                         />
@@ -2518,7 +2518,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                             if (e.target.checked) {
                               setUForm((p) => ({ ...p, businessCertificates: [...p.businessCertificates, cert] }));
                             } else {
-                              setUForm((p) => ({ ...p, businessCertificates: p.businessCertificates.filter((c) => c !== cert) }));
+                              setUForm((p) => ({ ...p, businessCertificates: p.businessCertificates.filter((c: string) => c !== cert) }));
                             }
                           }}
                         />
