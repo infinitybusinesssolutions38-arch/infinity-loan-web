@@ -864,6 +864,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 </div>
 
                 {/* Job/Business field for Credit Card category */}
+                {console.log('Debug - categoryKey:', categoryKey, 'loanType:', loanType, 'condition:', categoryKey === "credit-cards" || loanType.toLowerCase().includes("credit"))}
                 {(categoryKey === "credit-cards" || loanType.toLowerCase().includes("credit")) && (
                   <div className="space-y-2">
                     <Label htmlFor="s_jobBusiness" className="text-sm font-medium">Current Employment Status</Label>
