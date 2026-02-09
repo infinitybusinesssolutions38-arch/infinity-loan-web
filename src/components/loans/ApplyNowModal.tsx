@@ -99,6 +99,15 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
   const [residentialBillError, setResidentialBillError] = useState<string | null>(null);
   const [shopBillError, setShopBillError] = useState<string | null>(null);
 
+  // Unified form-specific files
+  const [bankStatementFile, setBankStatementFile] = useState<File | null>(null);
+  const [incomeTax2023_24File, setIncomeTax2023_24File] = useState<File | null>(null);
+  const [incomeTax2024_25File, setIncomeTax2024_25File] = useState<File | null>(null);
+  const [incomeTax2025_26File, setIncomeTax2025_26File] = useState<File | null>(null);
+  const [cibilReportFile, setCibilReportFile] = useState<File | null>(null);
+  const [businessCertificatesFiles, setBusinessCertificatesFiles] = useState<File[]>([]);
+  const [existingLoanStatementFiles, setExistingLoanStatementFiles] = useState<File[]>([]);
+
   // Salaried-specific files
   const [panPhoto, setPanPhoto] = useState<File | null>(null);
   const [aadhaarPhoto, setAadhaarPhoto] = useState<File | null>(null);
@@ -108,7 +117,6 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
   const [officeIdPhoto, setOfficeIdPhoto] = useState<File | null>(null);
   const [salarySlips, setSalarySlips] = useState<File | null>(null);
   const [bankStatement, setBankStatement] = useState<File | null>(null);
-  const [cibilReportFile, setCibilReportFile] = useState<File | null>(null);
   const [lastElectricityBill, setLastElectricityBill] = useState<File | null>(null);
   const [permElectricityBill, setPermElectricityBill] = useState<File | null>(null);
   const [rentAgreement, setRentAgreement] = useState<File | null>(null);
@@ -345,6 +353,13 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
     (loanTypeKey && loanTypeKey.toLowerCase().includes("salaried")) ||
     loanType.toLowerCase().includes("salaried");
 
+  const isCreditCard =
+    (typeof categoryKey !== "undefined" && categoryKey === "credit-cards") ||
+    loanType.toLowerCase().includes("credit");
+
+  // Check if this is one of the 5 categories that need the unified form
+  const isUnifiedForm = !isSalaried && !isCreditCard;
+
   const [sForm, setSForm] = useState({
     firstName: "",
     middleName: "",
@@ -390,6 +405,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
     cibilScore: "",
     requiredLoanAmount: "",
     preferredTenure: "",
+    purpose: "",
     loanType: "",
     jobBusiness: "Job",
     coApplicantName: "",
@@ -398,6 +414,135 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
     isBuyingGoods: "",
     quotationAmount: "",
   });
+
+  // Unified form state for the 5 categories
+  const [uForm, setUForm] = useState<Record<string, any>>({
+    firstName: "",
+    middleName: "",
+    lastName: "",
+    aadhaarLinkedMobile: "",
+    alternateMobile: "",
+    whatsappNumber: "",
+    currentResidentialAddress: "",
+    residentialPincode: "",
+    residentialState: "",
+    residentialCity: "",
+    currentOfficeAddress: "",
+    officePincode: "",
+    officeState: "",
+    officeCity: "",
+    requiredLoanAmount: "",
+    loanType: "",
+    gender: "",
+    maritalStatus: "",
+    dob: "",
+    personalEmail: "",
+    officialEmail: "",
+    voterId: "",
+    passport: "",
+    drivingLicense: "",
+    aadhaarCardType: "",
+    panCardType: "",
+    homeElectricityBill: "",
+    officeElectricityBill: "",
+    bankStatementType: [],
+    existingLoansCount: "",
+    existingLoanDetails: [],
+    totalLoanAmount: "",
+    totalMonthlyEmi: "",
+    emiDelayPast3Months: "",
+    incomeTax2023_24: "",
+    incomeTax2024_25: "",
+    incomeTax2025_26: "",
+    businessCertificates: [],
+    isBuyingGoods: "",
+    proformaInvoice: "",
+    cibilScoreKnown: "",
+    cibilScore: "",
+    cibilReport: "",
+    consent: false,
+  });
+
+  const handleUnifiedChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value, type } = e.target;
+    if (type === "checkbox") {
+      setUForm((p) => ({ ...p, [name]: (e.target as HTMLInputElement).checked }));
+    } else {
+      setUForm((p) => ({ ...p, [name]: value }));
+    }
+  };
+
+  const handleUnifiedSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Basic validation
+    const requiredFields = [
+      "firstName", "lastName", "aadhaarLinkedMobile", "currentResidentialAddress",
+      "residentialPincode", "residentialState", "residentialCity", "currentOfficeAddress",
+      "officePincode", "officeState", "officeCity", "requiredLoanAmount", "loanType",
+      "gender", "maritalStatus", "dob", "personalEmail", "aadhaarCardType", "panCardType",
+      "homeElectricityBill", "officeElectricityBill", "consent"
+    ];
+
+    for (const field of requiredFields) {
+      if (!(uForm as Record<string, any>)[field] || (Array.isArray((uForm as Record<string, any>)[field]) && (uForm as Record<string, any>)[field].length === 0)) {
+        window.alert(`Please fill ${field}`);
+        return;
+      }
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const formData = new globalThis.FormData();
+      
+      // Add all form fields
+      Object.entries(uForm).forEach(([key, value]) => {
+        if (Array.isArray(value)) {
+          formData.append(key, JSON.stringify(value));
+        } else if (typeof value === "boolean") {
+          formData.append(key, value ? "true" : "false");
+        } else {
+          formData.append(key, String(value || ""));
+        }
+      });
+
+      // Add files
+      if (aadhaarFront) formData.append("aadhaarFront", aadhaarFront);
+      if (aadhaarBack) formData.append("aadhaarBack", aadhaarBack);
+      if (panFront) formData.append("panFront", panFront);
+      if (residentialBill) formData.append("residentialBill", residentialBill);
+      if (shopBill) formData.append("shopBill", shopBill);
+      if (bankStatementFile) formData.append("bankStatementFile", bankStatementFile);
+      if (incomeTax2023_24File) formData.append("incomeTax2023_24File", incomeTax2023_24File);
+      if (incomeTax2024_25File) formData.append("incomeTax2024_25File", incomeTax2024_25File);
+      if (incomeTax2025_26File) formData.append("incomeTax2025_26File", incomeTax2025_26File);
+      if (proformaInvoiceFile) formData.append("proformaInvoiceFile", proformaInvoiceFile);
+      if (cibilReportFile) formData.append("cibilReportFile", cibilReportFile);
+      
+      // Add multiple files
+      businessCertificatesFiles.forEach((file, index) => {
+        formData.append(`businessCertificatesFiles_${index}`, file);
+      });
+      existingLoanStatementFiles.forEach((file, index) => {
+        formData.append(`existingLoanStatementFiles_${index}`, file);
+      });
+
+      formData.append("loanType", "unified");
+
+      const response = await axios.post("/api/apply-now", formData);
+      
+      setIsSubmitting(false);
+      window.alert(`Application submitted successfully!\nApplication Reference: ${response.data?.applicationRef}`);
+      onClose();
+    } catch (error) {
+      setIsSubmitting(false);
+      const message = axios.isAxiosError(error) 
+        ? (error.response?.data as any)?.message || error.message
+        : error instanceof Error ? error.message : "Unknown error occurred";
+      window.alert(`Error: ${message}`);
+    }
+  };
 
   const handleSalariedChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -654,7 +799,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
 
         <form
           id="applyNowModalForm"
-          onSubmit={isSalaried ? handleSalariedSubmit : handleNonSalariedSubmit(onSubmitNonSalaried)}
+          onSubmit={isSalaried ? handleSalariedSubmit : isUnifiedForm ? handleUnifiedSubmit : handleNonSalariedSubmit(onSubmitNonSalaried)}
           className="overflow-y-auto max-h-[calc(90vh-140px)] p-6 space-y-8"
         >
 
@@ -1287,7 +1432,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
             </>
           )}
 
-          {!isSalaried && <>
+          {!isSalaried && isCreditCard && <>
             <fieldset className="space-y-4">
               <legend className="flex items-center gap-2 text-lg font-bold text-foreground mb-4">
                 <User className="h-5 w-5 text-primary" />
@@ -1428,7 +1573,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 </legend>
                 <div className="space-y-2">
                   <Label htmlFor="jobBusiness" className="text-sm font-medium">Current Employment Status</Label>
-                  <select id="jobBusiness" name="jobBusiness" {...register("jobBusiness")} className="mt-2 block w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm">
+                  <select id="jobBusiness" {...register("jobBusiness")} className="mt-2 block w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm">
                     <option value="">Select Employment Status</option>
                     <option value="Salaried Employee">Salaried Employee</option>
                     <option value="Self Employed Business">Self Employed Business</option>
@@ -1924,6 +2069,570 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
               </div>
             </fieldset>
           </>}
+
+          {!isSalaried && isUnifiedForm && (
+            <>
+              {/* A. APPLICANT BASIC DETAILS */}
+              <fieldset className="space-y-4">
+                <legend className="text-lg font-bold text-foreground mb-4">A. Applicant Basic Details</legend>
+                <div className="grid gap-4 sm:grid-cols-3">
+                  <div className="space-y-2">
+                    <Label htmlFor="u_firstName" className="text-sm font-medium">First Name <span className="text-destructive">*</span></Label>
+                    <Input id="u_firstName" name="firstName" placeholder="First Name (as per PAN)*" value={uForm.firstName} onChange={handleUnifiedChange} className="border-gray-300" />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="u_middleName" className="text-sm font-medium">Middle Name</Label>
+                    <Input id="u_middleName" name="middleName" placeholder="Middle Name" value={uForm.middleName} onChange={handleUnifiedChange} className="border-gray-300" />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="u_lastName" className="text-sm font-medium">Last Name <span className="text-destructive">*</span></Label>
+                    <Input id="u_lastName" name="lastName" placeholder="Last Name (as per PAN)*" value={uForm.lastName} onChange={handleUnifiedChange} className="border-gray-300" />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="u_aadhaarLinkedMobile" className="text-sm font-medium">Aadhaar Linked Primary Mobile Number <span className="text-destructive">*</span></Label>
+                    <Input id="u_aadhaarLinkedMobile" name="aadhaarLinkedMobile" placeholder="Mobile Number*" value={uForm.aadhaarLinkedMobile} onChange={handleUnifiedChange} className="border-gray-300" />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="u_alternateMobile" className="text-sm font-medium">Alternate Mobile Number</Label>
+                    <Input id="u_alternateMobile" name="alternateMobile" placeholder="Alternate Mobile Number" value={uForm.alternateMobile} onChange={handleUnifiedChange} className="border-gray-300" />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="u_whatsappNumber" className="text-sm font-medium">WhatsApp Number</Label>
+                    <Input id="u_whatsappNumber" name="whatsappNumber" placeholder="WhatsApp Number" value={uForm.whatsappNumber} onChange={handleUnifiedChange} className="border-gray-300" />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="u_gender" className="text-sm font-medium">Gender <span className="text-destructive">*</span></Label>
+                    <select id="u_gender" name="gender" value={uForm.gender} onChange={handleUnifiedChange} required className="mt-2 block w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm">
+                      <option value="">Select Gender</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="u_maritalStatus" className="text-sm font-medium">Marital Status <span className="text-destructive">*</span></Label>
+                    <select id="u_maritalStatus" name="maritalStatus" value={uForm.maritalStatus} onChange={handleUnifiedChange} required className="mt-2 block w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm">
+                      <option value="">Marital Status</option>
+                      <option value="Yes">Yes</option>
+                      <option value="No">No</option>
+                    </select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="u_dob" className="text-sm font-medium">Date of Birth <span className="text-destructive">*</span></Label>
+                    <Input id="u_dob" name="dob" type="date" value={uForm.dob} onChange={handleUnifiedChange} className="border-gray-300" />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="u_personalEmail" className="text-sm font-medium">Personal Email ID <span className="text-destructive">*</span></Label>
+                    <Input id="u_personalEmail" name="personalEmail" type="email" placeholder="Personal Email ID*" value={uForm.personalEmail} onChange={handleUnifiedChange} className="border-gray-300" />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="u_officialEmail" className="text-sm font-medium">Official Email ID (optional)</Label>
+                    <Input id="u_officialEmail" name="officialEmail" type="email" placeholder="Official Email ID" value={uForm.officialEmail} onChange={handleUnifiedChange} className="border-gray-300" />
+                  </div>
+                </div>
+
+                <div className="grid gap-4 sm:grid-cols-3">
+                  <div className="space-y-2">
+                    <Label htmlFor="u_voterId" className="text-sm font-medium">Voter ID (optional)</Label>
+                    <Input id="u_voterId" name="voterId" placeholder="Voter ID (optional)" value={uForm.voterId} onChange={handleUnifiedChange} className="border-gray-300" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="u_passport" className="text-sm font-medium">Passport (optional)</Label>
+                    <Input id="u_passport" name="passport" placeholder="Passport (optional)" value={uForm.passport} onChange={handleUnifiedChange} className="border-gray-300" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="u_drivingLicense" className="text-sm font-medium">Driving License (optional)</Label>
+                    <Input id="u_drivingLicense" name="drivingLicense" placeholder="Driving License (optional)" value={uForm.drivingLicense} onChange={handleUnifiedChange} className="border-gray-300" />
+                  </div>
+                </div>
+              </fieldset>
+
+              {/* B. RESIDENTIAL ADDRESS DETAILS */}
+              <fieldset className="space-y-4">
+                <legend className="text-lg font-bold text-foreground mb-4">B. Residential Address Details</legend>
+                <div className="space-y-2">
+                  <Label htmlFor="u_currentResidentialAddress" className="text-sm font-medium">Current Residential Address <span className="text-destructive">*</span></Label>
+                  <Input id="u_currentResidentialAddress" name="currentResidentialAddress" placeholder="Current Residential Address*" value={uForm.currentResidentialAddress} onChange={handleUnifiedChange} className="border-gray-300" />
+                </div>
+                <div className="grid gap-4 sm:grid-cols-3">
+                  <div className="space-y-2">
+                    <Label htmlFor="u_residentialPincode" className="text-sm font-medium">Pincode <span className="text-destructive">*</span></Label>
+                    <Input id="u_residentialPincode" name="residentialPincode" placeholder="Pincode*" value={uForm.residentialPincode} onChange={handleUnifiedChange} className="border-gray-300" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="u_residentialState" className="text-sm font-medium">State <span className="text-destructive">*</span></Label>
+                    <Input id="u_residentialState" name="residentialState" placeholder="State*" value={uForm.residentialState} onChange={handleUnifiedChange} className="border-gray-300" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="u_residentialCity" className="text-sm font-medium">City <span className="text-destructive">*</span></Label>
+                    <Input id="u_residentialCity" name="residentialCity" placeholder="City*" value={uForm.residentialCity} onChange={handleUnifiedChange} className="border-gray-300" />
+                  </div>
+                </div>
+              </fieldset>
+
+              {/* C. OFFICE/SHOP ADDRESS DETAILS */}
+              <fieldset className="space-y-4">
+                <legend className="text-lg font-bold text-foreground mb-4">C. Office/Shop Address Details</legend>
+                <div className="space-y-2">
+                  <Label htmlFor="u_currentOfficeAddress" className="text-sm font-medium">Current Shop/Office Address <span className="text-destructive">*</span></Label>
+                  <Input id="u_currentOfficeAddress" name="currentOfficeAddress" placeholder="Current Shop/Office Address*" value={uForm.currentOfficeAddress} onChange={handleUnifiedChange} className="border-gray-300" />
+                </div>
+                <div className="grid gap-4 sm:grid-cols-3">
+                  <div className="space-y-2">
+                    <Label htmlFor="u_officePincode" className="text-sm font-medium">Pincode <span className="text-destructive">*</span></Label>
+                    <Input id="u_officePincode" name="officePincode" placeholder="Pincode*" value={uForm.officePincode} onChange={handleUnifiedChange} className="border-gray-300" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="u_officeState" className="text-sm font-medium">State <span className="text-destructive">*</span></Label>
+                    <Input id="u_officeState" name="officeState" placeholder="State*" value={uForm.officeState} onChange={handleUnifiedChange} className="border-gray-300" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="u_officeCity" className="text-sm font-medium">City <span className="text-destructive">*</span></Label>
+                    <Input id="u_officeCity" name="officeCity" placeholder="City*" value={uForm.officeCity} onChange={handleUnifiedChange} className="border-gray-300" />
+                  </div>
+                </div>
+              </fieldset>
+
+              {/* D. LOAN REQUIREMENT DETAILS */}
+              <fieldset className="space-y-4">
+                <legend className="text-lg font-bold text-foreground mb-4">D. Loan Requirement Details</legend>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label htmlFor="u_requiredLoanAmount" className="text-sm font-medium">Required Loan Amount <span className="text-destructive">*</span></Label>
+                    <Input id="u_requiredLoanAmount" name="requiredLoanAmount" type="number" placeholder="Required Loan Amount*" value={uForm.requiredLoanAmount} onChange={handleUnifiedChange} className="border-gray-300" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="u_loanType" className="text-sm font-medium">Type of Loan <span className="text-destructive">*</span></Label>
+                    <Input id="u_loanType" name="loanType" placeholder="Type of Loan*" value={uForm.loanType} onChange={handleUnifiedChange} className="border-gray-300" />
+                  </div>
+                </div>
+              </fieldset>
+
+              {/* E. ID PROOF DOCUMENTS */}
+              <fieldset className="space-y-4">
+                <legend className="text-lg font-bold text-foreground mb-4">E. ID Proof Documents</legend>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label htmlFor="u_aadhaarCardType" className="text-sm font-medium">Aadhaar Card Type <span className="text-destructive">*</span></Label>
+                    <select id="u_aadhaarCardType" name="aadhaarCardType" value={uForm.aadhaarCardType} onChange={handleUnifiedChange} required className="mt-2 block w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm">
+                      <option value="">Select Aadhaar Card Type</option>
+                      <option value="Aadhaar Card">Aadhaar Card</option>
+                    </select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="u_panCardType" className="text-sm font-medium">PAN Card Type <span className="text-destructive">*</span></Label>
+                    <select id="u_panCardType" name="panCardType" value={uForm.panCardType} onChange={handleUnifiedChange} required className="mt-2 block w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm">
+                      <option value="">Select PAN Card Type</option>
+                      <option value="PAN Card">PAN Card</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="grid gap-4 sm:grid-cols-3">
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium">Aadhaar Card Upload <span className="text-destructive">*</span></Label>
+                    <label className="flex flex-col items-center justify-center h-24 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary/5 group">
+                      <Upload className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors" />
+                      <span className="mt-1 text-xs text-muted-foreground group-hover:text-primary">
+                        {aadhaarFront ? `${aadhaarFront.name.slice(0, 15)}...` : "Upload Aadhaar Front"}
+                      </span>
+                      <input
+                        type="file"
+                        accept="image/*,.pdf"
+                        className="hidden"
+                        onChange={(e) => handleFileChange(e, setAadhaarFront, "auto", setAadhaarFrontError)}
+                      />
+                    </label>
+                    <p className="text-xs text-muted-foreground">Allowed: JPG, JPEG, PNG (Max 1MB) or PDF (Max 2MB)</p>
+                    {aadhaarFrontError && <p className="text-xs text-destructive">{aadhaarFrontError}</p>}
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium">Aadhaar Card Back Upload <span className="text-destructive">*</span></Label>
+                    <label className="flex flex-col items-center justify-center h-24 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary/5 group">
+                      <Upload className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors" />
+                      <span className="mt-1 text-xs text-muted-foreground group-hover:text-primary">
+                        {aadhaarBack ? `${aadhaarBack.name.slice(0, 15)}...` : "Upload Aadhaar Back"}
+                      </span>
+                      <input
+                        type="file"
+                        accept="image/*,.pdf"
+                        className="hidden"
+                        onChange={(e) => handleFileChange(e, setAadhaarBack, "auto", setAadhaarBackError)}
+                      />
+                    </label>
+                    <p className="text-xs text-muted-foreground">Allowed: JPG, JPEG, PNG (Max 1MB) or PDF (Max 2MB)</p>
+                    {aadhaarBackError && <p className="text-xs text-destructive">{aadhaarBackError}</p>}
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium">PAN Card Upload <span className="text-destructive">*</span></Label>
+                    <label className="flex flex-col items-center justify-center h-24 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary/5 group">
+                      <Upload className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors" />
+                      <span className="mt-1 text-xs text-muted-foreground group-hover:text-primary">
+                        {panFront ? `${panFront.name.slice(0, 15)}...` : "Upload PAN Card"}
+                      </span>
+                      <input
+                        type="file"
+                        accept="image/*,.pdf"
+                        className="hidden"
+                        onChange={(e) => handleFileChange(e, setPanFront, "auto", setPanFrontError)}
+                      />
+                    </label>
+                    <p className="text-xs text-muted-foreground">Allowed: JPG, JPEG, PNG (Max 1MB) or PDF (Max 2MB)</p>
+                    {panFrontError && <p className="text-xs text-destructive">{panFrontError}</p>}
+                  </div>
+                </div>
+              </fieldset>
+
+              {/* F. ADDRESS PROOF DOCUMENTS */}
+              <fieldset className="space-y-4">
+                <legend className="text-lg font-bold text-foreground mb-4">F. Address Proof Documents</legend>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium">Latest Home Electricity Bill <span className="text-destructive">*</span></Label>
+                    <label className="flex flex-col items-center justify-center h-24 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary/5 group">
+                      <Upload className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors" />
+                      <span className="mt-1 text-xs text-muted-foreground group-hover:text-primary">
+                        {residentialBill ? `${residentialBill.name.slice(0, 15)}...` : "Upload Home Electricity Bill"}
+                      </span>
+                      <input
+                        type="file"
+                        accept="image/*,.pdf"
+                        className="hidden"
+                        onChange={(e) => handleFileChange(e, setResidentialBill, "auto", setResidentialBillError)}
+                      />
+                    </label>
+                    <p className="text-xs text-muted-foreground">Allowed: JPG, JPEG, PNG (Max 1MB) or PDF (Max 2MB)</p>
+                    {residentialBillError && <p className="text-xs text-destructive">{residentialBillError}</p>}
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium">Latest Office/Shop Electricity Bill <span className="text-destructive">*</span></Label>
+                    <label className="flex flex-col items-center justify-center h-24 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary/5 group">
+                      <Upload className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors" />
+                      <span className="mt-1 text-xs text-muted-foreground group-hover:text-primary">
+                        {shopBill ? `${shopBill.name.slice(0, 15)}...` : "Upload Office/Shop Electricity Bill"}
+                      </span>
+                      <input
+                        type="file"
+                        accept="image/*,.pdf"
+                        className="hidden"
+                        onChange={(e) => handleFileChange(e, setShopBill, "auto", setShopBillError)}
+                      />
+                    </label>
+                    <p className="text-xs text-muted-foreground">Allowed: JPG, JPEG, PNG (Max 1MB) or PDF (Max 2MB)</p>
+                    {shopBillError && <p className="text-xs text-destructive">{shopBillError}</p>}
+                  </div>
+                </div>
+              </fieldset>
+
+              {/* G. BANK STATEMENT */}
+              <fieldset className="space-y-4">
+                <legend className="text-lg font-bold text-foreground mb-4">G. Bank Statement</legend>
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Upload One Year Bank Statement (PDF format) <span className="text-destructive">*</span></Label>
+                  <label className="flex flex-col items-center justify-center h-24 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary/5 group">
+                    <Upload className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors" />
+                    <span className="mt-1 text-xs text-muted-foreground group-hover:text-primary">
+                      {bankStatementFile ? `${bankStatementFile.name.slice(0, 15)}...` : "Upload Bank Statement (PDF)"}
+                    </span>
+                    <input
+                      type="file"
+                      accept="application/pdf"
+                      className="hidden"
+                      onChange={(e) => handleFileChange(e, setBankStatementFile, "pdf")}
+                    />
+                  </label>
+                  <p className="text-xs text-muted-foreground">Allowed: PDF (Max 2MB)</p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Account Type <span className="text-destructive">*</span></Label>
+                  <div className="space-y-2">
+                    {["saving account", "current account", "company account", "joint account with family person", "OD account", "cc account", "partnership account"].map((type) => (
+                      <label key={type} className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          name="bankStatementType"
+                          value={type}
+                          checked={uForm.bankStatementType.includes(type)}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setUForm((p) => ({ ...p, bankStatementType: [...p.bankStatementType, type] }));
+                            } else {
+                              setUForm((p) => ({ ...p, bankStatementType: p.bankStatementType.filter((t) => t !== type) }));
+                            }
+                          }}
+                        />
+                        <span className="text-sm">{type}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              </fieldset>
+
+              {/* H. EXISTING LOAN DETAILS */}
+              <fieldset className="space-y-4">
+                <legend className="text-lg font-bold text-foreground mb-4">H. Existing Loan Details</legend>
+                <div className="space-y-2">
+                  <Label htmlFor="u_existingLoansCount" className="text-sm font-medium">Number of Existing Running Loans (optional)</Label>
+                  <select id="u_existingLoansCount" name="existingLoansCount" value={uForm.existingLoansCount} onChange={handleUnifiedChange} className="mt-2 block w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm">
+                    <option value="">Select Number of Loans</option>
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5+</option>
+                  </select>
+                </div>
+
+                {uForm.existingLoansCount && parseInt(uForm.existingLoansCount) > 0 && (
+                  <div className="space-y-4">
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <div className="space-y-2">
+                        <Label htmlFor="u_totalLoanAmount" className="text-sm font-medium">Total Loan Amount</Label>
+                        <Input id="u_totalLoanAmount" name="totalLoanAmount" type="number" placeholder="Total Loan Amount" value={uForm.totalLoanAmount} onChange={handleUnifiedChange} className="border-gray-300" />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="u_totalMonthlyEmi" className="text-sm font-medium">Total Monthly Paid EMI Amount</Label>
+                        <Input id="u_totalMonthlyEmi" name="totalMonthlyEmi" type="number" placeholder="Total Monthly EMI" value={uForm.totalMonthlyEmi} onChange={handleUnifiedChange} className="border-gray-300" />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="u_emiDelayPast3Months" className="text-sm font-medium">Any Delay or Bounce in Past 3 Months</Label>
+                      <select id="u_emiDelayPast3Months" name="emiDelayPast3Months" value={uForm.emiDelayPast3Months} onChange={handleUnifiedChange} className="mt-2 block w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm">
+                        <option value="">Select Option</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                      </select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium">Upload Loan Account Statement (PDF format)</Label>
+                      <label className="flex flex-col items-center justify-center h-24 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary/5 group">
+                        <Upload className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors" />
+                        <span className="mt-1 text-xs text-muted-foreground group-hover:text-primary">
+                          {existingLoanStatementFiles.length > 0 ? `${existingLoanStatementFiles.length} file(s) uploaded` : "Upload Loan Statement(s)"}
+                        </span>
+                        <input
+                          type="file"
+                          accept="application/pdf"
+                          multiple
+                          className="hidden"
+                          onChange={(e) => {
+                            const files = Array.from(e.target.files || []);
+                            setExistingLoanStatementFiles(files);
+                          }}
+                        />
+                      </label>
+                      <p className="text-xs text-muted-foreground">Allowed: PDF (Max 2MB each)</p>
+                    </div>
+                  </div>
+                )}
+              </fieldset>
+
+              {/* I. INCOME TAX RETURNS */}
+              <fieldset className="space-y-4">
+                <legend className="text-lg font-bold text-foreground mb-4">I. Income Tax Returns</legend>
+                <div className="grid gap-4 sm:grid-cols-3">
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium">Assessment Year 2023-24</Label>
+                    <label className="flex flex-col items-center justify-center h-24 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary/5 group">
+                      <Upload className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors" />
+                      <span className="mt-1 text-xs text-muted-foreground group-hover:text-primary">
+                        {incomeTax2023_24File ? `${incomeTax2023_24File.name.slice(0, 15)}...` : "Upload ITR 2023-24"}
+                      </span>
+                      <input
+                        type="file"
+                        accept="application/pdf"
+                        className="hidden"
+                        onChange={(e) => handleFileChange(e, setIncomeTax2023_24File, "pdf")}
+                      />
+                    </label>
+                    <p className="text-xs text-muted-foreground">Allowed: PDF (Max 2MB)</p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium">Assessment Year 2024-25</Label>
+                    <label className="flex flex-col items-center justify-center h-24 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary/5 group">
+                      <Upload className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors" />
+                      <span className="mt-1 text-xs text-muted-foreground group-hover:text-primary">
+                        {incomeTax2024_25File ? `${incomeTax2024_25File.name.slice(0, 15)}...` : "Upload ITR 2024-25"}
+                      </span>
+                      <input
+                        type="file"
+                        accept="application/pdf"
+                        className="hidden"
+                        onChange={(e) => handleFileChange(e, setIncomeTax2024_25File, "pdf")}
+                      />
+                    </label>
+                    <p className="text-xs text-muted-foreground">Allowed: PDF (Max 2MB)</p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium">Assessment Year 2025-26</Label>
+                    <label className="flex flex-col items-center justify-center h-24 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary/5 group">
+                      <Upload className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors" />
+                      <span className="mt-1 text-xs text-muted-foreground group-hover:text-primary">
+                        {incomeTax2025_26File ? `${incomeTax2025_26File.name.slice(0, 15)}...` : "Upload ITR 2025-26"}
+                      </span>
+                      <input
+                        type="file"
+                        accept="application/pdf"
+                        className="hidden"
+                        onChange={(e) => handleFileChange(e, setIncomeTax2025_26File, "pdf")}
+                      />
+                    </label>
+                    <p className="text-xs text-muted-foreground">Allowed: PDF (Max 2MB)</p>
+                  </div>
+                </div>
+              </fieldset>
+
+              {/* J. BUSINESS REGISTRATION CERTIFICATES */}
+              <fieldset className="space-y-4">
+                <legend className="text-lg font-bold text-foreground mb-4">J. Business Registration Certificates</legend>
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Business Registration Certificates (if available)</Label>
+                  <div className="space-y-2">
+                    {["GST Registration", "MSME Udyam Aadhar", "Shop Act (Ghumsta Licence)", "Trade Licence", "Local Gram Panchayat Business Certificate Licence"].map((cert) => (
+                      <label key={cert} className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          name="businessCertificates"
+                          value={cert}
+                          checked={uForm.businessCertificates.includes(cert)}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setUForm((p) => ({ ...p, businessCertificates: [...p.businessCertificates, cert] }));
+                            } else {
+                              setUForm((p) => ({ ...p, businessCertificates: p.businessCertificates.filter((c) => c !== cert) }));
+                            }
+                          }}
+                        />
+                        <span className="text-sm">{cert}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {uForm.businessCertificates.length > 0 && (
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium">Upload Business Certificates</Label>
+                    <label className="flex flex-col items-center justify-center h-24 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary/5 group">
+                      <Upload className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors" />
+                      <span className="mt-1 text-xs text-muted-foreground group-hover:text-primary">
+                        {businessCertificatesFiles.length > 0 ? `${businessCertificatesFiles.length} file(s) uploaded` : "Upload Business Certificates"}
+                      </span>
+                      <input
+                        type="file"
+                        accept="image/*,.pdf"
+                        multiple
+                        className="hidden"
+                        onChange={(e) => {
+                          const files = Array.from(e.target.files || []);
+                          setBusinessCertificatesFiles(files);
+                        }}
+                      />
+                    </label>
+                    <p className="text-xs text-muted-foreground">Allowed: JPG, JPEG, PNG (Max 1MB) or PDF (Max 2MB)</p>
+                  </div>
+                )}
+              </fieldset>
+
+              {/* K. BUYING GOODS */}
+              <fieldset className="space-y-4">
+                <legend className="text-lg font-bold text-foreground mb-4">K. Buying Goods</legend>
+                <div className="space-y-2">
+                  <Label htmlFor="u_isBuyingGoods" className="text-sm font-medium">If Buying Goods</Label>
+                  <select id="u_isBuyingGoods" name="isBuyingGoods" value={uForm.isBuyingGoods} onChange={handleUnifiedChange} className="mt-2 block w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm">
+                    <option value="">Select Option</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                  </select>
+                </div>
+
+                {uForm.isBuyingGoods === "Yes" && (
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium">Upload Proforma Invoice</Label>
+                    <label className="flex flex-col items-center justify-center h-24 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary/5 group">
+                      <Upload className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors" />
+                      <span className="mt-1 text-xs text-muted-foreground group-hover:text-primary">
+                        {proformaInvoiceFile ? `${proformaInvoiceFile.name.slice(0, 15)}...` : "Upload Proforma Invoice"}
+                      </span>
+                      <input
+                        type="file"
+                        accept="application/pdf"
+                        className="hidden"
+                        onChange={(e) => handleFileChange(e, setProformaInvoiceFile, "pdf")}
+                      />
+                    </label>
+                    <p className="text-xs text-muted-foreground">Allowed: PDF (Max 2MB)</p>
+                  </div>
+                )}
+              </fieldset>
+
+              {/* L. CIBIL SCORE */}
+              <fieldset className="space-y-4">
+                <legend className="text-lg font-bold text-foreground mb-4">L. CIBIL Score</legend>
+                <div className="space-y-2">
+                  <Label htmlFor="u_cibilScoreKnown" className="text-sm font-medium">CIBIL Score Known</Label>
+                  <select id="u_cibilScoreKnown" name="cibilScoreKnown" value={uForm.cibilScoreKnown} onChange={handleUnifiedChange} className="mt-2 block w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm">
+                    <option value="">Select Option</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                  </select>
+                </div>
+
+                {uForm.cibilScoreKnown === "Yes" && (
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="u_cibilScore" className="text-sm font-medium">CIBIL Score</Label>
+                      <Input id="u_cibilScore" name="cibilScore" type="number" placeholder="Enter CIBIL Score" value={uForm.cibilScore} onChange={handleUnifiedChange} className="border-gray-300" />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium">Upload CIBIL Report (PDF)</Label>
+                      <label className="flex flex-col items-center justify-center h-24 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary/5 group">
+                        <Upload className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors" />
+                        <span className="mt-1 text-xs text-muted-foreground group-hover:text-primary">
+                          {cibilReportFile ? `${cibilReportFile.name.slice(0, 15)}...` : "Upload CIBIL Report"}
+                        </span>
+                        <input
+                          type="file"
+                          accept="application/pdf"
+                          className="hidden"
+                          onChange={(e) => handleFileChange(e, setCibilReportFile, "pdf")}
+                        />
+                      </label>
+                      <p className="text-xs text-muted-foreground">Allowed: PDF (Max 2MB)</p>
+                    </div>
+                  </div>
+                )}
+              </fieldset>
+
+              {/* M. CONSENT */}
+              <fieldset className="space-y-4">
+                <legend className="text-lg font-bold text-foreground mb-4">M. Consent</legend>
+                <div className="flex items-start gap-3">
+                  <input id="u_consent" type="checkbox" name="consent" checked={uForm.consent} onChange={handleUnifiedChange} className="mt-1" required />
+                  <label htmlFor="u_consent" className="text-sm">I agree to the Terms & Conditions and Privacy Policy.</label>
+                </div>
+              </fieldset>
+            </>
+          )}
         </form>
 
         <div className="sticky bottom-0 border-t bg-card px-6 py-4">
