@@ -363,7 +363,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
     city: "",
     permanentAddress: "",
     residenceType: "",
-    stayingSinceYears: "",
+    stayingSinceDate: "",
     companyName: "",
     organizationType: "",
     industry: "",
@@ -532,26 +532,11 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
         return raw;
       })();
 
-      const normalizedStayingSinceYears = (() => {
-        const raw = String(formDataRest.stayingSinceYears || "").trim();
+      const normalizedStayingSinceDate = (() => {
+        const raw = String(formDataRest.stayingSinceDate || "").trim();
         if (!raw) return "";
 
-        // If UI provides a date (YYYY-MM-DD), convert to years since that date.
-        if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) {
-          const dt = new Date(raw);
-          if (Number.isNaN(dt.getTime())) return "";
-
-          const now = new Date();
-          let years = now.getFullYear() - dt.getFullYear();
-
-          const m = now.getMonth() - dt.getMonth();
-          if (m < 0 || (m === 0 && now.getDate() < dt.getDate())) years -= 1;
-
-          if (years < 0) years = 0;
-          return String(years);
-        }
-
-        // Otherwise, pass through numeric input as-is.
+        // Return date as-is since we're now using date input
         return raw;
       })();
 
@@ -564,8 +549,8 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
           fd.append(k, normalizedSalaryCreditMode);
           return;
         }
-        if (k === "stayingSinceYears") {
-          fd.append(k, normalizedStayingSinceYears);
+        if (k === "stayingSinceDate") {
+          fd.append(k, normalizedStayingSinceDate);
           return;
         }
         fd.append(k, String(v || ""));
@@ -865,8 +850,15 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                     </select>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="s_stayingSinceYears" className="text-sm font-medium">Staying Since (Years)</Label>
-                    <Input id="s_stayingSinceYears" name="stayingSinceYears" type="number" placeholder="Staying Since (Years)" value={sForm.stayingSinceYears} onChange={handleSalariedChange} className="border-gray-300" />
+                    <Label htmlFor="s_stayingSinceDate" className="text-sm font-medium">Staying Since (Date)</Label>
+                    <DateInput
+                      id="s_stayingSinceDate"
+                      name="stayingSinceDate"
+                      label="Staying Since"
+                      value={sForm.stayingSinceDate}
+                      onChange={handleSalariedChange}
+                      required
+                    />
                   </div>
                 </div>
                 {/* Conditional optional residential uploads based on Residence Type */}
