@@ -411,7 +411,6 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
     coApplicantName: "",
     coApplicantRelation: "",
     coApplicantEmploymentType: "",
-    purpose: "",
     isBuyingGoods: "",
     quotationAmount: "",
   });

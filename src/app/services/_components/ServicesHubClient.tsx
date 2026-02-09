@@ -1868,7 +1868,9 @@ export default function ServicesHubClient() {
               {activeGroups.map((group, groupIndex) => (
                 <div key={group.title} className="space-y-6">
                   <div className="flex items-center justify-between">
-                    <div className="w-full py-5 bg-[#F97415] mx-4 rounded-2xl"><h3 className="text-4xl text-center font-bold text-gray-900  text-foreground">{group.title}</h3></div>
+                    <div className="w-full py-5 bg-[#F97415] lg:mx-4 rounded-2xl">
+                      <h3 className="text-2xl lg:text-4xl text-center font-bold text-gray-900  text-foreground">{group.title}</h3>
+                    </div>
                     {/* <Link
                         href="/services/loans"
                         className="text-sm font-medium text-primary hover:text-primary/80 inline-flex items-center gap-1"
@@ -1939,59 +1941,65 @@ export default function ServicesHubClient() {
               ))}
             </div>
           ) : (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {activeCards.map((service, idx) => (
-                <Card
-                  key={service.key}
-                  className={`group relative overflow-hidden border-2 bg-gradient-to-br from-black via-neutral-900 to-neutral-700 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${service.highlight ? "border-primary/30" : "border-transparent"
-                    }`}
-                  style={{ animationDelay: `${idx * 60}ms` }}
-                >
-                  <div className="relative h-48 w-full overflow-hidden">
-                    <Image
-                      src={getCardImageSrc({ service, fallbackCategory: activeCategory })}
-                      alt={service.title}
-                      fill
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                      className="object-cover object-[50%_10%] opacity-80 transition-transform duration-500 group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
-                  </div>
-                  {service.badge && (
-                    <Badge
-                      className={`absolute top-4 right-4 ${service.highlight
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-secondary text-secondary-foreground"
-                        }`}
-                    >
-                      {service.badge}
-                    </Badge>
-                  )}
-                  <CardHeader className="pb-3 pt-5">
-                    <CardTitle className="text-lg font-bold text-white pr-16">{service.title}</CardTitle>
-                    <CardDescription className="text-gray-300 mt-2 line-clamp-2">
-                      {service.description}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex flex-col gap-3">
-                      <ApplyNowCTAButton
-                        loanType={service.title}
-                        loanTypeKey={service.applyHref.split("product=")[1]?.split("&")[0]}
-                        categoryKey={activeCategory}
-                        className="w-full group-hover:shadow-glow-cta"
-                        size="lg"
-                      >
-                        Apply Now
-                        <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                      </ApplyNowCTAButton>
-                      <Button asChild variant="outline" className="w-full text-gray-700 border-white/30 hover:bg-white/10 hover:text-white">
-                        <Link href={service.infoHref} >Learn More</Link>
-                      </Button>
+            <div>
+               <div className="w-full py-5 bg-[#F97415] lg:mx-4 rounded-2xl">
+                      <h3 className="text-2xl lg:text-4xl text-center font-bold text-gray-900  text-foreground">Credits & Cards</h3>
                     </div>
-                  </CardContent>
-                </Card>
-              ))}
+             
+              <div className="grid gap-6 sm:grid-cols-2 mt-5 lg:grid-cols-3 xl:grid-cols-4">
+                {activeCards.map((service, idx) => (
+                  <Card
+                    key={service.key}
+                    className={`group relative overflow-hidden border-2 bg-gradient-to-br from-black via-neutral-900 to-neutral-700 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${service.highlight ? "border-primary/30" : "border-transparent"
+                      }`}
+                    style={{ animationDelay: `${idx * 60}ms` }}
+                  >
+                    <div className="relative h-48 w-full overflow-hidden">
+                      <Image
+                        src={getCardImageSrc({ service, fallbackCategory: activeCategory })}
+                        alt={service.title}
+                        fill
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                        className="object-cover object-[50%_10%] opacity-80 transition-transform duration-500 group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
+                    </div>
+                    {service.badge && (
+                      <Badge
+                        className={`absolute top-4 right-4 ${service.highlight
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-secondary text-secondary-foreground"
+                          }`}
+                      >
+                        {service.badge}
+                      </Badge>
+                    )}
+                    <CardHeader className="pb-3 pt-5">
+                      <CardTitle className="text-lg font-bold text-white pr-16">{service.title}</CardTitle>
+                      <CardDescription className="text-gray-300 mt-2 line-clamp-2">
+                        {service.description}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex flex-col gap-3">
+                        <ApplyNowCTAButton
+                          loanType={service.title}
+                          loanTypeKey={service.applyHref.split("product=")[1]?.split("&")[0]}
+                          categoryKey={activeCategory}
+                          className="w-full group-hover:shadow-glow-cta"
+                          size="lg"
+                        >
+                          Apply Now
+                          <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                        </ApplyNowCTAButton>
+                        <Button asChild variant="outline" className="w-full text-gray-700 border-white/30 hover:bg-white/10 hover:text-white">
+                          <Link href={service.infoHref} >Learn More</Link>
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
             </div>
           )}
         </div>

@@ -12,6 +12,7 @@ import idfcLogo from "./bank logos/idfc-first-bank-logo-png_seeklogo-556504.png"
 import kotakLogo from "./bank logos/kotak-mahindra-bank-logo-png_seeklogo-304220.png";
 import pnbLogo from "./bank logos/punjab-national-bank-pnb-logo-png_seeklogo-386963.png";
 import sbiLogo from "./bank logos/SBI-logo.svg.png";
+import unnamed from "./images/unnamed2.jpeg";
 
 interface Bank {
   name: string;
@@ -29,6 +30,7 @@ const featuredBanks: Bank[] = [
   { name: "IDFC First Bank", logo: idfcLogo },
   { name: "AU Small Finance Bank", logo: auLogo },
   { name: "HSBC Bank", logo: hsbcLogo },
+  { name: "AMBIT Finvest", logo: unnamed }
 ];
 
 export default function BankLogosSlider() {
@@ -65,7 +67,7 @@ export default function BankLogosSlider() {
           </div>
         </div>
 
-        
+
       </div>
 
 
