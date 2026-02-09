@@ -1865,14 +1865,15 @@ export default function ServicesHubClient() {
                         }`}
                         style={{ animationDelay: `${groupIndex * 120 + idx * 50}ms` }}
                       >
-                        <div className="relative h-32 w-full overflow-hidden">
+                        <div className="relative h-48 w-full overflow-hidden">
                           <Image
                             src={getCardImageSrc({ service, fallbackCategory: activeCategory })}
                             alt={service.title}
                             fill={true}
                             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                            className="object-cover object-[30%_23%] opacity-80 transition-transform duration-500 group-hover:scale-105"
+                            className="object-cover object-[50%_5%]  opacity-80 transition-transform duration-500 group-hover:scale-105"
                           />
+                         
                           <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
                         </div>
                         {service.badge && (
@@ -1927,13 +1928,13 @@ export default function ServicesHubClient() {
                   }`}
                   style={{ animationDelay: `${idx * 60}ms` }}
                 >
-                  <div className="relative h-32 w-full overflow-hidden">
+                  <div className="relative h-48 w-full overflow-hidden">
                     <Image
                       src={getCardImageSrc({ service, fallbackCategory: activeCategory })}
                       alt={service.title}
                       fill
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                      className="object-cover object-[50%_15%] opacity-80 transition-transform duration-500 group-hover:scale-105"
+                      className="object-cover object-[50%_10%] opacity-80 transition-transform duration-500 group-hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
                   </div>
@@ -1966,8 +1967,8 @@ export default function ServicesHubClient() {
                         Apply Now
                         <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                       </ApplyNowCTAButton>
-                      <Button asChild variant="outline" className="w-full text-white border-white/30 hover:bg-white/10 hover:text-white">
-                        <Link href={service.infoHref}>Learn More</Link>
+                      <Button asChild variant="outline" className="w-full text-gray-700 border-white/30 hover:bg-white/10 hover:text-white">
+                        <Link href={service.infoHref} >Learn More</Link>
                       </Button>
                     </div>
                   </CardContent>
