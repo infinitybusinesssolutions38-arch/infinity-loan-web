@@ -19,17 +19,17 @@ const SERVICES_DROPDOWN_ITEMS = [
   },
   {
     key: "businesses",
-    title: "Smart Loan & Funding Solutions for All Businesses",
+    title: "Smart Loan & Funding Solutions for All Businesses — Proprietorships, Mid-Sized SMEs, Industrial Enterprises, and Corporates",
     icon: Banknote,
   },
   {
     key: "professionals",
-    title: "Smart Loan & Funding Solutions for All Professionals",
+    title: "Smart Loan & Funding Solutions for All Professionals — Doctors, Chartered Accountants, Architects, Engineers, Lawyers, Consultants, and Self-Employed Professionals",
     icon: Briefcase,
   },
   {
     key: "govt-employees",
-    title: "Smart Loan & Funding Solutions for Central & State Government Employees",
+    title: "Smart Loan & Funding Solutions for Central & State Government Employees — Civil Services, Public Sector Staff, Defence Personnel, and Other Government Employees",
     icon: Building2,
   },
   {
@@ -39,7 +39,7 @@ const SERVICES_DROPDOWN_ITEMS = [
   },
   {
     key: "builders-developers",
-    title: "Smart Loan & Project Funding Solutions for Builders & Developers",
+    title: " Smart Loan & Project Funding Solutions for Builders & Developers",
     icon: Building2,
   },
   {
@@ -96,7 +96,7 @@ const Navbar = () => {
 
               <div className="absolute top-full left-1/2 -translate-x-1/2 pt-4 hidden group-hover:block">
                 <div className="w-[min(720px,calc(100vw-2rem))] rounded-2xl bg-black/95 p-5 shadow-2xl border border-white/10 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 backdrop-blur-lg">
-                  <div className="grid grid-cols-1 gap-2 text-sm normal-case sm:grid-cols-2">
+                  <div className="grid grid-cols-1 gap-2 text-sm normal-case">
                     {SERVICES_DROPDOWN_ITEMS.map((item) => {
                       const Icon = item.icon;
                       return (
@@ -111,7 +111,7 @@ const Navbar = () => {
                       );
                     })}
 
-                    <div className="sm:col-span-2 pt-2">
+                    <div className="pt-2">
                       <Link
                         href="/services"
                         className="inline-flex items-center rounded-lg border border-[#F97415]/30 bg-[#F97415]/10 px-3 py-2 font-semibold text-[#F97415] transition-all duration-200 hover:bg-[#F97415]/15"
