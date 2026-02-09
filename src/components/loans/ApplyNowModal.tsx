@@ -45,6 +45,9 @@ type FormState = {
   passportNumber: string;
   loanType?: string;
   jobBusiness?: string;
+  bankName?: string;
+  limitAmount?: string;
+  cardType?: string;
 };
 
 export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, categoryKey }: ApplyNowModalProps) {
@@ -54,6 +57,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const {
     register,
+    watch,
     handleSubmit: handleNonSalariedSubmit,
     formState: { errors },
     reset,
@@ -86,6 +90,8 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
     },
     mode: "onBlur",
   });
+  // normalize watched form values to strict types
+  const jobBusinessValue: string = String(watch("jobBusiness") || "");
   const [focusedField, setFocusedField] = useState<string | null>(null);
 
   const [aadhaarFront, setAadhaarFront] = useState<File | null>(null);
@@ -1612,9 +1618,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                     <option value="Salaried Employee">Salaried Employee</option>
                     <option value="Self Employed Business">Self Employed Business</option>
                     <option value="Self Employed Professional">Self Employed Professional</option>
-                    <option value="Student">Student</option>
-                    <option value="Retired">Retired</option>
-                    <option value="Homemaker">Homemaker</option>
+                    
                   </select>
                 </div>
               </fieldset>
@@ -1628,68 +1632,87 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
 
               <div className="grid gap-4 sm:grid-cols-3">
                 <div className="space-y-2">
-                  <Label htmlFor="requiredLoanAmount" className="text-sm font-medium">
-                    Required Loan Amount <span className="text-destructive">*</span>
+                  <Label htmlFor="bankName" className="text-sm font-medium">
+                    Bank Name (Credit Card) <span className="text-destructive">*</span>
                   </Label>
                   <Input
-                    id="requiredLoanAmount"
+                    id="bankName"
+                    type="text"
+                    {...register("bankName", {
+                      required: "This field is required",
+                      validate: (v) => validateField("bankName", String(v || "")) || true,
+                    })}
+                    onFocus={() => setFocusedField("bankName")}
+                    onBlur={() => setFocusedField(null)}
+                    className={`transition-all duration-300 ${focusedField === "bankName" ? "ring-2 ring-primary shadow-glow-primary" : ""
+                      } ${errors.bankName ? "border-destructive animate-shake" : ""}`}
+                    placeholder="e.g., HDFC Bank, ICICI Bank"
+                  />
+                  {errors.bankName && (
+                    <p className="text-xs text-destructive animate-fade-in">{String(errors.bankName.message || "")}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="limitAmount" className="text-sm font-medium">
+                    Limit Amount (Credit Card) <span className="text-destructive">*</span>
+                  </Label>
+                  <Input
+                    id="limitAmount"
                     type="number"
                     min={0}
-                    {...register("requiredLoanAmount", {
+                    {...register("limitAmount", {
                       required: "This field is required",
-                      validate: (v) => validateField("requiredLoanAmount", String(v || "")) || true,
+                      validate: (v) => validateField("limitAmount", String(v || "")) || true,
                     })}
-                    onFocus={() => setFocusedField("requiredLoanAmount")}
+                    onFocus={() => setFocusedField("limitAmount")}
                     onBlur={() => setFocusedField(null)}
-                    className={`transition-all duration-300 ${focusedField === "requiredLoanAmount" ? "ring-2 ring-primary shadow-glow-primary" : ""
-                      } ${errors.requiredLoanAmount ? "border-destructive animate-shake" : ""}`}
+                    className={`transition-all duration-300 ${focusedField === "limitAmount" ? "ring-2 ring-primary shadow-glow-primary" : ""
+                      } ${errors.limitAmount ? "border-destructive animate-shake" : ""}`}
                     placeholder="e.g., 500000"
                   />
-                  {errors.requiredLoanAmount && (
-                    <p className="text-xs text-destructive animate-fade-in">{String(errors.requiredLoanAmount.message || "")}</p>
+                  {errors.limitAmount && (
+                    <p className="text-xs text-destructive animate-fade-in">{String(errors.limitAmount.message || "")}</p>
                   )}
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="loanType" className="text-sm font-medium">
-                    Loan Type <span className="text-destructive">*</span>
-                  </Label>
-                  <Input
-                    id="loanType"
-                    type="text"
-                    {...register("loanType", {
-                      required: "This field is required",
-                      validate: (v) => validateField("loanType", String(v || "")) || true,
-                    })}
-                    onFocus={() => setFocusedField("loanType")}
-                    onBlur={() => setFocusedField(null)}
-                    className={`transition-all duration-300 ${focusedField === "loanType" ? "ring-2 ring-primary shadow-glow-primary" : ""
-                      } ${errors.loanType ? "border-destructive animate-shake" : ""}`}
-                    placeholder="e.g., Personal Loan"
-                  />
-                  {errors.loanType && (
-                    <p className="text-xs text-destructive animate-fade-in">{String(errors.loanType.message || "")}</p>
-                  )}
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="residentialStatus" className="text-sm font-medium">
-                    Residential Status <span className="text-destructive">*</span>
+                  <Label htmlFor="cardType" className="text-sm font-medium">
+                    Card Type <span className="text-destructive">*</span>
                   </Label>
                   <select
-                    id="residentialStatus"
-                    {...register("residentialStatus", { required: "This field is required" })}
-                    className={`mt-2 block w-full rounded-md border bg-transparent px-3 py-2 text-sm transition-all duration-200 ${errors.residentialStatus ? "border-destructive" : ""
+                    id="cardType"
+                    {...register("cardType", { required: "This field is required" })}
+                    className={`mt-2 block w-full rounded-md border bg-transparent px-3 py-2 text-sm transition-all duration-200 ${errors.cardType ? "border-destructive" : ""
                       }`}
                   >
-                    <option value="">Select</option>
-                    <option value="Owned">Owned</option>
-                    <option value="Rented">Rented</option>
+                    <option value="">Select Card Type</option>
+                    <option value="Domestic">Domestic</option>
+                    <option value="International">International</option>
                   </select>
-                  {errors.residentialStatus && (
-                    <p className="text-xs text-destructive animate-fade-in">{String(errors.residentialStatus.message || "")}</p>
+                  {errors.cardType && (
+                    <p className="text-xs text-destructive animate-fade-in">{String(errors.cardType.message || "")}</p>
                   )}
                 </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="residentialStatus" className="text-sm font-medium">
+                  Residential Status <span className="text-destructive">*</span>
+                </Label>
+                <select
+                  id="residentialStatus"
+                  {...register("residentialStatus", { required: "This field is required" })}
+                  className={`mt-2 block w-full rounded-md border bg-transparent px-3 py-2 text-sm transition-all duration-200 ${errors.residentialStatus ? "border-destructive" : ""
+                    }`}
+                >
+                  <option value="">Select</option>
+                  <option value="Owned">Owned</option>
+                  <option value="Rented">Rented</option>
+                </select>
+                {errors.residentialStatus && (
+                  <p className="text-xs text-destructive animate-fade-in">{String(errors.residentialStatus.message || "")}</p>
+                )}
               </div>
 
               <div className="grid gap-4 sm:grid-cols-2">
@@ -1717,31 +1740,104 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                   )}
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="yearsAtCurrentBusinessAddress" className="text-sm font-medium">
-                    Years at Current Business Address <span className="text-destructive">*</span>
-                  </Label>
-                  <Input
-                    id="yearsAtCurrentBusinessAddress"
-                    type="number"
-                    min={0}
-                    max={99}
-                    {...register("yearsAtCurrentBusinessAddress", {
-                      required: "This field is required",
-                      validate: (v) => validateField("yearsAtCurrentBusinessAddress", String(v || "")) || true,
-                    })}
-                    onFocus={() => setFocusedField("yearsAtCurrentBusinessAddress")}
-                    onBlur={() => setFocusedField(null)}
-                    className={`transition-all duration-300 ${focusedField === "yearsAtCurrentBusinessAddress" ? "ring-2 ring-primary shadow-glow-primary" : ""
-                      } ${errors.yearsAtCurrentBusinessAddress ? "border-destructive animate-shake" : ""}`}
-                    placeholder="e.g., 5"
-                  />
-                  {errors.yearsAtCurrentBusinessAddress && (
-                    <p className="text-xs text-destructive animate-fade-in">{String(errors.yearsAtCurrentBusinessAddress.message || "")}</p>
-                  )}
-                </div>
+                {/* Show Business Address Years only for employed individuals */}
+                {jobBusinessValue && (
+                  <div className="space-y-2">
+                    <Label htmlFor="yearsAtCurrentBusinessAddress" className="text-sm font-medium">
+                      Years at Current Business Address <span className="text-destructive">*</span>
+                    </Label>
+                    <Input
+                      id="yearsAtCurrentBusinessAddress"
+                      type="number"
+                      min={0}
+                      max={99}
+                      {...register("yearsAtCurrentBusinessAddress", {
+                        required: "This field is required",
+                        validate: (v) => validateField("yearsAtCurrentBusinessAddress", String(v || "")) || true,
+                      })}
+                      onFocus={() => setFocusedField("yearsAtCurrentBusinessAddress")}
+                      onBlur={() => setFocusedField(null)}
+                      className={`transition-all duration-300 ${focusedField === "yearsAtCurrentBusinessAddress" ? "ring-2 ring-primary shadow-glow-primary" : ""
+                        } ${errors.yearsAtCurrentBusinessAddress ? "border-destructive animate-shake" : ""}`}
+                      placeholder="e.g., 5"
+                    />
+                    {errors.yearsAtCurrentBusinessAddress && (
+                      <p className="text-xs text-destructive animate-fade-in">{String(errors.yearsAtCurrentBusinessAddress.message || "")}</p>
+                    )}
+                  </div>
+                )}
               </div>
             </fieldset>
+
+            {/* Show Office/Shop Address only for employed individuals */}
+            {jobBusinessValue && (
+              <fieldset className="space-y-4">
+                <legend className="flex items-center gap-2 text-lg font-bold text-foreground mb-4">
+                  <MapPin className="h-5 w-5 text-primary" />
+                  Office/Shop Address Details
+                </legend>
+                <div className="space-y-4">
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label htmlFor="currentOfficeAddress" className="text-sm font-medium">
+                        Current Office / Shop Address <span className="text-destructive">*</span>
+                      </Label>
+                      <Input
+                        id="currentOfficeAddress"
+                        {...register("currentOfficeAddress", { required: "This field is required" })}
+                        onFocus={() => setFocusedField("currentOfficeAddress")}
+                        onBlur={() => setFocusedField(null)}
+                        className={`transition-all duration-300 ${focusedField === "currentOfficeAddress" ? "ring-2 ring-primary shadow-glow-primary" : ""
+                          } ${errors.currentOfficeAddress ? "border-destructive animate-shake" : ""}`}
+                        placeholder="Office/Shop, Street, Area, City, State"
+                      />
+                      {errors.currentOfficeAddress && (
+                        <p className="text-xs text-destructive animate-fade-in">{String(errors.currentOfficeAddress.message || "")}</p>
+                      )}
+                    </div>
+
+                    <div className="w-full sm:w-1/3">
+                      <Label htmlFor="currentOfficePincode" className="text-sm font-medium">
+                        Current Office / Shop Address PIN Code <span className="text-destructive">*</span>
+                      </Label>
+                      <Input
+                        id="currentOfficePincode"
+                        maxLength={6}
+                        {...register("currentOfficePincode", {
+                          required: "This field is required",
+                          validate: (v) => validateField("currentOfficePincode", String(v || "")) || true,
+                        })}
+                        onFocus={() => setFocusedField("currentOfficePincode")}
+                        onBlur={() => setFocusedField(null)}
+                        className={`mt-2 transition-all duration-300 ${focusedField === "currentOfficePincode" ? "ring-2 ring-primary shadow-glow-primary" : ""
+                          } ${errors.currentOfficePincode ? "border-destructive animate-shake" : ""}`}
+                        placeholder="400001"
+                      />
+                      {errors.currentOfficePincode && (
+                        <p className="text-xs text-destructive animate-fade-in">{String(errors.currentOfficePincode.message || "")}</p>
+                      )}
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="rentAgreementShop" className="text-sm font-medium">Upload Rent Agreement (Office / Shop)</Label>
+                      <label className="flex flex-col items-center justify-center h-24 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary/5 group">
+                        <Upload className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors" />
+                        <span className="mt-1 text-xs text-muted-foreground group-hover:text-primary">
+                          {rentAgreementShop ? `${rentAgreementShop.name.slice(0, 20)}...` : "Upload (Image JPG/PNG max 2MB or PDF max 10MB)"}
+                        </span>
+                        <input
+                          id="rentAgreementShop"
+                          type="file"
+                          accept="image/*,.pdf"
+                          className="hidden"
+                          onChange={(e) => handleFileChange(e, setRentAgreementShop, "auto")}
+                        />
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </fieldset>
+            )}
 
             <fieldset className="space-y-4">
               <legend className="flex items-center gap-2 text-lg font-bold text-foreground mb-4">
