@@ -221,19 +221,19 @@ const CATEGORY_META: Array<{
     },
     {
       key: "businesses",
-      title: "Smart Loan & Funding Solutions for All Businesses",
+      title: "Smart Loan & Funding Solutions for All Businesses — Proprietorships, Mid-Sized SMEs, Industrial Enterprises, and Corporates",
       icon: Banknote,
       gradient: "bg-gradient-loans",
     },
     {
       key: "professionals",
-      title: "Smart Loan & Funding Solutions for All Professionals",
+      title: "Smart Loan & Funding Solutions for All Professionals — Doctors, Chartered Accountants, Architects, Engineers, Lawyers, Consultants, and Self-Employed Professionals",
       icon: Briefcase,
       gradient: "bg-gradient-loans",
     },
     {
       key: "govt-employees",
-      title: "Smart Loan & Funding Solutions for Central & State Government Employees",
+      title: "Smart Loan & Funding Solutions for Central & State Government Employees — Civil Services, Public Sector Staff, Defence Personnel, and Other Government Employees",
       icon: Building2,
       gradient: "bg-gradient-government",
     },
@@ -894,7 +894,7 @@ const SALARIED_EMPLOYEE_LOAN_OFFERS: ServiceGroup = {
 };
 
 const BUSINESS_LOAN_SERVICES: ServiceGroup = {
-  title: "Smart Loan & Funding Solutions for All Businesses",
+  title: "Smart Loan & Funding Solutions for All Businesses — Proprietorships, Mid-Sized SMEs, Industrial Enterprises, and Corporates",
   items: [
     {
       key: "business-audience",
@@ -1126,7 +1126,7 @@ const BUSINESS_LOAN_SERVICES: ServiceGroup = {
 };
 
 const PROFESSIONAL_LOAN_SERVICES: ServiceGroup = {
-  title: "Smart Loan & Funding Solutions for All Professionals",
+  title: "Smart Loan & Funding Solutions for All Professionals — Doctors, Chartered Accountants, Architects, Engineers, Lawyers, Consultants, and Self-Employed Professionals",
   items: [
     {
       key: "professional-audience",
@@ -1281,7 +1281,7 @@ const PROFESSIONAL_LOAN_SERVICES: ServiceGroup = {
 };
 
 const GOVT_EMPLOYEE_LOAN_SERVICES: ServiceGroup = {
-  title: "Smart Loan & Funding Solutions for Central & State Government Employees",
+  title: "Smart Loan & Funding Solutions for Central & State Government Employees — Civil Services, Public Sector Staff, Defence Personnel, and Other Government Employees",
   items: [
     {
       key: "govt-employee-audience",
@@ -2025,7 +2025,7 @@ export default function ServicesHubClient() {
               {
                 icon: Clock,
                 title: "Quick Approvals",
-                description: "Get loan approvals in as little as 24 hours with minimal documentation",
+                description: "Get loan approvals in as little as 48 hours with minimal documentation",
               },
               {
                 icon: CheckCircle2,
@@ -2065,7 +2065,7 @@ export default function ServicesHubClient() {
                 Ready to Get Started?
               </h2>
               <p className="mt-4 text-lg text-primary-foreground/80 max-w-2xl mx-auto">
-                Apply now and get a decision within 24 hours. No hidden fees, no surprises.
+                Apply now and get a decision within 48 hours. No hidden fees, no surprises.
               </p>
               <div className="mt-8 flex flex-wrap justify-center gap-4">
                 <ApplyNowCTAButton loanType="Loan" className="shadow-2xl" size="xl">
