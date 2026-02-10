@@ -89,6 +89,7 @@ const SalariedLoanSchema = new mongoose.Schema(
     // Credit information
     hasCibil: { type: String, enum: ["Yes", "No"], required: false },
     cibilScore: { type: String, required: false },
+    cibilIssues: { type: String, required: false },
 
     // Loan request
     requiredLoanAmount: { type: String, required: true },

@@ -86,6 +86,7 @@ const BorrowerPersonalSchema = new mongoose.Schema(
         isBuyingGoods: { type: String, required: false },
         cibilScoreKnown: { type: String, required: false },
         cibilScore: { type: String, required: false },
+        cibilIssues: { type: String, required: false },
         consent: { type: String, required: false },
 
         // Meta
