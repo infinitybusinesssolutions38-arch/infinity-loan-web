@@ -9,6 +9,7 @@ import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import ApplyNowCTAButton from "@/components/loans/ApplyNowCTAButton";
 
 type PrivateApplyFormValues = {
   firstName: string;
@@ -227,13 +228,13 @@ export default function PrivateInstitutionalHighlight() {
                     >
                       Explore Our Loan  Services
                     </a>
-                    <button
-                      type="button"
-                      onClick={() => setIsApplyOpen(true)}
+                    <ApplyNowCTAButton 
+                      loanType="Private & Institutional Lending" 
+                      redirectToUnifiedForm={true}
                       className="inline-flex h-11 items-center justify-center rounded-xl bg-[#F97415] px-5 text-sm font-semibold text-white transition hover:bg-[#F97415]/90"
                     >
                       Apply Now
-                    </button>
+                    </ApplyNowCTAButton>
                   </div>
                 </div>
               </div>

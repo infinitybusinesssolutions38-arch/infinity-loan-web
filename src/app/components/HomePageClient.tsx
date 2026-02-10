@@ -915,24 +915,6 @@ export default function HomePageClient() {
                         <CardHeader className="pb-3">
                           <CardTitle className="text-xl font-bold text-white pr-16">{service.title}</CardTitle>
                           <CardDescription className="text-white/70 mt-2 line-clamp-2">
-                            {service.description}
-                          </CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                          <div className="flex flex-col gap-3">
-                            <ApplyNowCTAButton
-                              loanType={service.title}
-                              className="w-full group-hover:shadow-glow-cta"
-                              size="lg"
-                            >
-                              Apply Now
-                              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                            </ApplyNowCTAButton>
-                            <Button asChild variant="outline" className="w-full">
-                              <Link href={service.infoHref}>Learn More</Link>
-                            </Button>
-                          </div>
-                        </CardContent>
                       </Card>
                     ))}
                   </div>
@@ -992,7 +974,12 @@ export default function HomePageClient() {
                     </CardHeader>
                     <CardContent>
                       <div className="flex flex-col gap-3">
-                        <ApplyNowCTAButton loanType={service.title} className="w-full group-hover:shadow-glow-cta" size="lg">
+                        <ApplyNowCTAButton 
+                          loanType={service.title} 
+                          redirectToUnifiedForm={true}
+                          className="w-full group-hover:shadow-glow-cta"
+                          size="lg"
+                        >
                           Apply Now
                           <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                         </ApplyNowCTAButton>
@@ -1263,7 +1250,7 @@ export default function HomePageClient() {
                 Apply now and get a decision within 48 hours. No hidden fees, no surprises.
               </p>
               <div className="mt-8 flex flex-wrap justify-center gap-4">
-                <ApplyNowCTAButton loanType="Loan" className="shadow-2xl" size="xl">
+                <ApplyNowCTAButton loanType="Loan" redirectToUnifiedForm={true} className="shadow-2xl" size="xl">
                   Apply Now
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </ApplyNowCTAButton>

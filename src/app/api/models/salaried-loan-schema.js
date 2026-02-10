@@ -54,7 +54,7 @@ const SalariedLoanSchema = new mongoose.Schema(
     designation: { type: String, required: true },
     employmentType: {
         type: String,
-        enum: ["Permanent", "Contract", "Temporary"],
+        enum: ["Permanent", "Contract", "Temporary", "Probation", "PartTime"],
         required: true
     },
     dateOfJoining: { type: String, required: true },

@@ -1868,16 +1868,9 @@ export default function ServicesHubClient() {
               {activeGroups.map((group, groupIndex) => (
                 <div key={group.title} className="space-y-6">
                   <div className="flex items-center justify-between">
-
-                    <div className="w-full lg:mx-4 rounded-3xl bg-white px-4 py-6 sm:px-6 sm:py-8 shadow-lg border-t-4" style={{ borderTopColor: '#F97415' }}>
-                      <div className="flex items-center justify-center gap-3 mb-3">
-                        <div className="h-1 w-8" style={{ backgroundColor: '#F97415' }}></div>
-                        <div className="h-1 w-8" style={{ backgroundColor: '#F97415', opacity: 0.5 }}></div>
-                      </div>
-                      <h3 className="text-center text-xl sm:text-2xl lg:text-4xl font-bold tracking-tight text-slate-900">{group.title}</h3>
+                    <div className="w-full py-5 bg-[#F97415] lg:mx-4 rounded-2xl">
+                      <h3 className="text-2xl lg:text-4xl text-center font-bold text-gray-900  text-foreground">{group.title}</h3>
                     </div>
-
-
                     {/* <Link
                         href="/services/loans"
                         className="text-sm font-medium text-primary hover:text-primary/80 inline-flex items-center gap-1"
@@ -1949,15 +1942,10 @@ export default function ServicesHubClient() {
             </div>
           ) : (
             <div>
-
-              <div className="w-full lg:mx-4 rounded-3xl bg-white px-4 py-6 sm:px-6 sm:py-8 shadow-lg border-t-4" style={{ borderTopColor: '#F97415' }}>
-                <div className="flex items-center justify-center gap-3 mb-3">
-                  <div className="h-1 w-8" style={{ backgroundColor: '#F97415' }}></div>
-                  <div className="h-1 w-8" style={{ backgroundColor: '#F97415', opacity: 0.5 }}></div>
-                </div>
-                <h3 className="text-center text-xl sm:text-2xl lg:text-4xl font-bold tracking-tight text-slate-900">Credits & Cards</h3>
-              </div>
-
+               <div className="w-full py-5 bg-[#F97415] lg:mx-4 rounded-2xl">
+                      <h3 className="text-2xl lg:text-4xl text-center font-bold text-gray-900  text-foreground">Credits & Cards</h3>
+                    </div>
+             
               <div className="grid gap-6 sm:grid-cols-2 mt-5 lg:grid-cols-3 xl:grid-cols-4">
                 {activeCards.map((service, idx) => (
                   <Card
