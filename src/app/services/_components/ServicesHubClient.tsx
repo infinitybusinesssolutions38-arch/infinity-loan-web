@@ -114,7 +114,7 @@ const BUSINESS_KEY_TO_FILE_NAME: Record<string, string> = {
   "business-invoice-bill-discounting": "invoice.png",
   "business-import-finance-loan": "import_finance.png",
   "business-export-finance-loan": "export_finance.png",
-  "business-corporate-term-loan": "Corporate_Term .png",
+  "business-corporate-term-loan": "Corporate_Term.png",
   "business-project-finance": "project_finance.png",
   "business-structured-corporate-finance": "structured_corporate.png",
   "business-syndicated-loan": "Syndicated.png",
