@@ -314,7 +314,9 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
     e: React.ChangeEvent<HTMLInputElement>,
     setter: React.Dispatch<React.SetStateAction<File | null>>,
     type: "image" | "pdf" | "auto" = "auto",
-    errSetter?: React.Dispatch<React.SetStateAction<string | null>>
+    errSetter?: React.Dispatch<React.SetStateAction<string | null>>,
+    formFieldName?: string,
+    additionalFormFields?: string[]
   ) => {
     const file = e.target.files?.[0];
     if (!file) {
@@ -369,6 +371,20 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
     // success
     if (errSetter) errSetter(null);
     setter(file);
+    
+    // Also update uForm state if formFieldName is provided (for unified form validation)
+    if (formFieldName && isUnifiedForm) {
+      const updates: Record<string, string> = { [formFieldName]: file.name };
+      
+      // Add additional form fields if provided
+      if (additionalFormFields) {
+        additionalFormFields.forEach(field => {
+          updates[field] = file.name;
+        });
+      }
+      
+      setUForm(prev => ({ ...prev, ...updates }));
+    }
   };
 
   const isSalaried =
@@ -467,7 +483,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
     drivingLicense: "",
     aadhaarCardType: "",
     panCardType: "",
-    homeElectricityBill: "",
+    residentialBill: "",
     officeElectricityBill: "",
     bankStatementType: [],
     bankStatementDetails: [],
@@ -511,7 +527,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
       "residentialPincode", "residentialState", "residentialCity", "currentOfficeAddress",
       "officePincode", "officeState", "officeCity", "requiredLoanAmount", "loanType",
       "gender", "maritalStatus", "dob", "personalEmail", "aadhaarCardType", "panCardType",
-      "homeElectricityBill", "officeElectricityBill", "consent"
+      "residentialBill", "officeElectricityBill", "consent"
     ];
 
     for (const field of requiredFields) {
@@ -526,8 +542,10 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
     try {
       const formData = new globalThis.FormData();
       
-      // Add all form fields
+      // Add all form fields except loanType (will be set separately)
       Object.entries(uForm).forEach(([key, value]) => {
+        if (key === "loanType") return; // Skip loanType as it will be set separately
+        
         if (Array.isArray(value)) {
           formData.append(key, JSON.stringify(value));
         } else if (typeof value === "boolean") {
@@ -2136,7 +2154,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                       type="file"
                       accept="image/*,.pdf"
                       className="hidden"
-                      onChange={(e) => handleFileChange(e, setAadhaarFront, "auto", setAadhaarFrontError)}
+                      onChange={(e) => handleFileChange(e, setAadhaarFront, "auto", setAadhaarFrontError, "aadhaarCardType")}
                     />
                   </label>
                   <p className="text-xs text-muted-foreground">Allowed: JPG, JPEG, PNG (Max 1MB) or PDF (Max 2MB)</p>
@@ -2154,7 +2172,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                       type="file"
                       accept="image/*,.pdf"
                       className="hidden"
-                      onChange={(e) => handleFileChange(e, setAadhaarBack, "auto", setAadhaarBackError)}
+                      onChange={(e) => handleFileChange(e, setAadhaarBack, "auto", setAadhaarBackError, "aadhaarCardType")}
                     />
                   </label>
                   <p className="text-xs text-muted-foreground">Allowed: JPG, JPEG, PNG (Max 1MB) or PDF (Max 2MB)</p>
@@ -2172,7 +2190,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                       type="file"
                       accept="image/*,.pdf"
                       className="hidden"
-                      onChange={(e) => handleFileChange(e, setPanFront, "auto", setPanFrontError)}
+                      onChange={(e) => handleFileChange(e, setPanFront, "auto", setPanFrontError, "panCardType")}
                     />
                   </label>
                   <p className="text-xs text-muted-foreground">Allowed: JPG, JPEG, PNG (Max 1MB) or PDF (Max 2MB)</p>
@@ -2190,7 +2208,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                       type="file"
                       accept="image/*,.pdf"
                       className="hidden"
-                      onChange={(e) => handleFileChange(e, setResidentialBill, "auto", setResidentialBillError)}
+                      onChange={(e) => handleFileChange(e, setResidentialBill, "auto", setResidentialBillError, "residentialBill")}
                     />
                   </label>
                   <p className="text-xs text-muted-foreground">Allowed: JPG, JPEG, PNG (Max 1MB) or PDF (Max 2MB)</p>
@@ -2208,7 +2226,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                       type="file"
                       accept="image/*,.pdf"
                       className="hidden"
-                      onChange={(e) => handleFileChange(e, setShopBill, "auto", setShopBillError)}
+                      onChange={(e) => handleFileChange(e, setShopBill, "auto", setShopBillError, "residentialBill", ["officeElectricityBill"])}
                     />
                   </label>
                   <p className="text-xs text-muted-foreground">Allowed: JPG, JPEG, PNG (Max 1MB) or PDF (Max 2MB)</p>
@@ -2403,7 +2421,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                         type="file"
                         accept="image/*,.pdf"
                         className="hidden"
-                        onChange={(e) => handleFileChange(e, setAadhaarFront, "auto", setAadhaarFrontError)}
+                        onChange={(e) => handleFileChange(e, setAadhaarFront, "auto", setAadhaarFrontError, "aadhaarCardType")}
                       />
                     </label>
                     <p className="text-xs text-muted-foreground">Allowed: JPG, JPEG, PNG (Max 2MB) or PDF (Max 10MB)</p>
@@ -2421,7 +2439,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                         type="file"
                         accept="image/*,.pdf"
                         className="hidden"
-                        onChange={(e) => handleFileChange(e, setAadhaarBack, "auto", setAadhaarBackError)}
+                        onChange={(e) => handleFileChange(e, setAadhaarBack, "auto", setAadhaarBackError, "aadhaarCardType")}
                       />
                     </label>
                     <p className="text-xs text-muted-foreground">Allowed: JPG, JPEG, PNG (Max 2MB) or PDF (Max 10MB)</p>
@@ -2439,7 +2457,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                         type="file"
                         accept="image/*,.pdf"
                         className="hidden"
-                        onChange={(e) => handleFileChange(e, setPanFront, "auto", setPanFrontError)}
+                        onChange={(e) => handleFileChange(e, setPanFront, "auto", setPanFrontError, "panCardType")}
                       />
                     </label>
                     <p className="text-xs text-muted-foreground">Allowed: JPG, JPEG, PNG (Max 2MB) or PDF (Max 10MB)</p>
@@ -2457,7 +2475,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                         type="file"
                         accept="image/*"
                         className="hidden"
-                        onChange={(e) => handleFileChange(e, setApplicantPhotoFile, "image")}
+                        onChange={(e) => handleFileChange(e, setApplicantPhotoFile, "image", undefined, "applicantPhoto")}
                       />
                     </label>
                     <p className="text-xs text-muted-foreground">Allowed: JPG, JPEG, PNG (Max 2MB)</p>
@@ -2480,7 +2498,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                         type="file"
                         accept="image/*,.pdf"
                         className="hidden"
-                        onChange={(e) => handleFileChange(e, setResidentialBill, "auto", setResidentialBillError)}
+                        onChange={(e) => handleFileChange(e, setResidentialBill, "auto", setResidentialBillError, "residentialBill")}
                       />
                     </label>
                     <p className="text-xs text-muted-foreground">Allowed: JPG, JPEG, PNG (Max 1MB) or PDF (Max 2MB)</p>
@@ -2498,7 +2516,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                         type="file"
                         accept="image/*,.pdf"
                         className="hidden"
-                        onChange={(e) => handleFileChange(e, setShopBill, "auto", setShopBillError)}
+                        onChange={(e) => handleFileChange(e, setShopBill, "auto", setShopBillError, "residentialBill", ["officeElectricityBill"])}
                       />
                     </label>
                     <p className="text-xs text-muted-foreground">Allowed: JPG, JPEG, PNG (Max 1MB) or PDF (Max 2MB)</p>
@@ -2785,7 +2803,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                         type="file"
                         accept="application/pdf"
                         className="hidden"
-                        onChange={(e) => handleFileChange(e, setIncomeTax2023_24File, "pdf")}
+                        onChange={(e) => handleFileChange(e, setIncomeTax2023_24File, "pdf", undefined, "incomeTax2023_24")}
                       />
                     </label>
                     <p className="text-xs text-muted-foreground">Allowed: PDF (Max 2MB)</p>
@@ -2802,7 +2820,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                         type="file"
                         accept="application/pdf"
                         className="hidden"
-                        onChange={(e) => handleFileChange(e, setIncomeTax2024_25File, "pdf")}
+                        onChange={(e) => handleFileChange(e, setIncomeTax2024_25File, "pdf", undefined, "incomeTax2024_25")}
                       />
                     </label>
                     <p className="text-xs text-muted-foreground">Allowed: PDF (Max 2MB)</p>
@@ -2819,7 +2837,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                         type="file"
                         accept="application/pdf"
                         className="hidden"
-                        onChange={(e) => handleFileChange(e, setIncomeTax2025_26File, "pdf")}
+                        onChange={(e) => handleFileChange(e, setIncomeTax2025_26File, "pdf", undefined, "incomeTax2025_26")}
                       />
                     </label>
                     <p className="text-xs text-muted-foreground">Allowed: PDF (Max 2MB)</p>
@@ -2945,7 +2963,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                           type="file"
                           accept="application/pdf"
                           className="hidden"
-                          onChange={(e) => handleFileChange(e, setProformaInvoiceFile, "pdf")}
+                          onChange={(e) => handleFileChange(e, setProformaInvoiceFile, "pdf", undefined, "proformaInvoice")}
                         />
                       </label>
                       <p className="text-xs text-muted-foreground">Allowed: PDF (Max 10MB)</p>
@@ -2989,7 +3007,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                           type="file"
                           accept="application/pdf"
                           className="hidden"
-                          onChange={(e) => handleFileChange(e, setCibilReportFile, "pdf")}
+                          onChange={(e) => handleFileChange(e, setCibilReportFile, "pdf", undefined, "cibilReport")}
                         />
                       </label>
                       <p className="text-xs text-muted-foreground">Allowed: PDF (Max 2MB)</p>

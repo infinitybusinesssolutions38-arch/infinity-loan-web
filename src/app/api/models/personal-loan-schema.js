@@ -14,6 +14,7 @@ const BorrowerPersonalSchema = new mongoose.Schema(
         whatsappNumber: { type: String, required: false },
         alternateMobile: { type: String, required: false },
         personalEmail: { type: String, required: true, unique: true, sparse: true },
+        officialEmail: { type: String, required: false },
         businessEmail: { type: String, required: false },
 
         // Identity
@@ -22,12 +23,21 @@ const BorrowerPersonalSchema = new mongoose.Schema(
         voterIdNumber: { type: String, required: false },
         drivingLicense: { type: String, required: false },
         passportNumber: { type: String, required: false },
+        
+        // Additional Personal Details
+        gender: { type: String, required: false },
+        maritalStatus: { type: String, required: false },
+        dob: { type: String, required: false },
 
         // Address
         currentResidentialAddress: { type: String, required: true },
         currentResidentialPincode: { type: String, required: true },
+        residentialState: { type: String, required: false },
+        residentialCity: { type: String, required: false },
         currentOfficeAddress: { type: String, required: true },
         currentOfficePincode: { type: String, required: true },
+        officeState: { type: String, required: false },
+        officeCity: { type: String, required: false },
 
         // Property Status
         residentialStatus: {
@@ -49,11 +59,34 @@ const BorrowerPersonalSchema = new mongoose.Schema(
         requiredLoanAmount: { type: String, required: true },
 
         // Documents
-        aadhaarFront: { type: String, required: true },
-        aadhaarBack: { type: String, required: true },
-        panCardFront: { type: String, required: true },
-        residentialElectricityBillUrl: { type: String, required: true },
-        shopElectricityBillUrl: { type: String, required: true },
+        aadhaarFront: { type: String, required: false },
+        aadhaarBack: { type: String, required: false },
+        panCardFront: { type: String, required: false },
+        residentialElectricityBillUrl: { type: String, required: false },
+        shopElectricityBillUrl: { type: String, required: false },
+        
+        // Additional Documents for Unified Form
+        bankStatementFileUrl: { type: String, required: false },
+        incomeTax2023_24FileUrl: { type: String, required: false },
+        incomeTax2024_25FileUrl: { type: String, required: false },
+        incomeTax2025_26FileUrl: { type: String, required: false },
+        proformaInvoiceFileUrl: { type: String, required: false },
+        cibilReportFileUrl: { type: String, required: false },
+        businessCertificatesFiles: [{ type: String }],
+        existingLoanStatementFiles: [{ type: String }],
+        
+        // Additional Unified Form Fields
+        loanTypeText: { type: String, required: false },
+        bankStatementType: [{ type: String }],
+        existingLoansCount: { type: String, required: false },
+        totalLoanAmount: { type: String, required: false },
+        totalMonthlyEmi: { type: String, required: false },
+        emiDelayPast3Months: { type: String, required: false },
+        businessCertificates: [{ type: String }],
+        isBuyingGoods: { type: String, required: false },
+        cibilScoreKnown: { type: String, required: false },
+        cibilScore: { type: String, required: false },
+        consent: { type: String, required: false },
 
         // Meta
         loan_type: { type: String, required: true },
@@ -68,7 +101,7 @@ const BorrowerPersonalSchema = new mongoose.Schema(
         role: {
             type: String,
             default: "borrower-personal",
-            enum: ["borrower-personal"],
+            enum: ["borrower-personal", "borrower-unified"],
         },
     },
     { timestamps: true }
