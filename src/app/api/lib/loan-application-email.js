@@ -38,7 +38,11 @@ export const sendLoanApplicationConfirmationEmail = async (
       applicationNumber,
       applicationDate,
       loanType,
+      originalLoanType,
       loanAmount,
+      bankName,
+      limitAmount,
+      cardType,
     } = applicationData;
 
     const htmlContent = `
@@ -75,7 +79,9 @@ export const sendLoanApplicationConfirmationEmail = async (
           .office-box p { margin: 8px 0; font-size: 14px; }
           .disclaimer { font-size: 12px; color: #6c757d; margin-top: 25px; padding: 20px; background: #f8f9fa; border-radius: 8px; border: 1px solid #e9ecef; }
           .application-number { background: #F97415; color: white; padding: 8px 16px; border-radius: 20px; font-weight: 600; display: inline-block; margin: 10px 0; }
-          .loan-type-badge { background: #28a745; color: white; padding: 6px 12px; border-radius: 15px; font-size: 14px; font-weight: 500; display: inline-block; margin: 5px 0; }
+          .loan-type-badge { background: #28a745; color: white; padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 600; display: inline-block; margin: 5px 0; }
+          .amount-highlight { background: linear-gradient(135deg, #007bff 0%, #0056b3 100%); color: white; padding: 12px 20px; border-radius: 25px; font-size: 16px; font-weight: 700; display: inline-block; margin: 10px 0; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+          .business-header { background: linear-gradient(135deg, #28a745 0%, #20c997 100%); }
         </style>
       </head>
       <body>
@@ -99,9 +105,20 @@ export const sendLoanApplicationConfirmationEmail = async (
                 <p><strong>Application Date:</strong> {{APPLICATION_DATE}}</p>
                 <p><strong>Loan Product:</strong> <span class="loan-type-badge">{{LOAN_TYPE}}</span></p>
                 <p><strong>Applicant Name:</strong> {{CUSTOMER_NAME}}</p>
-                <p><strong>Requested Amount:</strong> {{LOAN_AMOUNT}}</p>
+                <p><strong>Requested Amount:</strong> <span class="amount-highlight">{{LOAN_AMOUNT}}</span></p>
               </div>
             </div>
+
+            ${originalLoanType === 'credit-card' ? `
+            <div class="section">
+              <div class="section-title">💳 Credit Card Details</div>
+              <div class="details-box">
+                <p><strong>Bank Name:</strong> {{BANK_NAME}}</p>
+                <p><strong>Limit Amount:</strong> {{LIMIT_AMOUNT}}</p>
+                <p><strong>Card Type:</strong> {{CARD_TYPE}}</p>
+              </div>
+            </div>
+            ` : ''}
             </div>
             <p><em>Kindly quote the above Application Number in all future communications for faster assistance and effective tracking.</em></p>
           </div>
@@ -237,7 +254,11 @@ export const sendLoanApplicationConfirmationEmail = async (
       .replace(/{{APPLICATION_NUMBER}}/g, applicationNumber)
       .replace(/{{APPLICATION_DATE}}/g, applicationDate)
       .replace(/{{LOAN_TYPE}}/g, loanTypeName)
-      .replace(/{{LOAN_TYPE_NAME}}/g, loanTypeName);
+      .replace(/{{LOAN_TYPE_NAME}}/g, loanTypeName)
+      .replace(/{{LOAN_AMOUNT}}/g, loanAmount || "Not specified")
+      .replace(/{{BANK_NAME}}/g, bankName || "Not specified")
+      .replace(/{{LIMIT_AMOUNT}}/g, limitAmount || "Not specified")
+      .replace(/{{CARD_TYPE}}/g, cardType || "Not specified");
 
     await transporter.sendMail({
       from: process.env.EMAIL_FROM,
