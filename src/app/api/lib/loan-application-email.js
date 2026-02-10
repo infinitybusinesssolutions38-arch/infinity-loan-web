@@ -47,50 +47,61 @@ export const sendLoanApplicationConfirmationEmail = async (
       <head>
         <meta charset="UTF-8">
         <style>
-          body { font-family: Arial, sans-serif; color: #333; line-height: 1.6; }
-          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-          .header { background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); padding: 30px; border-radius: 10px; color: white; margin-bottom: 30px; }
-          .header h1 { margin: 0; color: #F97415; font-size: 24px; }
-          .header p { margin: 10px 0 0 0; color: #e0e0e0; }
-          .section { margin: 25px 0; }
-          .section-title { color: #F97415; font-weight: bold; margin-bottom: 15px; font-size: 16px; }
-          .details-box { background: #f5f5f5; padding: 20px; border-radius: 8px; margin: 15px 0; }
-          .details-box p { margin: 8px 0; }
-          .highlight { background: #f0f8ff; padding: 20px; border-left: 4px solid #F97415; border-radius: 4px; margin: 20px 0; }
-          .highlight h3 { margin-top: 0; color: #F97415; }
-          .highlight ul { margin: 10px 0; padding-left: 20px; }
-          .highlight li { margin: 8px 0; }
-          .contact-box { background: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0; }
-          .contact-box h3 { margin-top: 0; }
-          .contact-box ul { margin: 10px 0; padding-left: 20px; list-style: none; }
-          .contact-box li { margin: 8px 0; }
-          .footer { border-top: 1px solid #ddd; margin-top: 30px; padding-top: 20px; text-align: center; color: #666; font-size: 12px; }
-          .office-box { margin: 15px 0; padding: 15px; background: #f5f5f5; border-left: 4px solid #F97415; }
-          .office-box h4 { margin: 0 0 10px 0; color: #333; }
-          .office-box p { margin: 5px 0; }
-          .disclaimer { font-size: 12px; color: #999; margin-top: 20px; padding: 15px; background: #f9f9f9; border-radius: 4px; }
+          body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333; line-height: 1.6; margin: 0; padding: 0; background-color: #f8f9fa; }
+          .container { max-width: 650px; margin: 0 auto; padding: 20px; background-color: #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 12px; }
+          .header { background: linear-gradient(135deg, #F97415 0%, #ff8c42 100%); padding: 40px 30px; border-radius: 12px 12px 0 0; color: white; text-align: center; }
+          .header h1 { margin: 0; color: white; font-size: 28px; font-weight: 600; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+          .header p { margin: 10px 0 0 0; color: rgba(255,255,255,0.9); font-size: 16px; }
+          .content { padding: 30px; }
+          .greeting { font-size: 18px; color: #2c3e50; margin-bottom: 20px; font-weight: 500; }
+          .section { margin: 30px 0; }
+          .section-title { color: #F97415; font-weight: 600; margin-bottom: 15px; font-size: 18px; display: flex; align-items: center; }
+          .section-title::before { content: ''; margin-right: 10px; }
+          .details-box { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 25px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #F97415; }
+          .details-box p { margin: 12px 0; font-size: 15px; }
+          .details-box strong { color: #2c3e50; }
+          .highlight { background: linear-gradient(135deg, #fff4e6 0%, #ffe8cc 100%); padding: 25px; border-left: 4px solid #F97415; border-radius: 8px; margin: 25px 0; }
+          .highlight h3 { margin-top: 0; color: #F97415; font-size: 18px; }
+          .highlight ul { margin: 15px 0; padding-left: 25px; }
+          .highlight li { margin: 10px 0; font-size: 15px; }
+          .contact-box { background: #f8f9fa; padding: 25px; border-radius: 10px; margin: 25px 0; border: 1px solid #e9ecef; }
+          .contact-box h3 { margin-top: 0; color: #2c3e50; font-size: 18px; }
+          .contact-box ul { margin: 15px 0; padding-left: 0; list-style: none; }
+          .contact-box li { margin: 10px 0; font-size: 15px; display: flex; align-items: center; }
+          .contact-box li::before { content: '📞'; margin-right: 10px; font-size: 16px; }
+          .footer { border-top: 1px solid #e9ecef; margin-top: 30px; padding-top: 25px; text-align: center; color: #6c757d; font-size: 13px; }
+          .office-box { margin: 20px 0; padding: 20px; background: #f8f9fa; border-left: 4px solid #F97415; border-radius: 8px; }
+          .office-box h4 { margin: 0 0 15px 0; color: #2c3e50; font-size: 16px; }
+          .office-box p { margin: 8px 0; font-size: 14px; }
+          .disclaimer { font-size: 12px; color: #6c757d; margin-top: 25px; padding: 20px; background: #f8f9fa; border-radius: 8px; border: 1px solid #e9ecef; }
+          .application-number { background: #F97415; color: white; padding: 8px 16px; border-radius: 20px; font-weight: 600; display: inline-block; margin: 10px 0; }
+          .loan-type-badge { background: #28a745; color: white; padding: 6px 12px; border-radius: 15px; font-size: 14px; font-weight: 500; display: inline-block; margin: 5px 0; }
         </style>
       </head>
       <body>
         <div class="container">
           <div class="header">
-            <h1>Thank You for Your Loan Application!</h1>
+            <h1>Thank You for Your {{LOAN_TYPE_NAME}} Application!</h1>
             <p>Your Application Has Been Successfully Received</p>
           </div>
 
-          <p>Dear {{CUSTOMER_NAME}},</p>
+          <div class="content">
+            <p class="greeting">Dear {{CUSTOMER_NAME}},</p>
 
-          <p>Thank you for selecting <strong>Infinity Loans & Business Solutions</strong> for your financing requirements.</p>
+            <p>Thank you for choosing <strong>Infinity Loans & Business Solutions</strong> for your financing requirements.</p>
 
-          <p>We are pleased to formally acknowledge the successful receipt of your loan application along with the supporting documents submitted by you. Your application has been registered in our system, and the relevant details are outlined below for your reference:</p>
+            <p>We are pleased to formally acknowledge the successful receipt of your loan application along with the supporting documents submitted by you. Your application has been registered in our system, and the relevant details are outlined below for your reference:</p>
 
-          <div class="section">
-            <div class="section-title">📄 Application Details</div>
-            <div class="details-box">
-              <p><strong>Application Number:</strong> {{APPLICATION_NUMBER}}</p>
-              <p><strong>Application Date:</strong> {{APPLICATION_DATE}}</p>
-              <p><strong>Loan Product:</strong> {{LOAN_TYPE}}</p>
-              <p><strong>Applicant Name:</strong> {{CUSTOMER_NAME}}</p>
+            <div class="section">
+              <div class="section-title">📄 Application Details</div>
+              <div class="details-box">
+                <p><strong>Application Number:</strong> <span class="application-number">{{APPLICATION_NUMBER}}</span></p>
+                <p><strong>Application Date:</strong> {{APPLICATION_DATE}}</p>
+                <p><strong>Loan Product:</strong> <span class="loan-type-badge">{{LOAN_TYPE}}</span></p>
+                <p><strong>Applicant Name:</strong> {{CUSTOMER_NAME}}</p>
+                <p><strong>Requested Amount:</strong> {{LOAN_AMOUNT}}</p>
+              </div>
+            </div>
             </div>
             <p><em>Kindly quote the above Application Number in all future communications for faster assistance and effective tracking.</em></p>
           </div>
@@ -189,12 +200,44 @@ export const sendLoanApplicationConfirmationEmail = async (
       </html>
     `;
 
+    // Helper function to get proper loan type name
+    const getLoanTypeName = (loanType) => {
+      const loanTypeMap = {
+        'salaried': 'Salaried Employee Loan',
+        'business': 'Business Loan',
+        'personal': 'Personal Loan',
+        'home': 'Home Loan',
+        'car': 'Car Loan',
+        'education': 'Education Loan',
+        'property': 'Property Loan',
+        'professional': 'Professional Loan',
+        'doctor': 'Doctor Loan',
+        'ca': 'CA Loan',
+        'architect': 'Architect Loan',
+        'unified': 'Business Loan',
+        'credit-card': 'Credit Card'
+      };
+      return loanTypeMap[loanType] || (loanType.charAt(0).toUpperCase() + loanType.slice(1)).replace(' Loan', '');
+    };
+
+    // Get loan type name for header
+    const loanTypeName = getLoanTypeName(loanType);
+    
+    // Special header for credit card
+    const getHeaderTitle = (loanType) => {
+      if (loanType === 'credit-card') {
+        return 'Thank You for Your Credit Card Application!';
+      }
+      return `Thank You for Your ${loanTypeName} Application!`;
+    };
+
     // Replace placeholders
     const finalHtml = htmlContent
       .replace(/{{CUSTOMER_NAME}}/g, customerName)
       .replace(/{{APPLICATION_NUMBER}}/g, applicationNumber)
       .replace(/{{APPLICATION_DATE}}/g, applicationDate)
-      .replace(/{{LOAN_TYPE}}/g, loanType);
+      .replace(/{{LOAN_TYPE}}/g, loanTypeName)
+      .replace(/{{LOAN_TYPE_NAME}}/g, loanTypeName);
 
     await transporter.sendMail({
       from: process.env.EMAIL_FROM,

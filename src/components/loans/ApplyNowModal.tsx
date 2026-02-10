@@ -295,7 +295,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
       console.log(response.data);
 
       setIsSubmitting(false);
-      window.alert(`Application submitted successfully!\nApplication Reference: ${response.data?.applicationRef}`);
+      window.alert(`Application submitted successfully!`);
       reset();
       onClose();
     } catch (error) {
@@ -583,7 +583,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
       const response = await axios.post("/api/apply-now", formData);
       
       setIsSubmitting(false);
-      window.alert(`Application submitted successfully!\nApplication Reference: ${response.data?.applicationRef}`);
+      window.alert(`Application submitted successfully!`);
       onClose();
     } catch (error) {
       setIsSubmitting(false);
