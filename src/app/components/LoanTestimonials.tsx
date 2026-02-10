@@ -4,7 +4,7 @@
 
 import React from "react";
 
-import { Star } from "lucide-react";
+import { Star, User } from "lucide-react";
 
 
 
@@ -174,7 +174,7 @@ const LoanTestimonials: React.FC = () => {
 
   return (
 
-    <section className="w-full py-16 bg-gray-50">
+    <section className="w-full py-16 bg-gradient-to-br from-gray-100 via-gray-200 to-gray-300">
 
       <div className="max-w-7xl mx-auto px-6">
 
@@ -184,7 +184,7 @@ const LoanTestimonials: React.FC = () => {
 
         <div className="text-center mb-14">
 
-          <h2 className="text-3xl md:text-4xl font-bold">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
 
             What Our Customers Say
 
@@ -196,7 +196,7 @@ const LoanTestimonials: React.FC = () => {
 
 
 
-          <p className="text-gray-500 mt-4">
+          <p className="text-gray-700 mt-4">
 
             Trusted by thousands of happy loan customers across India
 
@@ -212,26 +212,31 @@ const LoanTestimonials: React.FC = () => {
             {[...testimonials, ...testimonials].map((t, index) => (
               <div
                 key={`${t.name}-${t.role}-${index}`}
-                className="bg-white p-6 rounded-2xl shadow-md hover:shadow-xl transition duration-300 border border-gray-100 flex flex-col shrink-0"
+                className="bg-gradient-to-br from-gray-900 via-gray-800 to-black p-6 rounded-2xl shadow-md hover:shadow-xl transition duration-300 border border-gray-700 flex flex-col shrink-0 w-80"
               >
                 {/* Stars */}
-                <div className="flex mb-3 text-[#F97415]">
+                <div className="flex mb-4 text-[#F97415]">
                   {[...Array(5)].map((_, i) => (
                     <Star key={i} size={16} fill="#F97415" />
                   ))}
                 </div>
 
                 {/* Message */}
-                <p className="text-gray-600 text-sm flex-grow leading-relaxed">
-                  “{t.message}”
+                <p className="text-gray-300 text-sm flex-grow leading-relaxed mb-4">
+                  "{t.message}"
                 </p>
 
-                {/* User */}
-                <div className="mt-5 border-t pt-4">
-                  <h4 className="font-semibold text-gray-800">{t.name}</h4>
-                  <span className="text-xs text-[#F97415] font-medium">
-                    {t.role}
-                  </span>
+                {/* User Info */}
+                <div className="flex items-center gap-3 border-t border-gray-700 pt-4">
+                  <div className="w-10 h-10 bg-[#F97415]/20 rounded-full flex items-center justify-center">
+                    <User size={20} className="text-[#F97415]" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-white text-sm">{t.name}</h4>
+                    <span className="text-xs text-[#F97415] font-medium">
+                      {t.role}
+                    </span>
+                  </div>
                 </div>
               </div>
 
@@ -244,27 +249,33 @@ const LoanTestimonials: React.FC = () => {
 
 
       <style jsx global>{`
-
         @keyframes loanTestimonialsSlide {
-
           from {
-
             opacity: 0;
-
             transform: translateX(48px);
-
           }
-
           to {
-
             opacity: 1;
-
             transform: translateX(0);
-
           }
-
         }
 
+        @keyframes loanTestimonialsMarquee {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(-50%);
+          }
+        }
+
+        .loan-testimonials-marquee {
+          animation: loanTestimonialsMarquee 30s linear infinite;
+        }
+
+        .loan-testimonials-marquee:hover {
+          animation-play-state: paused;
+        }
       `}</style>
 
     </section>

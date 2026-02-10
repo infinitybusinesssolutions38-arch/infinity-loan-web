@@ -32,6 +32,7 @@ import LogoCloud from "@/components/logo-cloud";
 import ModernSections from "./fAQ";
 import PrivateInstitutionalHighlight from "./PrivateInstitutionalHighlight";
 import PoorCibilHighlight from "./PoorCibilHighlight";
+import LoanTestimonials from "./LoanTestimonials";
 import EmiRestructuringHighlight from "./Emirestructuringhighlight";
 import PropertyLoanHighlight from "./Propertyloanhighlight";
 import LogoCloud2 from "@/components/logocloud2";
@@ -1239,6 +1240,9 @@ export default function HomePageClient() {
         }
       `}</style>
       </section>
+
+      {/* Testimonials Section */}
+      <LoanTestimonials />
 
       <section className="py-16 lg:py-24">
         <div className="container mx-auto px-4">
