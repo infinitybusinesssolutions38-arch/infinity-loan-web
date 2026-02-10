@@ -208,6 +208,7 @@ export async function POST(req) {
         purpose: formData.get("purpose"),
         isBuyingGoods: formData.get("isBuyingGoods"),
         quotationAmount: formData.get("quotationAmount"),
+        cibilIssues: formData.get("cibilIssues"),
 
         coApplicantName: formData.get("coApplicantName"),
         coApplicantRelation: formData.get("coApplicantRelation"),
@@ -267,6 +268,7 @@ export async function POST(req) {
         loanAmountRequired: formData.get("loanAmountRequired"),
         purposeOfLoan: formData.get("purposeOfLoan"),
         preferredLoanTenureMonths: formData.get("preferredLoanTenureMonths"),
+        cibilIssues: formData.get("cibilIssues"),
 
         role: "borrower-business",
       });
@@ -444,6 +446,7 @@ export async function POST(req) {
         loanTypeText: formData.get("loanType"),
         cibilScoreKnown: formData.get("cibilScoreKnown"),
         cibilScore: formData.get("cibilScore"),
+        cibilIssues: formData.get("cibilIssues"),
         consent: formData.get("consent"),
 
         // Document uploads
@@ -665,6 +668,15 @@ export async function POST(req) {
       </div>
     </div>
 
+    ${savedObject?.cibilIssues ? `
+    <div class="section">
+      <div class="section-title">📊 CIBIL Information</div>
+      <div class="details-grid">
+        <div class="detail-item"><div class="detail-label">CIBIL Issues</div><div class="detail-value">${escapeHtml(savedObject?.cibilIssues || formData.get("cibilIssues"))}</div></div>
+      </div>
+    </div>
+    ` : ''}
+
     <div class="section">
       <div class="section-title">Contact Information</div>
       <div class="details-grid">
@@ -854,6 +866,15 @@ export async function POST(req) {
       </div>
     </div>
 
+    ${savedObject?.cibilIssues ? `
+    <div class="section">
+      <div class="section-title">📊 CIBIL Information</div>
+      <div class="details-grid">
+        <div class="detail-item"><div class="detail-label">CIBIL Issues</div><div class="detail-value">${escapeHtml(savedObject?.cibilIssues || formData.get("cibilIssues"))}</div></div>
+      </div>
+    </div>
+    ` : ''}
+
     <div class="section">
       <div class="section-title">📄 Uploaded Documents</div>
       <div class="documents-list">
@@ -902,6 +923,7 @@ export async function POST(req) {
           bankName: loanType === "credit-card" ? String(savedObject?.bankName || formData.get("bankName") || "").trim() : undefined,
           limitAmount: loanType === "credit-card" ? String(savedObject?.limitAmount || formData.get("limitAmount") || "").trim() : undefined,
           cardType: loanType === "credit-card" ? String(savedObject?.cardType || formData.get("cardType") || "").trim() : undefined,
+          cibilIssues: String(savedObject?.cibilIssues || formData.get("cibilIssues") || "").trim() || undefined,
         });
 
         if (!applicantEmailResult?.success) {
@@ -926,6 +948,7 @@ export async function POST(req) {
             bankName: loanType === "credit-card" ? String(savedObject?.bankName || formData.get("bankName") || "").trim() : undefined,
             limitAmount: loanType === "credit-card" ? String(savedObject?.limitAmount || formData.get("limitAmount") || "").trim() : undefined,
             cardType: loanType === "credit-card" ? String(savedObject?.cardType || formData.get("cardType") || "").trim() : undefined,
+            cibilIssues: String(savedObject?.cibilIssues || formData.get("cibilIssues") || "").trim() || undefined,
           });
           if (!officialRes?.success) {
             console.error("apply-now official email failed:", officialRes?.error);

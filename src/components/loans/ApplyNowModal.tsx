@@ -10,6 +10,7 @@ import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { DateInput } from "@/components/ui/DateInput";
 
 interface ApplyNowModalProps {
@@ -88,6 +89,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
       passportNumber: "",
       loanType: "",
       jobBusiness: "",
+      cibilIssues: "",
     },
     mode: "onBlur",
   });
@@ -453,6 +455,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
     coApplicantEmploymentType: "",
     isBuyingGoods: "",
     quotationAmount: "",
+    cibilIssues: "",
   });
 
   // Unified form state for the 5 categories
@@ -1434,15 +1437,28 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                       if (value === '' || parseFloat(value) >= 0) {
                         handleSalariedChange(e);
                       }
-                    }} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                    }} className={`border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50 ${sForm.requiredLoanAmount ? 'border-gray-400 bg-gray-50' : ''}`} />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="s_preferredTenure" className="text-sm font-medium">Preferred Loan Tenure</Label>
+                    <Label htmlFor="s_preferredTenure" className="text-sm font-medium">Preferred Loan Tenure <span className="text-destructive">*</span></Label>
                     <Input id="s_preferredTenure" name="preferredTenure" placeholder="Preferred Loan Tenure" value={sForm.preferredTenure} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="s_purpose" className="text-sm font-medium">Purpose of Loan</Label>
+                    <Label htmlFor="s_purpose" className="text-sm font-medium">Purpose of Loan <span className="text-destructive">*</span></Label>
                     <Input id="s_purpose" name="purpose" placeholder="Purpose of Loan" value={sForm.purpose} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                  </div>
+                  <div className="space-y-2 col-span-2">
+                    <Label htmlFor="s_cibilIssues" className="text-sm font-medium">Please mention if you have any CIBIL issues or problems in your credit profile. Kindly specify details, if applicable. (optional)</Label>
+                    <Textarea 
+                      id="s_cibilIssues" 
+                      name="cibilIssues" 
+                      placeholder="Example: Late payment history, low credit score, settled loans, written-off accounts, etc."
+                      maxLength={1000}
+                      value={sForm.cibilIssues || ''} 
+                      onChange={handleSalariedChange} 
+                      className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50 min-h-[100px]" 
+                    />
+                    <p className="text-xs text-gray-500">Maximum 1000 characters</p>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="s_isBuyingGoods" className="text-sm font-medium">Are you buying any goods?</Label>
@@ -1479,15 +1495,15 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 <legend className="text-lg font-bold text-foreground mb-4">I. Co-Applicant Details (If Any)</legend>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
-                    <Label htmlFor="s_coApplicantName" className="text-sm font-medium">Co-Applicant Name</Label>
+                    <Label htmlFor="s_coApplicantName" className="text-sm font-medium">Co-Applicant Name (optional)</Label>
                     <Input id="s_coApplicantName" name="coApplicantName" placeholder="Co-Applicant Name" value={sForm.coApplicantName} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="s_coApplicantRelation" className="text-sm font-medium">Relationship with Applicant</Label>
+                    <Label htmlFor="s_coApplicantRelation" className="text-sm font-medium">Relationship with Applicant (optional)</Label>
                     <Input id="s_coApplicantRelation" name="coApplicantRelation" placeholder="Relationship with Applicant" value={sForm.coApplicantRelation} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="s_coApplicantEmploymentType" className="text-sm font-medium">Co-Applicant Employment Type</Label>
+                    <Label htmlFor="s_coApplicantEmploymentType" className="text-sm font-medium">Co-Applicant Employment Type (optional)</Label>
                     <Input id="s_coApplicantEmploymentType" name="coApplicantEmploymentType" placeholder="Co-Applicant Employment Type" value={sForm.coApplicantEmploymentType} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
                 </div>
@@ -1704,7 +1720,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                     onFocus={() => setFocusedField("limitAmount")}
                     onBlur={() => setFocusedField(null)}
                     className={`transition-all duration-300 ${focusedField === "limitAmount" ? "ring-2 ring-primary shadow-glow-primary" : ""
-                      } ${errors.limitAmount ? "border-destructive animate-shake" : ""}`}
+                      } ${errors.limitAmount ? "border-destructive animate-shake" : ""} ${watch("limitAmount") ? 'border-gray-400 bg-gray-50' : ''}`}
                     placeholder="e.g., 500000"
                   />
                   {errors.limitAmount && (
@@ -1730,6 +1746,21 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                     <p className="text-xs text-destructive animate-fade-in">{String(errors.cardType.message || "")}</p>
                   )}
                 </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="cibilIssues" className="text-sm font-medium">Please mention if you have any CIBIL issues or problems in your credit profile. Kindly specify details, if applicable. (optional)</Label>
+                <Textarea 
+                  id="cibilIssues" 
+                  {...register("cibilIssues")}
+                  placeholder="Example: Late payment history, low credit score, settled loans, written-off accounts, etc."
+                  maxLength={1000}
+                  className={`mt-2 block w-full rounded-md border bg-transparent px-3 py-2 text-sm transition-all duration-200 ${errors.cibilIssues ? "border-destructive" : ""} min-h-[100px]`}
+                />
+                <p className="text-xs text-gray-500">Maximum 1000 characters</p>
+                {errors.cibilIssues && (
+                  <p className="text-xs text-destructive animate-fade-in">{String(errors.cibilIssues.message || "")}</p>
+                )}
               </div>
 
               <div className="space-y-2">
@@ -2091,7 +2122,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
 
                 <div className="space-y-2">
                   <Label htmlFor="voterIdNumber" className="text-sm font-medium">
-                    Voter ID Number
+                    Voter ID Number (optional)
                   </Label>
                   <Input
                     id="voterIdNumber"
@@ -2106,7 +2137,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
 
                 <div className="space-y-2">
                   <Label htmlFor="drivingLicense" className="text-sm font-medium">
-                    Driving License Number
+                    Driving License Number (optional)
                   </Label>
                   <Input
                     id="drivingLicense"
@@ -2121,7 +2152,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
 
                 <div className="space-y-2 sm:col-span-2 sm:w-1/2">
                   <Label htmlFor="passportNumber" className="text-sm font-medium">
-                    Passport Number
+                    Passport Number (optional)
                   </Label>
                   <Input
                     id="passportNumber"
@@ -2328,7 +2359,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 <legend className="text-lg font-bold text-foreground mb-4">B. Residential Address Details</legend>
                 <div className="space-y-2">
                   <Label htmlFor="u_currentResidentialAddress" className="text-sm font-medium">Current Residential Address <span className="text-destructive">*</span></Label>
-                  <Input id="u_currentResidentialAddress" name="currentResidentialAddress" placeholder="Current Residential Address*" value={uForm.currentResidentialAddress} onChange={handleUnifiedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                  <Input id="u_currentResidentialAddress" name="currentResidentialAddress" placeholder="Current Residential Address*" value={uForm.currentResidentialAddress} onChange={handleUnifiedChange} className={`border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50 ${uForm.currentResidentialAddress ? 'border-gray-400 bg-gray-50' : ''}`} />
                 </div>
                 <div className="grid gap-4 sm:grid-cols-3">
                   <div className="space-y-2">
@@ -2351,20 +2382,20 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 <legend className="text-lg font-bold text-foreground mb-4">C. Office/Shop Address Details</legend>
                 <div className="space-y-2">
                   <Label htmlFor="u_currentOfficeAddress" className="text-sm font-medium">Current Shop/Office Address <span className="text-destructive">*</span></Label>
-                  <Input id="u_currentOfficeAddress" name="currentOfficeAddress" placeholder="Current Shop/Office Address*" value={uForm.currentOfficeAddress} onChange={handleUnifiedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                  <Input id="u_currentOfficeAddress" name="currentOfficeAddress" placeholder="Current Shop/Office Address*" value={uForm.currentOfficeAddress} onChange={handleUnifiedChange} className={`border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50 ${uForm.currentOfficeAddress ? 'border-gray-400 bg-gray-50' : ''}`} />
                 </div>
                 <div className="grid gap-4 sm:grid-cols-3">
                   <div className="space-y-2">
                     <Label htmlFor="u_officePincode" className="text-sm font-medium">Pincode <span className="text-destructive">*</span></Label>
-                    <Input id="u_officePincode" name="officePincode" placeholder="Pincode*" value={uForm.officePincode} onChange={handleUnifiedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                    <Input id="u_officePincode" name="officePincode" placeholder="Pincode*" value={uForm.officePincode} onChange={handleUnifiedChange} className={`border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50 ${uForm.officePincode ? 'border-gray-400 bg-gray-50' : ''}`} />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="u_officeState" className="text-sm font-medium">State <span className="text-destructive">*</span></Label>
-                    <Input id="u_officeState" name="officeState" placeholder="State*" value={uForm.officeState} onChange={handleUnifiedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                    <Input id="u_officeState" name="officeState" placeholder="State*" value={uForm.officeState} onChange={handleUnifiedChange} className={`border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50 ${uForm.officeState ? 'border-gray-400 bg-gray-50' : ''}`} />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="u_officeCity" className="text-sm font-medium">City <span className="text-destructive">*</span></Label>
-                    <Input id="u_officeCity" name="officeCity" placeholder="City*" value={uForm.officeCity} onChange={handleUnifiedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                    <Input id="u_officeCity" name="officeCity" placeholder="City*" value={uForm.officeCity} onChange={handleUnifiedChange} className={`border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50 ${uForm.officeCity ? 'border-gray-400 bg-gray-50' : ''}`} />
                   </div>
                 </div>
               </fieldset>
@@ -2380,12 +2411,25 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                       if (value === '' || parseFloat(value) >= 0) {
                         handleUnifiedChange(e);
                       }
-                    }} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                    }} className={`border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50 ${uForm.requiredLoanAmount ? 'border-gray-400 bg-gray-50' : ''}`} />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="u_loanType" className="text-sm font-medium">Type of Loan <span className="text-destructive">*</span></Label>
-                    <Input id="u_loanType" name="loanType" placeholder="Type of Loan*" value={uForm.loanType} onChange={handleUnifiedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                    <Input id="u_loanType" name="loanType" placeholder="Type of Loan*" value={uForm.loanType} onChange={handleUnifiedChange} className={`border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50 ${uForm.loanType ? 'border-gray-400 bg-gray-50' : ''}`} />
                   </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="u_cibilIssues" className="text-sm font-medium">Please mention if you have any CIBIL issues or problems in your credit profile. Kindly specify details, if applicable. (optional)</Label>
+                  <Textarea 
+                    id="u_cibilIssues" 
+                    name="cibilIssues" 
+                    placeholder="Example: Late payment history, low credit score, settled loans, written-off accounts, etc."
+                    maxLength={1000}
+                    value={uForm.cibilIssues || ''} 
+                    onChange={handleUnifiedChange} 
+                    className={`border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50 min-h-[100px] ${uForm.cibilIssues ? 'border-gray-400 bg-gray-50' : ''}`} 
+                  />
+                  <p className="text-xs text-gray-500">Maximum 1000 characters</p>
                 </div>
               </fieldset>
 
@@ -2793,7 +2837,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 <legend className="text-lg font-bold text-foreground mb-4">I. Income Tax Returns</legend>
                 <div className="grid gap-4 sm:grid-cols-3">
                   <div className="space-y-2">
-                    <Label className="text-sm font-medium">Assessment Year 2023-24</Label>
+                    <Label className="text-sm font-medium">Assessment Year 2023-24 (optional)</Label>
                     <label className="flex flex-col items-center justify-center h-24 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary/5 group">
                       <Upload className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors" />
                       <span className="mt-1 text-xs text-muted-foreground group-hover:text-primary">
@@ -2810,7 +2854,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                   </div>
 
                   <div className="space-y-2">
-                    <Label className="text-sm font-medium">Assessment Year 2024-25</Label>
+                    <Label className="text-sm font-medium">Assessment Year 2024-25 (optional)</Label>
                     <label className="flex flex-col items-center justify-center h-24 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary/5 group">
                       <Upload className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors" />
                       <span className="mt-1 text-xs text-muted-foreground group-hover:text-primary">
@@ -2827,7 +2871,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                   </div>
 
                   <div className="space-y-2">
-                    <Label className="text-sm font-medium">Assessment Year 2025-26</Label>
+                    <Label className="text-sm font-medium">Assessment Year 2025-26 (optional)</Label>
                     <label className="flex flex-col items-center justify-center h-24 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary/5 group">
                       <Upload className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors" />
                       <span className="mt-1 text-xs text-muted-foreground group-hover:text-primary">

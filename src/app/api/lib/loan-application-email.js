@@ -43,6 +43,7 @@ export const sendLoanApplicationConfirmationEmail = async (
       bankName,
       limitAmount,
       cardType,
+      cibilIssues,
     } = applicationData;
 
     const htmlContent = `
@@ -116,6 +117,15 @@ export const sendLoanApplicationConfirmationEmail = async (
                 <p><strong>Bank Name:</strong> {{BANK_NAME}}</p>
                 <p><strong>Limit Amount:</strong> {{LIMIT_AMOUNT}}</p>
                 <p><strong>Card Type:</strong> {{CARD_TYPE}}</p>
+              </div>
+            </div>
+            ` : ''}
+
+            ${cibilIssues ? `
+            <div class="section">
+              <div class="section-title">📊 CIBIL Information</div>
+              <div class="details-box">
+                <p><strong>CIBIL Issues:</strong> ${cibilIssues}</p>
               </div>
             </div>
             ` : ''}

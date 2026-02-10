@@ -41,6 +41,7 @@ const CreditCardSchema = new mongoose.Schema(
         loanTypeText: { type: String, default: "credit-card" },
         cibilScoreKnown: { type: String, required: false },
         cibilScore: { type: String, required: false },
+        cibilIssues: { type: String, required: false },
         consent: { type: Boolean, default: false },
 
         // Document uploads

@@ -291,3 +291,55 @@
   filter: invert(30%);
   cursor: pointer;
 }
+
+/* SuccessBadge Animations */
+@keyframes successBadgeSlide {
+  0% {
+    opacity: 0;
+    transform: translateX(-120%) translateY(-10px);
+  }
+  15% {
+    opacity: 1;
+    transform: translateX(0) translateY(0);
+  }
+  55% {
+    opacity: 1;
+    transform: translateX(0) translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-120%) translateY(0);
+  }
+}
+
+@keyframes successBadgeBg {
+  0%, 100% {
+    background: linear-gradient(45deg, rgba(59, 130, 246, 0.3) 0%, rgba(147, 51, 234, 0.3) 100%);
+  }
+  50% {
+    background: linear-gradient(45deg, rgba(147, 51, 234, 0.3) 0%, rgba(59, 130, 246, 0.3) 100%);
+  }
+}
+
+@keyframes badgeWobble3d {
+  0%, 50%, 100% {
+    transform: perspective(700px) rotateY(-25deg);
+  }
+  75% {
+    transform: perspective(700px) rotateY(25deg);
+  }
+}
+
+.success-badge-slide {
+  animation: successBadgeSlide 10s ease-in-out infinite;
+}
+
+.success-badge-bg {
+  animation: successBadgeBg 6s ease-in-out infinite;
+}
+
+.badge-wobble-3d {
+  animation: badgeWobble3d 3s ease-in-out infinite;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
