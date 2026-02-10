@@ -1868,8 +1868,11 @@ export default function ServicesHubClient() {
               {activeGroups.map((group, groupIndex) => (
                 <div key={group.title} className="space-y-6">
                   <div className="flex items-center justify-between">
-                    <div className="w-full py-5 bg-[#F97415] lg:mx-4 rounded-2xl">
-                      <h3 className="text-2xl lg:text-4xl text-center font-bold text-gray-900  text-foreground">{group.title}</h3>
+
+                    <div className="w-full py-8 px-6 lg:mx-4 rounded-2xl bg-gray-100 shadow-md border-t-4 border-[#F97415]">
+                      <h3 className="text-2xl lg:text-4xl text-center font-bold text-gray-900">
+                        {group.title}
+                      </h3>
                     </div>
                     {/* <Link
                         href="/services/loans"
@@ -1942,10 +1945,13 @@ export default function ServicesHubClient() {
             </div>
           ) : (
             <div>
-               <div className="w-full py-5 bg-[#F97415] lg:mx-4 rounded-2xl">
-                      <h3 className="text-2xl lg:text-4xl text-center font-bold text-gray-900  text-foreground">Credits & Cards</h3>
-                    </div>
-             
+
+              <div className="w-full py-8 px-6 lg:mx-4 rounded-2xl bg-gray-100 shadow-md border-t-4 border-[#F97415]">
+                <h3 className="text-2xl lg:text-4xl text-center font-bold text-gray-900">
+                  Credits & Cards
+                </h3>
+              </div>
+
               <div className="grid gap-6 sm:grid-cols-2 mt-5 lg:grid-cols-3 xl:grid-cols-4">
                 {activeCards.map((service, idx) => (
                   <Card
