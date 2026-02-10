@@ -18,6 +18,7 @@ interface ApplyNowModalProps {
   loanType: string;
   loanTypeKey?: string;
   categoryKey?: string;
+  forceUnifiedForm?: boolean;
 }
 
 type FormState = {
@@ -50,7 +51,7 @@ type FormState = {
   cardType?: string;
 };
 
-export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, categoryKey }: ApplyNowModalProps) {
+export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, categoryKey, forceUnifiedForm = false }: ApplyNowModalProps) {
   // Employment type selector for determining which form to show
   const [employmentType, setEmploymentType] = useState<"" | "salaried" | "self-employed">("");
 
@@ -381,7 +382,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
     loanType.toLowerCase().includes("credit");
 
   // Check if this is one of the 5 categories that need the unified form
-  const isUnifiedForm = !isSalaried && !isCreditCard;
+  const isUnifiedForm = forceUnifiedForm || (!isSalaried && !isCreditCard);
 
   const [sForm, setSForm] = useState({
     firstName: "",
