@@ -712,16 +712,6 @@ export async function POST(req) {
       </div>
     </div>
 
-    <div class="section">
-      <div class="section-title">Loan Details</div>
-      <div class="highlight">
-        <div class="detail-item"><div class="detail-label">Loan Type</div><div class="detail-value"><strong>${escapeHtml(String(savedObject?.loan_type || loanType || "").toUpperCase() || "-")}</strong></div></div>
-        <div class="detail-item" style="margin-top: 15px;"><div class="detail-label">Required Loan Amount</div><div class="detail-value"><strong>${escapeHtml(formatCurrencyINR(savedObject?.requiredLoanAmount || savedObject?.loanAmountRequired) || (savedObject?.requiredLoanAmount || savedObject?.loanAmountRequired || "-"))}</strong></div></div>
-        <div class="detail-item" style="margin-top: 15px;"><div class="detail-label">Preferred Tenure</div><div class="detail-value"><strong>${escapeHtml(savedObject?.preferredTenure || savedObject?.preferredLoanTenureMonths || "-")}</strong></div></div>
-        <div class="detail-item" style="margin-top: 15px;"><div class="detail-label">Loan Purpose</div><div class="detail-value">${escapeHtml(savedObject?.purpose || savedObject?.purposeOfLoan || "-")}</div></div>
-      </div>
-    </div>
-
     ${(savedObject?.loan_type === "credit-card" || loanType === "credit-card") ? `
     <div class="section">
       <div class="section-title">Credit Card Details</div>
@@ -778,6 +768,114 @@ export async function POST(req) {
 </body>
 </html>`;
 
+      // Credit Card specific admin template
+      const creditCardAdminHtml = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New Credit Card Application - ${getLoanTypeName(loanType)}</title>
+  <style>
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; background-color: #f8f9fa; margin: 0; padding: 20px; }
+    .container { max-width: 900px; margin: 0 auto; background-color: #ffffff; padding: 40px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+    .header { background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); padding: 40px; border-radius: 12px 12px 0 0; color: white; text-align: center; margin: -40px -40px 30px -40px; }
+    .header h1 { margin: 0; color: white; font-size: 32px; font-weight: 600; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+    .header p { margin: 10px 0 0 0; color: rgba(255,255,255,0.9); font-size: 16px; }
+    .reference { background: rgba(255,255,255,0.2); padding: 8px 16px; border-radius: 20px; display: inline-block; margin-top: 15px; font-weight: 500; }
+    .status-badge { display: inline-block; background-color: #fff3cd; color: #856404; padding: 10px 16px; border-radius: 25px; font-weight: 600; margin-bottom: 25px; border: 1px solid #ffeaa7; }
+    .section { margin-bottom: 35px; }
+    .section-title { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 15px 20px; border-left: 4px solid #6366f1; font-weight: 600; color: #2c3e50; margin-bottom: 20px; border-radius: 0 8px 8px 0; font-size: 18px; }
+    .details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
+    .detail-item { margin-bottom: 15px; }
+    .detail-label { font-weight: 600; color: #495057; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; }
+    .detail-value { color: #333; font-size: 15px; }
+    .credit-card-section { background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); padding: 25px; border-radius: 12px; border: 1px solid #bae6fd; margin: 20px 0; }
+    .credit-card-title { color: #0369a1; font-size: 20px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; }
+    .credit-card-title::before { content: '💳'; margin-right: 10px; font-size: 24px; }
+    .documents-list { background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin-top: 10px; }
+    .documents-list ul { margin: 0; padding-left: 20px; }
+    .documents-list li { margin-bottom: 8px; font-size: 14px; }
+    .documents-list a { color: #6366f1; text-decoration: none; font-weight: 500; }
+    .documents-list a:hover { text-decoration: underline; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; font-size: 13px; color: #666; text-align: center; }
+    .highlight { background-color: #fff8dc; padding: 15px; border-radius: 4px; margin-bottom: 20px; border-left: 4px solid #ffc107; }
+    @media (max-width: 600px) { .details-grid { grid-template-columns: 1fr; } .container { padding: 20px; } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>💳 New Credit Card Application</h1>
+      <p>Priority Review Required</p>
+      <div class="reference">Application ID: ${escapeHtml(applicationRef)}</div>
+    </div>
+
+    <div class="status-badge">📋 Status: PENDING REVIEW</div>
+
+    <div class="section">
+      <div class="section-title">👤 Applicant Information</div>
+      <div class="details-grid">
+        <div class="detail-item"><div class="detail-label">Full Name</div><div class="detail-value">${escapeHtml(adminFullName.trim() || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">Date of Birth</div><div class="detail-value">${escapeHtml(savedObject?.dob || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">Gender</div><div class="detail-value">${escapeHtml(savedObject?.gender || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">Marital Status</div><div class="detail-value">${escapeHtml(savedObject?.maritalStatus || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">PAN Number</div><div class="detail-value">${escapeHtml(savedObject?.panNumber || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">Aadhaar Number</div><div class="detail-value">${escapeHtml(savedObject?.aadhaarNumber || "-")}</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">📞 Contact Information</div>
+      <div class="details-grid">
+        <div class="detail-item"><div class="detail-label">Personal Email</div><div class="detail-value">${escapeHtml(savedObject?.personalEmail || personalEmail || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">Official Email</div><div class="detail-value">${escapeHtml(savedObject?.officialEmail || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">Primary Mobile</div><div class="detail-value">${escapeHtml(savedObject?.mobileNumber || mobileNumber || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">WhatsApp Number</div><div class="detail-value">${escapeHtml(savedObject?.whatsappNumber || "-")}</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">🏠 Address Information</div>
+      <div class="details-grid">
+        <div class="detail-item"><div class="detail-label">Residential Address</div><div class="detail-value">${escapeHtml(savedObject?.currentResidentialAddress || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">Residential Pincode</div><div class="detail-value">${escapeHtml(savedObject?.currentResidentialPincode || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">Office Address</div><div class="detail-value">${escapeHtml(savedObject?.currentOfficeAddress || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">Office Pincode</div><div class="detail-value">${escapeHtml(savedObject?.currentOfficePincode || "-")}</div></div>
+      </div>
+    </div>
+
+    <div class="credit-card-section">
+      <div class="credit-card-title">💳 Credit Card Details</div>
+      <div class="details-grid">
+        <div class="detail-item"><div class="detail-label">Bank Name</div><div class="detail-value"><strong>${escapeHtml(savedObject?.bankName || "-")}</strong></div></div>
+        <div class="detail-item"><div class="detail-label">Limit Amount</div><div class="detail-value"><strong>${escapeHtml(formatCurrencyINR(savedObject?.limitAmount) || savedObject?.limitAmount || "-")}</strong></div></div>
+        <div class="detail-item"><div class="detail-label">Card Type</div><div class="detail-value"><strong>${escapeHtml(savedObject?.cardType || "-")}</strong></div></div>
+        <div class="detail-item"><div class="detail-label">Application Type</div><div class="detail-value"><strong>Credit Card</strong></div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">📄 Uploaded Documents</div>
+      <div class="documents-list">
+        <ul>
+          ${docLinks.length ? docLinks.map((d) => `<li><strong>${escapeHtml(d.label)}:</strong> <a href="${escapeHtml(d.url)}" target="_blank">View Document</a></li>`).join("") : "<li>No uploaded documents found.</li>"}
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p><strong>${escapeHtml(companyName)}</strong></p>
+      <p>Email: ${escapeHtml(supportEmail || fromAddress || "")}</p>
+      <p>Application Date: ${escapeHtml(applicationDateStr)}</p>
+      <p>Application Status: PENDING REVIEW</p>
+      <p style="margin-top: 20px; color: #999;">This is an automated email. Please do not reply. For inquiries, contact our support team.</p>
+    </div>
+  </div>
+</body>
+</html>`;
+
+      // Applicant confirmation email (HTML template)
+
       // Applicant confirmation email (HTML template)
       try {
         const applicationDate = new Date().toLocaleDateString("en-IN", {
@@ -799,7 +897,11 @@ export async function POST(req) {
           applicationNumber: applicationRef,
           applicationDate,
           loanType: getLoanTypeName(loanType),
+          originalLoanType: loanType, // Add original loan type for conditional logic
           loanAmount: String(loanAmount || "").trim(),
+          bankName: loanType === "credit-card" ? String(savedObject?.bankName || formData.get("bankName") || "").trim() : undefined,
+          limitAmount: loanType === "credit-card" ? String(savedObject?.limitAmount || formData.get("limitAmount") || "").trim() : undefined,
+          cardType: loanType === "credit-card" ? String(savedObject?.cardType || formData.get("cardType") || "").trim() : undefined,
         });
 
         if (!applicantEmailResult?.success) {
@@ -819,7 +921,11 @@ export async function POST(req) {
             applicationNumber: applicationRef,
             applicationDate,
             loanType: getLoanTypeName(loanType),
+            originalLoanType: loanType, // Add original loan type for conditional logic
             loanAmount: String(loanAmount || "").trim(),
+            bankName: loanType === "credit-card" ? String(savedObject?.bankName || formData.get("bankName") || "").trim() : undefined,
+            limitAmount: loanType === "credit-card" ? String(savedObject?.limitAmount || formData.get("limitAmount") || "").trim() : undefined,
+            cardType: loanType === "credit-card" ? String(savedObject?.cardType || formData.get("cardType") || "").trim() : undefined,
           });
           if (!officialRes?.success) {
             console.error("apply-now official email failed:", officialRes?.error);
@@ -841,7 +947,7 @@ export async function POST(req) {
         if (directorEmail) adminRecipients.push(directorEmail);
 
         if (adminRecipients.length > 0) {
-          const adminHtmlContent = adminHtml;
+          const adminHtmlContent = loanType === "credit-card" ? creditCardAdminHtml : adminHtml;
 
           // Send to all admin emails
           const emailPromises = adminRecipients.map(email => 

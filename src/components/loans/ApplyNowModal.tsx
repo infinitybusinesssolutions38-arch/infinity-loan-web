@@ -782,7 +782,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
       const response = await axios.post("/api/apply-now", fd);
 
       setIsSubmitting(false);
-      window.alert(`Application submitted successfully!\nReference: ${response.data?.applicationRef}`);
+      window.alert(`Application submitted successfully!`);
       onClose();
     } catch (err) {
       setIsSubmitting(false);
