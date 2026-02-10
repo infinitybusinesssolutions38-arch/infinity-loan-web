@@ -264,8 +264,23 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
       submissionFormData.append("voterIdNumber", data.voterIdNumber || "");
       submissionFormData.append("drivingLicense", data.drivingLicense || "");
       submissionFormData.append("passportNumber", data.passportNumber || "");
-      submissionFormData.append("loanType", "personal");
+      submissionFormData.append("loanType", isCreditCard ? "credit-card" : "personal");
       submissionFormData.append("jobBusiness", data.jobBusiness || "");
+
+      // Add credit card specific fields if applicable
+      if (isCreditCard) {
+        submissionFormData.append("officialEmail", data.officialEmail || "");
+        submissionFormData.append("bankName", data.bankName || "");
+        submissionFormData.append("limitAmount", data.limitAmount || "");
+        submissionFormData.append("cardType", data.cardType || "");
+        submissionFormData.append("residentialState", data.residentialState || "");
+        submissionFormData.append("residentialCity", data.residentialCity || "");
+        submissionFormData.append("officePincode", data.officePincode || "");
+        submissionFormData.append("loanTypeText", data.loanType || "");
+        submissionFormData.append("cibilScoreKnown", data.cibilScoreKnown || "");
+        submissionFormData.append("cibilScore", data.cibilScore || "");
+        submissionFormData.append("consent", data.consent ? "true" : "false");
+      }
 
       // Add files
       submissionFormData.append("aadhaarFront", aadhaarFront);
@@ -542,7 +557,9 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
         formData.append(`existingLoanStatementFiles_${index}`, file);
       });
 
-      formData.append("loanType", "unified");
+      // Send correct loan type based on form category
+      const loanTypeValue = isCreditCard ? "credit-card" : "unified";
+      formData.append("loanType", loanTypeValue);
 
       const response = await axios.post("/api/apply-now", formData);
       
