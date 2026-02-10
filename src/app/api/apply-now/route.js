@@ -45,15 +45,44 @@ export async function POST(req) {
        HELPER → CLOUDINARY
     ===================================================== */
     async function upload(file) {
-      if (!file) return null;
+      if (!file) {
+        console.log('Upload: No file provided');
+        return null;
+      }
 
-      const buffer = Buffer.from(await file.arrayBuffer());
+      console.log('Upload: Processing file:', file.name || 'unnamed');
+      let buffer;
+      try {
+        // Try to get buffer from file
+        if (file.arrayBuffer) {
+          buffer = Buffer.from(await file.arrayBuffer());
+        } else if (file.buffer) {
+          // If file already has buffer property
+          buffer = Buffer.from(file.buffer);
+        } else {
+          // Convert file to buffer using streams
+          const chunks = [];
+          for await (const chunk of file) {
+            chunks.push(chunk);
+          }
+          buffer = Buffer.concat(chunks);
+        }
+        console.log('Upload: Buffer created successfully, size:', buffer.length);
+      } catch (error) {
+        console.error('Error reading file buffer:', error);
+        return null;
+      }
 
       return new Promise((resolve, reject) => {
         cloudinary.uploader
           .upload_stream({ folder: "loan_applications", resource_type: "auto" }, (err, result) => {
-            if (err) reject(err);
-            else resolve(result.secure_url);
+            if (err) {
+              console.error('Cloudinary upload error:', err);
+              reject(err);
+            } else {
+              console.log('Upload successful:', result.secure_url);
+              resolve(result.secure_url);
+            }
           })
           .end(buffer);
       });
@@ -66,7 +95,7 @@ export async function POST(req) {
     const middleName = formData.get("middleName") || "";
     const lastName = formData.get("lastName");
 
-    const mobileNumber = formData.get("mobileNumber");
+    const mobileNumber = formData.get("mobileNumber") || formData.get("aadhaarLinkedMobile");
     const alternateMobile = formData.get("alternateMobile") || "";
 
     const personalEmail = formData.get("personalEmail");
@@ -348,18 +377,18 @@ export async function POST(req) {
         cibilScore: formData.get("cibilScore"),
         consent: formData.get("consent"),
 
-        // Document uploads
-        aadhaarFront: await upload(formData.get("aadhaarFront")),
-        aadhaarBack: await upload(formData.get("aadhaarBack")),
-        panCardFront: await upload(formData.get("panFront")),
-        residentialElectricityBillUrl: await upload(formData.get("residentialBill")),
-        shopElectricityBillUrl: await upload(formData.get("shopBill")),
-        bankStatementFileUrl: await upload(formData.get("bankStatementFile")),
-        incomeTax2023_24FileUrl: await upload(formData.get("incomeTax2023_24File")),
-        incomeTax2024_25FileUrl: await upload(formData.get("incomeTax2024_25File")),
-        incomeTax2025_26FileUrl: await upload(formData.get("incomeTax2025_26File")),
-        proformaInvoiceFileUrl: await upload(formData.get("proformaInvoiceFile")),
-        cibilReportFileUrl: await upload(formData.get("cibilReportFile")),
+        // Document uploads with error handling
+        aadhaarFront: await upload(formData.get("aadhaarFront")) || "",
+        aadhaarBack: await upload(formData.get("aadhaarBack")) || "",
+        panCardFront: await upload(formData.get("panFront")) || "",
+        residentialElectricityBillUrl: await upload(formData.get("residentialBill")) || "",
+        shopElectricityBillUrl: await upload(formData.get("shopBill")) || "",
+        bankStatementFileUrl: await upload(formData.get("bankStatementFile")) || "",
+        incomeTax2023_24FileUrl: await upload(formData.get("incomeTax2023_24File")) || "",
+        incomeTax2024_25FileUrl: await upload(formData.get("incomeTax2024_25File")) || "",
+        incomeTax2025_26FileUrl: await upload(formData.get("incomeTax2025_26File")) || "",
+        proformaInvoiceFileUrl: await upload(formData.get("proformaInvoiceFile")) || "",
+        cibilReportFileUrl: await upload(formData.get("cibilReportFile")) || "",
         businessCertificatesFiles,
         existingLoanStatementFiles,
 
