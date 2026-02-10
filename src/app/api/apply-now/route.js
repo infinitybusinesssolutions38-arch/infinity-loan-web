@@ -387,7 +387,7 @@ export async function POST(req) {
 
         // Identity Information
         aadhaarNumber,
-        panNumber: formData.get("panCardType"),
+        panNumber: formData.get("panNumber"),
         voterIdNumber: formData.get("voterId"),
         drivingLicense: formData.get("drivingLicense"),
         passportNumber: formData.get("passport"),
