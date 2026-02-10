@@ -1758,7 +1758,7 @@ export default function ServicesHubClient() {
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
               <Button asChild variant="cta" size="xl">
-                <Link href="/register">
+                <Link href="#services">
                   Get Started Free
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
@@ -1864,7 +1864,7 @@ export default function ServicesHubClient() {
           </div>
 
           {activeGroups ? (
-            <div className="space-y-10">
+            <div id="services" className="space-y-10">
               {activeGroups.map((group, groupIndex) => (
                 <div key={group.title} className="space-y-6">
                   <div className="flex items-center justify-between">
@@ -2068,12 +2068,16 @@ export default function ServicesHubClient() {
                 Apply now and get a decision within 48 hours. No hidden fees, no surprises.
               </p>
               <div className="mt-8 flex flex-wrap justify-center gap-4">
-                <ApplyNowCTAButton loanType="Loan" className="shadow-2xl" size="xl">
+                {/* <ApplyNowCTAButton loanType="Loan" className="shadow-2xl" size="xl">
                   Apply for a Loan
                   <ArrowRight className="ml-2 h-5 w-5" />
-                </ApplyNowCTAButton>
+                </ApplyNowCTAButton> */}
+               
+                <Button asChild variant="hero-outline" className="bg-[#F97415] text-white" size="xl">
+                  <Link href="#services">Get Started Now</Link>
+                </Button>
                 <Button asChild variant="hero-outline" size="xl">
-                  <Link href="/register">Check Eligibility</Link>
+                  <Link href="/emi-calculator">Check Eligibility</Link>
                 </Button>
               </div>
             </div>

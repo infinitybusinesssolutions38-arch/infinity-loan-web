@@ -323,7 +323,7 @@ export default function HomePageClient() {
       {
         badge: "Trusted Financial Partner",
         icon: Users,
-        title: "Loan Offers for Salaried Employees",  
+        title: "Loan Offers for Salaried Employees",
 
       },
       {
@@ -1250,10 +1250,13 @@ export default function HomePageClient() {
                 Apply now and get a decision within 48 hours. No hidden fees, no surprises.
               </p>
               <div className="mt-8 flex flex-wrap justify-center gap-4">
-                <ApplyNowCTAButton loanType="Loan" redirectToUnifiedForm={true} className="shadow-2xl" size="xl">
+                {/* <ApplyNowCTAButton loanType="Loan" redirectToUnifiedForm={true} className="shadow-2xl" size="xl">
                   Apply Now
                   <ArrowRight className="ml-2 h-5 w-5" />
-                </ApplyNowCTAButton>
+                </ApplyNowCTAButton> */}
+                <Button asChild variant="hero-outline" className="bg-[#F97415] text-white" size="xl">
+                  <Link href="/services">Get Started Now</Link>
+                </Button>
                 <Button asChild variant="hero-outline" size="xl">
                   <Link href="/contact#contact-form">Talk to an Expert</Link>
                 </Button>
