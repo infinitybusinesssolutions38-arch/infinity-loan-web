@@ -542,7 +542,9 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
         formData.append(`existingLoanStatementFiles_${index}`, file);
       });
 
-      formData.append("loanType", "unified");
+      // Send correct loan type based on form category
+      const loanTypeValue = isCreditCard ? "credit-card" : "unified";
+      formData.append("loanType", loanTypeValue);
 
       const response = await axios.post("/api/apply-now", formData);
       

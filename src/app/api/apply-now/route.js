@@ -4,6 +4,7 @@ import connectDB from "../lib/db";
 import PersonalLoanModel from "../models/personal-loan-schema";
 import BusinessLoanModel from "../models/business-loan-schema";
 import SalariedLoanModel from "../models/salaried-loan-schema";
+import CreditCardModel from "../models/credit-card-schema";
 
 import { v2 as cloudinary } from "cloudinary";
 import nodemailer from "nodemailer";
@@ -80,7 +81,8 @@ export async function POST(req) {
     const totalPersonal = await PersonalLoanModel.countDocuments({});
     const totalBusiness = await BusinessLoanModel.countDocuments({});
     const totalSalaried = await SalariedLoanModel.countDocuments({});
-    const totalApplications = totalPersonal + totalBusiness + totalSalaried;
+    const totalCreditCard = await CreditCardModel.countDocuments({});
+    const totalApplications = totalPersonal + totalBusiness + totalSalaried + totalCreditCard;
     const nextNumber = totalApplications + 1;
     const applicationRef = `application_${String(nextNumber).padStart(4, "0")}`;
 
@@ -279,11 +281,8 @@ export async function POST(req) {
       });
     }
 
-    /* =====================================================
-       ================= UNIFIED =================
-    ===================================================== */
+    // Handle multiple file uploads for unified form
     else if (loanType === "unified") {
-      // Handle multiple file uploads
       const businessCertificatesFiles = [];
       const existingLoanStatementFiles = [];
       
@@ -367,6 +366,65 @@ export async function POST(req) {
         loan_type: "unified",
         application_status: "pending",
         role: "borrower-unified",
+      });
+    }
+
+    /* =====================================================
+       ================= CREDIT CARD =================
+       ===================================================== */
+    else if (loanType === "credit-card") {
+      newApplication = new CreditCardModel({
+        applicationRef,
+
+        // Personal Information
+        firstname: firstName,
+        middleName,
+        lastname: lastName,
+        mobileNumber,
+        alternateMobile,
+        personalEmail,
+        officialEmail: formData.get("officialEmail"),
+
+        // Identity Information
+        aadhaarNumber,
+        panNumber: formData.get("panCardType"),
+        voterIdNumber: formData.get("voterId"),
+        drivingLicense: formData.get("drivingLicense"),
+        passportNumber: formData.get("passport"),
+
+        // Address Information
+        currentResidentialAddress: formData.get("currentResidentialAddress"),
+        currentResidentialPincode: formData.get("currentResidentialPincode"),
+        residentialState: formData.get("residentialState"),
+        residentialCity: formData.get("residentialCity"),
+        currentOfficeAddress: formData.get("currentOfficeAddress"),
+        currentOfficePincode: formData.get("officePincode"),
+        residentialStatus: "Owned", // Default for credit card
+        businessPremisesStatus: "Owned", // Default for credit card
+        yearsAtCurrentResidentialAddress: "1", // Default
+        yearsAtCurrentBusinessAddress: "1", // Default
+
+        // Credit Card Specific Fields
+        bankName: formData.get("bankName"),
+        limitAmount: formData.get("limitAmount"),
+        cardType: formData.get("cardType"),
+
+        // Additional fields
+        loanTypeText: formData.get("loanType"),
+        cibilScoreKnown: formData.get("cibilScoreKnown"),
+        cibilScore: formData.get("cibilScore"),
+        consent: formData.get("consent"),
+
+        // Document uploads
+        aadhaarFront: await upload(formData.get("aadhaarFront")),
+        aadhaarBack: await upload(formData.get("aadhaarBack")),
+        panCardFront: await upload(formData.get("panFront")),
+        residentialElectricityBillUrl: await upload(formData.get("residentialBill")),
+        shopElectricityBillUrl: await upload(formData.get("shopBill")),
+
+        loan_type: "credit-card",
+        application_status: "pending",
+        role: "borrower-credit-card",
       });
     }
 
@@ -464,6 +522,23 @@ export async function POST(req) {
         { label: "Bank Statement", url: savedObject?.bankStatementUrl },
         { label: "Loan Sanction Letter", url: savedObject?.loanSanctionLetterUrl },
         { label: "Shop/Office Electricity Bill", url: savedObject?.shopElectricityBillUrl },
+        // Credit Card specific documents
+        { label: "Bank Statement File", url: savedObject?.bankStatementFileUrl },
+        { label: "Income Tax 2023-24", url: savedObject?.incomeTax2023_24FileUrl },
+        { label: "Income Tax 2024-25", url: savedObject?.incomeTax2024_25FileUrl },
+        { label: "Income Tax 2025-26", url: savedObject?.incomeTax2025_26FileUrl },
+        { label: "Proforma Invoice", url: savedObject?.proformaInvoiceFileUrl },
+        { label: "CIBIL Report", url: savedObject?.cibilReportFileUrl },
+        // Business certificates (multiple files)
+        ...(savedObject?.businessCertificatesFiles || []).map((url, index) => ({
+          label: `Business Certificate ${index + 1}`,
+          url: url
+        })),
+        // Existing loan statements (multiple files)
+        ...(savedObject?.existingLoanStatementFiles || []).map((url, index) => ({
+          label: `Existing Loan Statement ${index + 1}`,
+          url: url
+        }))
       ]
         .filter((d) => typeof d.url === "string" && d.url)
         .map((d) => ({ ...d, url: String(d.url) }));
@@ -580,6 +655,33 @@ export async function POST(req) {
         <div class="detail-item" style="margin-top: 15px;"><div class="detail-label">Loan Purpose</div><div class="detail-value">${escapeHtml(savedObject?.purpose || savedObject?.purposeOfLoan || "-")}</div></div>
       </div>
     </div>
+
+    ${(savedObject?.loan_type === "credit-card" || loanType === "credit-card") ? `
+    <div class="section">
+      <div class="section-title">Credit Card Details</div>
+      <div class="highlight">
+        <div class="detail-item"><div class="detail-label">Bank Name (Credit Card)</div><div class="detail-value"><strong>${escapeHtml(savedObject?.bankName || "-")}</strong></div></div>
+        <div class="detail-item" style="margin-top: 15px;"><div class="detail-label">Limit Amount</div><div class="detail-value"><strong>${escapeHtml(formatCurrencyINR(savedObject?.limitAmount) || savedObject?.limitAmount || "-")}</strong></div></div>
+        <div class="detail-item" style="margin-top: 15px;"><div class="detail-label">Card Type</div><div class="detail-value"><strong>${escapeHtml(savedObject?.cardType || "-")}</strong></div></div>
+      </div>
+    </div>
+    ` : ""}
+
+    ${(savedObject?.loan_type === "business" || loanType === "business") ? `
+    <div class="section">
+      <div class="section-title">Business Details</div>
+      <div class="details-grid">
+        <div class="detail-item"><div class="detail-label">Business Name</div><div class="detail-value">${escapeHtml(savedObject?.businessName || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">Business Type</div><div class="detail-value">${escapeHtml(savedObject?.businessType || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">Business Address</div><div class="detail-value">${escapeHtml(savedObject?.businessAddress || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">Business Vintage (Years)</div><div class="detail-value">${escapeHtml(savedObject?.businessVintageYears || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">Nature of Business</div><div class="detail-value">${escapeHtml(savedObject?.natureOfBusiness || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">Annual Turnover</div><div class="detail-value">${escapeHtml(formatCurrencyINR(savedObject?.annualTurnover) || savedObject?.annualTurnover || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">GST Number</div><div class="detail-value">${escapeHtml(savedObject?.gstNumber || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">Business PAN</div><div class="detail-value">${escapeHtml(savedObject?.businessPan || "-")}</div></div>
+      </div>
+    </div>
+    ` : ""}
 
     <div class="section">
       <div class="section-title">Co-Applicant Information</div>
@@ -806,10 +908,16 @@ export async function POST(req) {
       message: "Application submitted successfully",
     });
   } catch (err) {
-    return NextResponse.json(
-      { success: false, message: err.message },
-      { status: 500 }
-    );
+    // Log full error server-side
+    console.error("apply-now handler error:", err);
+
+    // In development, include stack for easier debugging. In production, only return message.
+    const isProd = String(process.env.NODE_ENV || "").toLowerCase() === "production";
+    const payload = isProd
+      ? { success: false, message: err?.message || "Internal server error" }
+      : { success: false, message: err?.message || "Internal server error", stack: err?.stack };
+
+    return NextResponse.json(payload, { status: 500 });
   }
 }
 
