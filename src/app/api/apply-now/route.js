@@ -30,7 +30,9 @@ const getLoanTypeName = (loanType) => {
     'professional': 'Professional Loan',
     'doctor': 'Doctor Loan',
     'ca': 'CA Loan',
-    'architect': 'Architect Loan'
+    'architect': 'Architect Loan',
+    'unified': 'Business Loan', // Unified forms are business loans
+    'credit-card': 'Credit Card Loan'
   };
   return loanTypeMap[loanType] || loanType.charAt(0).toUpperCase() + loanType.slice(1) + ' Loan';
 };
@@ -113,7 +115,7 @@ export async function POST(req) {
     const totalCreditCard = await CreditCardModel.countDocuments({});
     const totalApplications = totalPersonal + totalBusiness + totalSalaried + totalCreditCard;
     const nextNumber = totalApplications + 1;
-    const applicationRef = `application_${String(nextNumber).padStart(4, "0")}`;
+    const applicationRef = `APPLICATION_${String(nextNumber).padStart(4, "0")}`;
 
     /* =====================================================
        BASIC VALIDATION
@@ -583,41 +585,46 @@ export async function POST(req) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Loan Application Confirmation</title>
+  <title>New Loan Application - ${getLoanTypeName(loanType)}</title>
   <style>
-    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f4f4f4; }
-    .container { max-width: 800px; margin: 20px auto; background-color: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-    .header { border-bottom: 3px solid #007bff; padding-bottom: 20px; margin-bottom: 30px; }
-    .header h1 { color: #007bff; margin: 0 0 10px 0; font-size: 28px; }
-    .reference { color: #666; font-size: 14px; }
-    .section { margin-bottom: 30px; }
-    .section-title { background-color: #f8f9fa; padding: 12px; border-left: 4px solid #007bff; font-weight: bold; color: #333; margin-bottom: 15px; }
-    .details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-    .detail-item { margin-bottom: 12px; }
-    .detail-label { font-weight: bold; color: #555; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; }
-    .detail-value { color: #333; font-size: 14px; margin-top: 4px; word-break: break-word; }
-    .documents-list { background-color: #f8f9fa; padding: 15px; border-radius: 4px; margin-top: 10px; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; background-color: #f8f9fa; margin: 0; padding: 20px; }
+    .container { max-width: 900px; margin: 0 auto; background-color: #ffffff; padding: 40px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+    .header { background: linear-gradient(135deg, #F97415 0%, #ff8c42 100%); padding: 40px; border-radius: 12px 12px 0 0; color: white; text-align: center; margin: -40px -40px 30px -40px; }
+    .header h1 { margin: 0; color: white; font-size: 32px; font-weight: 600; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+    .header p { margin: 10px 0 0 0; color: rgba(255,255,255,0.9); font-size: 16px; }
+    .reference { background: rgba(255,255,255,0.2); padding: 8px 16px; border-radius: 20px; display: inline-block; margin-top: 15px; font-weight: 500; }
+    .status-badge { display: inline-block; background-color: #fff3cd; color: #856404; padding: 10px 16px; border-radius: 25px; font-weight: 600; margin-bottom: 25px; border: 1px solid #ffeaa7; }
+    .section { margin-bottom: 35px; }
+    .section-title { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 15px 20px; border-left: 4px solid #F97415; font-weight: 600; color: #2c3e50; margin-bottom: 20px; border-radius: 0 8px 8px 0; font-size: 18px; }
+    .details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
+    .detail-item { margin-bottom: 15px; }
+    .detail-label { font-weight: 600; color: #495057; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; }
+    .detail-value { color: #2c3e50; font-size: 15px; margin-top: 4px; word-break: break-word; font-weight: 500; }
+    .documents-list { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 20px; border-radius: 8px; margin-top: 15px; border: 1px solid #dee2e6; }
+    .documents-list h4 { margin: 0 0 15px 0; color: #2c3e50; font-size: 16px; }
     .documents-list ul { margin: 0; padding-left: 20px; }
-    .documents-list li { margin-bottom: 8px; font-size: 14px; }
-    .documents-list a { color: #007bff; text-decoration: none; }
+    .documents-list li { margin-bottom: 10px; font-size: 14px; }
+    .documents-list a { color: #F97415; text-decoration: none; font-weight: 500; }
     .documents-list a:hover { text-decoration: underline; }
-    .footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; font-size: 13px; color: #666; }
-    .status-badge { display: inline-block; background-color: #fff3cd; color: #856404; padding: 8px 12px; border-radius: 4px; font-weight: bold; margin-bottom: 20px; }
-    .highlight { background-color: #fff8dc; padding: 15px; border-radius: 4px; margin-bottom: 20px; border-left: 4px solid #ffc107; }
-    @media (max-width: 600px) { .details-grid { grid-template-columns: 1fr; } .container { padding: 20px; } }
+    .footer { margin-top: 40px; padding-top: 25px; border-top: 1px solid #e9ecef; font-size: 13px; color: #6c757d; text-align: center; }
+    .highlight { background: linear-gradient(135deg, #fff4e6 0%, #ffe8cc 100%); padding: 20px; border-radius: 8px; margin-bottom: 25px; border-left: 4px solid #F97415; }
+    .loan-type-badge { background: #28a745; color: white; padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 600; display: inline-block; margin: 10px 0; }
+    .priority-info { background: #d1ecf1; color: #0c5460; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #17a2b8; }
+    @media (max-width: 600px) { .details-grid { grid-template-columns: 1fr; } .container { padding: 20px; } .header { margin: -20px -20px 20px -20px; padding: 30px 20px; } }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <h1>Loan Application Received</h1>
-      <p class="reference">Reference ID: <strong>${escapeHtml(applicationRef)}</strong></p>
+      <h1>New Loan Application Received</h1>
+      <p>${getLoanTypeName(loanType)} - Priority Review Required</p>
+      <div class="reference">Application ID: ${escapeHtml(applicationRef)}</div>
     </div>
 
-    <div class="status-badge">Status: PENDING REVIEW</div>
+    <div class="status-badge">📋 Status: PENDING REVIEW</div>
 
     <div class="section">
-      <div class="section-title">Personal Information</div>
+      <div class="section-title">👤 Applicant Information</div>
       <div class="details-grid">
         <div class="detail-item"><div class="detail-label">Full Name</div><div class="detail-value">${escapeHtml(adminFullName.trim() || "-")}</div></div>
         <div class="detail-item"><div class="detail-label">Date of Birth</div><div class="detail-value">${escapeHtml(savedObject?.dob || "-")}</div></div>
@@ -625,6 +632,36 @@ export async function POST(req) {
         <div class="detail-item"><div class="detail-label">Marital Status</div><div class="detail-value">${escapeHtml(savedObject?.maritalStatus || "-")}</div></div>
         <div class="detail-item"><div class="detail-label">PAN Number</div><div class="detail-value">${escapeHtml(savedObject?.panNumber || "-")}</div></div>
         <div class="detail-item"><div class="detail-label">Aadhaar Number</div><div class="detail-value">${escapeHtml(savedObject?.aadhaarNumber || "-")}</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">📞 Contact Information</div>
+      <div class="details-grid">
+        <div class="detail-item"><div class="detail-label">Personal Email</div><div class="detail-value">${escapeHtml(personalEmail || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">Official Email</div><div class="detail-value">${escapeHtml(savedObject?.officialEmail || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">Primary Mobile</div><div class="detail-value">${escapeHtml(mobileNumber || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">WhatsApp Number</div><div class="detail-value">${escapeHtml(savedObject?.whatsappNumber || "-")}</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">🏠 Address Information</div>
+      <div class="details-grid">
+        <div class="detail-item"><div class="detail-label">Residential Address</div><div class="detail-value">${escapeHtml(savedObject?.currentResidentialAddress || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">Residential Pincode</div><div class="detail-value">${escapeHtml(savedObject?.currentResidentialPincode || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">Office Address</div><div class="detail-value">${escapeHtml(savedObject?.currentOfficeAddress || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">Office Pincode</div><div class="detail-value">${escapeHtml(savedObject?.currentOfficePincode || "-")}</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">💼 Loan Details</div>
+      <div class="details-grid">
+        <div class="detail-item"><div class="detail-label">Loan Type</div><div class="detail-value"><span class="loan-type-badge">${getLoanTypeName(loanType)}</span></div></div>
+        <div class="detail-item"><div class="detail-label">Required Amount</div><div class="detail-value">${escapeHtml(formatCurrencyINR(savedObject?.requiredLoanAmount || savedObject?.loanAmountRequired) || (savedObject?.requiredLoanAmount || savedObject?.loanAmountRequired || "-"))}</div></div>
+        <div class="detail-item"><div class="detail-label">Preferred Tenure</div><div class="detail-value">${escapeHtml(savedObject?.preferredTenure || savedObject?.preferredLoanTenureMonths || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">Purpose</div><div class="detail-value">${escapeHtml(savedObject?.purpose || savedObject?.purposeOfLoan || "-")}</div></div>
       </div>
     </div>
 
@@ -754,6 +791,7 @@ export async function POST(req) {
           savedObject?.loanAmountRequired ||
           formData.get("requiredLoanAmount") ||
           formData.get("loanAmountRequired") ||
+          savedObject?.requiredLoanAmount ||
           "";
 
         const applicantEmailResult = await sendLoanApplicationConfirmationEmail(applicantTo, {
@@ -803,81 +841,7 @@ export async function POST(req) {
         if (directorEmail) adminRecipients.push(directorEmail);
 
         if (adminRecipients.length > 0) {
-          const adminHtmlContent = `
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-              <div style="background: linear-gradient(135deg, #F97415 0%, #E06410 100%); padding: 30px; border-radius: 10px; color: white; margin-bottom: 30px;">
-                <h1 style="margin: 0;">New Loan Application</h1>
-                <p style="margin: 10px 0 0 0;">Action Required - Review & Process</p>
-              </div>
-
-              <div style="color: #333; line-height: 1.6;">
-                <p>A new loan application has been submitted on the Infinity Loans platform. Please review the details below and take appropriate action.</p>
-
-                <div style="background: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
-                  <h3 style="margin-top: 0; color: #F97415;">Application Details:</h3>
-                  <table style="width: 100%; border-collapse: collapse;">
-                    <tr style="border-bottom: 1px solid #ddd;">
-                      <td style="padding: 10px 0; font-weight: bold; width: 30%;">Application ID:</td>
-                      <td style="padding: 10px 0;">${applicationRef}</td>
-                    </tr>
-                    <tr style="border-bottom: 1px solid #ddd;">
-                      <td style="padding: 10px 0; font-weight: bold;">Applicant Name:</td>
-                      <td style="padding: 10px 0;">${firstName} ${middleName} ${lastName}</td>
-                    </tr>
-                    <tr style="border-bottom: 1px solid #ddd;">
-                      <td style="padding: 10px 0; font-weight: bold;">Email:</td>
-                      <td style="padding: 10px 0;"><a href="mailto:${personalEmail}">${personalEmail}</a></td>
-                    </tr>
-                    <tr style="border-bottom: 1px solid #ddd;">
-                      <td style="padding: 10px 0; font-weight: bold;">Mobile:</td>
-                      <td style="padding: 10px 0;"><a href="tel:${mobileNumber}">${mobileNumber}</a></td>
-                    </tr>
-                    <tr style="border-bottom: 1px solid #ddd;">
-                      <td style="padding: 10px 0; font-weight: bold;">Loan Type:</td>
-                      <td style="padding: 10px 0;">${getLoanTypeName(loanType)}</td>
-                    </tr>
-                    ${jobBusiness ? `
-                    <tr style="border-bottom: 1px solid #ddd;">
-                      <td style="padding: 10px 0; font-weight: bold;">Employment Status:</td>
-                      <td style="padding: 10px 0;">${jobBusiness}</td>
-                    </tr>
-                    ` : ''}
-                    <tr style="border-bottom: 1px solid #ddd;">
-                      <td style="padding: 10px 0; font-weight: bold;">Loan Amount:</td>
-                      <td style="padding: 10px 0;">₹${loanAmount}</td>
-                    </tr>
-                    <tr>
-                      <td style="padding: 10px 0; font-weight: bold;">Submitted:</td>
-                      <td style="padding: 10px 0;">${new Date().toLocaleString()}</td>
-                    </tr>
-                  </table>
-                </div>
-
-                <div style="margin: 20px 0; padding: 15px; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 4px;">
-                  <strong>Next Steps:</strong>
-                  <ul style="margin: 10px 0; padding-left: 20px;">
-                    <li>Review application details</li>
-                    <li>Verify uploaded documents</li>
-                    <li>Conduct credit check if needed</li>
-                    <li>Contact applicant for clarification</li>
-                    <li>Approve/Reject application in dashboard</li>
-                  </ul>
-                </div>
-
-                <p>Access the loan management dashboard to process this application.</p>
-
-                <p>
-                  Best regards,<br/>
-                  <strong>Infinity Loans System</strong>
-                </p>
-              </div>
-
-              <div style="border-top: 1px solid #ddd; margin-top: 30px; padding-top: 20px; text-align: center; color: #666; font-size: 12px;">
-                <p>© ${new Date().getFullYear()} Infinity Loan Services. All rights reserved.</p>
-                <p>This is an automated email from your loan application system.</p>
-              </div>
-            </div>
-          `;
+          const adminHtmlContent = adminHtml;
 
           // Send to all admin emails
           const emailPromises = adminRecipients.map(email => 
@@ -918,7 +882,7 @@ export async function POST(req) {
             from,
             to: otherAdmins,
             subject: adminSubject,
-            text: adminText,
+            html: adminHtml,
             replyTo: supportEmail || fromAddress,
           });
           }
