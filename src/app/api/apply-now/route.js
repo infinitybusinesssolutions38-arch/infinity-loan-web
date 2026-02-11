@@ -489,6 +489,19 @@ export async function POST(req) {
 
     const saved = await newApplication.save();
 
+    // Calculate display values for all email templates
+    const loanAmount =
+      saved?.requiredLoanAmount ||
+      saved?.loanAmountRequired ||
+      formData.get("requiredLoanAmount") ||
+      formData.get("loanAmountRequired") ||
+      "";
+
+    // Use loanTypeText for unified forms, otherwise use getLoanTypeName
+    const displayLoanType = (loanType === "unified" && saved?.loanTypeText) 
+      ? saved.loanTypeText 
+      : getLoanTypeName(loanType);
+
     // Email notifications (non-blocking)
     try {
       const companyName = process.env.COMPANY_NAME || "Infinity Loan Services";
@@ -559,35 +572,35 @@ export async function POST(req) {
       };
 
       const adminFullName =
-        String(savedObject?.firstName || savedObject?.firstname || firstName || "").trim() +
-        (savedObject?.middleName || middleName ? ` ${String(savedObject?.middleName || middleName).trim()}` : "") +
-        (savedObject?.lastName || savedObject?.lastname || lastName ? ` ${String(savedObject?.lastName || savedObject?.lastname || lastName).trim()}` : "");
+        String(saved?.firstName || saved?.firstname || firstName || "").trim() +
+        (saved?.middleName || middleName ? ` ${String(saved?.middleName || middleName).trim()}` : "") +
+        (saved?.lastName || saved?.lastname || lastName ? ` ${String(saved?.lastName || saved?.lastname || lastName).trim()}` : "");
 
       const docLinks = [
-        { label: "Applicant Photo", url: savedObject?.applicantPhotoUrl },
-        { label: "PAN Card", url: savedObject?.panPhotoUrl || savedObject?.panCardFront },
-        { label: "Aadhaar Card", url: savedObject?.aadhaarPhotoUrl || savedObject?.aadhaarFront },
-        { label: "Aadhaar Card (Back)", url: savedObject?.aadhaarBackPhotoUrl || savedObject?.aadhaarBack },
-        { label: "Residence Proof", url: savedObject?.residencePhotoUrl || savedObject?.residentialElectricityBillUrl },
-        { label: "Office ID", url: savedObject?.officeIdPhotoUrl },
-        { label: "Salary Slips", url: savedObject?.salarySlipsUrl },
-        { label: "Bank Statement", url: savedObject?.bankStatementUrl },
-        { label: "Loan Sanction Letter", url: savedObject?.loanSanctionLetterUrl },
-        { label: "Shop/Office Electricity Bill", url: savedObject?.shopElectricityBillUrl },
+        { label: "Applicant Photo", url: saved?.applicantPhotoUrl },
+        { label: "PAN Card", url: saved?.panPhotoUrl || saved?.panCardFront },
+        { label: "Aadhaar Card", url: saved?.aadhaarPhotoUrl || saved?.aadhaarFront },
+        { label: "Aadhaar Card (Back)", url: saved?.aadhaarBackPhotoUrl || saved?.aadhaarBack },
+        { label: "Residence Proof", url: saved?.residencePhotoUrl || saved?.residentialElectricityBillUrl },
+        { label: "Office ID", url: saved?.officeIdPhotoUrl },
+        { label: "Salary Slips", url: saved?.salarySlipsUrl },
+        { label: "Bank Statement", url: saved?.bankStatementUrl },
+        { label: "Loan Sanction Letter", url: saved?.loanSanctionLetterUrl },
+        { label: "Shop/Office Electricity Bill", url: saved?.shopElectricityBillUrl },
         // Credit Card specific documents
-        { label: "Bank Statement File", url: savedObject?.bankStatementFileUrl },
-        { label: "Income Tax 2023-24", url: savedObject?.incomeTax2023_24FileUrl },
-        { label: "Income Tax 2024-25", url: savedObject?.incomeTax2024_25FileUrl },
-        { label: "Income Tax 2025-26", url: savedObject?.incomeTax2025_26FileUrl },
-        { label: "Proforma Invoice", url: savedObject?.proformaInvoiceFileUrl },
-        { label: "CIBIL Report", url: savedObject?.cibilReportFileUrl },
+        { label: "Bank Statement File", url: saved?.bankStatementFileUrl },
+        { label: "Income Tax 2023-24", url: saved?.incomeTax2023_24FileUrl },
+        { label: "Income Tax 2024-25", url: saved?.incomeTax2024_25FileUrl },
+        { label: "Income Tax 2025-26", url: saved?.incomeTax2025_26FileUrl },
+        { label: "Proforma Invoice", url: saved?.proformaInvoiceFileUrl },
+        { label: "CIBIL Report", url: saved?.cibilReportFileUrl },
         // Business certificates (multiple files)
-        ...(savedObject?.businessCertificatesFiles || []).map((url, index) => ({
+        ...(saved?.businessCertificatesFiles || []).map((url, index) => ({
           label: `Business Certificate ${index + 1}`,
           url: url
         })),
         // Existing loan statements (multiple files)
-        ...(savedObject?.existingLoanStatementFiles || []).map((url, index) => ({
+        ...(saved?.existingLoanStatementFiles || []).map((url, index) => ({
           label: `Existing Loan Statement ${index + 1}`,
           url: url
         }))
@@ -643,94 +656,95 @@ export async function POST(req) {
       <div class="section-title">Personal Information</div>
       <div class="details-grid">
         <div class="detail-item"><div class="detail-label">Full Name</div><div class="detail-value">${escapeHtml(adminFullName.trim() || "-")}</div></div>
-        <div class="detail-item"><div class="detail-label">Date of Birth</div><div class="detail-value">${escapeHtml(savedObject?.dob || "-")}</div></div>
-        <div class="detail-item"><div class="detail-label">Gender</div><div class="detail-value">${escapeHtml(savedObject?.gender || "-")}</div></div>
-        <div class="detail-item"><div class="detail-label">Marital Status</div><div class="detail-value">${escapeHtml(savedObject?.maritalStatus || "-")}</div></div>
-        <div class="detail-item"><div class="detail-label">PAN Number</div><div class="detail-value">${escapeHtml(savedObject?.panNumber || "-")}</div></div>
-        <div class="detail-item"><div class="detail-label">Aadhaar Number</div><div class="detail-value">${escapeHtml(savedObject?.aadhaarNumber || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">Date of Birth</div><div class="detail-value">${escapeHtml(saved?.dob || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">Gender</div><div class="detail-value">${escapeHtml(saved?.gender || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">Marital Status</div><div class="detail-value">${escapeHtml(saved?.maritalStatus || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">PAN Number</div><div class="detail-value">${escapeHtml(saved?.panNumber || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">Aadhaar Number</div><div class="detail-value">${escapeHtml(saved?.aadhaarNumber || "-")}</div></div>
       </div>
     </div>
 
     <div class="section">
       <div class="section-title">Contact Information</div>
       <div class="details-grid">
-        <div class="detail-item"><div class="detail-label">Primary Email</div><div class="detail-value">${escapeHtml(savedObject?.personalEmail || personalEmail || "-")}</div></div>
-        <div class="detail-item"><div class="detail-label">Official Email</div><div class="detail-value">${escapeHtml(savedObject?.officialEmail || "-")}</div></div>
-        <div class="detail-item"><div class="detail-label">Mobile Number</div><div class="detail-value">${escapeHtml(savedObject?.mobileNumber || mobileNumber || "-")}</div></div>
-        <div class="detail-item"><div class="detail-label">WhatsApp Number</div><div class="detail-value">${escapeHtml(savedObject?.whatsappNumber || "-")}</div></div>
-        <div class="detail-item"><div class="detail-label">Alternate Mobile</div><div class="detail-value">${escapeHtml(savedObject?.alternateMobile || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">Primary Email</div><div class="detail-value">${escapeHtml(saved?.personalEmail || personalEmail || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">Official Email</div><div class="detail-value">${escapeHtml(saved?.officialEmail || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">Mobile Number</div><div class="detail-value">${escapeHtml(saved?.mobileNumber || mobileNumber || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">WhatsApp Number</div><div class="detail-value">${escapeHtml(saved?.whatsappNumber || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">Alternate Mobile</div><div class="detail-value">${escapeHtml(saved?.alternateMobile || "-")}</div></div>
       </div>
     </div>
 
     <div class="section">
       <div class="section-title">Residential Address</div>
       <div class="details-grid">
-        <div class="detail-item"><div class="detail-label">Address</div><div class="detail-value">${escapeHtml(savedObject?.currentResidentialAddress || "-")}</div></div>
-        <div class="detail-item"><div class="detail-label">Pincode</div><div class="detail-value">${escapeHtml(savedObject?.currentResidentialPincode || "-")}</div></div>
-        <div class="detail-item"><div class="detail-label">City</div><div class="detail-value">${escapeHtml(savedObject?.city || "-")}</div></div>
-        <div class="detail-item"><div class="detail-label">State</div><div class="detail-value">${escapeHtml(savedObject?.state || "-")}</div></div>
-        <div class="detail-item"><div class="detail-label">Residence Type</div><div class="detail-value">${escapeHtml(savedObject?.residenceType || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">Address</div><div class="detail-value">${escapeHtml(saved?.currentResidentialAddress || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">Pincode</div><div class="detail-value">${escapeHtml(saved?.currentResidentialPincode || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">City</div><div class="detail-value">${escapeHtml(saved?.residentialCity || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">State</div><div class="detail-value">${escapeHtml(saved?.residentialState || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">Residence Type</div><div class="detail-value">${escapeHtml(saved?.residentialStatus || "-")}</div></div>
       </div>
     </div>
 
     <div class="section">
       <div class="section-title">Employment Information</div>
       <div class="details-grid">
-        <div class="detail-item"><div class="detail-label">Company Name</div><div class="detail-value">${escapeHtml(savedObject?.companyName || "-")}</div></div>
-        <div class="detail-item"><div class="detail-label">Organization Type</div><div class="detail-value">${escapeHtml(savedObject?.organizationType || "-")}</div></div>
-        <div class="detail-item"><div class="detail-label">Industry</div><div class="detail-value">${escapeHtml(savedObject?.industry || "-")}</div></div>
-        <div class="detail-item"><div class="detail-label">Designation</div><div class="detail-value">${escapeHtml(savedObject?.designation || "-")}</div></div>
-        <div class="detail-item"><div class="detail-label">Employment Type</div><div class="detail-value">${escapeHtml(savedObject?.employmentType || "-")}</div></div>
-        <div class="detail-item"><div class="detail-label">Date of Joining</div><div class="detail-value">${escapeHtml(savedObject?.dateOfJoining || "-")}</div></div>
-        <div class="detail-item"><div class="detail-label">Office Location</div><div class="detail-value">${escapeHtml(savedObject?.officeLocation || "-")}</div></div>
-        <div class="detail-item"><div class="detail-label">Office Pincode</div><div class="detail-value">${escapeHtml(savedObject?.officePincode || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">Company Name</div><div class="detail-value">${escapeHtml(saved?.companyName || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">Organization Type</div><div class="detail-value">${escapeHtml(saved?.organizationType || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">Industry</div><div class="detail-value">${escapeHtml(saved?.industry || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">Designation</div><div class="detail-value">${escapeHtml(saved?.designation || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">Employment Type</div><div class="detail-value">${escapeHtml(saved?.employmentType || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">Date of Joining</div><div class="detail-value">${escapeHtml(saved?.dateOfJoining || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">Office Location</div><div class="detail-value">${escapeHtml(saved?.officeLocation || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">Office Pincode</div><div class="detail-value">${escapeHtml(saved?.officePincode || "-")}</div></div>
       </div>
     </div>
 
     <div class="section">
       <div class="section-title">Financial Information</div>
       <div class="details-grid">
-        <div class="detail-item"><div class="detail-label">Monthly Net Salary</div><div class="detail-value">${escapeHtml(formatCurrencyINR(savedObject?.monthlyNetSalary) || savedObject?.monthlyNetSalary || "-")}</div></div>
-        <div class="detail-item"><div class="detail-label">Salary Credit Mode</div><div class="detail-value">${escapeHtml(savedObject?.salaryCreditMode || "-")}</div></div>
-        <div class="detail-item"><div class="detail-label">Salary Account Bank</div><div class="detail-value">${escapeHtml(savedObject?.salaryAccountBankName || "-")}</div></div>
-        <div class="detail-item"><div class="detail-label">Existing Loans</div><div class="detail-value">${escapeHtml(savedObject?.numberOfExistingLoans ? String(savedObject.numberOfExistingLoans) : "None")}</div></div>
-        <div class="detail-item"><div class="detail-label">CIBIL Score</div><div class="detail-value">${escapeHtml(savedObject?.cibilScore || "Not Available")}</div></div>
+        <div class="detail-item"><div class="detail-label">Monthly Net Salary</div><div class="detail-value">${escapeHtml(formatCurrencyINR(saved?.monthlyNetSalary) || saved?.monthlyNetSalary || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">Salary Credit Mode</div><div class="detail-value">${escapeHtml(saved?.salaryCreditMode || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">Salary Account Bank</div><div class="detail-value">${escapeHtml(saved?.salaryAccountBankName || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">Existing Loans</div><div class="detail-value">${escapeHtml(saved?.numberOfExistingLoans ? String(saved.numberOfExistingLoans) : "None")}</div></div>
+        <div class="detail-item"><div class="detail-label">CIBIL Score</div><div class="detail-value">${escapeHtml(saved?.cibilScore || "Not Available")}</div></div>
+        <div class="detail-item"><div class="detail-label">CIBIL Issues</div><div class="detail-value">${escapeHtml(saved?.cibilIssues || "None")}</div></div>
       </div>
     </div>
 
     <div class="section">
       <div class="section-title">Loan Details</div>
       <div class="highlight">
-        <div class="detail-item"><div class="detail-label">Loan Type</div><div class="detail-value"><strong>${escapeHtml(String(savedObject?.loan_type || loanType || "").toUpperCase() || "-")}</strong></div></div>
-        <div class="detail-item" style="margin-top: 15px;"><div class="detail-label">Required Loan Amount</div><div class="detail-value"><strong>${escapeHtml(formatCurrencyINR(savedObject?.requiredLoanAmount || savedObject?.loanAmountRequired) || (savedObject?.requiredLoanAmount || savedObject?.loanAmountRequired || "-"))}</strong></div></div>
-        <div class="detail-item" style="margin-top: 15px;"><div class="detail-label">Preferred Tenure</div><div class="detail-value"><strong>${escapeHtml(savedObject?.preferredTenure || savedObject?.preferredLoanTenureMonths || "-")}</strong></div></div>
-        <div class="detail-item" style="margin-top: 15px;"><div class="detail-label">Loan Purpose</div><div class="detail-value">${escapeHtml(savedObject?.purpose || savedObject?.purposeOfLoan || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">Loan Type</div><div class="detail-value"><strong>${escapeHtml((saved?.loan_type === "unified" && saved?.loanTypeText) ? saved.loanTypeText : String(saved?.loan_type || loanType || "").toUpperCase() || "-")}</strong></div></div>
+        <div class="detail-item" style="margin-top: 15px;"><div class="detail-label">Required Loan Amount</div><div class="detail-value"><strong>${escapeHtml(formatCurrencyINR(saved?.requiredLoanAmount || saved?.loanAmountRequired) || (saved?.requiredLoanAmount || saved?.loanAmountRequired || "-"))}</strong></div></div>
+        <div class="detail-item" style="margin-top: 15px;"><div class="detail-label">Preferred Tenure</div><div class="detail-value"><strong>${escapeHtml(saved?.preferredTenure || saved?.preferredLoanTenureMonths || "-")}</strong></div></div>
+        <div class="detail-item" style="margin-top: 15px;"><div class="detail-label">Loan Purpose</div><div class="detail-value">${escapeHtml(saved?.purpose || saved?.purposeOfLoan || "-")}</div></div>
       </div>
     </div>
 
-    ${(savedObject?.loan_type === "credit-card" || loanType === "credit-card") ? `
+    ${(saved?.loan_type === "credit-card" || loanType === "credit-card") ? `
     <div class="section">
       <div class="section-title">Credit Card Details</div>
       <div class="highlight">
-        <div class="detail-item"><div class="detail-label">Bank Name (Credit Card)</div><div class="detail-value"><strong>${escapeHtml(savedObject?.bankName || "-")}</strong></div></div>
-        <div class="detail-item" style="margin-top: 15px;"><div class="detail-label">Limit Amount</div><div class="detail-value"><strong>${escapeHtml(formatCurrencyINR(savedObject?.limitAmount) || savedObject?.limitAmount || "-")}</strong></div></div>
-        <div class="detail-item" style="margin-top: 15px;"><div class="detail-label">Card Type</div><div class="detail-value"><strong>${escapeHtml(savedObject?.cardType || "-")}</strong></div></div>
+        <div class="detail-item"><div class="detail-label">Bank Name (Credit Card)</div><div class="detail-value"><strong>${escapeHtml(saved?.bankName || "-")}</strong></div></div>
+        <div class="detail-item" style="margin-top: 15px;"><div class="detail-label">Limit Amount</div><div class="detail-value"><strong>${escapeHtml(formatCurrencyINR(saved?.limitAmount) || saved?.limitAmount || "-")}</strong></div></div>
+        <div class="detail-item" style="margin-top: 15px;"><div class="detail-label">Card Type</div><div class="detail-value"><strong>${escapeHtml(saved?.cardType || "-")}</strong></div></div>
       </div>
     </div>
     ` : ""}
 
-    ${(savedObject?.loan_type === "business" || loanType === "business") ? `
+    ${(saved?.loan_type === "business" || loanType === "business") ? `
     <div class="section">
       <div class="section-title">Business Details</div>
       <div class="details-grid">
-        <div class="detail-item"><div class="detail-label">Business Name</div><div class="detail-value">${escapeHtml(savedObject?.businessName || "-")}</div></div>
-        <div class="detail-item"><div class="detail-label">Business Type</div><div class="detail-value">${escapeHtml(savedObject?.businessType || "-")}</div></div>
-        <div class="detail-item"><div class="detail-label">Business Address</div><div class="detail-value">${escapeHtml(savedObject?.businessAddress || "-")}</div></div>
-        <div class="detail-item"><div class="detail-label">Business Vintage (Years)</div><div class="detail-value">${escapeHtml(savedObject?.businessVintageYears || "-")}</div></div>
-        <div class="detail-item"><div class="detail-label">Nature of Business</div><div class="detail-value">${escapeHtml(savedObject?.natureOfBusiness || "-")}</div></div>
-        <div class="detail-item"><div class="detail-label">Annual Turnover</div><div class="detail-value">${escapeHtml(formatCurrencyINR(savedObject?.annualTurnover) || savedObject?.annualTurnover || "-")}</div></div>
-        <div class="detail-item"><div class="detail-label">GST Number</div><div class="detail-value">${escapeHtml(savedObject?.gstNumber || "-")}</div></div>
-        <div class="detail-item"><div class="detail-label">Business PAN</div><div class="detail-value">${escapeHtml(savedObject?.businessPan || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">Business Name</div><div class="detail-value">${escapeHtml(saved?.businessName || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">Business Type</div><div class="detail-value">${escapeHtml(saved?.businessType || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">Business Address</div><div class="detail-value">${escapeHtml(saved?.businessAddress || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">Business Vintage (Years)</div><div class="detail-value">${escapeHtml(saved?.businessVintageYears || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">Nature of Business</div><div class="detail-value">${escapeHtml(saved?.natureOfBusiness || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">Annual Turnover</div><div class="detail-value">${escapeHtml(formatCurrencyINR(saved?.annualTurnover) || saved?.annualTurnover || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">GST Number</div><div class="detail-value">${escapeHtml(saved?.gstNumber || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">Business PAN</div><div class="detail-value">${escapeHtml(saved?.businessPan || "-")}</div></div>
       </div>
     </div>
     ` : ""}
@@ -738,9 +752,9 @@ export async function POST(req) {
     <div class="section">
       <div class="section-title">Co-Applicant Information</div>
       <div class="details-grid">
-        <div class="detail-item"><div class="detail-label">Co-Applicant Name</div><div class="detail-value">${escapeHtml(savedObject?.coApplicantName || "-")}</div></div>
-        <div class="detail-item"><div class="detail-label">Relation</div><div class="detail-value">${escapeHtml(savedObject?.coApplicantRelation || "-")}</div></div>
-        <div class="detail-item"><div class="detail-label">Employment Type</div><div class="detail-value">${escapeHtml(savedObject?.coApplicantEmploymentType || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">Co-Applicant Name</div><div class="detail-value">${escapeHtml(saved?.coApplicantName || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">Relation</div><div class="detail-value">${escapeHtml(saved?.coApplicantRelation || "-")}</div></div>
+        <div class="detail-item"><div class="detail-label">Employment Type</div><div class="detail-value">${escapeHtml(saved?.coApplicantEmploymentType || "-")}</div></div>
       </div>
     </div>
 
@@ -772,18 +786,11 @@ export async function POST(req) {
           year: "numeric",
         });
 
-        const loanAmount =
-          savedObject?.requiredLoanAmount ||
-          savedObject?.loanAmountRequired ||
-          formData.get("requiredLoanAmount") ||
-          formData.get("loanAmountRequired") ||
-          "";
-
         const applicantEmailResult = await sendLoanApplicationConfirmationEmail(applicantTo, {
           customerName: String(firstName || "").trim() || "Customer",
           applicationNumber: applicationRef,
           applicationDate,
-          loanType: getLoanTypeName(loanType),
+          loanType: displayLoanType,
           loanAmount: String(loanAmount || "").trim(),
         });
 
@@ -803,7 +810,7 @@ export async function POST(req) {
             customerName: String(firstName || "").trim() || "Customer",
             applicationNumber: applicationRef,
             applicationDate,
-            loanType: getLoanTypeName(loanType),
+            loanType: displayLoanType,
             loanAmount: String(loanAmount || "").trim(),
           });
           if (!officialRes?.success) {
@@ -857,7 +864,7 @@ export async function POST(req) {
                     </tr>
                     <tr style="border-bottom: 1px solid #ddd;">
                       <td style="padding: 10px 0; font-weight: bold;">Loan Type:</td>
-                      <td style="padding: 10px 0;">${getLoanTypeName(loanType)}</td>
+                      <td style="padding: 10px 0;">${displayLoanType}</td>
                     </tr>
                     ${jobBusiness ? `
                     <tr style="border-bottom: 1px solid #ddd;">
@@ -869,6 +876,36 @@ export async function POST(req) {
                       <td style="padding: 10px 0; font-weight: bold;">Loan Amount:</td>
                       <td style="padding: 10px 0;">₹${loanAmount}</td>
                     </tr>
+                    ${saved?.cibilScore ? `
+                    <tr style="border-bottom: 1px solid #ddd;">
+                      <td style="padding: 10px 0; font-weight: bold;">CIBIL Score:</td>
+                      <td style="padding: 10px 0;">${saved.cibilScore}</td>
+                    </tr>
+                    ` : ''}
+                    ${saved?.cibilIssues ? `
+                    <tr style="border-bottom: 1px solid #ddd;">
+                      <td style="padding: 10px 0; font-weight: bold;">CIBIL Issues:</td>
+                      <td style="padding: 10px 0;">${saved.cibilIssues}</td>
+                    </tr>
+                    ` : ''}
+                    ${saved?.coApplicantName ? `
+                    <tr style="border-bottom: 1px solid #ddd;">
+                      <td style="padding: 10px 0; font-weight: bold;">Co-Applicant Name:</td>
+                      <td style="padding: 10px 0;">${saved.coApplicantName}</td>
+                    </tr>
+                    ` : ''}
+                    ${saved?.coApplicantRelation ? `
+                    <tr style="border-bottom: 1px solid #ddd;">
+                      <td style="padding: 10px 0; font-weight: bold;">Co-Applicant Relation:</td>
+                      <td style="padding: 10px 0;">${saved.coApplicantRelation}</td>
+                    </tr>
+                    ` : ''}
+                    ${saved?.coApplicantEmploymentType ? `
+                    <tr style="border-bottom: 1px solid #ddd;">
+                      <td style="padding: 10px 0; font-weight: bold;">Co-Applicant Employment:</td>
+                      <td style="padding: 10px 0;">${saved.coApplicantEmploymentType}</td>
+                    </tr>
+                    ` : ''}
                     <tr>
                       <td style="padding: 10px 0; font-weight: bold;">Submitted:</td>
                       <td style="padding: 10px 0;">${new Date().toLocaleString()}</td>
