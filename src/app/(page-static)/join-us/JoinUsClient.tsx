@@ -1,17 +1,43 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft, CheckCircle2, Users, Zap } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Users, Zap, Upload, FileText } from "lucide-react";
 import { useState } from "react";
+
+const INDIAN_STATES = [
+  "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa", "Gujarat", "Haryana",
+  "Himachal Pradesh", "Jharkhand", "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur",
+  "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu",
+  "Telangana", "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal", "Delhi", "Jammu & Kashmir",
+  "Ladakh", "Lakshadweep", "Andaman & Nicobar Islands"
+];
 
 export default function JoinUsClient() {
   const [formData, setFormData] = useState({
     fullName: "",
     mobileNumber: "",
+    altMobileNumber: "",
+    whatsappNumber: "",
     email: "",
+    state: "",
     city: "",
+    pincode: "",
+    preferredLoan: "",
     experience: "",
-    preferredCategory: "",
+  });
+
+  const [files, setFiles] = useState<{
+    aadhaarFront: File | null;
+    aadhaarBack: File | null;
+    panFront: File | null;
+    bankPassbook: File | null;
+    passportPhoto: File | null;
+  }>({
+    aadhaarFront: null,
+    aadhaarBack: null,
+    panFront: null,
+    bankPassbook: null,
+    passportPhoto: null,
   });
 
   const [loading, setLoading] = useState(false);
@@ -27,18 +53,40 @@ export default function JoinUsClient() {
     });
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, files: fileList } = e.target;
+    if (fileList && fileList[0]) {
+      setFiles({
+        ...files,
+        [name as keyof typeof files]: fileList[0],
+      });
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setMessage(null);
 
     try {
+      const formDataToSend = new FormData();
+      
+      // Add all form fields
+      Object.keys(formData).forEach(key => {
+        formDataToSend.append(key, formData[key as keyof typeof formData]);
+      });
+
+      // Add all files
+      Object.keys(files).forEach(key => {
+        const file = files[key as keyof typeof files];
+        if (file) {
+          formDataToSend.append(key, file);
+        }
+      });
+
       const response = await fetch("/api/partner-register", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
+        body: formDataToSend,
       });
 
       const data = await response.json();
@@ -51,10 +99,21 @@ export default function JoinUsClient() {
         setFormData({
           fullName: "",
           mobileNumber: "",
+          altMobileNumber: "",
+          whatsappNumber: "",
           email: "",
+          state: "",
           city: "",
+          pincode: "",
+          preferredLoan: "",
           experience: "",
-          preferredCategory: "",
+        });
+        setFiles({
+          aadhaarFront: null,
+          aadhaarBack: null,
+          panFront: null,
+          bankPassbook: null,
+          passportPhoto: null,
         });
       } else {
         setMessage({
@@ -194,6 +253,38 @@ export default function JoinUsClient() {
                   />
                 </div>
 
+                {/* Alt Mobile Number */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    Alternate Mobile Number <span className="text-gray-500">(Optional)</span>
+                  </label>
+                  <input
+                    type="tel"
+                    name="altMobileNumber"
+                    value={formData.altMobileNumber}
+                    onChange={handleChange}
+                    placeholder="10-digit alternate mobile number"
+                    pattern="[0-9]{10}"
+                    className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-500 focus:border-[#F97415] focus:outline-none transition-colors"
+                  />
+                </div>
+
+                {/* WhatsApp Number */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    WhatsApp Number <span className="text-gray-500">(Optional)</span>
+                  </label>
+                  <input
+                    type="tel"
+                    name="whatsappNumber"
+                    value={formData.whatsappNumber}
+                    onChange={handleChange}
+                    placeholder="10-digit WhatsApp number"
+                    pattern="[0-9]{10}"
+                    className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-500 focus:border-[#F97415] focus:outline-none transition-colors"
+                  />
+                </div>
+
                 {/* Email */}
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-2">
@@ -210,6 +301,27 @@ export default function JoinUsClient() {
                   />
                 </div>
 
+                {/* State */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    State <span className="text-[#F97415]">*</span>
+                  </label>
+                  <select
+                    name="state"
+                    value={formData.state}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-500 focus:border-[#F97415] focus:outline-none transition-colors"
+                  >
+                    <option value="" className="bg-gray-900">Select your state</option>
+                    {INDIAN_STATES.map((state) => (
+                      <option key={state} value={state} className="bg-gray-900">
+                        {state}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
                 {/* City */}
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-2">
@@ -221,6 +333,39 @@ export default function JoinUsClient() {
                     value={formData.city}
                     onChange={handleChange}
                     placeholder="Enter your city"
+                    required
+                    className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-500 focus:border-[#F97415] focus:outline-none transition-colors"
+                  />
+                </div>
+
+                {/* Pincode */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    Pincode <span className="text-[#F97415]">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="pincode"
+                    value={formData.pincode}
+                    onChange={handleChange}
+                    placeholder="6-digit pincode"
+                    pattern="[0-9]{6}"
+                    required
+                    className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-500 focus:border-[#F97415] focus:outline-none transition-colors"
+                  />
+                </div>
+
+                {/* Preferred Loan */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    Preferred Loan <span className="text-[#F97415]">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="preferredLoan"
+                    value={formData.preferredLoan}
+                    onChange={handleChange}
+                    placeholder="e.g., Personal Loan, Business Loan, Home Loan"
                     required
                     className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-500 focus:border-[#F97415] focus:outline-none transition-colors"
                   />
@@ -241,42 +386,124 @@ export default function JoinUsClient() {
                   />
                 </div>
 
-                {/* Preferred Loan Category */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Preferred Loan Category <span className="text-gray-500">(Optional)</span>
-                  </label>
-                  <select
-                    name="preferredCategory"
-                    value={formData.preferredCategory}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-500 focus:border-[#F97415] focus:outline-none transition-colors"
-                  >
-                    <option value="" className="bg-gray-900">
-                      Select a category
-                    </option>
-                    <option value="personal" className="bg-gray-900">
-                      Personal Loan
-                    </option>
-                    <option value="business" className="bg-gray-900">
-                      Business Loan
-                    </option>
-                    <option value="home" className="bg-gray-900">
-                      Home Loan
-                    </option>
-                    <option value="vehicle" className="bg-gray-900">
-                      Vehicle Loan
-                    </option>
-                    <option value="credit-card" className="bg-gray-900">
-                      Credit Card
-                    </option>
-                    <option value="gold" className="bg-gray-900">
-                      Gold Asset Loan
-                    </option>
-                    <option value="all" className="bg-gray-900">
-                      All of the Above
-                    </option>
-                  </select>
+                {/* Document Uploads */}
+                <div className="space-y-4 pt-4 border-t border-white/20">
+                  <h3 className="text-lg font-semibold text-white mb-4">📎 Required Documents</h3>
+                  
+                  {/* Aadhaar Front */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Aadhaar Card (Front) <span className="text-[#F97415]">*</span>
+                    </label>
+                    <div className="relative">
+                      <input
+                        type="file"
+                        name="aadhaarFront"
+                        onChange={handleFileChange}
+                        accept="image/*,.pdf"
+                        required
+                        className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-[#F97415] file:text-white hover:file:bg-[#E06410] placeholder-gray-500 focus:border-[#F97415] focus:outline-none transition-colors"
+                      />
+                      {files.aadhaarFront && (
+                        <div className="mt-2 text-sm text-gray-400 flex items-center gap-2">
+                          <FileText className="h-4 w-4" />
+                          {files.aadhaarFront.name}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Aadhaar Back */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Aadhaar Card (Back) <span className="text-[#F97415]">*</span>
+                    </label>
+                    <div className="relative">
+                      <input
+                        type="file"
+                        name="aadhaarBack"
+                        onChange={handleFileChange}
+                        accept="image/*,.pdf"
+                        required
+                        className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-[#F97415] file:text-white hover:file:bg-[#E06410] placeholder-gray-500 focus:border-[#F97415] focus:outline-none transition-colors"
+                      />
+                      {files.aadhaarBack && (
+                        <div className="mt-2 text-sm text-gray-400 flex items-center gap-2">
+                          <FileText className="h-4 w-4" />
+                          {files.aadhaarBack.name}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* PAN Front */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      PAN Card <span className="text-[#F97415]">*</span>
+                    </label>
+                    <div className="relative">
+                      <input
+                        type="file"
+                        name="panFront"
+                        onChange={handleFileChange}
+                        accept="image/*,.pdf"
+                        required
+                        className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-[#F97415] file:text-white hover:file:bg-[#E06410] placeholder-gray-500 focus:border-[#F97415] focus:outline-none transition-colors"
+                      />
+                      {files.panFront && (
+                        <div className="mt-2 text-sm text-gray-400 flex items-center gap-2">
+                          <FileText className="h-4 w-4" />
+                          {files.panFront.name}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Bank Passbook */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Bank Passbook <span className="text-[#F97415]">*</span>
+                    </label>
+                    <div className="relative">
+                      <input
+                        type="file"
+                        name="bankPassbook"
+                        onChange={handleFileChange}
+                        accept="image/*,.pdf"
+                        required
+                        className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-[#F97415] file:text-white hover:file:bg-[#E06410] placeholder-gray-500 focus:border-[#F97415] focus:outline-none transition-colors"
+                      />
+                      {files.bankPassbook && (
+                        <div className="mt-2 text-sm text-gray-400 flex items-center gap-2">
+                          <FileText className="h-4 w-4" />
+                          {files.bankPassbook.name}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Passport Photo */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Passport Size Photo <span className="text-[#F97415]">*</span>
+                    </label>
+                    <div className="relative">
+                      <input
+                        type="file"
+                        name="passportPhoto"
+                        onChange={handleFileChange}
+                        accept="image/*"
+                        required
+                        className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-[#F97415] file:text-white hover:file:bg-[#E06410] placeholder-gray-500 focus:border-[#F97415] focus:outline-none transition-colors"
+                      />
+                      {files.passportPhoto && (
+                        <div className="mt-2 text-sm text-gray-400 flex items-center gap-2">
+                          <FileText className="h-4 w-4" />
+                          {files.passportPhoto.name}
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
 
                 {/* Message Display */}

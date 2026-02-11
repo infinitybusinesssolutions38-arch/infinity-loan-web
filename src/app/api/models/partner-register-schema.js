@@ -12,13 +12,36 @@ const PartnerRegisterSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    altMobileNumber: {
+      type: String,
+      trim: true,
+    },
+    whatsappNumber: {
+      type: String,
+      trim: true,
+    },
     email: {
       type: String,
       required: true,
       lowercase: true,
       trim: true,
     },
+    state: {
+      type: String,
+      required: true,
+      trim: true,
+    },
     city: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    pincode: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    preferredLoan: {
       type: String,
       required: true,
       trim: true,
@@ -32,6 +55,27 @@ const PartnerRegisterSchema = new mongoose.Schema(
       type: String,
       default: "Not specified",
       trim: true,
+    },
+    // Document URLs
+    aadhaarFrontUrl: {
+      type: String,
+      default: "",
+    },
+    aadhaarBackUrl: {
+      type: String,
+      default: "",
+    },
+    panFrontUrl: {
+      type: String,
+      default: "",
+    },
+    bankPassbookUrl: {
+      type: String,
+      default: "",
+    },
+    passportPhotoUrl: {
+      type: String,
+      default: "",
     },
     status: {
       type: String,
