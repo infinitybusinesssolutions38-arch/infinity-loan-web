@@ -466,6 +466,14 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
     aadhaarLinkedMobile: "",
     alternateMobile: "",
     whatsappNumber: "",
+    gender: "",
+    maritalStatus: "",
+    dob: "",
+    personalEmail: "",
+    officialEmail: "",
+    voterId: "",
+    drivingLicense: "",
+    passport: "",
     currentResidentialAddress: "",
     residentialPincode: "",
     residentialState: "",
@@ -476,28 +484,13 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
     officeCity: "",
     requiredLoanAmount: "",
     loanType: "",
-    gender: "",
-    maritalStatus: "",
-    dob: "",
-    personalEmail: "",
-    officialEmail: "",
-    voterId: "",
-    passport: "",
-    drivingLicense: "",
-    aadhaarCardType: "",
-    panCardType: "",
-    residentialBill: "",
-    officeElectricityBill: "",
+    cibilIssues: "",
+    aadhaarCardType: "Aadhaar Card",
+    panCardType: "PAN Card",
     bankStatementType: [],
     bankStatementDetails: [],
     existingLoansCount: "",
     existingLoanDetails: [],
-    totalLoanAmount: "",
-    totalMonthlyEmi: "",
-    emiDelayPast3Months: "",
-    incomeTax2023_24: "",
-    incomeTax2024_25: "",
-    incomeTax2025_26: "",
     businessCertificates: [],
     businessCertificateFiles: {},
     isBuyingGoods: "",
@@ -510,6 +503,10 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
     otherSupportedDocuments: [],
     consent: false,
     authorizationConsent: false,
+    // Coapplicant fields
+    coApplicantName: "",
+    coApplicantRelation: "",
+    coApplicantEmploymentType: "",
   });
 
   const handleUnifiedChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -2444,22 +2441,6 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
               {/* E. ID PROOF DOCUMENTS */}
               <fieldset className="space-y-4">
                 <legend className="text-lg font-bold text-foreground mb-4">E. ID Proof Documents</legend>
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div className="space-y-2">
-                    <Label htmlFor="u_aadhaarCardType" className="text-sm font-medium">Aadhaar Card Type <span className="text-destructive">*</span></Label>
-                    <select id="u_aadhaarCardType" name="aadhaarCardType" value={uForm.aadhaarCardType} onChange={handleUnifiedChange} required className="mt-2 block w-full rounded-md border border-blue-300 bg-transparent px-3 py-2 text-sm">
-                      <option value="">Select Aadhaar Card Type</option>
-                      <option value="Aadhaar Card">Aadhaar Card</option>
-                    </select>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="u_panCardType" className="text-sm font-medium">PAN Card Type <span className="text-destructive">*</span></Label>
-                    <select id="u_panCardType" name="panCardType" value={uForm.panCardType} onChange={handleUnifiedChange} required className="mt-2 block w-full rounded-md border border-blue-300 bg-transparent px-3 py-2 text-sm">
-                      <option value="">Select PAN Card Type</option>
-                      <option value="PAN Card">PAN Card</option>
-                    </select>
-                  </div>
-                </div>
 
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
@@ -2535,9 +2516,28 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 </div>
               </fieldset>
 
-              {/* F. ADDRESS PROOF DOCUMENTS */}
+              {/* F. CO-APPLICANT DETAILS */}
               <fieldset className="space-y-4">
-                <legend className="text-lg font-bold text-foreground mb-4">F. Address Proof Documents</legend>
+                <legend className="text-lg font-bold text-foreground mb-4">F. Co-Applicant Details (If Any)</legend>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label htmlFor="u_coApplicantName" className="text-sm font-medium">Co-Applicant Name (optional)</Label>
+                    <Input id="u_coApplicantName" name="coApplicantName" placeholder="Co-Applicant Name" value={uForm.coApplicantName} onChange={handleUnifiedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="u_coApplicantRelation" className="text-sm font-medium">Relationship with Applicant (optional)</Label>
+                    <Input id="u_coApplicantRelation" name="coApplicantRelation" placeholder="Relationship with Applicant" value={uForm.coApplicantRelation} onChange={handleUnifiedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="u_coApplicantEmploymentType" className="text-sm font-medium">Co-Applicant Employment Type (optional)</Label>
+                    <Input id="u_coApplicantEmploymentType" name="coApplicantEmploymentType" placeholder="Co-Applicant Employment Type" value={uForm.coApplicantEmploymentType} onChange={handleUnifiedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                  </div>
+                </div>
+              </fieldset>
+
+              {/* G. ADDRESS PROOF DOCUMENTS */}
+              <fieldset className="space-y-4">
+                <legend className="text-lg font-bold text-foreground mb-4">G. Address Proof Documents</legend>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Latest Home Electricity Bill <span className="text-destructive">*</span></Label>
@@ -2577,9 +2577,9 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 </div>
               </fieldset>
 
-              {/* G. BANK STATEMENT */}
+              {/* H. BANK STATEMENT */}
               <fieldset className="space-y-4">
-                <legend className="text-lg font-bold text-foreground mb-4">G. Bank Statement</legend>
+                <legend className="text-lg font-bold text-foreground mb-4">H. Bank Statement</legend>
                 <div className="space-y-2">
                   <Label className="text-sm font-medium">Account Type <span className="text-destructive">*</span></Label>
                   <div className="space-y-2">
@@ -2667,9 +2667,9 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 </div>
               </fieldset>
 
-              {/* H. EXISTING LOAN DETAILS */}
+              {/* I. EXISTING LOAN DETAILS */}
               <fieldset className="space-y-4">
-                <legend className="text-lg font-bold text-foreground mb-4">H. Existing Loan Details</legend>
+                <legend className="text-lg font-bold text-foreground mb-4">I. Existing Loan Details</legend>
                 <div className="space-y-2">
                   <Label htmlFor="u_existingLoansCount" className="text-sm font-medium">Number of Existing Running Loans (optional)</Label>
                   <select 
@@ -2840,9 +2840,9 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 )}
               </fieldset>
 
-              {/* I. INCOME TAX RETURNS */}
+              {/* J. INCOME TAX RETURNS */}
               <fieldset className="space-y-4">
-                <legend className="text-lg font-bold text-foreground mb-4">I. Income Tax Returns</legend>
+                <legend className="text-lg font-bold text-foreground mb-4">J. Income Tax Returns</legend>
                 <div className="grid gap-4 sm:grid-cols-3">
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Assessment Year 2023-24 (optional)</Label>
@@ -2897,9 +2897,9 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 </div>
               </fieldset>
 
-              {/* J. BUSINESS REGISTRATION CERTIFICATES */}
+              {/* K. BUSINESS REGISTRATION CERTIFICATES */}
               <fieldset className="space-y-4">
-                <legend className="text-lg font-bold text-foreground mb-4">J. Business Registration Certificates</legend>
+                <legend className="text-lg font-bold text-foreground mb-4">K. Business Registration Certificates</legend>
                 <div className="space-y-2">
                   <Label className="text-sm font-medium">Business Registration Certificates (optional)</Label>
                   <div className="space-y-3">
@@ -2978,9 +2978,9 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 </div>
               </fieldset>
 
-              {/* K. BUYING GOODS */}
+              {/* L. BUYING GOODS */}
               <fieldset className="space-y-4">
-                <legend className="text-lg font-bold text-foreground mb-4">K. Buying Goods</legend>
+                <legend className="text-lg font-bold text-foreground mb-4">L. Buying Goods</legend>
                 <div className="space-y-2">
                   <Label htmlFor="u_isBuyingGoods" className="text-sm font-medium">If Buying Goods</Label>
                   <select id="u_isBuyingGoods" name="isBuyingGoods" value={uForm.isBuyingGoods} onChange={handleUnifiedChange} className="mt-2 block w-full rounded-md border border-blue-300 bg-transparent px-3 py-2 text-sm">
@@ -3024,9 +3024,9 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 )}
               </fieldset>
 
-              {/* L. CIBIL SCORE */}
+              {/* M. CIBIL SCORE */}
               <fieldset className="space-y-4">
-                <legend className="text-lg font-bold text-foreground mb-4">L. CIBIL Score</legend>
+                <legend className="text-lg font-bold text-foreground mb-4">M. CIBIL Score</legend>
                 <div className="space-y-2">
                   <Label htmlFor="u_cibilScoreKnown" className="text-sm font-medium">CIBIL Score Known</Label>
                   <select id="u_cibilScoreKnown" name="cibilScoreKnown" value={uForm.cibilScoreKnown} onChange={handleUnifiedChange} className="mt-2 block w-full rounded-md border border-blue-300 bg-transparent px-3 py-2 text-sm">
@@ -3068,9 +3068,9 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 )}
               </fieldset>
 
-              {/* L. UPLOAD OTHER SUPPORTED DOCUMENT */}
+              {/* N. UPLOAD OTHER SUPPORTED DOCUMENT */}
               <fieldset className="space-y-4">
-                <legend className="text-lg font-bold text-foreground mb-4">L. Upload Other Supported Document</legend>
+                <legend className="text-lg font-bold text-foreground mb-4">N. Upload Other Supported Document</legend>
                 <div className="space-y-2">
                   <Label htmlFor="u_otherSupportedDocsCount" className="text-sm font-medium">Number of Other Documents</Label>
                   <select 
@@ -3165,9 +3165,9 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 )}
               </fieldset>
 
-              {/* M. CONSENT */}
+              {/* O. CONSENT */}
               <fieldset className="space-y-4">
-                <legend className="text-lg font-bold text-foreground mb-4">M. Consent</legend>
+                <legend className="text-lg font-bold text-foreground mb-4">O. Consent</legend>
                 <div className="flex items-start gap-3">
                   <input id="u_consent" type="checkbox" name="consent" checked={uForm.consent} onChange={handleUnifiedChange} className="mt-1" required />
                   <label htmlFor="u_consent" className="text-sm">I agree to Terms & Conditions and Privacy Policy.</label>

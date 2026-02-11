@@ -88,6 +88,11 @@ const BorrowerPersonalSchema = new mongoose.Schema(
         cibilScore: { type: String, required: false },
         cibilIssues: { type: String, required: false },
         consent: { type: String, required: false },
+        
+        // Coapplicant fields
+        coApplicantName: { type: String, required: false },
+        coApplicantRelation: { type: String, required: false },
+        coApplicantEmploymentType: { type: String, required: false },
 
         // Meta
         loan_type: { type: String, required: true },

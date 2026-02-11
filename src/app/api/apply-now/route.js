@@ -11,6 +11,13 @@ import nodemailer from "nodemailer";
 import { sendLoanApplicationConfirmationEmail } from "../lib/loan-application-email";
 import { createGmailTransporter } from "../lib/apply-now-email";
 
+// Handle unhandled promise rejections
+if (typeof process !== 'undefined' && process.on) {
+  process.on('unhandledRejection', (reason, promise) => {
+    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+  });
+}
+
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -65,18 +72,26 @@ export async function POST(req) {
           return null;
         }
 
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
+          const timeout = setTimeout(() => {
+            console.warn('Upload timeout for file:', file.name, '- skipping upload');
+            resolve(null);
+          }, 30000); // 30 second timeout
+
           cloudinary.uploader
             .upload_stream(
               { 
                 folder: "loan_applications", 
                 resource_type: "auto",
-                chunk_size: 6000000 
+                chunk_size: 6000000,
+                timeout: 30000
               }, 
               (err, result) => {
+                clearTimeout(timeout);
                 if (err) {
                   console.error('Cloudinary upload error:', err);
-                  reject(err);
+                  // Don't reject, just resolve to null to avoid breaking the whole submission
+                  resolve(null);
                 } else {
                   resolve(result.secure_url);
                 }
@@ -379,6 +394,11 @@ export async function POST(req) {
         cibilScoreKnown: formData.get("cibilScoreKnown"),
         cibilScore: formData.get("cibilScore"),
         consent: formData.get("consent"),
+        
+        // Coapplicant fields
+        coApplicantName: formData.get("coApplicantName"),
+        coApplicantRelation: formData.get("coApplicantRelation"),
+        coApplicantEmploymentType: formData.get("coApplicantEmploymentType"),
 
         // Document uploads
         aadhaarFront: await upload(formData.get("aadhaarFront")),
