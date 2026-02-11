@@ -6,14 +6,74 @@ import {
   sendPartnerNotificationToAdmin,
   sendPartnerNotificationToAdminEmails,
 } from "../lib/partner-email";
+import { v2 as cloudinary } from "cloudinary";
+
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+// Helper function to upload file to Cloudinary
+const uploadFile = async (file) => {
+  if (!file || file.size === 0) return "";
+
+  const bytes = await file.arrayBuffer();
+  const buffer = Buffer.from(bytes);
+
+  return new Promise((resolve, reject) => {
+    cloudinary.uploader.upload_stream(
+      {
+        resource_type: "auto",
+        folder: "partner-documents",
+      },
+      (error, result) => {
+        if (error) {
+          console.error("Cloudinary upload error:", error);
+          reject(error);
+        } else {
+          resolve(result.secure_url);
+        }
+      }
+    ).end(buffer);
+  });
+};
 
 export async function POST(req) {
   try {
-    const body = await req.json();
-    const { fullName, mobileNumber, email, city, experience, preferredCategory } = body;
+    const formData = await req.formData();
+
+    // Extract form fields
+    const fullName = formData.get("fullName");
+    const mobileNumber = formData.get("mobileNumber");
+    const altMobileNumber = formData.get("altMobileNumber");
+    const whatsappNumber = formData.get("whatsappNumber");
+    const email = formData.get("email");
+    const state = formData.get("state");
+    const city = formData.get("city");
+    const pincode = formData.get("pincode");
+    const preferredLoan = formData.get("preferredLoan");
+    const experience = formData.get("experience");
+    const preferredCategory = formData.get("preferredCategory");
+
+    // Extract files
+    const aadhaarFront = formData.get("aadhaarFront");
+    const aadhaarBack = formData.get("aadhaarBack");
+    const panFront = formData.get("panFront");
+    const bankPassbook = formData.get("bankPassbook");
+    const passportPhoto = formData.get("passportPhoto");
 
     // Validation
-    if (!fullName || !mobileNumber || !email || !city) {
+    if (
+      !fullName ||
+      !mobileNumber ||
+      !email ||
+      !state ||
+      !city ||
+      !pincode ||
+      !preferredLoan
+    ) {
       return NextResponse.json(
         { success: false, message: "Please fill in all required fields" },
         { status: 400 }
@@ -24,6 +84,30 @@ export async function POST(req) {
     if (!/^\d{10}$/.test(mobileNumber)) {
       return NextResponse.json(
         { success: false, message: "Please enter a valid 10-digit mobile number" },
+        { status: 400 }
+      );
+    }
+
+    // Validate alt mobile number if provided
+    if (altMobileNumber && !/^\d{10}$/.test(altMobileNumber)) {
+      return NextResponse.json(
+        { success: false, message: "Please enter a valid 10-digit alternate mobile number" },
+        { status: 400 }
+      );
+    }
+
+    // Validate whatsapp number if provided
+    if (whatsappNumber && !/^\d{10}$/.test(whatsappNumber)) {
+      return NextResponse.json(
+        { success: false, message: "Please enter a valid 10-digit WhatsApp number" },
+        { status: 400 }
+      );
+    }
+
+    // Validate pincode (6 digits)
+    if (!/^\d{6}$/.test(pincode)) {
+      return NextResponse.json(
+        { success: false, message: "Please enter a valid 6-digit pincode" },
         { status: 400 }
       );
     }
@@ -48,87 +132,90 @@ export async function POST(req) {
     if (existingPartner) {
       return NextResponse.json(
         { success: false, message: "Partner with this email or mobile number already registered" },
-        { status: 409 }
+        { status: 400 }
+      );
+    }
+
+    // Upload files to Cloudinary
+    let aadhaarFrontUrl = "";
+    let aadhaarBackUrl = "";
+    let panFrontUrl = "";
+    let bankPassbookUrl = "";
+    let passportPhotoUrl = "";
+
+    try {
+      if (aadhaarFront && aadhaarFront.size > 0) {
+        aadhaarFrontUrl = await uploadFile(aadhaarFront);
+      }
+      if (aadhaarBack && aadhaarBack.size > 0) {
+        aadhaarBackUrl = await uploadFile(aadhaarBack);
+      }
+      if (panFront && panFront.size > 0) {
+        panFrontUrl = await uploadFile(panFront);
+      }
+      if (bankPassbook && bankPassbook.size > 0) {
+        bankPassbookUrl = await uploadFile(bankPassbook);
+      }
+      if (passportPhoto && passportPhoto.size > 0) {
+        passportPhotoUrl = await uploadFile(passportPhoto);
+      }
+    } catch (uploadError) {
+      console.error("File upload error:", uploadError);
+      return NextResponse.json(
+        { success: false, message: "Error uploading documents. Please try again." },
+        { status: 500 }
       );
     }
 
     // Create new partner registration
     const newPartner = new PartnerRegisterModel({
-      fullName: fullName.trim(),
-      mobileNumber: mobileNumber.trim(),
-      email: email.toLowerCase().trim(),
-      city: city.trim(),
-      experience: experience?.trim() || "Not provided",
-      preferredCategory: preferredCategory?.trim() || "Not specified",
-      status: "New",
+      fullName,
+      mobileNumber,
+      altMobileNumber,
+      whatsappNumber,
+      email: email.toLowerCase(),
+      state,
+      city,
+      pincode,
+      preferredLoan,
+      experience: experience || "Not provided",
+      preferredCategory: preferredCategory || "Not specified",
+      aadhaarFrontUrl,
+      aadhaarBackUrl,
+      panFrontUrl,
+      bankPassbookUrl,
+      passportPhotoUrl,
     });
 
     // Save to database
     const savedPartner = await newPartner.save();
 
-    // Send confirmation email to partner
-    const partnerEmailResult = await sendPartnerConfirmationEmail(
-      savedPartner.email,
-      savedPartner.fullName,
-      {
+    // Send emails (non-blocking)
+    try {
+      await sendPartnerConfirmationEmail(savedPartner);
+      await sendPartnerNotificationToAdmin(savedPartner);
+      await sendPartnerNotificationToAdminEmails(savedPartner);
+    } catch (emailError) {
+      console.error("Email sending error:", emailError);
+      // Don't fail the response if emails fail
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: "Partner registration successful! Our team will contact you shortly.",
+      data: {
+        id: savedPartner._id,
         fullName: savedPartner.fullName,
         email: savedPartner.email,
-        mobileNumber: savedPartner.mobileNumber,
-        city: savedPartner.city,
-        experience: savedPartner.experience,
         preferredCategory: savedPartner.preferredCategory,
         createdAt: savedPartner.createdAt,
-      }
-    );
-
-    // Send notification email to admin
-    const adminEmailResult = await sendPartnerNotificationToAdmin({
-      fullName: savedPartner.fullName,
-      email: savedPartner.email,
-      mobileNumber: savedPartner.mobileNumber,
-      city: savedPartner.city,
-      experience: savedPartner.experience,
-      preferredCategory: savedPartner.preferredCategory,
-      createdAt: savedPartner.createdAt,
-    });
-
-    // Send notification emails to admin addresses using Gmail SMTP
-    const adminGmailResult = await sendPartnerNotificationToAdminEmails({
-      fullName: savedPartner.fullName,
-      email: savedPartner.email,
-      mobileNumber: savedPartner.mobileNumber,
-      city: savedPartner.city,
-      experience: savedPartner.experience,
-      preferredCategory: savedPartner.preferredCategory,
-      createdAt: savedPartner.createdAt,
-    });
-
-    // Log email results (don't fail the registration if emails fail)
-    if (!partnerEmailResult.success) {
-      console.warn("Failed to send partner confirmation email:", partnerEmailResult.error);
-    }
-    if (!adminEmailResult.success) {
-      console.warn("Failed to send admin notification email:", adminEmailResult.error);
-    }
-    if (!adminGmailResult.success) {
-      console.warn("Failed to send admin Gmail notification emails:", adminGmailResult.error);
-    }
-
-    return NextResponse.json(
-      {
-        success: true,
-        message: "Thank you for registering! Our team will contact you shortly.",
-        partnerId: savedPartner._id,
       },
-      { status: 201 }
-    );
+    });
+
   } catch (error) {
     console.error("Partner registration error:", error);
     return NextResponse.json(
-      {
-        success: false,
-        message: "An error occurred while processing your registration. Please try again later.",
-      },
+      { success: false, message: "Internal server error. Please try again." },
       { status: 500 }
     );
   }

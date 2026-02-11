@@ -27,11 +27,7 @@ const createGmailTransporter = () => {
 };
 
 // Send partner confirmation email to customer
-export const sendPartnerConfirmationEmail = async (
-  partnerEmail,
-  partnerName,
-  partnerData
-) => {
+export const sendPartnerConfirmationEmail = async (partnerData) => {
   try {
     const transporter = createTransporter();
 
@@ -45,11 +41,61 @@ export const sendPartnerConfirmationEmail = async (
 
         <!-- Main Content -->
         <div style="padding: 30px 20px; background: white; color: #333; line-height: 1.8;">
-          <p>Dear <strong>${partnerName}</strong>,</p>
+          <p>Dear <strong>${partnerData.fullName}</strong>,</p>
 
           <p>Greetings from Infinity Loans & Business Solutions.</p>
 
           <p>We are pleased to inform you that we have successfully received your application for the <strong>Loan Channel Partner Program</strong>. We sincerely appreciate your interest in associating with us and are confident that this collaboration will result in a strong, transparent, and successful business relationship.</p>
+
+          <!-- Application Details -->
+          <div style="background: #f8f8f8; padding: 20px; border-radius: 8px; margin: 25px 0; border-left: 4px solid #F97415;">
+            <h3 style="margin-top: 0; color: #F97415;">📋 Your Application Details</h3>
+            <table style="width: 100%; border-collapse: collapse;">
+              <tr>
+                <td style="padding: 8px; font-weight: bold; color: #666;">Full Name:</td>
+                <td style="padding: 8px;">${partnerData.fullName}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px; font-weight: bold; color: #666;">Mobile Number:</td>
+                <td style="padding: 8px;">${partnerData.mobileNumber}</td>
+              </tr>
+              ${partnerData.altMobileNumber ? `
+              <tr>
+                <td style="padding: 8px; font-weight: bold; color: #666;">Alternate Mobile:</td>
+                <td style="padding: 8px;">${partnerData.altMobileNumber}</td>
+              </tr>` : ''}
+              ${partnerData.whatsappNumber ? `
+              <tr>
+                <td style="padding: 8px; font-weight: bold; color: #666;">WhatsApp Number:</td>
+                <td style="padding: 8px;">${partnerData.whatsappNumber}</td>
+              </tr>` : ''}
+              <tr>
+                <td style="padding: 8px; font-weight: bold; color: #666;">Email:</td>
+                <td style="padding: 8px;">${partnerData.email}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px; font-weight: bold; color: #666;">State:</td>
+                <td style="padding: 8px;">${partnerData.state}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px; font-weight: bold; color: #666;">City:</td>
+                <td style="padding: 8px;">${partnerData.city}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px; font-weight: bold; color: #666;">Pincode:</td>
+                <td style="padding: 8px;">${partnerData.pincode}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px; font-weight: bold; color: #666;">Preferred Loan:</td>
+                <td style="padding: 8px;">${partnerData.preferredLoan}</td>
+              </tr>
+              ${partnerData.experience && partnerData.experience !== 'Not provided' ? `
+              <tr>
+                <td style="padding: 8px; font-weight: bold; color: #666;">Experience:</td>
+                <td style="padding: 8px;">${partnerData.experience}</td>
+              </tr>` : ''}
+                          </table>
+          </div>
 
           <!-- Support & Working Assistance -->
           <div style="background: #f8f8f8; padding: 20px; border-radius: 8px; margin: 25px 0; border-left: 4px solid #F97415;">
@@ -58,124 +104,31 @@ export const sendPartnerConfirmationEmail = async (
             <p style="margin: 10px 0;"><strong>⚡ Important Note:</strong> You are requested to focus exclusively on <strong>file sourcing and client referrals</strong>. All other activities, including processing, coordination, verification, approvals, and disbursement support, will be handled entirely by our internal team.</p>
           </div>
 
-          <!-- Channel Partner Onboarding Requirements -->
-          <div style="background: #f0f8ff; padding: 20px; border-radius: 8px; margin: 25px 0;">
-            <h3 style="margin-top: 0; color: #F97415;">📋 Channel Partner Onboarding Requirements</h3>
-            <p>To complete your onboarding, kindly share the following documents for verification and record purposes:</p>
-            <ul style="margin: 10px 0; padding-left: 25px;">
-              <li>Copy of Aadhaar Card</li>
-              <li>Copy of PAN Card</li>
-              <li>Cancelled Cheque (for commission payout and banking records)</li>
-            </ul>
-            <p><strong>Upon successful onboarding, you will receive from our side:</strong></p>
-            <ul style="margin: 10px 0; padding-left: 25px;">
-              <li>Your official Channel Partner ID Card</li>
-              <li>Marketing and promotional materials to support your business activities</li>
-            </ul>
+          <!-- Next Steps -->
+          <div style="background: #fff3cd; padding: 20px; border-radius: 8px; margin: 25px 0; border: 1px solid #ffeaa7;">
+            <h3 style="margin-top: 0; color: #F97415;">🔄 Next Steps</h3>
+            <p>Our team will review your application and documents. You will be contacted within <strong>24-48 hours</strong> for further discussion and onboarding process.</p>
           </div>
-
-          <!-- Commission Structure -->
-          <div style="background: #fef5e7; padding: 20px; border-radius: 8px; margin: 25px 0;">
-            <h3 style="margin-top: 0; color: #F97415;">💰 Commission Structure</h3>
-            <p>Please note that the commission payable to you will depend on the <strong>volume and quality of business</strong> generated by you. Our Channel Partner Program follows a <strong>slab-wise commission structure</strong>, and detailed commission slabs will be communicated separately in accordance with company policies.</p>
-            <p style="color: #d9534f; font-weight: bold;">⚠️ No commission, payout, or income assurance is implied unless expressly communicated in writing.</p>
-          </div>
-
-          <!-- Compliance & Usage Notice -->
-          <div style="background: #f5f5f5; padding: 20px; border-radius: 8px; margin: 25px 0; border: 1px solid #ddd;">
-            <h3 style="margin-top: 0; color: #F97415;">✅ Compliance & Usage Notice</h3>
-            <p>You are requested to note that:</p>
-            <ul style="margin: 10px 0; padding-left: 25px; font-size: 13px;">
-              <li>Submission of documents or application does not constitute final approval or partnership</li>
-              <li>You shall not represent yourself as an employee or authorized agent of Infinity Loans & Business Solutions unless approved in writing</li>
-              <li>The Company's name, brand, logo, or goodwill shall not be misused or misrepresented in any manner</li>
-              <li>Any association shall be governed strictly by the executed Channel Partner Agreement, Company Terms & Conditions, Privacy Policy, and applicable laws in force in India.</li>
-            </ul>
-          </div>
-
-          <!-- PAN-India Presence -->
-          <div style="background: #e8f5e9; padding: 20px; border-radius: 8px; margin: 25px 0;">
-            <h3 style="margin-top: 0; color: #F97415;">🌍 PAN-India Presence</h3>
-            <p>Under our Channel Partner Program, Infinity Loans & Business Solutions operates on a <strong>PAN-India basis</strong> across all States and Union Territories of India through a robust operational network.</p>
-            <p>The Company is actively expanding its <strong>physical branch presence across 20+ states and over 100 cities</strong>, subject to business feasibility and regulatory approvals.</p>
-          </div>
-
-          <!-- Contact Information -->
-          <div style="background: #f3e5f5; padding: 20px; border-radius: 8px; margin: 25px 0;">
-            <h3 style="margin-top: 0; color: #F97415;">📞 Contact Information & Office Locations</h3>
-            
-            <p><strong>Customer Support - For any queries, assistance, or support:</strong></p>
-            <p style="margin: 5px 0;">
-              <strong>Phone:</strong><br/>
-              +91 95798 80841<br/>
-              +91 97661 69660
-            </p>
-            <p style="margin: 15px 0;">
-              <strong>📧 Email Support (Official + Gmail):</strong><br/>
-              business@infinityloanservices.com<br/>
-              businessservicesinfinity@gmail.com
-            </p>
-            <p style="margin: 15px 0;">
-              <strong>🌐 Website:</strong><br/>
-              www.infinityloanservices.com
-            </p>
-
-            <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;" />
-
-            <p><strong>🏢 Office Locations</strong></p>
-            
-            <p style="margin: 10px 0;">
-              <strong>Corporate & Registered Office</strong><br/>
-              8th Floor, Magnum Tower – 1<br/>
-              Golf Course Extension Road, Sector 58<br/>
-              Gurugram, Haryana – 122098<br/>
-              India
-            </p>
-            
-            <p style="margin: 10px 0;">
-              <strong>New Delhi Office</strong><br/>
-              505, Surya Kiran Building<br/>
-              15, Kasturba Gandhi Marg<br/>
-              New Delhi – 110001<br/>
-              India
-            </p>
-            
-            <p style="margin: 10px 0;">
-              <strong>Hyderabad Office</strong><br/>
-              6-3-247/22/8<br/>
-              Dwarakapuri Colony, Punjagutta<br/>
-              Hyderabad, Telangana – 500082<br/>
-              India
-            </p>
-          </div>
-
-          <!-- Closing -->
-          <p style="margin-top: 30px;">If you require any clarification or assistance, please feel free to contact us using the details above. We look forward to working with you and supporting your growth as a valued Channel Partner.</p>
-
-          <p style="margin-top: 20px;">
-            <strong>Warm regards,</strong><br/>
-            <strong style="color: #F97415;">Team Infinity Loans & Business Solutions</strong><br/>
-            📧 business@infinityloanservices.com | businessservicesinfinity@gmail.com<br/>
-            📞 +91 95798 80841 | +91 97661 69660<br/>
-            🌐 www.infinityloanservices.com
-          </p>
         </div>
 
         <!-- Footer -->
-        <div style="background: #f5f5f5; border-top: 1px solid #ddd; padding: 20px; text-align: center; color: #666; font-size: 11px;">
-          <p style="margin: 5px 0;">© ${new Date().getFullYear()} Infinity Loan Services. All rights reserved.</p>
-          <p style="margin: 5px 0;">This is an automated email. Please do not reply directly to this email.</p>
+        <div style="background: #1a1a1a; padding: 30px 20px; text-align: center; color: white;">
+          <p style="margin: 0; font-size: 14px;">© 2024 Infinity Loans & Business Solutions. All rights reserved.</p>
+          <p style="margin: 10px 0 0 0; font-size: 12px; color: #999;">
+            This is an automated email. Please do not reply to this message.
+          </p>
         </div>
       </div>
     `;
 
-    await transporter.sendMail({
-      from: process.env.EMAIL_FROM,
-      to: partnerEmail,
-      subject: "Channel Partner Program - Registration Confirmed | Infinity Loans & Business Solutions",
+    const mailOptions = {
+      from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
+      to: partnerData.email,
+      subject: "Channel Partner Application Received - Infinity Loans & Business Solutions",
       html: htmlContent,
-    });
+    };
 
+    await transporter.sendMail(mailOptions);
     return { success: true };
   } catch (error) {
     console.error("Error sending partner confirmation email:", error);
@@ -183,199 +136,204 @@ export const sendPartnerConfirmationEmail = async (
   }
 };
 
-// Send partner notification email to admin
+// Send notification email to admin
 export const sendPartnerNotificationToAdmin = async (partnerData) => {
   try {
     const transporter = createTransporter();
 
     const htmlContent = `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-        <div style="background: linear-gradient(135deg, #F97415 0%, #E06410 100%); padding: 30px; border-radius: 10px; color: white; margin-bottom: 30px;">
-          <h1 style="margin: 0;">New Partner Registration</h1>
-          <p style="margin: 10px 0 0 0;">Action Required - Review & Approve</p>
+      <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 700px; margin: 0 auto; padding: 0;">
+        <!-- Header -->
+        <div style="background: linear-gradient(135deg, #F97415 0%, #ff8c42 100%); padding: 40px 20px; text-align: center; color: white;">
+          <h1 style="margin: 0; font-size: 28px; font-weight: bold;">📋 New Partner Application</h1>
+          <p style="margin: 10px 0 0 0; font-size: 16px;">Channel Partner Registration</p>
         </div>
 
-        <div style="color: #333; line-height: 1.6;">
-          <p>A new partner has registered on the Infinity Loans platform. Please review the details below and take appropriate action.</p>
-
-          <div style="background: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <h3 style="margin-top: 0; color: #F97415;">Partner Registration Details:</h3>
+        <!-- Main Content -->
+        <div style="padding: 30px 20px; background: white; color: #333; line-height: 1.8;">
+          <p><strong>New partner application received:</strong></p>
+          
+          <div style="background: #f8f8f8; padding: 20px; border-radius: 8px; margin: 25px 0; border-left: 4px solid #F97415;">
             <table style="width: 100%; border-collapse: collapse;">
-              <tr style="border-bottom: 1px solid #ddd;">
-                <td style="padding: 10px 0; font-weight: bold; width: 30%;">Name:</td>
-                <td style="padding: 10px 0;">${partnerData.fullName}</td>
-              </tr>
-              <tr style="border-bottom: 1px solid #ddd;">
-                <td style="padding: 10px 0; font-weight: bold;">Email:</td>
-                <td style="padding: 10px 0;"><a href="mailto:${partnerData.email}">${partnerData.email}</a></td>
-              </tr>
-              <tr style="border-bottom: 1px solid #ddd;">
-                <td style="padding: 10px 0; font-weight: bold;">Mobile:</td>
-                <td style="padding: 10px 0;"><a href="tel:${partnerData.mobileNumber}">${partnerData.mobileNumber}</a></td>
-              </tr>
-              <tr style="border-bottom: 1px solid #ddd;">
-                <td style="padding: 10px 0; font-weight: bold;">City:</td>
-                <td style="padding: 10px 0;">${partnerData.city}</td>
-              </tr>
-              <tr style="border-bottom: 1px solid #ddd;">
-                <td style="padding: 10px 0; font-weight: bold;">Experience:</td>
-                <td style="padding: 10px 0;">${partnerData.experience}</td>
-              </tr>
-              <tr style="border-bottom: 1px solid #ddd;">
-                <td style="padding: 10px 0; font-weight: bold;">Preferred Category:</td>
-                <td style="padding: 10px 0;">${partnerData.preferredCategory}</td>
+              <tr>
+                <td style="padding: 8px; font-weight: bold; color: #666;">Full Name:</td>
+                <td style="padding: 8px;">${partnerData.fullName}</td>
               </tr>
               <tr>
-                <td style="padding: 10px 0; font-weight: bold;">Registered:</td>
-                <td style="padding: 10px 0;">${new Date(partnerData.createdAt).toLocaleString()}</td>
+                <td style="padding: 8px; font-weight: bold; color: #666;">Mobile:</td>
+                <td style="padding: 8px;">${partnerData.mobileNumber}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px; font-weight: bold; color: #666;">Email:</td>
+                <td style="padding: 8px;">${partnerData.email}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px; font-weight: bold; color: #666;">State:</td>
+                <td style="padding: 8px;">${partnerData.state}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px; font-weight: bold; color: #666;">City:</td>
+                <td style="padding: 8px;">${partnerData.city}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px; font-weight: bold; color: #666;">Preferred Loan:</td>
+                <td style="padding: 8px;">${partnerData.preferredLoan}</td>
               </tr>
             </table>
           </div>
 
-          <div style="margin: 20px 0; padding: 15px; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 4px;">
-            <strong>Next Steps:</strong>
-            <ul style="margin: 10px 0; padding-left: 20px;">
-              <li>Review partner registration details</li>
-              <li>Conduct KYC verification</li>
-              <li>Contact partner for onboarding</li>
-              <li>Approve/Reject registration in dashboard</li>
+          <!-- Document Links -->
+          <div style="background: #f0f8ff; padding: 20px; border-radius: 8px; margin: 25px 0;">
+            <h3 style="margin-top: 0; color: #F97415;">📎 Uploaded Documents</h3>
+            <ul style="margin: 10px 0; padding-left: 25px;">
+              ${partnerData.aadhaarFrontUrl ? `<li><a href="${partnerData.aadhaarFrontUrl}" target="_blank">Aadhaar Front</a></li>` : ''}
+              ${partnerData.aadhaarBackUrl ? `<li><a href="${partnerData.aadhaarBackUrl}" target="_blank">Aadhaar Back</a></li>` : ''}
+              ${partnerData.panFrontUrl ? `<li><a href="${partnerData.panFrontUrl}" target="_blank">PAN Card</a></li>` : ''}
+              ${partnerData.bankPassbookUrl ? `<li><a href="${partnerData.bankPassbookUrl}" target="_blank">Bank Passbook</a></li>` : ''}
+              ${partnerData.passportPhotoUrl ? `<li><a href="${partnerData.passportPhotoUrl}" target="_blank">Passport Photo</a></li>` : ''}
             </ul>
           </div>
-
-          <p>Access the partner management dashboard to approve or review this registration.</p>
-
-          <p>
-            Best regards,<br/>
-            <strong>Infinity Loans System</strong>
-          </p>
         </div>
 
-        <div style="border-top: 1px solid #ddd; margin-top: 30px; padding-top: 20px; text-align: center; color: #666; font-size: 12px;">
-          <p>© ${new Date().getFullYear()} Infinity Loan Services. All rights reserved.</p>
-          <p>This is an automated email from your partner management system.</p>
+        <!-- Footer -->
+        <div style="background: #1a1a1a; padding: 20px; text-align: center; color: white;">
+          <p style="margin: 0; font-size: 12px;">© 2024 Infinity Loans & Business Solutions</p>
         </div>
       </div>
     `;
 
-    await transporter.sendMail({
-      from: process.env.EMAIL_FROM,
-      to: process.env.NEXT_PUBLIC_PARTNER_SUPPORT_EMAIL,
-      subject: `New Partner Registration - ${partnerData.fullName}`,
+    const mailOptions = {
+      from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
+      to: process.env.ADMIN_EMAIL || process.env.SUPPORT_EMAIL,
+      subject: `New Partner Application - ${partnerData.fullName}`,
       html: htmlContent,
-    });
+    };
 
+    await transporter.sendMail(mailOptions);
     return { success: true };
   } catch (error) {
-    console.error("Error sending partner notification to admin:", error);
+    console.error("Error sending admin notification email:", error);
     return { success: false, error: error.message };
   }
 };
 
-// Send partner notification to admin emails using Gmail SMTP
+// Send notification emails to admin addresses using Gmail SMTP
 export const sendPartnerNotificationToAdminEmails = async (partnerData) => {
   try {
     const gmailTransporter = createGmailTransporter();
+    
+    const adminEmails = [
+      process.env.ADMIN_EMAIL,
+      process.env.DIRECTOR_EMAIL,
+      process.env.NEXT_PUBLIC_PARTNER_SUPPORT_EMAIL
+    ].filter(email => email);
+
+    if (adminEmails.length === 0) {
+      return { success: false, error: "No admin emails configured" };
+    }
 
     const htmlContent = `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-        <div style="background: linear-gradient(135deg, #F97415 0%, #E06410 100%); padding: 30px; border-radius: 10px; color: white; margin-bottom: 30px;">
-          <h1 style="margin: 0;">New Partner Registration</h1>
-          <p style="margin: 10px 0 0 0;">Action Required - Review & Approve</p>
+      <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 700px; margin: 0 auto; padding: 0;">
+        <!-- Header -->
+        <div style="background: linear-gradient(135deg, #F97415 0%, #ff8c42 100%); padding: 40px 20px; text-align: center; color: white;">
+          <h1 style="margin: 0; font-size: 28px; font-weight: bold;">📋 New Partner Application</h1>
+          <p style="margin: 10px 0 0 0; font-size: 16px;">Channel Partner Registration</p>
         </div>
 
-        <div style="color: #333; line-height: 1.6;">
-          <p>A new partner has registered on the Infinity Loans platform. Please review the details below and take appropriate action.</p>
-
-          <div style="background: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <h3 style="margin-top: 0; color: #F97415;">Partner Registration Details:</h3>
+        <!-- Main Content -->
+        <div style="padding: 30px 20px; background: white; color: #333; line-height: 1.8;">
+          <p><strong>New partner application received:</strong></p>
+          
+          <div style="background: #f8f8f8; padding: 20px; border-radius: 8px; margin: 25px 0; border-left: 4px solid #F97415;">
             <table style="width: 100%; border-collapse: collapse;">
-              <tr style="border-bottom: 1px solid #ddd;">
-                <td style="padding: 10px 0; font-weight: bold; width: 30%;">Name:</td>
-                <td style="padding: 10px 0;">${partnerData.fullName}</td>
-              </tr>
-              <tr style="border-bottom: 1px solid #ddd;">
-                <td style="padding: 10px 0; font-weight: bold;">Email:</td>
-                <td style="padding: 10px 0;"><a href="mailto:${partnerData.email}">${partnerData.email}</a></td>
-              </tr>
-              <tr style="border-bottom: 1px solid #ddd;">
-                <td style="padding: 10px 0; font-weight: bold;">Mobile:</td>
-                <td style="padding: 10px 0;"><a href="tel:${partnerData.mobileNumber}">${partnerData.mobileNumber}</a></td>
-              </tr>
-              <tr style="border-bottom: 1px solid #ddd;">
-                <td style="padding: 10px 0; font-weight: bold;">City:</td>
-                <td style="padding: 10px 0;">${partnerData.city}</td>
-              </tr>
-              <tr style="border-bottom: 1px solid #ddd;">
-                <td style="padding: 10px 0; font-weight: bold;">Experience:</td>
-                <td style="padding: 10px 0;">${partnerData.experience}</td>
-              </tr>
-              <tr style="border-bottom: 1px solid #ddd;">
-                <td style="padding: 10px 0; font-weight: bold;">Preferred Category:</td>
-                <td style="padding: 10px 0;">${partnerData.preferredCategory}</td>
+              <tr>
+                <td style="padding: 8px; font-weight: bold; color: #666;">Full Name:</td>
+                <td style="padding: 8px;">${partnerData.fullName}</td>
               </tr>
               <tr>
-                <td style="padding: 10px 0; font-weight: bold;">Registered:</td>
-                <td style="padding: 10px 0;">${new Date(partnerData.createdAt).toLocaleString()}</td>
+                <td style="padding: 8px; font-weight: bold; color: #666;">Mobile:</td>
+                <td style="padding: 8px;">${partnerData.mobileNumber}</td>
               </tr>
-            </table>
+              ${partnerData.altMobileNumber ? `
+              <tr>
+                <td style="padding: 8px; font-weight: bold; color: #666;">Alt Mobile:</td>
+                <td style="padding: 8px;">${partnerData.altMobileNumber}</td>
+              </tr>` : ''}
+              ${partnerData.whatsappNumber ? `
+              <tr>
+                <td style="padding: 8px; font-weight: bold; color: #666;">WhatsApp:</td>
+                <td style="padding: 8px;">${partnerData.whatsappNumber}</td>
+              </tr>` : ''}
+              <tr>
+                <td style="padding: 8px; font-weight: bold; color: #666;">Email:</td>
+                <td style="padding: 8px;">${partnerData.email}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px; font-weight: bold; color: #666;">State:</td>
+                <td style="padding: 8px;">${partnerData.state}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px; font-weight: bold; color: #666;">City:</td>
+                <td style="padding: 8px;">${partnerData.city}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px; font-weight: bold; color: #666;">Pincode:</td>
+                <td style="padding: 8px;">${partnerData.pincode}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px; font-weight: bold; color: #666;">Preferred Loan:</td>
+                <td style="padding: 8px;">${partnerData.preferredLoan}</td>
+              </tr>
+              ${partnerData.experience && partnerData.experience !== 'Not provided' ? `
+              <tr>
+                <td style="padding: 8px; font-weight: bold; color: #666;">Experience:</td>
+                <td style="padding: 8px;">${partnerData.experience}</td>
+              </tr>` : ''}
+                          </table>
           </div>
 
-          <div style="margin: 20px 0; padding: 15px; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 4px;">
-            <strong>Next Steps:</strong>
-            <ul style="margin: 10px 0; padding-left: 20px;">
-              <li>Review partner registration details</li>
-              <li>Conduct KYC verification</li>
-              <li>Contact partner for onboarding</li>
-              <li>Approve/Reject registration in dashboard</li>
+          <!-- Document Links -->
+          <div style="background: #f0f8ff; padding: 20px; border-radius: 8px; margin: 25px 0;">
+            <h3 style="margin-top: 0; color: #F97415;">📎 Uploaded Documents</h3>
+            <ul style="margin: 10px 0; padding-left: 25px;">
+              ${partnerData.aadhaarFrontUrl ? `<li><a href="${partnerData.aadhaarFrontUrl}" target="_blank" style="color: #F97415; text-decoration: none;">📄 Aadhaar Front</a></li>` : ''}
+              ${partnerData.aadhaarBackUrl ? `<li><a href="${partnerData.aadhaarBackUrl}" target="_blank" style="color: #F97415; text-decoration: none;">📄 Aadhaar Back</a></li>` : ''}
+              ${partnerData.panFrontUrl ? `<li><a href="${partnerData.panFrontUrl}" target="_blank" style="color: #F97415; text-decoration: none;">📄 PAN Card</a></li>` : ''}
+              ${partnerData.bankPassbookUrl ? `<li><a href="${partnerData.bankPassbookUrl}" target="_blank" style="color: #F97415; text-decoration: none;">📄 Bank Passbook</a></li>` : ''}
+              ${partnerData.passportPhotoUrl ? `<li><a href="${partnerData.passportPhotoUrl}" target="_blank" style="color: #F97415; text-decoration: none;">📄 Passport Photo</a></li>` : ''}
             </ul>
           </div>
 
-          <p>Access the partner management dashboard to approve or review this registration.</p>
-
-          <p>
-            Best regards,<br/>
-            <strong>Infinity Loans System</strong>
-          </p>
+          <!-- Action Required -->
+          <div style="background: #fff3cd; padding: 20px; border-radius: 8px; margin: 25px 0; border: 1px solid #ffeaa7;">
+            <h3 style="margin-top: 0; color: #F97415;">⚡ Action Required</h3>
+            <p>Please review the application and uploaded documents. Contact the partner within 24-48 hours for further discussion and onboarding process.</p>
+          </div>
         </div>
 
-        <div style="border-top: 1px solid #ddd; margin-top: 30px; padding-top: 20px; text-align: center; color: #666; font-size: 12px;">
-          <p>© ${new Date().getFullYear()} Infinity Loan Services. All rights reserved.</p>
-          <p>This is an automated email from your partner management system.</p>
+        <!-- Footer -->
+        <div style="background: #1a1a1a; padding: 20px; text-align: center; color: white;">
+          <p style="margin: 0; font-size: 12px;">© 2024 Infinity Loans & Business Solutions</p>
         </div>
       </div>
     `;
 
-    // Get admin emails
-    const partnerSupportEmail = process.env.NEXT_PUBLIC_PARTNER_SUPPORT_EMAIL;
-    const directorEmail = process.env.DIRECTOR_EMAIL;
-    
-    const adminEmails = [];
-    if (partnerSupportEmail) adminEmails.push(partnerSupportEmail);
-    if (directorEmail) adminEmails.push(directorEmail);
-
-    if (adminEmails.length === 0) {
-      console.warn("No admin emails configured for partner notifications");
-      return { success: false, error: "No admin emails configured" };
-    }
-
-    // Send to all admin emails
     const emailPromises = adminEmails.map(email => 
       gmailTransporter.sendMail({
         from: process.env.EMAIL_HOST_USER,
         to: email,
-        subject: `New Partner Registration - ${partnerData.fullName}`,
+        subject: `New Partner Application - ${partnerData.fullName}`,
         html: htmlContent,
       })
     );
 
     await Promise.all(emailPromises);
-
     return { success: true };
   } catch (error) {
-    console.error("Error sending partner notification to admin emails:", error);
+    console.error("Error sending admin Gmail notification emails:", error);
     return { success: false, error: error.message };
   }
-}
+};
 
 // Export Gmail transporter function for use in other modules
 export { createGmailTransporter };
