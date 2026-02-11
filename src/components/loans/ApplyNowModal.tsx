@@ -549,12 +549,20 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
       Object.entries(uForm).forEach(([key, value]) => {
         if (key === "loanType") return; // Skip loanType as it will be set separately
         
+        // Map unified form field names to expected API field names
+        let apiFieldName = key;
+        if (key === "aadhaarLinkedMobile") {
+          apiFieldName = "mobileNumber";
+        } else if (key === "personalEmail") {
+          apiFieldName = "personalEmail"; // Keep as is
+        }
+        
         if (Array.isArray(value)) {
-          formData.append(key, JSON.stringify(value));
+          formData.append(apiFieldName, JSON.stringify(value));
         } else if (typeof value === "boolean") {
-          formData.append(key, value ? "true" : "false");
+          formData.append(apiFieldName, value ? "true" : "false");
         } else {
-          formData.append(key, String(value || ""));
+          formData.append(apiFieldName, String(value || ""));
         }
       });
 

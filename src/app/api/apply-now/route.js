@@ -47,16 +47,48 @@ export async function POST(req) {
     async function upload(file) {
       if (!file) return null;
 
-      const buffer = Buffer.from(await file.arrayBuffer());
+      try {
+        let buffer;
+        
+        // Try different methods to get file content
+        if (file.arrayBuffer && typeof file.arrayBuffer === 'function') {
+          // Method 1: Use arrayBuffer (preferred)
+          const arrayBuffer = await file.arrayBuffer();
+          buffer = Buffer.from(arrayBuffer);
+        } else if (file.text && typeof file.text === 'function') {
+          // Method 2: Use text method and convert to buffer (for text files)
+          const text = await file.text();
+          buffer = Buffer.from(text, 'utf-8');
+        } else {
+          // Method 3: Skip upload if file can't be processed
+          console.warn('Unable to process file, skipping upload:', file.name);
+          return null;
+        }
 
-      return new Promise((resolve, reject) => {
-        cloudinary.uploader
-          .upload_stream({ folder: "loan_applications", resource_type: "auto" }, (err, result) => {
-            if (err) reject(err);
-            else resolve(result.secure_url);
-          })
-          .end(buffer);
-      });
+        return new Promise((resolve, reject) => {
+          cloudinary.uploader
+            .upload_stream(
+              { 
+                folder: "loan_applications", 
+                resource_type: "auto",
+                chunk_size: 6000000 
+              }, 
+              (err, result) => {
+                if (err) {
+                  console.error('Cloudinary upload error:', err);
+                  reject(err);
+                } else {
+                  resolve(result.secure_url);
+                }
+              }
+            )
+            .end(buffer);
+        });
+      } catch (error) {
+        console.error('File processing error:', error);
+        // Return null to avoid breaking the whole submission
+        return null;
+      }
     }
 
     /* =====================================================
@@ -306,7 +338,7 @@ export async function POST(req) {
         firstname: firstName,
         middleName,
         lastname: lastName,
-        mobileNumber: formData.get("aadhaarLinkedMobile"),
+        mobileNumber: formData.get("mobileNumber"),
         alternateMobile: formData.get("alternateMobile"),
         personalEmail: formData.get("personalEmail"),
         officialEmail: formData.get("officialEmail"),
