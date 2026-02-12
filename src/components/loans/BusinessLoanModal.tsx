@@ -19,6 +19,18 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
         formState: { errors },
     } = useForm();
 
+    const MAX_FILE_BYTES = 2 * 1024 * 1024;
+    const getFileFromValue = (value: any): File | null => {
+        if (value instanceof File) return value;
+        if (value?.[0] instanceof File) return value[0];
+        return null;
+    };
+    const validateMax2MB = (value: any) => {
+        const file = getFileFromValue(value);
+        if (!file) return true;
+        return file.size <= MAX_FILE_BYTES || "Max file size is 2MB";
+    };
+
     const getError = (key: string) => {
         const err = (errors as any)?.[key];
         if (!err) return null;
@@ -662,19 +674,28 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                             </div>
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">PAN Photo <span className="text-destructive">*</span></label>
-                                <input type="file" {...register("panPhoto")} className="input bg-gray-200" />
+                                <input type="file" {...register("panPhoto", { validate: validateMax2MB })} className="input bg-gray-200" />
+                                {getError("panPhoto") ? (
+                                    <p className="text-sm text-red-600">{getError("panPhoto")}</p>
+                                ) : null}
                             </div>
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Aadhaar Front Photo <span className="text-destructive">*</span></label>
-                                <input type="file" {...register("aadhaarPhoto")} className="input bg-gray-200" />
+                                <input type="file" {...register("aadhaarPhoto", { validate: validateMax2MB })} className="input bg-gray-200" />
+                                {getError("aadhaarPhoto") ? (
+                                    <p className="text-sm text-red-600">{getError("aadhaarPhoto")}</p>
+                                ) : null}
                             </div>
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Aadhaar Back Photo <span className="text-destructive">*</span></label>
-                                <input type="file" {...register("aadhaarBackPhoto")} className="input bg-gray-200" />
+                                <input type="file" {...register("aadhaarBackPhoto", { validate: validateMax2MB })} className="input bg-gray-200" />
+                                {getError("aadhaarBackPhoto") ? (
+                                    <p className="text-sm text-red-600">{getError("aadhaarBackPhoto")}</p>
+                                ) : null}
                             </div>
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Applicant Photo <span className="text-destructive">*</span></label>
-                                <input type="file" {...register("applicantPhoto", { required: true })} className="input bg-gray-200" />
+                                <input type="file" {...register("applicantPhoto", { required: true, validate: validateMax2MB })} className="input bg-gray-200" />
                                 {getError("applicantPhoto") ? (
                                     <p className="text-sm text-red-600">{getError("applicantPhoto")}</p>
                                 ) : null}
@@ -702,15 +723,24 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
 
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Co-Applicant PAN Photo <span className="text-destructive">(optional)</span></label>
-                                <input type="file" {...register("CoApplicantpanPhoto")} className="input bg-gray-200" />
+                                <input type="file" {...register("CoApplicantpanPhoto", { validate: validateMax2MB })} className="input bg-gray-200" />
+                                {getError("CoApplicantpanPhoto") ? (
+                                    <p className="text-sm text-red-600">{getError("CoApplicantpanPhoto")}</p>
+                                ) : null}
                             </div>
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Co-Applicant Aadhaar Front Photo <span className="text-destructive">(optional)</span></label>
-                                <input type="file" {...register("CoApplicantAadhaarPhoto")} className="input bg-gray-200" />
+                                <input type="file" {...register("CoApplicantAadhaarPhoto", { validate: validateMax2MB })} className="input bg-gray-200" />
+                                {getError("CoApplicantAadhaarPhoto") ? (
+                                    <p className="text-sm text-red-600">{getError("CoApplicantAadhaarPhoto")}</p>
+                                ) : null}
                             </div>
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Co-Applicant Aadhaar Back Photo <span className="text-destructive">(optional)</span></label>
-                                <input type="file" {...register("CoApplicantAadhaarBackPhoto")} className="input bg-gray-200" />
+                                <input type="file" {...register("CoApplicantAadhaarBackPhoto", { validate: validateMax2MB })} className="input bg-gray-200" />
+                                {getError("CoApplicantAadhaarBackPhoto") ? (
+                                    <p className="text-sm text-red-600">{getError("CoApplicantAadhaarBackPhoto")}</p>
+                                ) : null}
                             </div>
                         </div>
                     </div>
@@ -721,14 +751,14 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Latest Home Electricity Bill <span className="text-destructive">*</span></label>
-                                <input type="file" {...register("LatestHomeElectricityBill", { required: true })} className="input bg-gray-200" />
+                                <input type="file" {...register("LatestHomeElectricityBill", { required: true, validate: validateMax2MB })} className="input bg-gray-200" />
                                 {getError("LatestHomeElectricityBill") ? (
                                     <p className="text-sm text-red-600">{getError("LatestHomeElectricityBill")}</p>
                                 ) : null}
                             </div>
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Latest Office/Shop Electricity Bill  <span className="text-destructive">*</span></label>
-                                <input type="file" {...register("LatestOfficeShopElectricityBill ", { required: true })} className="input bg-gray-200" />
+                                <input type="file" {...register("LatestOfficeShopElectricityBill ", { required: true, validate: validateMax2MB })} className="input bg-gray-200" />
                                 {getError("LatestOfficeShopElectricityBill ") ? (
                                     <p className="text-sm text-red-600">{getError("LatestOfficeShopElectricityBill ")}</p>
                                 ) : null}
@@ -819,13 +849,9 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                                                                     {...register(statementKey, {
                                                                         validate: (value) => {
                                                                             if (!hasSelectedAccountTypes) return true;
-                                                                            const file =
-                                                                                value instanceof File
-                                                                                    ? value
-                                                                                    : value?.[0] instanceof File
-                                                                                        ? value[0]
-                                                                                        : null;
-                                                                            return !!file || "One Year Bank Statement is required";
+                                                                            const requiredCheck = !!getFileFromValue(value) || "One Year Bank Statement is required";
+                                                                            if (requiredCheck !== true) return requiredCheck;
+                                                                            return validateMax2MB(value);
                                                                         },
                                                                     })}
                                                                     className="input bg-gray-200"
@@ -932,19 +958,28 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                                 <div>
                                     <label className="text-sm font-medium">Assessment Year 2023-24 (optional)</label>
                                 </div>
-                                <input type="file" {...register("AssessmentYear2324")} className="input bg-gray-200" />
+                                <input type="file" {...register("AssessmentYear2324", { validate: validateMax2MB })} className="input bg-gray-200" />
+                                {getError("AssessmentYear2324") ? (
+                                    <p className="text-sm text-red-600">{getError("AssessmentYear2324")}</p>
+                                ) : null}
                             </div>
                             <div className="space-y-1">
                                 <div>
                                     <label className="text-sm font-medium">Assessment Year 2024-25 (optional)</label>
                                 </div>
-                                <input type="file" {...register("AssessmentYear2425")} className="input bg-gray-200" />
+                                <input type="file" {...register("AssessmentYear2425", { validate: validateMax2MB })} className="input bg-gray-200" />
+                                {getError("AssessmentYear2425") ? (
+                                    <p className="text-sm text-red-600">{getError("AssessmentYear2425")}</p>
+                                ) : null}
                             </div>
                             <div className="space-y-1">
                                 <div>
                                     <label className="text-sm font-medium">Assessment Year 2025-26 (optional)</label>
                                 </div>
-                                <input type="file" {...register("AssessmentYear2526")} className="input bg-gray-200" />
+                                <input type="file" {...register("AssessmentYear2526", { validate: validateMax2MB })} className="input bg-gray-200" />
+                                {getError("AssessmentYear2526") ? (
+                                    <p className="text-sm text-red-600">{getError("AssessmentYear2526")}</p>
+                                ) : null}
                             </div>
 
                         </div>
@@ -997,9 +1032,12 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                                                             <label className="text-sm font-medium">Upload Certificate (File)</label>
                                                             <input
                                                                 type="file"
-                                                                {...register(fileKey)}
+                                                                {...register(fileKey, { validate: validateMax2MB })}
                                                                 className="input bg-gray-200"
                                                             />
+                                                            {getError(fileKey) ? (
+                                                                <p className="text-sm text-red-600">{getError(fileKey)}</p>
+                                                            ) : null}
                                                         </div>
                                                     </div>
                                                 );
@@ -1048,18 +1086,7 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                                             accept="application/pdf"
                                             {...register("proformaInvoiceFile", {
                                                 validate: (value) => {
-                                                    const file =
-                                                        value instanceof File
-                                                            ? value
-                                                            : value?.[0] instanceof File
-                                                                ? value[0]
-                                                                : null;
-                                                    if (!file) return true;
-                                                    const maxBytes = 2 * 1024 * 1024;
-                                                    return (
-                                                        file.size <= maxBytes ||
-                                                        "Max file size is 2MB"
-                                                    );
+                                                    return validateMax2MB(value);
                                                 },
                                             })}
                                             className="input bg-gray-200"
@@ -1107,9 +1134,12 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                                     <input
                                         type="file"
                                         accept="application/pdf"
-                                        {...register("cibilReport")}
+                                        {...register("cibilReport", { validate: validateMax2MB })}
                                         className="input bg-gray-200"
                                     />
+                                    {getError("cibilReport") ? (
+                                        <p className="text-sm text-red-600">{getError("cibilReport")}</p>
+                                    ) : null}
                                 </div>
                             </div>
                         )}
@@ -1139,13 +1169,9 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                                                 {...register(`otherSupportedDocument_${idx}`, {
                                                     validate: (value) => {
                                                         if (otherDocumentsCount <= 0) return true;
-                                                        const file =
-                                                            value instanceof File
-                                                                ? value
-                                                                : value?.[0] instanceof File
-                                                                    ? value[0]
-                                                                    : null;
-                                                        return !!file || `Document ${idx + 1} is required`;
+                                                        const requiredCheck = !!getFileFromValue(value) || `Document ${idx + 1} is required`;
+                                                        if (requiredCheck !== true) return requiredCheck;
+                                                        return validateMax2MB(value);
                                                     },
                                                 })}
                                                 className="input bg-gray-200"
