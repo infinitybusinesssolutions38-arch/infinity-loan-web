@@ -8,13 +8,6 @@ import { createGmailTransporter } from "../lib/apply-now-email";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
-export const config = {
-  api: {
-    bodyParser: {
-      sizeLimit: "100mb",
-    },
-  },
-};
 
 // =============================
 // Cloudinary Config
@@ -277,12 +270,33 @@ export async function POST(req) {
       return String(value).trim().toLowerCase();
     };
 
+    const firstEnv = (...keys) => {
+      for (const k of keys) {
+        const v = process.env?.[k];
+        if (v) return v;
+      }
+      return "";
+    };
+
+    const directorEmailRaw = firstEnv(
+      "DIRECTOR_EMAIL",
+      "DIRECTOREMAIL",
+      "DIRECTOR_MAIL",
+      "DIRECTORMAIL"
+    );
+    const supportEmailRaw = firstEnv(
+      "SUPPORT_EMAIL",
+      "SUPPORTEMAIL",
+      "SUPPORT_MAIL",
+      "SUPPORTMAIL"
+    );
+
     const internalEmailSet = new Set(
       normalizeEmailList(
-        process.env.DIRECTOR_EMAIL,
+        directorEmailRaw,
         process.env.ADMIN_USER,
         process.env.ADMIN_EMAIL,
-        process.env.SUPPORT_EMAIL
+        supportEmailRaw
       ).map((e) => normalizeEmail(e))
     );
 
@@ -305,17 +319,15 @@ export async function POST(req) {
         : null;
 
     if (candidateCustomerEmail) {
-      emailTasks.push(
-        withTimeout(
-          sendLoanApplicationConfirmationEmail(candidateCustomerEmail, {
-            customerName: saved?.firstName,
-            applicationNumber: applicationRef,
-            applicationDate,
-            loanType: "Business Loan",
-            loanAmount: saved?.requiredLoanAmount,
-          }),
-          12000
-        )
+      await withTimeout(
+        sendLoanApplicationConfirmationEmail(candidateCustomerEmail, {
+          customerName: saved?.firstName,
+          applicationNumber: applicationRef,
+          applicationDate,
+          loanType: "Business Loan",
+          loanAmount: saved?.requiredLoanAmount,
+        }),
+        12000
       );
     }
 
@@ -324,8 +336,8 @@ export async function POST(req) {
     // =============================
     const gmailTransporter = createGmailTransporter();
     const internalRecipients = normalizeEmailList(
-      process.env.DIRECTOR_EMAIL,
-      process.env.SUPPORT_EMAIL,
+      directorEmailRaw,
+      supportEmailRaw,
       process.env.ADMIN_USER
     );
 
@@ -581,24 +593,30 @@ export async function POST(req) {
       process.env.EMAIL_FROM;
 
     if (internalRecipients.length > 0) {
-      emailTasks.push(
-        ...internalRecipients.map((to) =>
-          withTimeout(
-            gmailTransporter.sendMail({
-              from: fromAddress,
-              to,
-              replyTo: safe(saved?.personalEmail) || undefined,
-              subject: `New Business Loan Application - ${applicationRef}`,
-              html: internalBrandedHtml,
-              text: internalText,
-            }),
-            12000
-          )
-        )
+      const directorList = normalizeEmailList(directorEmailRaw);
+      const supportList = normalizeEmailList(supportEmailRaw);
+
+      const toAddress = directorList?.[0] || internalRecipients?.[0];
+      const ccAddress =
+        !toAddress && internalRecipients.length > 1
+          ? internalRecipients.slice(1)
+          : supportList.length > 0
+            ? supportList
+            : undefined;
+
+      await withTimeout(
+        gmailTransporter.sendMail({
+          from: fromAddress,
+          to: toAddress || internalRecipients,
+          cc: ccAddress,
+          replyTo: safe(saved?.personalEmail) || undefined,
+          subject: `New Business Loan Application - ${applicationRef}`,
+          html: internalBrandedHtml,
+          text: internalText,
+        }),
+        12000
       );
     }
-
-    Promise.allSettled(emailTasks).catch(() => {});
 
     return NextResponse.json({
       success: true,
