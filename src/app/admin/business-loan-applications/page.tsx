@@ -104,7 +104,7 @@ export default function AdminBusinessLoanApplicationsPage() {
   };
 
   const displayName = (x: any) => {
-    return x.fullName || x.businessName || `${x.firstname || ""} ${x.lastname || ""}`.trim() || "-";
+    return x.firstName && x.lastName ? `${x.firstName} ${x.lastName}` : x.fullName || x.businessName || "-";
   };
 
   return (

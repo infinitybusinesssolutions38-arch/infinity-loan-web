@@ -36,13 +36,14 @@ export async function GET(req) {
     return filter;
   };
 
-  const personalFilter = buildFilter(["firstname", "lastname", "email", "mobile", "applicationRef"]);
-  const businessFilter = buildFilter(["fullName", "email", "mobile", "applicationRef"]);
+  const personalFilter = buildFilter(["firstname", "lastname", "personalEmail", "mobileNumber", "applicationRef"]);
+  const businessFilter = buildFilter(["firstName", "lastName", "personalEmail", "mobileNumber", "applicationRef"]);
+  const salariedFilter = buildFilter(["firstname", "lastname", "personalEmail", "mobileNumber", "applicationRef"]);
 
   const includePersonal = !type || type === "personal";
   const includeBusiness = !type || type === "business";
 
-  const [personalItems, personalTotal, businessItems, businessTotal] = await Promise.all([
+  const [personalItems, personalTotal, businessItems, businessTotal, salariedItems, salariedTotal] = await Promise.all([
     includePersonal
       ? PersonalLoanModel.find(personalFilter).sort({ createdAt: -1 }).skip(skip).limit(limit).lean()
       : Promise.resolve([]),
@@ -51,18 +52,23 @@ export async function GET(req) {
       ? BusinessLoanModel.find(businessFilter).sort({ createdAt: -1 }).skip(skip).limit(limit).lean()
       : Promise.resolve([]),
     includeBusiness ? BusinessLoanModel.countDocuments(businessFilter) : Promise.resolve(0),
+    includePersonal
+      ? SalariedLoanModel.find(salariedFilter).sort({ createdAt: -1 }).skip(skip).limit(limit).lean()
+      : Promise.resolve([]),
+    includePersonal ? SalariedLoanModel.countDocuments(salariedFilter) : Promise.resolve(0),
   ]);
 
   const items = [
     ...personalItems.map((i) => normalizeItem(i, "personal")),
     ...businessItems.map((i) => normalizeItem(i, "business")),
+    ...salariedItems.map((i) => normalizeItem(i, "personal")), // Treat salaried as personal
   ].sort((a, b) => {
     const ad = new Date(a.createdAt || 0).getTime();
     const bd = new Date(b.createdAt || 0).getTime();
     return bd - ad;
   });
 
-  const total = personalTotal + businessTotal;
+  const total = personalTotal + businessTotal + salariedTotal;
 
   return NextResponse.json({
     success: true,
