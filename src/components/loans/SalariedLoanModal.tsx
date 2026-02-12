@@ -35,6 +35,43 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
         return file.size <= MAX_FILE_BYTES || "Max file size is 2MB";
     };
 
+    const getCloudinarySignature = async (folder: string) => {
+        const res = await axios.post("/api/cloudinary-signature", { folder }, { timeout: 15000 });
+        if (!res?.data?.success) {
+            throw new Error(res?.data?.message || "Failed to get upload signature");
+        }
+        return res.data as {
+            cloudName: string;
+            apiKey: string;
+            timestamp: number;
+            folder: string;
+            signature: string;
+        };
+    };
+
+    const uploadToCloudinary = async (file: File, folder: string) => {
+        const sig = await getCloudinarySignature(folder);
+        const uploadUrl = `https://api.cloudinary.com/v1_1/${sig.cloudName}/auto/upload`;
+
+        const fd = new FormData();
+        fd.append("file", file);
+        fd.append("api_key", sig.apiKey);
+        fd.append("timestamp", String(sig.timestamp));
+        fd.append("folder", sig.folder);
+        fd.append("signature", sig.signature);
+
+        const uploadRes = await axios.post(uploadUrl, fd, {
+            timeout: 60000,
+            headers: { "Content-Type": "multipart/form-data" },
+        });
+
+        const secureUrl = uploadRes?.data?.secure_url;
+        if (!secureUrl || typeof secureUrl !== "string") {
+            throw new Error("Cloud upload failed");
+        }
+        return secureUrl;
+    };
+
     const getError = (key: string) => {
         const err = (errors as any)?.[key];
         if (!err) return null;
@@ -221,69 +258,155 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
             // Documents (Files)
             // =====================================
             const applicantPhoto = pickFirstFile(data.applicantPhoto);
-            if (applicantPhoto) formData.append("applicantPhoto", applicantPhoto);
+            if (applicantPhoto) {
+                formData.append(
+                    "applicantPhoto",
+                    await uploadToCloudinary(applicantPhoto, "loan_applications")
+                );
+            }
 
             const panPhoto = pickFirstFile(data.panPhoto);
-            if (panPhoto) formData.append("panPhoto", panPhoto);
+            if (panPhoto) {
+                formData.append(
+                    "panPhoto",
+                    await uploadToCloudinary(panPhoto, "loan_applications")
+                );
+            }
 
             const aadhaarPhoto = pickFirstFile(data.aadhaarPhoto);
-            if (aadhaarPhoto) formData.append("aadhaarPhoto", aadhaarPhoto);
+            if (aadhaarPhoto) {
+                formData.append(
+                    "aadhaarPhoto",
+                    await uploadToCloudinary(aadhaarPhoto, "loan_applications")
+                );
+            }
 
             const aadhaarBackPhoto = pickFirstFile(data.aadhaarBackPhoto);
-            if (aadhaarBackPhoto) formData.append("aadhaarBackPhoto", aadhaarBackPhoto);
+            if (aadhaarBackPhoto) {
+                formData.append(
+                    "aadhaarBackPhoto",
+                    await uploadToCloudinary(aadhaarBackPhoto, "loan_applications")
+                );
+            }
 
             const residencePhoto = pickFirstFile(data.residencePhoto);
-            if (residencePhoto) formData.append("residencePhoto", residencePhoto);
+            if (residencePhoto) {
+                formData.append(
+                    "residencePhoto",
+                    await uploadToCloudinary(residencePhoto, "loan_applications")
+                );
+            }
 
             const lastElectricityBill = pickFirstFile(data.latestElectricityBill);
             if (lastElectricityBill)
-                formData.append("lastElectricityBill", lastElectricityBill);
+                formData.append(
+                    "lastElectricityBill",
+                    await uploadToCloudinary(lastElectricityBill, "loan_applications")
+                );
 
             const permElectricityBill = pickFirstFile(data.permanentAddressElectricityBill);
             if (permElectricityBill)
-                formData.append("permElectricityBill", permElectricityBill);
+                formData.append(
+                    "permElectricityBill",
+                    await uploadToCloudinary(permElectricityBill, "loan_applications")
+                );
 
             const rentAgreement = pickFirstFile(data.rentAgreement);
-            if (rentAgreement) formData.append("rentAgreement", rentAgreement);
+            if (rentAgreement)
+                formData.append(
+                    "rentAgreement",
+                    await uploadToCloudinary(rentAgreement, "loan_applications")
+                );
 
             const companyAllotmentLetter = pickFirstFile(data.companyAllotmentLetter);
             if (companyAllotmentLetter)
-                formData.append("companyAllotmentLetter", companyAllotmentLetter);
+                formData.append(
+                    "companyAllotmentLetter",
+                    await uploadToCloudinary(companyAllotmentLetter, "loan_applications")
+                );
 
             const officeIdPhoto = pickFirstFile(data.officeIdPhoto);
-            if (officeIdPhoto) formData.append("officeIdPhoto", officeIdPhoto);
+            if (officeIdPhoto)
+                formData.append(
+                    "officeIdPhoto",
+                    await uploadToCloudinary(officeIdPhoto, "loan_applications")
+                );
 
             const officeIDCardPhoto = pickFirstFile(data.officeIDCardPhoto);
-            if (officeIDCardPhoto) formData.append("officeIdPhoto", officeIDCardPhoto);
+            if (officeIDCardPhoto)
+                formData.append(
+                    "officeIdPhoto",
+                    await uploadToCloudinary(officeIDCardPhoto, "loan_applications")
+                );
 
             const salarySlips = pickFirstFile(data.salarySlips);
-            if (salarySlips) formData.append("salarySlips", salarySlips);
+            if (salarySlips)
+                formData.append(
+                    "salarySlips",
+                    await uploadToCloudinary(salarySlips, "loan_applications")
+                );
 
             const lastThreeMonthsSalarySlips = pickFirstFile(data.LastThreeMonthsSalarySlips);
-            if (lastThreeMonthsSalarySlips) formData.append("salarySlips", lastThreeMonthsSalarySlips);
+            if (lastThreeMonthsSalarySlips)
+                formData.append(
+                    "salarySlips",
+                    await uploadToCloudinary(
+                        lastThreeMonthsSalarySlips,
+                        "loan_applications"
+                    )
+                );
 
             const bankStatement = pickFirstFile(data.bankStatement);
-            if (bankStatement) formData.append("bankStatement", bankStatement);
+            if (bankStatement)
+                formData.append(
+                    "bankStatement",
+                    await uploadToCloudinary(bankStatement, "loan_applications")
+                );
 
             const cibilReport = pickFirstFile(data.cibilReport);
-            if (cibilReport) formData.append("cibilReport", cibilReport);
+            if (cibilReport)
+                formData.append(
+                    "cibilReport",
+                    await uploadToCloudinary(cibilReport, "loan_applications")
+                );
 
             const lastSixMonthsBankStatement = pickFirstFile(data.lastSixMonthsBankStatement);
-            if (lastSixMonthsBankStatement) formData.append("bankStatement", lastSixMonthsBankStatement);
+            if (lastSixMonthsBankStatement)
+                formData.append(
+                    "bankStatement",
+                    await uploadToCloudinary(
+                        lastSixMonthsBankStatement,
+                        "loan_applications"
+                    )
+                );
 
             const quotationFile = pickFirstFile(data.quotationFile);
-            if (quotationFile) formData.append("quotationFile", quotationFile);
+            if (quotationFile)
+                formData.append(
+                    "quotationFile",
+                    await uploadToCloudinary(quotationFile, "loan_applications")
+                );
 
             const proformaInvoiceFile = pickFirstFile(data.proformaInvoiceFile);
-            if (proformaInvoiceFile) formData.append("proformaInvoiceFile", proformaInvoiceFile);
+            if (proformaInvoiceFile)
+                formData.append(
+                    "proformaInvoiceFile",
+                    await uploadToCloudinary(proformaInvoiceFile, "loan_applications")
+                );
 
             const coApplicantPanPhoto = pickFirstFile(data.CoApplicantpanPhoto);
             if (coApplicantPanPhoto)
-                formData.append("CoApplicantpanPhoto", coApplicantPanPhoto);
+                formData.append(
+                    "CoApplicantpanPhoto",
+                    await uploadToCloudinary(coApplicantPanPhoto, "loan_applications")
+                );
 
             const coApplicantAadhaarPhoto = pickFirstFile(data.CoApplicantAadhaarPhoto);
             if (coApplicantAadhaarPhoto)
-                formData.append("CoApplicantAadhaarPhoto", coApplicantAadhaarPhoto);
+                formData.append(
+                    "CoApplicantAadhaarPhoto",
+                    await uploadToCloudinary(coApplicantAadhaarPhoto, "loan_applications")
+                );
 
             const coApplicantAadhaarBackPhoto = pickFirstFile(
                 data.CoApplicantAadhaarBackPhoto
@@ -291,7 +414,10 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
             if (coApplicantAadhaarBackPhoto)
                 formData.append(
                     "CoApplicantAadhaarBackPhoto",
-                    coApplicantAadhaarBackPhoto
+                    await uploadToCloudinary(
+                        coApplicantAadhaarBackPhoto,
+                        "loan_applications"
+                    )
                 );
 
             const res = await axios.post("/api/salaried-loan", formData, {

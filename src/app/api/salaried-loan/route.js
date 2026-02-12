@@ -11,6 +11,14 @@ import { createGmailTransporter } from "../lib/apply-now-email";
 export const runtime = "nodejs";
 export const maxDuration = 60;
 
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: "100mb",
+    },
+  },
+};
+
 // Cloudinary config
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -37,6 +45,11 @@ export async function POST(req) {
     ========================================== */
     async function upload(file) {
       if (!file) return null;
+
+      if (typeof file === "string") {
+        const v = file.trim();
+        return v ? v : null;
+      }
 
       const arrayBuffer = await file.arrayBuffer();
       const buffer = Buffer.from(arrayBuffer);

@@ -31,6 +31,43 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
         return file.size <= MAX_FILE_BYTES || "Max file size is 2MB";
     };
 
+    const getCloudinarySignature = async (folder: string) => {
+        const res = await axios.post("/api/cloudinary-signature", { folder }, { timeout: 15000 });
+        if (!res?.data?.success) {
+            throw new Error(res?.data?.message || "Failed to get upload signature");
+        }
+        return res.data as {
+            cloudName: string;
+            apiKey: string;
+            timestamp: number;
+            folder: string;
+            signature: string;
+        };
+    };
+
+    const uploadToCloudinary = async (file: File, folder: string) => {
+        const sig = await getCloudinarySignature(folder);
+        const uploadUrl = `https://api.cloudinary.com/v1_1/${sig.cloudName}/auto/upload`;
+
+        const fd = new FormData();
+        fd.append("file", file);
+        fd.append("api_key", sig.apiKey);
+        fd.append("timestamp", String(sig.timestamp));
+        fd.append("folder", sig.folder);
+        fd.append("signature", sig.signature);
+
+        const uploadRes = await axios.post(uploadUrl, fd, {
+            timeout: 60000,
+            headers: { "Content-Type": "multipart/form-data" },
+        });
+
+        const secureUrl = uploadRes?.data?.secure_url;
+        if (!secureUrl || typeof secureUrl !== "string") {
+            throw new Error("Cloud upload failed");
+        }
+        return secureUrl;
+    };
+
     const getError = (key: string) => {
         const err = (errors as any)?.[key];
         if (!err) return null;
@@ -175,45 +212,112 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
             // File Uploads
             // =============================
             const applicantPhoto = pickFirstFile(data.applicantPhoto);
-            if (applicantPhoto) formData.append("applicantPhoto", applicantPhoto);
+            if (applicantPhoto) {
+                formData.append(
+                    "applicantPhoto",
+                    await uploadToCloudinary(applicantPhoto, "loan_applications/business")
+                );
+            }
 
             const panPhoto = pickFirstFile(data.panPhoto);
-            if (panPhoto) formData.append("panPhoto", panPhoto);
+            if (panPhoto) {
+                formData.append(
+                    "panPhoto",
+                    await uploadToCloudinary(panPhoto, "loan_applications/business")
+                );
+            }
 
             const aadhaarPhoto = pickFirstFile(data.aadhaarPhoto);
-            if (aadhaarPhoto) formData.append("aadhaarPhoto", aadhaarPhoto);
+            if (aadhaarPhoto) {
+                formData.append(
+                    "aadhaarPhoto",
+                    await uploadToCloudinary(aadhaarPhoto, "loan_applications/business")
+                );
+            }
 
             const aadhaarBackPhoto = pickFirstFile(data.aadhaarBackPhoto);
-            if (aadhaarBackPhoto) formData.append("aadhaarBackPhoto", aadhaarBackPhoto);
+            if (aadhaarBackPhoto) {
+                formData.append(
+                    "aadhaarBackPhoto",
+                    await uploadToCloudinary(aadhaarBackPhoto, "loan_applications/business")
+                );
+            }
 
             const gstCertificate = pickFirstFile(data.gstCertificate);
-            if (gstCertificate) formData.append("gstCertificate", gstCertificate);
+            if (gstCertificate) {
+                formData.append(
+                    "gstCertificate",
+                    await uploadToCloudinary(gstCertificate, "loan_applications/business")
+                );
+            }
 
             const bankStatement = pickFirstFile(data.bankStatement);
-            if (bankStatement) formData.append("bankStatement", bankStatement);
+            if (bankStatement) {
+                formData.append(
+                    "bankStatement",
+                    await uploadToCloudinary(bankStatement, "loan_applications/business")
+                );
+            }
 
             const itrFile = pickFirstFile(data.itrFile);
-            if (itrFile) formData.append("itrFile", itrFile);
+            if (itrFile) {
+                formData.append(
+                    "itrFile",
+                    await uploadToCloudinary(itrFile, "loan_applications/business")
+                );
+            }
 
             const ay2324 = pickFirstFile(data.AssessmentYear2324);
-            if (ay2324) formData.append("assessmentYear2324", ay2324);
+            if (ay2324) {
+                formData.append(
+                    "assessmentYear2324",
+                    await uploadToCloudinary(ay2324, "loan_applications/business")
+                );
+            }
             const ay2425 = pickFirstFile(data.AssessmentYear2425);
-            if (ay2425) formData.append("assessmentYear2425", ay2425);
+            if (ay2425) {
+                formData.append(
+                    "assessmentYear2425",
+                    await uploadToCloudinary(ay2425, "loan_applications/business")
+                );
+            }
             const ay2526 = pickFirstFile(data.AssessmentYear2526);
-            if (ay2526) formData.append("assessmentYear2526", ay2526);
+            if (ay2526) {
+                formData.append(
+                    "assessmentYear2526",
+                    await uploadToCloudinary(ay2526, "loan_applications/business")
+                );
+            }
 
             const proformaInvoiceFile = pickFirstFile(data.proformaInvoiceFile);
-            if (proformaInvoiceFile) formData.append("proformaInvoiceFile", proformaInvoiceFile);
+            if (proformaInvoiceFile) {
+                formData.append(
+                    "proformaInvoiceFile",
+                    await uploadToCloudinary(
+                        proformaInvoiceFile,
+                        "loan_applications/business"
+                    )
+                );
+            }
 
             const cibilReport = pickFirstFile(data.cibilReport);
-            if (cibilReport) formData.append("cibilReport", cibilReport);
+            if (cibilReport) {
+                formData.append(
+                    "cibilReport",
+                    await uploadToCloudinary(cibilReport, "loan_applications/business")
+                );
+            }
 
             // append bank statements
-            bankStatements.forEach((item, index) => {
-                if (item.file) {
-                    formData.append(`bankStatement_${index}`, item.file);
+            for (let i = 0; i < bankStatements.length; i += 1) {
+                const f = bankStatements[i]?.file;
+                if (f) {
+                    formData.append(
+                        `bankStatement_${i}`,
+                        await uploadToCloudinary(f, "loan_applications/business")
+                    );
                 }
-            });
+            }
 
             // append existing loans
             formData.append("existingLoanDetails", JSON.stringify(existingLoans));
@@ -242,7 +346,7 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
             appendIfPresent("accountType", accountTypesArray.join(", "));
 
             const bankAccountsPayload: Array<{ accountType: string; bankName: string }> = [];
-            accountTypesArray.forEach((t) => {
+            for (const t of accountTypesArray) {
                 const key = toAccountKey(t);
                 const bankNameKey = `bankName_${key}`;
                 const statementKey = `oneYearBankStatement_${key}`;
@@ -255,10 +359,15 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                 }
 
                 const statementFile = pickFirstFile(data?.[statementKey]);
-                if (statementFile) formData.append(statementKey, statementFile);
+                if (statementFile) {
+                    formData.append(
+                        statementKey,
+                        await uploadToCloudinary(statementFile, "loan_applications/business")
+                    );
+                }
 
                 bankAccountsPayload.push({ accountType: String(t || ""), bankName: bankNameValue });
-            });
+            }
             formData.append("bankAccounts", JSON.stringify(bankAccountsPayload));
 
             // Co-applicant
@@ -268,12 +377,21 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
 
             const coApplicantPanPhoto = pickFirstFile(data.CoApplicantpanPhoto);
             if (coApplicantPanPhoto) {
-                formData.append("CoApplicantpanPhoto", coApplicantPanPhoto);
+                formData.append(
+                    "CoApplicantpanPhoto",
+                    await uploadToCloudinary(coApplicantPanPhoto, "loan_applications/business")
+                );
             }
 
             const coApplicantAadhaarPhoto = pickFirstFile(data.CoApplicantAadhaarPhoto);
             if (coApplicantAadhaarPhoto) {
-                formData.append("CoApplicantAadhaarPhoto", coApplicantAadhaarPhoto);
+                formData.append(
+                    "CoApplicantAadhaarPhoto",
+                    await uploadToCloudinary(
+                        coApplicantAadhaarPhoto,
+                        "loan_applications/business"
+                    )
+                );
             }
 
             const coApplicantAadhaarBackPhoto = pickFirstFile(
@@ -282,7 +400,10 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
             if (coApplicantAadhaarBackPhoto) {
                 formData.append(
                     "CoApplicantAadhaarBackPhoto",
-                    coApplicantAadhaarBackPhoto
+                    await uploadToCloudinary(
+                        coApplicantAadhaarBackPhoto,
+                        "loan_applications/business"
+                    )
                 );
             }
 
@@ -293,7 +414,10 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
             if (latestHomeElectricityBillFile) {
                 formData.append(
                     "latestHomeElectricityBill",
-                    latestHomeElectricityBillFile
+                    await uploadToCloudinary(
+                        latestHomeElectricityBillFile,
+                        "loan_applications/business"
+                    )
                 );
             }
 
@@ -303,7 +427,10 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
             if (latestOfficeShopElectricityBillFile) {
                 formData.append(
                     "latestOfficeShopElectricityBill",
-                    latestOfficeShopElectricityBillFile
+                    await uploadToCloudinary(
+                        latestOfficeShopElectricityBillFile,
+                        "loan_applications/business"
+                    )
                 );
             }
 
@@ -327,16 +454,21 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                 certificateType: string;
             }> = [];
 
-            businessRegistrationCertificatesArray.forEach((t) => {
+            for (const t of businessRegistrationCertificatesArray) {
                 const key = toAccountKey(t);
                 const fileKey = `businessRegistrationCertificateFile_${key}`;
                 const file = pickFirstFile(data?.[fileKey]);
-                if (file) formData.append(fileKey, file);
+                if (file) {
+                    formData.append(
+                        fileKey,
+                        await uploadToCloudinary(file, "loan_applications/business")
+                    );
+                }
 
                 businessRegistrationCertificatesPayload.push({
                     certificateType: String(t || ""),
                 });
-            });
+            }
 
             formData.append(
                 "businessRegistrationCertificatesPayload",
@@ -358,13 +490,22 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
             for (let i = 0; i < otherDocumentsCount; i += 1) {
                 const key = `otherSupportedDocument_${i}`;
                 const file = pickFirstFile(data?.[key]);
-                if (file) formData.append(key, file);
+                if (file) {
+                    formData.append(
+                        key,
+                        await uploadToCloudinary(file, "loan_applications/business")
+                    );
+                }
             }
 
             // append business certificates
             businessCertificates.forEach((item, index) => {
                 if (item.file) {
-                    formData.append(`businessCertificate_${index}`, item.file);
+                    // Note: businessCertificates are component-state files; upload them too
+                    formData.append(
+                        `businessCertificate_${index}`,
+                        item.file
+                    );
                 }
             });
 
@@ -372,6 +513,26 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
             otherDocuments.forEach((file, index) => {
                 formData.append(`otherDocument_${index}`, file);
             });
+
+            // Upload any remaining component-state files (legacy dynamic sections)
+            for (let i = 0; i < businessCertificates.length; i += 1) {
+                const f = businessCertificates[i]?.file;
+                if (f) {
+                    formData.set(
+                        `businessCertificate_${i}`,
+                        await uploadToCloudinary(f, "loan_applications/business")
+                    );
+                }
+            }
+            for (let i = 0; i < otherDocuments.length; i += 1) {
+                const f = otherDocuments[i];
+                if (f) {
+                    formData.set(
+                        `otherDocument_${i}`,
+                        await uploadToCloudinary(f, "loan_applications/business")
+                    );
+                }
+            }
 
             const res = await axios.post("/api/business-loan", formData, {
                 timeout: 45000,
