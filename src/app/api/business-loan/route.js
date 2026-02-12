@@ -319,15 +319,17 @@ export async function POST(req) {
         : null;
 
     if (candidateCustomerEmail) {
-      await withTimeout(
-        sendLoanApplicationConfirmationEmail(candidateCustomerEmail, {
-          customerName: saved?.firstName,
-          applicationNumber: applicationRef,
-          applicationDate,
-          loanType: "Business Loan",
-          loanAmount: saved?.requiredLoanAmount,
-        }),
-        12000
+      emailTasks.push(
+        withTimeout(
+          sendLoanApplicationConfirmationEmail(candidateCustomerEmail, {
+            customerName: saved?.firstName,
+            applicationNumber: applicationRef,
+            applicationDate,
+            loanType: "Business Loan",
+            loanAmount: saved?.requiredLoanAmount,
+          }),
+          12000
+        )
       );
     }
 
@@ -604,18 +606,24 @@ export async function POST(req) {
             ? supportList
             : undefined;
 
-      await withTimeout(
-        gmailTransporter.sendMail({
-          from: fromAddress,
-          to: toAddress || internalRecipients,
-          cc: ccAddress,
-          replyTo: safe(saved?.personalEmail) || undefined,
-          subject: `New Business Loan Application - ${applicationRef}`,
-          html: internalBrandedHtml,
-          text: internalText,
-        }),
-        12000
+      emailTasks.push(
+        withTimeout(
+          gmailTransporter.sendMail({
+            from: fromAddress,
+            to: toAddress || internalRecipients,
+            cc: ccAddress,
+            replyTo: safe(saved?.personalEmail) || undefined,
+            subject: `New Business Loan Application - ${applicationRef}`,
+            html: internalBrandedHtml,
+            text: internalText,
+          }),
+          12000
+        )
       );
+    }
+
+    if (emailTasks.length > 0) {
+      await withTimeout(Promise.allSettled(emailTasks), 15000);
     }
 
     return NextResponse.json({

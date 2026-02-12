@@ -57,7 +57,7 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
         fd.append("signature", sig.signature);
 
         const uploadRes = await axios.post(uploadUrl, fd, {
-            timeout: 60000,
+            timeout: 180000,
             headers: { "Content-Type": "multipart/form-data" },
         });
 
@@ -535,7 +535,7 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
             }
 
             const res = await axios.post("/api/business-loan", formData, {
-                timeout: 45000,
+                timeout: 180000,
             });
             if (!res?.data?.success) {
                 throw new Error(res?.data?.message || "Submission failed");
