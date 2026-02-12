@@ -668,6 +668,16 @@ export async function POST(req) {
       saved?.firstName
     )} ${safe(saved?.middleName)} ${safe(saved?.lastName)}\nDOB: ${safe(saved?.dob)}\nGender: ${safe(saved?.gender)}\nMarital Status: ${safe(saved?.maritalStatus)}\nMobile: ${safe(saved?.mobileNumber)}\nWhatsApp: ${safe(saved?.whatsappNumber)}\nAlternate Mobile: ${safe(saved?.alternateMobile)}\nPersonal Email: ${safe(saved?.personalEmail)}\nOfficial Email: ${safe(saved?.officialEmail)}\nOffice Email: ${safe(saved?.officeEmailId)}\n\nKYC\nPAN: ${safe(saved?.panNumber)}\nAadhaar: ${safe(saved?.aadhaarNumber)}\nVoter ID: ${safe(saved?.voterIdNumber)}\nDriving License: ${safe(saved?.drivingLicense)}\nPassport: ${safe(saved?.passportNumber)}\n\nAddress\nCurrent Address: ${safe(saved?.currentResidentialAddress)}\nCurrent Pincode: ${safe(saved?.currentResidentialPincode)}\nState: ${safe(saved?.state)}\nCity: ${safe(saved?.city)}\nResidence Type: ${safe(saved?.residenceType)}\nStaying Since: ${safe(saved?.stayingSinceDate)}\nPermanent Address: ${safe(saved?.permanentAddress)}\n\nEmployment\nCompany: ${safe(saved?.companyName)}\nOrganization Type: ${safe(saved?.organizationType)}\nIndustry: ${safe(saved?.industry)} ${safe(saved?.industryOther)} ${safe(saved?.otherSector)}\nDesignation: ${safe(saved?.designation)}\nEmployment Type: ${safe(saved?.employmentType)}\nDate Of Joining: ${safe(saved?.dateOfJoining)}\nTotal Experience (Years): ${safe(saved?.totalExperienceYears)}\nOffice Location: ${safe(saved?.officeLocation)}\nOffice Pincode: ${safe(saved?.officePincode)}\n\nIncome & Loan\nMonthly Net Salary: ${safe(saved?.monthlyNetSalary)}\nSalary Credit Mode: ${safe(saved?.salaryCreditMode)}\nSalary Account Bank: ${safe(saved?.salaryAccountBankName)}\nRequired Loan Amount: ${safe(saved?.requiredLoanAmount)}\nPreferred Tenure: ${safe(saved?.preferredTenure)}\nPurpose: ${safe(saved?.purpose)}\nCIBIL Available: ${safe(saved?.hasCibil)}\nCIBIL Score: ${safe(saved?.cibilScore)}\nCIBIL Issues: ${safe(saved?.cibilIssues)}\nBuying Goods: ${safe(saved?.isBuyingGoods)}\nQuotation Amount: ${safe(saved?.quotationAmount)}\n\nCo-Applicant\nName: ${safe(saved?.coApplicantName)}\nRelation: ${safe(saved?.coApplicantRelation)}\nEmployment Type: ${safe(saved?.coApplicantEmploymentType)}\n\nDocuments (Links)\nApplicant Photo: ${safe(saved?.applicantPhotoUrl) || "-"}\nPAN Photo: ${safe(saved?.panPhotoUrl) || "-"}\nAadhaar Front: ${safe(saved?.aadhaarPhotoUrl) || "-"}\nAadhaar Back: ${safe(saved?.aadhaarBackPhotoUrl) || "-"}\nResidence Proof: ${safe(saved?.residencePhotoUrl) || "-"}\nLatest Electricity Bill: ${safe(saved?.lastElectricityBillUrl) || "-"}\nPermanent Address Electricity Bill: ${safe(saved?.permElectricityBillUrl) || "-"}\nRent Agreement: ${safe(saved?.rentAgreementUrl) || "-"}\nCompany Allotment Letter: ${safe(saved?.companyAllotmentLetterUrl) || "-"}\nOffice ID: ${safe(saved?.officeIdPhotoUrl) || "-"}\nSalary Slips: ${safe(saved?.salarySlipsUrl) || "-"}\nBank Statement: ${safe(saved?.bankStatementUrl) || "-"}\nCIBIL Report: ${safe(saved?.cibilReportUrl) || "-"}\nQuotation File: ${safe(saved?.quotationFileUrl) || "-"}\nProforma Invoice: ${safe(saved?.proformaInvoiceFileUrl) || "-"}\n\nExisting Loans\n${existingLoansText || "No existing loans provided"}\n`;
 
+    const internalTextFinal = `${internalText}\n\nCo-Applicant\nName: ${safe(
+      saved?.coApplicantName
+    )}\nRelation: ${safe(saved?.coApplicantRelation)}\nEmployment Type: ${safe(
+      saved?.coApplicantEmploymentType
+    )}\nEmail: ${safe(saved?.coApplicantEmail)}\nMobile: ${safe(
+      saved?.coApplicantMobile
+    )}\nPhoto: ${safe(saved?.coApplicantPhotoUrl)}\n\nReferences\n${
+      referencesText || "No reference details provided"
+    }`;
+
     if (internalRecipients.length > 0) {
       const directorList = normalizeEmailList(directorEmailRaw);
       const supportList = normalizeEmailList(supportEmailRaw);
@@ -688,7 +698,7 @@ export async function POST(req) {
           replyTo: safe(saved?.personalEmail) || undefined,
           subject: `New Salaried Loan Application - ${applicationRef}`,
           html: internalBrandedHtml,
-          text: internalText,
+          text: internalTextFinal,
         }),
         12000
       );
