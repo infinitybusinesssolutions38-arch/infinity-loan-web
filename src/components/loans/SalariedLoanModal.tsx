@@ -81,6 +81,8 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
 
     const [loading, setLoading] = useState(false);
 
+    const [referenceCount, setReferenceCount] = useState(1);
+
     // Dynamic Existing Loans
     const [existingLoans, setExistingLoans] = useState<
         {
@@ -264,6 +266,26 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
             appendIfPresent("coApplicantRelation", data.relationshipWithApplicant);
             appendIfPresent("coApplicantEmploymentType", data.CoApplicantEmploymentType);
 
+            appendIfPresent("coApplicantEmail", data.CoApplicantEmailID);
+            appendIfPresent("coApplicantMobile", data.CoApplicantMobileNO);
+
+            // =====================================
+            // References (Dynamic)
+            // =====================================
+            formData.append("referenceCount", String(Math.max(1, referenceCount || 1)));
+
+            for (let i = 0; i < Math.max(1, referenceCount || 1); i += 1) {
+                const suffix = i === 0 ? "" : `_${i}`;
+                appendIfPresent(`referenceFullName${suffix}`, (data as any)[`FirstReferenceFullName${suffix}`]);
+                appendIfPresent(`referenceMobile${suffix}`, (data as any)[`ReferenceMobileNumber${suffix}`]);
+                appendIfPresent(`referenceRelation${suffix}`, (data as any)[`RelationWithAplicant${suffix}`]);
+                appendIfPresent(`referenceEmail${suffix}`, (data as any)[`ReferenceEmailId${suffix}`]);
+                appendIfPresent(`referenceAddress${suffix}`, (data as any)[`ReferenceAddress${suffix}`]);
+                appendIfPresent(`referenceState${suffix}`, (data as any)[`ReferenceState${suffix}`]);
+                appendIfPresent(`referenceCity${suffix}`, (data as any)[`ReferenceCity${suffix}`]);
+                appendIfPresent(`referencePincode${suffix}`, (data as any)[`ReferencePincode${suffix}`]);
+            }
+
             // =====================================
             // Documents (Files)
             // =====================================
@@ -430,6 +452,13 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                     )
                 );
 
+            const coApplicantPhoto = pickFirstFile(data.CoApplicantPhont);
+            if (coApplicantPhoto)
+                formData.append(
+                    "CoApplicantPhoto",
+                    await uploadToCloudinary(coApplicantPhoto, "loan_applications")
+                );
+
             // =====================================
             // Other Supported Documents (Count Based)
             // =====================================
@@ -525,18 +554,18 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                         ×
                     </button>
                     <h2 className="text-center text-2xl font-bold tracking-tight sm:text-3xl">
-                        Salaried Loan Application
+                        Salaried employee loan application form
                     </h2>
-                    {categoryTitle ? (
+                    {/* {categoryTitle ? (
                         <p className="mt-1 text-center text-sm text-white/70">{categoryTitle}</p>
-                    ) : null}
+                    ) : null} */}
                 </div>
 
                 <form id="salariedLoanForm" onSubmit={handleSubmit(onSubmit)} className="flex-1 overflow-y-auto px-6 py-6 space-y-6 sm:px-8 sm:py-8 bg-gray-50">
 
                     {/* ================= PERSONAL DETAILS ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-gray-900">A. Application Basic Details</h3>
+                        <h3 className="mb-4 text-base font-semibold text-gray-900">A. Applicant basic details</h3>
                         <div className="grid md:grid-cols-3 gap-4">
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">First Name <span className="text-destructive">*</span></label>
@@ -593,7 +622,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= CONTACT ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-gray-900">Contact Details</h3>
+                        <h3 className="mb-4 text-base font-semibold text-gray-900">B.Applicant Contact Details</h3>
                         <div className="grid md:grid-cols-3 gap-4">
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Adhaar Linked Primary Mobile Number <span className="text-destructive">*</span></label>
@@ -642,7 +671,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= ID DETAILS ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-gray-900">B. KYC Details</h3>
+                        <h3 className="mb-4 text-base font-semibold text-gray-900">C. Applicant KYC Details</h3>
                         <div className="grid md:grid-cols-3 gap-4">
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">PAN Number <span className="text-destructive">*</span></label>
@@ -691,7 +720,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= ADDRESS ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-gray-900">C. Residential Details</h3>
+                        <h3 className="mb-4 text-base font-semibold text-gray-900">D. Applicant Current Residential Address Details</h3>
                         <div className="grid md:grid-cols-3 gap-4">
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Current Address <span className="text-destructive">*</span></label>
@@ -803,11 +832,11 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= EMPLOYMENT ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-gray-900">D. Employment Details</h3>
+                        <h3 className="mb-4 text-base font-semibold text-gray-900">E.Applicant Employment Details</h3>
                         <div className="grid md:grid-cols-3 gap-4">
                             <div className="space-y-1">
-                                <label className="text-sm font-medium">Company Name <span className="text-destructive">*</span></label>
-                                <input {...register("companyName", { required: true })} placeholder="Company Name" className="input bg-gray-200" />
+                                <label className="text-sm font-medium">Current working company name <span className="text-destructive">*</span></label>
+                                <input {...register("companyName", { required: true })} placeholder="Current working company name" className="input bg-gray-200" />
                                 {getError("companyName") ? (
                                     <p className="text-sm text-red-600">{getError("companyName")}</p>
                                 ) : null}
@@ -851,8 +880,8 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                                 </select>
                             </div>
                             <div>
-                                <label className="text-sm font-medium">Other Industry / Sector (Please Specify)<span className="text-destructive">(optional)</span></label>
-                                <input {...register("otherSector")} placeholder="Monthly Net Salary" className="input bg-gray-200" />
+                                <label className="text-sm font-medium">Specify in others<span className="text-destructive">(optional)</span></label>
+                                <input {...register("otherSector")} placeholder="Please Specify" className="input bg-gray-200" />
                             </div>
 
                             <div className="space-y-1">
@@ -914,7 +943,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                                 <input {...register("officelEmailID")} placeholder="Official Email" className="input bg-gray-200" />
                             </div>
                             <div className="space-y-1">
-                                <label className="text-sm font-medium">Office ID Card Photo <span className="text-destructive">*</span></label>
+                                <label className="text-sm font-medium">Office ID Card Photo (pdf, jpg allowed )   <span className="text-destructive">*</span></label>
                                 <input type="file" {...register("officeIDCardPhoto", { required: true, validate: validateMax2MB })} className="input bg-gray-200" />
                                 {getError("officeIDCardPhoto") ? (
                                     <p className="text-sm text-red-600">{getError("officeIDCardPhoto")}</p>
@@ -925,7 +954,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= Income Details ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-gray-900">E. Income Details</h3>
+                        <h3 className="mb-4 text-base font-semibold text-gray-900">F. Applicant income details</h3>
                         <div className="grid md:grid-cols-2 gap-4">
                             <div className="space-y-1">
                                 <div>
@@ -962,14 +991,14 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                                 ) : null}
                             </div>
                             <div className="space-y-1">
-                                <label className="text-sm font-medium">Last 3 Months Salary Slips <span className="text-destructive">*</span></label>
+                                <label className="text-sm font-medium">Last 6 Months Salary Slips (pdf, jpg allowed ) <span className="text-destructive">*</span></label>
                                 <input type="file" {...register("LastThreeMonthsSalarySlips", { required: true, validate: validateMax2MB })} className="input bg-gray-200" />
                                 {getError("LastThreeMonthsSalarySlips") ? (
                                     <p className="text-sm text-red-600">{getError("LastThreeMonthsSalarySlips")}</p>
                                 ) : null}
                             </div>
                             <div className="space-y-1">
-                                <label className="text-sm font-medium">Last 6 Months Bank Statement<span className="text-destructive">*</span></label>
+                                <label className="text-sm font-medium">Last 6 Months Bank Statement (pdf, jpg allowed ) <span className="text-destructive">*</span></label>
                                 <input type="file" {...register("lastSixMonthsBankStatement", { required: true, validate: validateMax2MB })} className="input bg-gray-200" />
                                 {getError("lastSixMonthsBankStatement") ? (
                                     <p className="text-sm text-red-600">{getError("lastSixMonthsBankStatement")}</p>
@@ -980,13 +1009,13 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= EXISTING LOANS ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-gray-900">F. Existing Loan & Credit Details</h3>
+                        <h3 className="mb-4 text-base font-semibold text-gray-900">G. Applicant existing loans details</h3>
                         <div className="flex flex-col mb-2">
                             <label className="text-sm font-medium">Number Of Existing Loans<span className="text-red-400 text-xs">(optional)</span></label>
                             <select {...register("NumberOfExistingLoans")} className="input bg-gray-200" >
                                 <option value="">Select Options</option>
                                 <option value="0">0</option>
-                                 <option value="1">1</option>
+                                <option value="1">1</option>
                                 <option value="2">2</option>
                                 <option value="3">3</option>
                                 <option value="4">4</option>
@@ -1062,7 +1091,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                     </div>
                     {/* ================= G.Credit Score ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-gray-900">G. Credit Score</h3>
+                        <h3 className="mb-4 text-base font-semibold text-gray-900">H. Applicant CIBIL  Score Details</h3>
                         <div className="space-y-1">
                             <div>
                                 <label className="text-sm font-medium">CIBIL Available <span className="text-destructive">*</span></label>
@@ -1112,7 +1141,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                     </div>
                     {/* ================= LOAN DETAILS ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-gray-900">H. Loan Requirement Details</h3>
+                        <h3 className="mb-4 text-base font-semibold text-gray-900">I. Loan Requirement Details</h3>
                         <div className="grid md:grid-cols-2 gap-4">
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Required Loan Amount <span className="text-destructive">*</span></label>
@@ -1175,7 +1204,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                                     </div>
 
                                     <div className="space-y-1">
-                                        <label className="text-sm font-medium">Upload Proforma Invoice (PDF, Max 2MB) <span className="text-red-400 text-xs">(optional)</span></label>
+                                        <label className="text-sm font-medium">Upload Proforma Invoice (PDF, Max 10MB) <span className="text-red-400 text-xs">(optional)</span></label>
                                         <input
                                             type="file"
                                             accept="application/pdf"
@@ -1189,6 +1218,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                                     </div>
                                 </>
                             )}
+
                         </div>
                     </div>
 
@@ -1196,7 +1226,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= DOCUMENTS ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-gray-900">I. Co-Applicant Details (If Any)</h3>
+                        <h3 className="mb-4 text-base font-semibold text-gray-900">J. Co-Applicant Details (If Any)</h3>
                         <div className="grid md:grid-cols-2 gap-4">
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Co-Applicant Name <span className="text-red-400 text-xs">(optional)</span></label>
@@ -1213,7 +1243,22 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                             </div>
 
                             <div className="space-y-1">
-                                <label className="text-sm font-medium">Co-Applicant PAN Photo <span className="text-destructive">(optional)</span></label>
+                                <label className="text-sm font-medium">Co-Applicant Photo  <span className="text-red-400 text-xs">*</span></label>
+                                <input type="file" {...register("CoApplicantPhont", { required: true })} className="input bg-gray-200" />
+                            </div>
+
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Co-Applicant Email ID <span className="text-red-400 text-xs">(optional)</span></label>
+                                <input {...register("CoApplicantEmailID")} placeholder="Co-Applicant Email ID" className="input bg-gray-200" />
+                            </div>
+
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Co-Applicant Mobile Number <span className="text-red-400 text-xs">*</span></label>
+                                <input {...register("CoApplicantMobileNO", { required: true })} placeholder="Co-Applicant Mobile Number" className="input bg-gray-200" />
+                            </div>
+
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Co-Applicant PAN Card Photo <span className="text-destructive">(optional)</span></label>
                                 <input type="file" {...register("CoApplicantpanPhoto", { validate: validateMax2MB })} className="input bg-gray-200" />
                                 {getError("CoApplicantpanPhoto") ? (
                                     <p className="text-sm text-red-600">{getError("CoApplicantpanPhoto")}</p>
@@ -1238,7 +1283,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= J. Upload Other Supported Document================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-gray-900">J. Upload Other Supported Document</h3>
+                        <h3 className="mb-4 text-base font-semibold text-gray-900">K. Upload Other Supported Document</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Number of Other Documents)</label>
@@ -1248,6 +1293,13 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                                     <option>2</option>
                                     <option>3</option>
                                     <option>4</option>
+                                    <option>5</option>
+                                    <option>6</option>
+                                    <option>7</option>
+                                    <option>8</option>
+                                    <option>9</option>
+                                    <option>10</option>
+
                                 </select>
                             </div>
                             {otherDocumentsCount > 0 ? (
@@ -1279,9 +1331,61 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                     </div>
 
 
+                    {/* ================= reference name details ================= */}
+                    <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
+                        <h3 className="mb-4 text-base font-semibold text-gray-900">L. Reference name details</h3>
+
+                        {Array.from({ length: Math.max(1, referenceCount || 1) }).map((_, idx) => {
+                            const suffix = idx === 0 ? "" : `_${idx}`;
+                            return (
+                                <div key={idx} className="grid md:grid-cols-2 gap-4">
+                                    <div className="flex flex-col items-start gap-3">
+                                        <label className="text-sm font-medium">First Reference Full Name<span className="text-destructive">(optional)</span></label>
+                                        <input type="text" {...register(`FirstReferenceFullName${suffix}`)} placeholder="First Reference Full Name" className="input bg-gray-200 " />
+                                    </div>
+                                    <div className="flex flex flex-col  items-start gap-3">
+                                        <label className="text-sm font-medium">Reference Mobile Number<span className="text-destructive">(optional)</span></label>
+                                        <input type="text" {...register(`ReferenceMobileNumber${suffix}`)} placeholder="Reference Mobile Number" className="input bg-gray-200" />
+                                    </div>
+                                    <div className="flex flex flex-col  items-start gap-3">
+                                        <label className="text-sm font-medium">Relation With Aplicant<span className="text-destructive">(optional)</span></label>
+                                        <input type="text" {...register(`RelationWithAplicant${suffix}`)} placeholder="Relation With Aplicant" className="input bg-gray-200" />
+                                    </div>
+                                    <div className="flex  flex flex-col  items-start gap-3">
+                                        <label className="text-sm font-medium">Email ID <span className="text-destructive">(optional)</span></label>
+                                        <input type="text" {...register(`ReferenceEmailId${suffix}`)} placeholder="Email ID" className="input bg-gray-200" />
+                                    </div>
+                                    <div className="flex flex flex-col  items-start gap-3">
+                                        <label className="text-sm font-medium">Address <span className="text-destructive">(optional)</span></label>
+                                        <input type="text" {...register(`ReferenceAddress${suffix}`)} placeholder="Address" className="input bg-gray-200" />
+                                    </div>
+                                    <div className="flex flex flex-col  items-start gap-3">
+                                        <label className="text-sm font-medium">State <span className="text-destructive">(optional)</span></label>
+                                        <input type="text" {...register(`ReferenceState${suffix}`)} placeholder="State" className="input bg-gray-200" />
+                                    </div>
+                                    <div className="flex flex flex-col  items-start gap-3">
+                                        <label className="text-sm font-medium">City <span className="text-destructive">(optional)</span></label>
+                                        <input type="text" {...register(`ReferenceCity${suffix}`)} placeholder="City" className="input bg-gray-200" />
+                                    </div>
+                                    <div className="flex flex flex-col  items-start gap-3">
+                                        <label className="text-sm font-medium">Pincode <span className="text-destructive">(optional)</span></label>
+                                        <input type="text" {...register(`ReferencePincode${suffix}`)} placeholder="Pincode" className="input bg-gray-200" />
+                                    </div>
+                                </div>
+                            );
+                        })}
+
+                        <button
+                            type="button"
+                            onClick={() => setReferenceCount((c) => Math.max(1, (c || 1) + 1))}
+                        >
+                            Add More Reference Details
+                        </button>
+                    </div>
+
                     {/* ================= CONSENT ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-gray-900">K. Declaration & Consent</h3>
+                        <h3 className="mb-4 text-base font-semibold text-gray-900">M. Declaration & Consent</h3>
                         <div className="space-y-3">
                             <div className="flex items-start gap-3">
                                 <input type="checkbox" {...register("consent", { required: true })} className="mt-1 h-4 w-4" />

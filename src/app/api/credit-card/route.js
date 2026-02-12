@@ -66,6 +66,7 @@ export async function POST(req) {
       lastname: formData.get("lastname"),
       mobileNumber: formData.get("mobileNumber"),
       alternateMobile: formData.get("alternateMobile"),
+      whatsappNumber: formData.get("whatsappNumber"),
       personalEmail: formData.get("personalEmail"),
       officialEmail: formData.get("officialEmail"),
 
@@ -93,6 +94,8 @@ export async function POST(req) {
       limitAmount: formData.get("limitAmount"),
       cardType: formData.get("cardType"),
 
+      jobBusiness: formData.get("jobBusiness"),
+
       // CIBIL
       cibilScoreKnown: formData.get("cibilScoreKnown"),
       cibilScore: formData.get("cibilScore"),
@@ -106,6 +109,10 @@ export async function POST(req) {
       panFront: await upload(formData.get("panFront")),
       residentialBill: await upload(formData.get("residentialBill")),
       shopBill: await upload(formData.get("shopBill")),
+
+      uploadRentAgreementOfficeShop: await upload(
+        formData.get("uploadRentAgreementOfficeShop")
+      ),
 
       loanTypeText: "credit-card",
       status: "pending",

@@ -33,47 +33,31 @@ export default function CreditCardModal({ isOpen, onClose }: Props) {
     } = useForm();
 
 
-
     const [loading, setLoading] = useState(false);
 
-
-
     if (!isOpen) return null;
-
-
 
     // ================= SUBMIT =================
 
     const onSubmit = async (data: any) => {
-
         try {
-
             setLoading(true);
-
-
-
             const formData = new FormData();
 
             // =====================================
-
             // Personal Info
 
             // =====================================
 
-            formData.append("firstname", data.firstname);
-
-            formData.append("middleName", data.middleName);
-
-            formData.append("lastname", data.lastname);
-
-            formData.append("mobileNumber", data.mobileNumber);
-
-            formData.append("alternateMobile", data.alternateMobile);
-
+            // Personal Info
+            formData.append("firstname", data.firstName);
+            formData.append("middleName", data.middleName || "");
+            formData.append("lastname", data.lastName);
+            formData.append("mobileNumber", data.primaryMobileNo);
+            formData.append("alternateMobile", data.alternateMobileNo || "");
+            formData.append("whatsappNumber", data.whatsappNo || "");
             formData.append("personalEmail", data.personalEmail);
-
-            formData.append("officialEmail", data.officialEmail);
-
+            formData.append("officialEmail", data.businessEmail || "");
 
 
             // =====================================
@@ -82,16 +66,12 @@ export default function CreditCardModal({ isOpen, onClose }: Props) {
 
             // =====================================
 
+            // Identity
             formData.append("aadhaarNumber", data.aadhaarNumber);
-
             formData.append("panNumber", data.panNumber);
-
-            formData.append("voterIdNumber", data.voterIdNumber);
-
-            formData.append("drivingLicense", data.drivingLicense);
-
-            formData.append("passportNumber", data.passportNumber);
-
+            formData.append("voterIdNumber", data.voterIdNumber || "");
+            formData.append("drivingLicense", data.drivingLicenseNumber || "");
+            formData.append("passportNumber", data.passportNumber || "");
 
 
             // =====================================
@@ -100,49 +80,19 @@ export default function CreditCardModal({ isOpen, onClose }: Props) {
 
             // =====================================
 
-            formData.append(
-
-                "currentResidentialAddress",
-
-                data.currentResidentialAddress
-
-            );
-
-            formData.append(
-
-                "currentResidentialPincode",
-
-                data.currentResidentialPincode
-
-            );
-
-            formData.append("residentialState", data.residentialState);
-
-            formData.append("residentialCity", data.residentialCity);
-
-            formData.append("currentOfficeAddress", data.currentOfficeAddress);
-
-            formData.append("currentOfficePincode", data.currentOfficePincode);
-
+            // Address
+            formData.append("currentResidentialAddress", data.currentResidentialAddress);
+            formData.append("currentResidentialPincode", data.currentResidentialAddressPin);
+            formData.append("currentOfficeAddress", data.currentOfficeShopAddress || "");
+            formData.append("currentOfficePincode", data.currentOfficeShopAddressPin || "");
             formData.append("residentialStatus", data.residentialStatus);
-
-            formData.append("businessPremisesStatus", data.businessPremisesStatus);
-
             formData.append(
-
                 "yearsAtCurrentResidentialAddress",
-
-                data.yearsAtCurrentResidentialAddress
-
+                String(data.yearsAtCurrentResidentialAddress ?? "")
             );
 
-            formData.append(
-
-                "yearsAtCurrentBusinessAddress",
-
-                data.yearsAtCurrentBusinessAddress
-
-            );
+            // Extra (optional)
+            formData.append("jobBusiness", data.jobBusiness || "");
 
 
 
@@ -152,11 +102,10 @@ export default function CreditCardModal({ isOpen, onClose }: Props) {
 
             // =====================================
 
-            formData.append("bankName", data.bankName);
-
-            formData.append("limitAmount", data.limitAmount);
-
-            formData.append("cardType", data.cardType);
+            // Card Details
+            formData.append("bankName", data.bankNameCreditCard || "");
+            formData.append("limitAmount", data.limitAmount || "");
+            formData.append("cardType", data.cardType || "");
 
 
 
@@ -166,11 +115,8 @@ export default function CreditCardModal({ isOpen, onClose }: Props) {
 
             // =====================================
 
-            formData.append("cibilScoreKnown", data.cibilScoreKnown);
-
-            formData.append("cibilScore", data.cibilScore);
-
-            formData.append("cibilIssues", data.cibilIssues);
+            // CIBIL
+            formData.append("cibilIssues", data.cibilIssues || "");
 
 
 
@@ -180,7 +126,7 @@ export default function CreditCardModal({ isOpen, onClose }: Props) {
 
             // =====================================
 
-            formData.append("consent", data.consent ? "true" : "false");
+            formData.append("consent", "true");
 
 
 
@@ -190,53 +136,12 @@ export default function CreditCardModal({ isOpen, onClose }: Props) {
 
             // =====================================
 
-            if (data.aadhaarFront)
-
-                formData.append("aadhaarFront", data.aadhaarFront);
-
-
-
-            if (data.aadhaarBack)
-
-                formData.append("aadhaarBack", data.aadhaarBack);
-
-
-
-            if (data.panFront)
-
-                formData.append("panFront", data.panFront);
-
-
-
-            if (data.residentialBill)
-
-                formData.append("residentialBill", data.residentialBill);
-
-
-
-            if (data.shopBill)
-
-                formData.append("shopBill", data.shopBill);
-
-
-
-            Object.keys(data).forEach((key) => {
-
-                if (data[key] instanceof FileList) {
-
-                    if (data[key][0]) {
-
-                        formData.append(key, data[key][0]);
-
-                    }
-
-                } else {
-
-                    formData.append(key, data[key]);
-
-                }
-
-            });
+            // Documents (Files)
+            if (data.aadhaarFront) formData.append("aadhaarFront", data.aadhaarFront);
+            if (data.aadhaarBack) formData.append("aadhaarBack", data.aadhaarBack);
+            if (data.panFront) formData.append("panFront", data.panFront);
+            if (data.residentialBill) formData.append("residentialBill", data.residentialBill);
+            if (data.shopBill) formData.append("shopBill", data.shopBill);
 
 
 
@@ -267,13 +172,9 @@ export default function CreditCardModal({ isOpen, onClose }: Props) {
     return (
 
         <div
-
             className="fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50 overflow-auto"
-
             onClick={(e) => {
-
                 if (e.target === e.currentTarget) onClose();
-
             }}
 
         >
@@ -297,9 +198,7 @@ export default function CreditCardModal({ isOpen, onClose }: Props) {
                 </button>
 
                 <h2 className="text-2xl font-bold text-center mb-6">
-
                     Credit Card Application
-
                 </h2>
 
 
@@ -307,225 +206,239 @@ export default function CreditCardModal({ isOpen, onClose }: Props) {
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
 
 
-
                     {/* ================= PERSONAL DETAILS ================= */}
-
                     <div>
-
-                        <h3 className="font-semibold mb-3">Personal Details</h3>
-
+                        <h3 className="font-semibold mb-3">Personal Information</h3>
                         <div className="grid md:grid-cols-3 gap-4">
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">First Name <span className="text-destructive">*</span></label>
+                                <input {...register("firstName", { required: true })} placeholder="First Name" className="input" />
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Middle Name</label>
+                                <input {...register("middleName")} placeholder="Middle Name" className="input" />
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Last Name <span className="text-destructive">*</span></label>
+                                <input {...register("lastName", { required: true })} placeholder="Last Name" className="input" />
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Primary Mobile No. <span className="text-destructive">*</span></label>
+                                <input type="text" {...register("primaryMobileNo", { required: true })} placeholder="Primary Mobile No." className="input" />
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Alternate Mobile No.</label>
+                                <input type="text" {...register("alternateMobileNo")} placeholder="Alternate Mobile No." className="input" />
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">WhatsApp No.</label>
+                                <input type="text" {...register("whatsappNo")} placeholder="WhatsApp No." className="input" />
+                            </div>
 
-                            <input {...register("firstName", { required: true })} placeholder="First Name" className="input" />
+                        </div>
 
-                            <input {...register("middleName")} placeholder="Middle Name" className="input" />
+                    </div>
 
-                            <input {...register("lastName", { required: true })} placeholder="Last Name" className="input" />
+                    {/* ================= Employment Informations ================= */}
+                    <div>
+                        <h3 className="font-semibold mb-3">Employment Information</h3>
+                        <div className="grid md:grid-cols-3 gap-4">
+                            <select id="jobBusiness" {...register("jobBusiness")} className="input">
+                                <option value="">Select Employment Status</option>
+                                <option value="Salaried Employee">Salaried Employee</option>
+                                <option value="Self Employed Business">Self Employed Business</option>
+                                <option value="Self Employed Professional">Self Employed Professional</option>
+                            </select>
+                        </div>
+                    </div>
 
-                            <input type="date" {...register("dob", { required: true })} className="input" />
+                    {/* ================= Employment Informations ================= */}
+                    <div>
+                        <h3 className="font-semibold mb-3">Loan Details</h3>
+                        <div className="grid md:grid-cols-3 gap-4">
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Bank Name (Credit Card)</label>
+                                <input type="text" {...register("bankNameCreditCard")} placeholder="Bank Name" className="input" />
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Limit Amount</label>
+                                <input type="text" {...register("limitAmount")} placeholder="Limit Amount" className="input" />
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Card Type</label>
+                                <select {...register("cardType")} className="input">
+                                    <option value="">Select Card Type</option>
+                                    <option value="Domestic">Domestic</option>
+                                    <option value="International">International</option>
+                                </select>
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Please mention if you have any CIBIL issues or problems in your credit profile. Kindly specify details, if applicable. <span className="text-red-400 text-xs">(optional)</span></label>
+                                <input {...register("cibilIssues")} placeholder="CibilIssues" className="input bg-gray-200" />
+                            </div>
 
-                            <select {...register("gender", { required: true })} className="input">
-
-                                <option value="">Select Gender</option>
-
-                                <option>Male</option>
-
-                                <option>Female</option>
-
-                                <option>Other</option>
-
+                            <select
+                                id="residentialStatus"
+                                {...register("residentialStatus", { required: "This field is required" })}
+                                className="input"
+                            >
+                                <option value="">Select</option>
+                                <option value="Owned">Owned</option>
+                                <option value="Rented">Rented</option>
                             </select>
 
-                            <select {...register("maritalStatus", { required: true })} className="input">
-
-                                <option value="">Marital Status</option>
-
-                                <option>Single</option>
-
-                                <option>Married</option>
-
-                                <option>Divorced</option>
-
-                                <option>Widowed</option>
-
-                            </select>
-
+                            <input
+                                id="yearsAtCurrentResidentialAddress"
+                                type="number"
+                                min={0}
+                                max={99}
+                                {...register("yearsAtCurrentResidentialAddress", {
+                                    required: "This field is required",
+                                })}
+                                placeholder="e.g., 3"
+                            />
                         </div>
-
                     </div>
 
 
-
-                    {/* ================= CONTACT DETAILS ================= */}
-
+                    {/* ================= Email Information ================= */}
                     <div>
+                        <h3 className="font-semibold mb-3">Email Information</h3>
+                        <div>
+                            <label className="text-sm font-medium">Business Email</label>
+                            <input
+                                id="businessEmail"
+                                type="email"
+                                {...register("businessEmail")}
 
-                        <h3 className="font-semibold mb-3">Contact Details</h3>
-
-                        <div className="grid md:grid-cols-3 gap-4">
-
-                            <input {...register("mobileNumber", { required: true })} placeholder="Mobile Number" className="input" />
-
-                            <input {...register("whatsappNumber")} placeholder="WhatsApp Number" className="input" />
-
-                            <input {...register("personalEmail", { required: true })} placeholder="Personal Email" className="input" />
-
-                            <input {...register("officialEmail")} placeholder="Official Email" className="input" />
-
-                            <input {...register("alternateMobile")} placeholder="Alternate Mobile" className="input" />
-
+                                placeholder="john@company.com"
+                            />
                         </div>
 
-                    </div>
-
-
-
-                    {/* ================= ID DETAILS ================= */}
-
-                    <div>
-
-                        <h3 className="font-semibold mb-3">Identification Details</h3>
-
-                        <div className="grid md:grid-cols-3 gap-4">
-
-                            <input {...register("panNumber", { required: true })} placeholder="PAN Number" className="input" />
-
-                            <input {...register("aadhaarNumber", { required: true })} placeholder="Aadhaar Number" className="input" />
-
-                            <input type="file" {...register("panPhotoUrl")} className="input" />
-
-                            <input type="file" {...register("aadhaarPhotoUrl")} className="input" />
-
-                            <input type="file" {...register("aadhaarBackPhotoUrl")} className="input" />
-
-                            <input type="file" {...register("applicantPhotoUrl")} className="input" />
-
-                        </div>
-
-                    </div>
-
-
-
-                    {/* ================= ADDRESS ================= */}
-
-                    <div>
-
-                        <h3 className="font-semibold mb-3">Residential Address</h3>
-
-                        <div className="grid md:grid-cols-3 gap-4">
-
-                            <input {...register("currentResidentialAddress", { required: true })} placeholder="Address" className="input" />
-
-                            <input {...register("city", { required: true })} placeholder="City" className="input" />
-
-                            <input {...register("state", { required: true })} placeholder="State" className="input" />
-
-                            <input {...register("pincode", { required: true })} placeholder="Pincode" className="input" />
-
-                            <select {...register("residenceType")} className="input">
-
-                                <option value="">Residence Type</option>
-
-                                <option>Owned</option>
-
-                                <option>Rented</option>
-
-                                <option>Company Provided</option>
-
-                            </select>
-
-                        </div>
-
-                    </div>
-
-
-
-                    {/* ================= EMPLOYMENT DETAILS ================= */}
-
-                    <div>
-
-                        <h3 className="font-semibold mb-3">Employment Details</h3>
-
-                        <div className="grid md:grid-cols-3 gap-4">
-
-                            <input {...register("companyName")} placeholder="Company Name" className="input" />
-
-                            <input {...register("designation")} placeholder="Designation" className="input" />
-
-                            <select {...register("employmentType")} className="input">
-
-                                <option value="">Employment Type</option>
-
-                                <option>Salaried</option>
-
-                                <option>Self Employed</option>
-
-                                <option>Business</option>
-
-                            </select>
-
-                            <input {...register("monthlyIncome", { required: true })} placeholder="Monthly Income" className="input" />
-
-                        </div>
-
-                    </div>
-
-
-
-                    {/* ================= CREDIT CARD DETAILS ================= */}
-
-                    <div>
-
-                        <h3 className="font-semibold mb-3">Card Requirement</h3>
-
-                        <div className="grid md:grid-cols-2 gap-4">
-
-                            <input {...register("preferredCardType", { required: true })} placeholder="Preferred Card Type" className="input" />
-
-                            <input {...register("existingCardDetails")} placeholder="Existing Card Details (optional)" className="input" />
-
-                        </div>
-
-                        <textarea
-
-                            {...register("cibilIssues")}
-
-                            placeholder="Mention any CIBIL issues (optional)"
-
-                            className="input min-h-[100px]"
-
+                        <label className="text-sm font-medium">Personal Email <span className="text-destructive">*</span></label>
+                        <input
+                            id="personalEmail"
+                            type="email"
+                            {...register("personalEmail", {
+                                required: "This field is required",
+                            })}
+                            placeholder="john.doe@gmail.com"
                         />
+                    </div>
 
+                    {/* ================= Address Details ================= */}
+                    <div>
+                        <h3 className="font-semibold mb-3">Address Details</h3>
+                        <div>
+                            <input
+                                type="text"
+                                {...register("currentResidentialAddress", {
+                                    required: "This field is required",
+                                })}
+                                placeholder="Current Residential Address"
+                            />
+
+                            <input
+                                type="text"
+                                {...register("currentOfficeShopAddress")}
+                                placeholder="Current Office / Shop Address"
+                            />
+
+                            <input
+                                type="number"
+                                min={0}
+                                max={99}
+                                {...register("currentResidentialAddressPin", {
+                                    required: "This field is required",
+                                })}
+                                placeholder="Current Residential Address PIN"
+                            />
+                            <input
+                                type="number"
+                                min={0}
+                                max={99}
+                                {...register("currentOfficeShopAddressPin")}
+                                placeholder="Current Office / Shop Address PIN"
+                            />
+
+                            <label className="text-sm font-medium">Upload Rent Agreement (Office/Shop)</label>
+                            <input type="file" {...register("uploadRentAgreementOfficeShop")} />
+                        </div>
+                    </div>
+                    {/* ================= Identity Details ================= */}
+                    <div>
+                        <h3 className="font-bold text-xl">Identity Details</h3>
+                        <div>
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">PAN Number <span className="text-destructive">*</span></label>
+                                <input {...register("panNumber", { required: true })} placeholder="PAN Number" className="input bg-gray-200" />
+
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Aadhaar Number <span className="text-destructive">*</span></label>
+                                <input {...register("aadhaarNumber", { required: true })} placeholder="Aadhaar Number" className="input bg-gray-200" />
+
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">PAN Photo <span className="text-destructive">*</span></label>
+                                <input type="file" {...register("panFront")} className="input bg-gray-200" />
+
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Voter ID Number (optional) <span className="text-destructive">*</span></label>
+                                <input type="text" {...register("voterIdNumber")} className="input bg-gray-200" />
+
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Driving License Number (optional)<span className="text-destructive">*</span></label>
+                                <input type="text" {...register("drivingLicenseNumber")} className="input bg-gray-200" />
+
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Passport Number (optional) <span className="text-destructive">*</span></label>
+                                <input type="text" {...register("passportNumber")} className="input bg-gray-200" />
+
+                            </div>
+                        </div>
                     </div>
 
 
-
-                    {/* ================= DOCUMENT UPLOADS ================= */}
+                    {/* ================= Document Uploads ================= */}
 
                     <div>
 
-                        <h3 className="font-semibold mb-3">Additional Documents</h3>
+                        <h3 className="font-semibold mb-3">Document Uploads</h3>
 
-                        <input type="file" {...register("bankStatementUrl")} className="input" />
+                        <div className="grid md:grid-cols-3 gap-4">
 
-                        <input type="file" {...register("salarySlipsUrl")} className="input" />
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Aadhaar Front <span className="text-destructive">*</span></label>
+                                <input type="file" {...register("aadhaarFront", { required: true })} className="input" />
+                            </div>
 
-                        <input type="file" {...register("cibilReportUrl")} className="input" />
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Aadhaar Back</label>
+                                <input type="file" {...register("aadhaarBack")} className="input" />
+                            </div>
+
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">PAN Card Front <span className="text-destructive">*</span></label>
+                                <input type="file" {...register("panFront", { required: true })} className="input" />
+                            </div>
+
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Latest Residential Electricity Bill</label>
+                                <input type="file" {...register("residentialBill")} className="input" />
+                            </div>
+
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Latest Shop/Office Electricity Bill</label>
+                                <input type="file" {...register("shopBill")} className="input" />
+                            </div>
+
+                        </div>
 
                     </div>
-
-
-
-                    {/* ================= CONSENT ================= */}
-
-                    <div className="flex items-center gap-2">
-
-                        <input type="checkbox" {...register("consent", { required: true })} />
-
-                        <span>I agree to the terms & conditions</span>
-
-                    </div>
-
 
 
                     {/* ================= ACTION BUTTONS ================= */}

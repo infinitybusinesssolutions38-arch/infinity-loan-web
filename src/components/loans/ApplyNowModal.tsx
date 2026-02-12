@@ -1855,7 +1855,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                       <Label htmlFor="currentOfficeAddress" className="text-sm font-medium">
                         Current Office / Shop Address <span className="text-destructive">*</span>
                       </Label>
-                      <Input
+                      <Input 
                         id="currentOfficeAddress"
                         {...register("currentOfficeAddress", { required: "This field is required" })}
                         onFocus={() => setFocusedField("currentOfficeAddress")}

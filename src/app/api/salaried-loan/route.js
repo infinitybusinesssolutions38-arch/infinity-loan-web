@@ -98,6 +98,29 @@ export async function POST(req) {
     );
 
     /* =========================================
+       REFERENCES (DYNAMIC)
+    ========================================== */
+    const referenceCountRaw = formData.get("referenceCount");
+    const referenceCount = Number.isFinite(Number(referenceCountRaw))
+      ? parseInt(String(referenceCountRaw), 10)
+      : 1;
+    const safeRefCount = Math.max(1, Math.min(10, referenceCount || 1));
+
+    const references = Array.from({ length: safeRefCount }).map((_, idx) => {
+      const suffix = idx === 0 ? "" : `_${idx}`;
+      return {
+        fullName: formData.get(`referenceFullName${suffix}`),
+        mobile: formData.get(`referenceMobile${suffix}`),
+        relation: formData.get(`referenceRelation${suffix}`),
+        email: formData.get(`referenceEmail${suffix}`),
+        address: formData.get(`referenceAddress${suffix}`),
+        state: formData.get(`referenceState${suffix}`),
+        city: formData.get(`referenceCity${suffix}`),
+        pincode: formData.get(`referencePincode${suffix}`),
+      };
+    });
+
+    /* =========================================
        CREATE DOCUMENT
     ========================================== */
     const newApplication = new SalariedLoanModel({
@@ -173,6 +196,11 @@ export async function POST(req) {
         "coApplicantEmploymentType"
       ),
 
+      coApplicantEmail: formData.get("coApplicantEmail"),
+      coApplicantMobile: formData.get("coApplicantMobile"),
+
+      references,
+
       // Uploads
       applicantPhotoUrl: await upload(formData.get("applicantPhoto")),
       panPhotoUrl: await upload(formData.get("panPhoto")),
@@ -185,6 +213,7 @@ export async function POST(req) {
       coApplicantAadhaarBackPhotoUrl: await upload(
         formData.get("CoApplicantAadhaarBackPhoto")
       ),
+      coApplicantPhotoUrl: await upload(formData.get("CoApplicantPhoto")),
       residencePhotoUrl: await upload(formData.get("residencePhoto")),
       lastElectricityBillUrl: await upload(formData.get("lastElectricityBill")),
       permElectricityBillUrl: await upload(formData.get("permElectricityBill")),
@@ -345,6 +374,26 @@ export async function POST(req) {
           .join("")
       : "";
 
+    const referencesHtml = Array.isArray(saved?.references)
+      ? saved.references
+          .map(
+            (r, idx) => `
+              <tr>
+                <td style="border:1px solid #e5e7eb;padding:8px;vertical-align:top">${idx + 1}</td>
+                <td style="border:1px solid #e5e7eb;padding:8px;vertical-align:top">${safe(r?.fullName)}</td>
+                <td style="border:1px solid #e5e7eb;padding:8px;vertical-align:top">${safe(r?.mobile)}</td>
+                <td style="border:1px solid #e5e7eb;padding:8px;vertical-align:top">${safe(r?.relation)}</td>
+                <td style="border:1px solid #e5e7eb;padding:8px;vertical-align:top">${safe(r?.email)}</td>
+                <td style="border:1px solid #e5e7eb;padding:8px;vertical-align:top">${safe(r?.address)}</td>
+                <td style="border:1px solid #e5e7eb;padding:8px;vertical-align:top">${safe(r?.state)}</td>
+                <td style="border:1px solid #e5e7eb;padding:8px;vertical-align:top">${safe(r?.city)}</td>
+                <td style="border:1px solid #e5e7eb;padding:8px;vertical-align:top">${safe(r?.pincode)}</td>
+              </tr>
+            `
+          )
+          .join("")
+      : "";
+
     const otherSupportedDocumentsHtml = Array.isArray(saved?.otherSupportedDocumentsUrls)
       ? saved.otherSupportedDocumentsUrls
           .filter(Boolean)
@@ -444,6 +493,28 @@ export async function POST(req) {
             <tr><td style="border:1px solid #e5e7eb;padding:8px;width:35%"><strong>Name</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.coApplicantName)}</td></tr>
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Relation</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.coApplicantRelation)}</td></tr>
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Employment Type</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.coApplicantEmploymentType)}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Email</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.coApplicantEmail)}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Mobile</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.coApplicantMobile)}</td></tr>
+          </tbody>
+        </table>
+
+        <h3 style="margin:16px 0 8px 0">References</h3>
+        <table style="width:100%;border-collapse:collapse;font-size:14px">
+          <thead>
+            <tr>
+              <th style="border:1px solid #e5e7eb;padding:8px;text-align:left">#</th>
+              <th style="border:1px solid #e5e7eb;padding:8px;text-align:left">Full Name</th>
+              <th style="border:1px solid #e5e7eb;padding:8px;text-align:left">Mobile</th>
+              <th style="border:1px solid #e5e7eb;padding:8px;text-align:left">Relation</th>
+              <th style="border:1px solid #e5e7eb;padding:8px;text-align:left">Email</th>
+              <th style="border:1px solid #e5e7eb;padding:8px;text-align:left">Address</th>
+              <th style="border:1px solid #e5e7eb;padding:8px;text-align:left">State</th>
+              <th style="border:1px solid #e5e7eb;padding:8px;text-align:left">City</th>
+              <th style="border:1px solid #e5e7eb;padding:8px;text-align:left">Pincode</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${referencesHtml || `<tr><td colspan="9" style="border:1px solid #e5e7eb;padding:8px">No reference details provided</td></tr>`}
           </tbody>
         </table>
 
@@ -457,6 +528,7 @@ export async function POST(req) {
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Co-Applicant PAN Photo</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.coApplicantPanPhotoUrl)}</td></tr>
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Co-Applicant Aadhaar Front</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.coApplicantAadhaarPhotoUrl)}</td></tr>
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Co-Applicant Aadhaar Back</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.coApplicantAadhaarBackPhotoUrl)}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Co-Applicant Photo</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.coApplicantPhotoUrl)}</td></tr>
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Residence Proof</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.residencePhotoUrl)}</td></tr>
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Latest Electricity Bill</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.lastElectricityBillUrl)}</td></tr>
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Permanent Address Electricity Bill</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.permElectricityBillUrl)}</td></tr>
@@ -572,6 +644,21 @@ export async function POST(req) {
       ? saved.otherSupportedDocumentsUrls
           .filter(Boolean)
           .map((u, idx) => `${idx + 1}. ${safe(u)}`)
+          .join("\n")
+      : "";
+
+    const referencesText = Array.isArray(saved?.references)
+      ? saved.references
+          .map(
+            (r, idx) =>
+              `${idx + 1}. Name: ${safe(r?.fullName)} | Mobile: ${safe(
+                r?.mobile
+              )} | Relation: ${safe(r?.relation)} | Email: ${safe(
+                r?.email
+              )} | Address: ${safe(r?.address)} | State: ${safe(
+                r?.state
+              )} | City: ${safe(r?.city)} | Pincode: ${safe(r?.pincode)}`
+          )
           .join("\n")
       : "";
 

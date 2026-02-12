@@ -10,6 +10,7 @@ const CreditCardSchema = new mongoose.Schema(
         lastname: { type: String, required: true },
         mobileNumber: { type: String, required: true },
         alternateMobile: { type: String, required: false },
+        whatsappNumber: { type: String, required: false },
         personalEmail: { type: String, required: true },
         officialEmail: { type: String, required: false },
 
@@ -37,6 +38,8 @@ const CreditCardSchema = new mongoose.Schema(
         limitAmount: { type: String, required: false },
         cardType: { type: String, required: false },
 
+        jobBusiness: { type: String, required: false },
+
         // Additional Fields
         loanTypeText: { type: String, default: "credit-card" },
         cibilScoreKnown: { type: String, required: false },
@@ -50,6 +53,8 @@ const CreditCardSchema = new mongoose.Schema(
         panFront: { type: String, required: false },
         residentialBill: { type: String, required: false },
         shopBill: { type: String, required: false },
+
+        uploadRentAgreementOfficeShop: { type: String, required: false },
 
         // Metadata
         createdAt: { type: Date, default: Date.now },

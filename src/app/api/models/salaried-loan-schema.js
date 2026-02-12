@@ -106,6 +106,23 @@ const SalariedLoanSchema = new mongoose.Schema(
     coApplicantName: { type: String, required: false },
     coApplicantRelation: { type: String, required: false },
     coApplicantEmploymentType: { type: String, required: false },
+    coApplicantEmail: { type: String, required: false },
+    coApplicantMobile: { type: String, required: false },
+    coApplicantPhotoUrl: { type: String, required: false },
+
+    // References
+    references: [
+        {
+            fullName: { type: String, required: false },
+            mobile: { type: String, required: false },
+            relation: { type: String, required: false },
+            email: { type: String, required: false },
+            address: { type: String, required: false },
+            state: { type: String, required: false },
+            city: { type: String, required: false },
+            pincode: { type: String, required: false },
+        },
+    ],
 
     // Documents
     panPhotoUrl: { type: String, required: false },
