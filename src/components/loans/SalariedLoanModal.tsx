@@ -2,7 +2,7 @@
 
 "use client";
 
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 
@@ -23,9 +23,11 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
         formState: { errors },
     } = useForm<LoanFormData>();
 
-    const SIGNATURE_TIMEOUT_MS = 30000;
+    const SIGNATURE_TIMEOUT_MS = 90000;
     const CLOUDINARY_UPLOAD_TIMEOUT_MS = 180000;
     const SUBMIT_TIMEOUT_MS = 120000;
+
+    const cloudinarySignaturePromiseCache = useRef(new Map<string, Promise<any>>());
 
     const isPdfPasswordProtected = async (file: File) => {
         try {
@@ -73,35 +75,48 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
     };
 
     const getCloudinarySignature = async (folder: string) => {
-        let res;
-        try {
-            res = await axios.post(
-                "/api/cloudinary-signature",
-                { folder },
-                { timeout: SIGNATURE_TIMEOUT_MS }
-            );
-        } catch (err) {
-            if (axios.isAxiosError(err)) {
-                const data: any = err.response?.data;
-                const msg =
-                    data?.message ||
-                    (typeof data === "string" ? data : "") ||
-                    err.message;
-                throw new Error(`Cloudinary signature failed: ${msg}`);
-            }
-            throw err;
+        const cachedPromise = cloudinarySignaturePromiseCache.current.get(folder);
+        if (cachedPromise) {
+            return cachedPromise;
         }
 
-        if (!res?.data?.success) {
-            throw new Error(res?.data?.message || "Failed to get upload signature");
-        }
-        return res.data as {
-            cloudName: string;
-            apiKey: string;
-            timestamp: number;
-            folder: string;
-            signature: string;
-        };
+        let res;
+        const promise = (async () => {
+            try {
+                res = await axios.post(
+                    "/api/cloudinary-signature",
+                    { folder },
+                    { timeout: SIGNATURE_TIMEOUT_MS }
+                );
+            } catch (err) {
+                cloudinarySignaturePromiseCache.current.delete(folder);
+                if (axios.isAxiosError(err)) {
+                    const data: any = err.response?.data;
+                    const msg =
+                        data?.message ||
+                        (typeof data === "string" ? data : "") ||
+                        err.message;
+                    throw new Error(`Cloudinary signature failed: ${msg}`);
+                }
+                throw err;
+            }
+
+            if (!res?.data?.success) {
+                cloudinarySignaturePromiseCache.current.delete(folder);
+                throw new Error(res?.data?.message || "Failed to get upload signature");
+            }
+
+            return res.data as {
+                cloudName: string;
+                apiKey: string;
+                timestamp: number;
+                folder: string;
+                signature: string;
+            };
+        })();
+
+        cloudinarySignaturePromiseCache.current.set(folder, promise);
+        return promise;
     };
 
     const uploadToCloudinary = async (file: File, folder: string) => {
