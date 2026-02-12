@@ -88,6 +88,10 @@ export async function POST(req) {
       )
     );
 
+    const otherSupportedDocumentsNames = Array.from({
+      length: Math.max(0, otherSupportedDocumentsCount),
+    }).map((_, idx) => formData.get(`otherSupportedDocumentName_${idx}`));
+
     const updatedExistingLoansData = await Promise.all(
       existingLoansData.map(async (loan, index) => {
         const file = formData.get(`existingLoanSanctionLetter_${index}`);
@@ -188,6 +192,7 @@ export async function POST(req) {
       preferredTenure: formData.get("preferredTenure"),
       purpose: formData.get("purpose"),
       isBuyingGoods: formData.get("isBuyingGoods"),
+      productName: formData.get("productName"),
       quotationAmount: formData.get("quotationAmount"),
 
       coApplicantName: formData.get("coApplicantName"),
@@ -232,6 +237,9 @@ export async function POST(req) {
 
       numberOfOtherDocuments: Math.max(0, otherSupportedDocumentsCount || 0),
       otherSupportedDocumentsUrls: otherSupportedDocumentsUrls.filter(Boolean),
+      otherSupportedDocumentsNames: otherSupportedDocumentsNames
+        .map((v) => (v ? String(v) : ""))
+        .filter(Boolean),
 
       loan_type: "salaried",
       application_status: "pending",
@@ -280,10 +288,13 @@ export async function POST(req) {
       "SUPPORTMAIL"
     );
 
+    const directorEmail = directorEmailRaw || "business@infinityloanservices.com";
+    const supportEmail = supportEmailRaw || "infinitybusinesssolutions38@gmail.com";
+
     // For Salaried Loan internal notifications, send to director + support (and admin user if set)
     const internalRecipients = normalizeEmailList(
-      directorEmailRaw,
-      supportEmailRaw,
+      directorEmail,
+      supportEmail,
       process.env.ADMIN_USER
     );
 
@@ -294,10 +305,10 @@ export async function POST(req) {
 
     const internalEmailSet = new Set(
       normalizeEmailList(
-        directorEmailRaw,
+        directorEmail,
         process.env.ADMIN_USER,
         process.env.ADMIN_EMAIL,
-        supportEmailRaw
+        supportEmail
       ).map((e) => normalizeEmail(e))
     );
 
@@ -319,17 +330,32 @@ export async function POST(req) {
         ? officialEmail
         : null;
 
-    if (candidateCustomerEmail) {
-      await withTimeout(
-        sendLoanApplicationConfirmationEmail(candidateCustomerEmail, {
-          customerName: formData.get("firstName"),
-          applicationNumber: applicationRef,
-          applicationDate,
-          loanType: "Salaried Loan",
-          loanAmount: formData.get("requiredLoanAmount"),
-        }),
-        12000
-      );
+    const additionalCustomerEmail =
+      officialEmail &&
+      !isInternalEmail(officialEmail) &&
+      (!candidateCustomerEmail ||
+        String(candidateCustomerEmail).trim().toLowerCase() !==
+          String(officialEmail).trim().toLowerCase())
+        ? officialEmail
+        : null;
+
+    if (candidateCustomerEmail || additionalCustomerEmail) {
+      const confirmationPayload = {
+        customerName: formData.get("firstName"),
+        applicationNumber: applicationRef,
+        applicationDate,
+        loanType: "Salaried Loan",
+        loanAmount: formData.get("requiredLoanAmount"),
+      };
+
+      const recipients = [candidateCustomerEmail, additionalCustomerEmail].filter(Boolean);
+
+      for (const to of recipients) {
+        await withTimeout(
+          sendLoanApplicationConfirmationEmail(to, confirmationPayload),
+          12000
+        );
+      }
     } else {
       console.warn(
         "Skipping applicant confirmation email because the provided email(s) appear to be internal admin addresses.",
@@ -401,6 +427,7 @@ export async function POST(req) {
             (u, idx) => `
               <tr>
                 <td style="border:1px solid #e5e7eb;padding:8px;vertical-align:top">${idx + 1}</td>
+                <td style="border:1px solid #e5e7eb;padding:8px;vertical-align:top">${safe(saved?.otherSupportedDocumentsNames?.[idx] || "")}</td>
                 <td style="border:1px solid #e5e7eb;padding:8px;vertical-align:top">${asLink(u)}</td>
               </tr>
             `
@@ -483,6 +510,7 @@ export async function POST(req) {
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>CIBIL Score</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.cibilScore)}</td></tr>
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>CIBIL Issues</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.cibilIssues)}</td></tr>
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Buying Goods</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.isBuyingGoods)}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Product Name</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.productName)}</td></tr>
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Quotation Amount</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.quotationAmount)}</td></tr>
           </tbody>
         </table>
@@ -551,11 +579,12 @@ export async function POST(req) {
               <thead>
                 <tr>
                   <th style="border:1px solid #e5e7eb;padding:8px;text-align:left">#</th>
+                  <th style="border:1px solid #e5e7eb;padding:8px;text-align:left">Name</th>
                   <th style="border:1px solid #e5e7eb;padding:8px;text-align:left">Document</th>
                 </tr>
               </thead>
               <tbody>
-                ${otherSupportedDocumentsHtml || `<tr><td colspan="2" style="border:1px solid #e5e7eb;padding:8px">No documents provided</td></tr>`}
+                ${otherSupportedDocumentsHtml || `<tr><td colspan="3" style="border:1px solid #e5e7eb;padding:8px">No documents provided</td></tr>`}
               </tbody>
             </table>
           `
@@ -643,7 +672,12 @@ export async function POST(req) {
     const otherSupportedDocumentsText = Array.isArray(saved?.otherSupportedDocumentsUrls)
       ? saved.otherSupportedDocumentsUrls
           .filter(Boolean)
-          .map((u, idx) => `${idx + 1}. ${safe(u)}`)
+          .map(
+            (u, idx) =>
+              `${idx + 1}. ${safe(saved?.otherSupportedDocumentsNames?.[idx] || "")} ${safe(
+                u
+              )}`.trim()
+          )
           .join("\n")
       : "";
 
@@ -668,7 +702,9 @@ export async function POST(req) {
       saved?.firstName
     )} ${safe(saved?.middleName)} ${safe(saved?.lastName)}\nDOB: ${safe(saved?.dob)}\nGender: ${safe(saved?.gender)}\nMarital Status: ${safe(saved?.maritalStatus)}\nMobile: ${safe(saved?.mobileNumber)}\nWhatsApp: ${safe(saved?.whatsappNumber)}\nAlternate Mobile: ${safe(saved?.alternateMobile)}\nPersonal Email: ${safe(saved?.personalEmail)}\nOfficial Email: ${safe(saved?.officialEmail)}\nOffice Email: ${safe(saved?.officeEmailId)}\n\nKYC\nPAN: ${safe(saved?.panNumber)}\nAadhaar: ${safe(saved?.aadhaarNumber)}\nVoter ID: ${safe(saved?.voterIdNumber)}\nDriving License: ${safe(saved?.drivingLicense)}\nPassport: ${safe(saved?.passportNumber)}\n\nAddress\nCurrent Address: ${safe(saved?.currentResidentialAddress)}\nCurrent Pincode: ${safe(saved?.currentResidentialPincode)}\nState: ${safe(saved?.state)}\nCity: ${safe(saved?.city)}\nResidence Type: ${safe(saved?.residenceType)}\nStaying Since: ${safe(saved?.stayingSinceDate)}\nPermanent Address: ${safe(saved?.permanentAddress)}\n\nEmployment\nCompany: ${safe(saved?.companyName)}\nOrganization Type: ${safe(saved?.organizationType)}\nIndustry: ${safe(saved?.industry)} ${safe(saved?.industryOther)} ${safe(saved?.otherSector)}\nDesignation: ${safe(saved?.designation)}\nEmployment Type: ${safe(saved?.employmentType)}\nDate Of Joining: ${safe(saved?.dateOfJoining)}\nTotal Experience (Years): ${safe(saved?.totalExperienceYears)}\nOffice Location: ${safe(saved?.officeLocation)}\nOffice Pincode: ${safe(saved?.officePincode)}\n\nIncome & Loan\nMonthly Net Salary: ${safe(saved?.monthlyNetSalary)}\nSalary Credit Mode: ${safe(saved?.salaryCreditMode)}\nSalary Account Bank: ${safe(saved?.salaryAccountBankName)}\nRequired Loan Amount: ${safe(saved?.requiredLoanAmount)}\nPreferred Tenure: ${safe(saved?.preferredTenure)}\nPurpose: ${safe(saved?.purpose)}\nCIBIL Available: ${safe(saved?.hasCibil)}\nCIBIL Score: ${safe(saved?.cibilScore)}\nCIBIL Issues: ${safe(saved?.cibilIssues)}\nBuying Goods: ${safe(saved?.isBuyingGoods)}\nQuotation Amount: ${safe(saved?.quotationAmount)}\n\nCo-Applicant\nName: ${safe(saved?.coApplicantName)}\nRelation: ${safe(saved?.coApplicantRelation)}\nEmployment Type: ${safe(saved?.coApplicantEmploymentType)}\n\nDocuments (Links)\nApplicant Photo: ${safe(saved?.applicantPhotoUrl) || "-"}\nPAN Photo: ${safe(saved?.panPhotoUrl) || "-"}\nAadhaar Front: ${safe(saved?.aadhaarPhotoUrl) || "-"}\nAadhaar Back: ${safe(saved?.aadhaarBackPhotoUrl) || "-"}\nResidence Proof: ${safe(saved?.residencePhotoUrl) || "-"}\nLatest Electricity Bill: ${safe(saved?.lastElectricityBillUrl) || "-"}\nPermanent Address Electricity Bill: ${safe(saved?.permElectricityBillUrl) || "-"}\nRent Agreement: ${safe(saved?.rentAgreementUrl) || "-"}\nCompany Allotment Letter: ${safe(saved?.companyAllotmentLetterUrl) || "-"}\nOffice ID: ${safe(saved?.officeIdPhotoUrl) || "-"}\nSalary Slips: ${safe(saved?.salarySlipsUrl) || "-"}\nBank Statement: ${safe(saved?.bankStatementUrl) || "-"}\nCIBIL Report: ${safe(saved?.cibilReportUrl) || "-"}\nQuotation File: ${safe(saved?.quotationFileUrl) || "-"}\nProforma Invoice: ${safe(saved?.proformaInvoiceFileUrl) || "-"}\n\nExisting Loans\n${existingLoansText || "No existing loans provided"}\n`;
 
-    const internalTextFinal = `${internalText}\n\nCo-Applicant\nName: ${safe(
+    const internalTextFinal = `${internalText}\n\nBuying Goods\nProduct Name: ${safe(
+      saved?.productName
+    )}\n\nCo-Applicant\nName: ${safe(
       saved?.coApplicantName
     )}\nRelation: ${safe(saved?.coApplicantRelation)}\nEmployment Type: ${safe(
       saved?.coApplicantEmploymentType

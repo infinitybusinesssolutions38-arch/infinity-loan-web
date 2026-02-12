@@ -32,7 +32,19 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
     const validateMax2MB = (value: any) => {
         const file = getFileFromValue(value);
         if (!file) return true;
-        return file.size <= MAX_FILE_BYTES || "Max file size is 2MB";
+
+        const isAllowedMime =
+            file.type === "application/pdf" ||
+            file.type === "image/jpeg" ||
+            file.type === "image/jpg";
+
+        const fileName = typeof file.name === "string" ? file.name.toLowerCase() : "";
+        const isAllowedExt =
+            fileName.endsWith(".pdf") || fileName.endsWith(".jpg") || fileName.endsWith(".jpeg");
+
+        if (!isAllowedMime && !isAllowedExt) return "Please pdf or jpg maximum 2mb";
+        if (file.size > MAX_FILE_BYTES) return "Please pdf or jpg maximum 2mb";
+        return true;
     };
 
     const getCloudinarySignature = async (folder: string) => {
@@ -252,6 +264,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
             appendIfPresent("purpose", data.purpose);
             appendIfPresent("isBuyingGoods", data.isBuyingGoods);
             appendIfPresent("quotationAmount", data.quotationAmount);
+            appendIfPresent("productName", data.productName);
 
             appendIfPresent("purpose", data.purposeOfLoan);
             appendIfPresent("cibilIssues", data.cibilIssues);
@@ -474,6 +487,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
             formData.append("numberOfOtherDocuments", String(Math.max(0, otherDocumentsCount || 0)));
 
             for (let i = 0; i < Math.max(0, otherDocumentsCount); i += 1) {
+                appendIfPresent(`otherSupportedDocumentName_${i}`, (data as any)?.[`otherSupportedDocumentName_${i}`]);
                 const key = `otherSupportedDocument_${i}`;
                 const f = pickFirstFile((data as any)?.[key]);
                 if (f) {
@@ -1184,6 +1198,26 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                             {isBuyingGoods === "Yes" && (
                                 <>
                                     <div className="space-y-1">
+                                        <label className="text-sm font-medium">Product Name <span className="text-destructive">*</span></label>
+                                        <input
+                                            type="text"
+                                            {...register("productName", {
+                                                validate: (value) =>
+                                                    isBuyingGoods !== "Yes" ||
+                                                    (value !== undefined &&
+                                                        value !== null &&
+                                                        String(value).trim() !== "") ||
+                                                    "Product Name is required",
+                                            })}
+                                            placeholder="Product Name"
+                                            className="input bg-gray-200"
+                                        />
+                                        {getError("productName") ? (
+                                            <p className="text-sm text-red-600">{getError("productName")}</p>
+                                        ) : null}
+                                    </div>
+
+                                    <div className="space-y-1">
                                         <label className="text-sm font-medium">Quotation Amount (₹) <span className="text-destructive">*</span></label>
                                         <input
                                             type="number"
@@ -1286,7 +1320,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                         <h3 className="mb-4 text-base font-semibold text-gray-900">K. Upload Other Supported Document</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1">
-                                <label className="text-sm font-medium">Number of Other Documents)</label>
+                                <label className="text-sm font-medium">Number of Other Documents</label>
                                 <select {...register("NumberofOtherDocuments")} className="input bg-gray-200">
                                     <option value="">0</option>
                                     <option>1</option>
@@ -1307,6 +1341,12 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                                     {Array.from({ length: otherDocumentsCount }).map((_, idx) => (
                                         <div key={idx} className="space-y-1">
                                             <label className="text-sm font-medium">Upload Document {idx + 1} (PDF)</label>
+                                            <input
+                                                type="text"
+                                                {...register(`otherSupportedDocumentName_${idx}`)}
+                                                placeholder={`Document ${idx + 1} Name`}
+                                                className="input bg-gray-200"
+                                            />
                                             <input
                                                 type="file"
                                                 accept="application/pdf"

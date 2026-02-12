@@ -100,6 +100,7 @@ const SalariedLoanSchema = new mongoose.Schema(
     preferredTenure: { type: String, required: false },
     purpose: { type: String, required: false },
     isBuyingGoods: { type: String, enum: ["Yes", "No"], required: false },
+    productName: { type: String, required: false },
     quotationAmount: { type: String, required: false },
 
     // Co-applicant
@@ -147,6 +148,7 @@ const SalariedLoanSchema = new mongoose.Schema(
     // Other supported documents
     numberOfOtherDocuments: { type: Number, default: 0 },
     otherSupportedDocumentsUrls: [{ type: String, required: false }],
+    otherSupportedDocumentsNames: [{ type: String, required: false }],
 
     // Meta
     loan_type: { type: String, required: true, default: "salaried" },
