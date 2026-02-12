@@ -54,6 +54,7 @@ const SalariedLoanSchema = new mongoose.Schema(
     organizationType: { type: String, required: false },
     industry: { type: String, required: false },
     industryOther: { type: String, required: false },
+    otherSector: { type: String, required: false },
     designation: { type: String, required: true },
     employmentType: {
         type: String,
@@ -125,6 +126,10 @@ const SalariedLoanSchema = new mongoose.Schema(
     companyAllotmentLetterUrl: { type: String, required: false },
     quotationFileUrl: { type: String, required: false },
     proformaInvoiceFileUrl: { type: String, required: false },
+
+    // Other supported documents
+    numberOfOtherDocuments: { type: Number, default: 0 },
+    otherSupportedDocumentsUrls: [{ type: String, required: false }],
 
     // Meta
     loan_type: { type: String, required: true, default: "salaried" },

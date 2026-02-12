@@ -337,128 +337,242 @@ export async function POST(req) {
     const asLink = (u) => {
       const url = typeof u === "string" ? u.trim() : "";
       if (!url) return "-";
-      return `<a href="${url}" target="_blank" rel="noreferrer">View</a>`;
+      return `<a href="${url}" target="_blank" rel="noreferrer" style="color:#2563eb;text-decoration:underline">View Document</a>`;
     };
 
-    const internalHtml = `
-      <h2>New Business Loan Application</h2>
-      <p><strong>Application Ref:</strong> ${safe(applicationRef)}</p>
-      <p><strong>Application Date:</strong> ${safe(applicationDate)}</p>
+    const internalDetailsHtml = `
+      <div style="font-family:Arial,sans-serif;line-height:1.5">
+        <p style="margin:0 0 16px 0"><strong>Application Ref:</strong> ${safe(applicationRef)}<br/>
+        <strong>Date:</strong> ${safe(applicationDate)}<br/>
+        <strong>Service Category:</strong> ${safe(saved?.serviceCategoryTitle) || safe(saved?.serviceCategoryKey) || "-"}</p>
 
-      <h3>Service Category</h3>
-      <p>${safe(saved?.serviceCategoryTitle) || safe(saved?.serviceCategoryKey) || "-"}</p>
+        <h3 style="margin:16px 0 8px 0">Applicant Details</h3>
+        <table style="width:100%;border-collapse:collapse;font-size:14px">
+          <tbody>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px;width:35%"><strong>Name</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.firstName)} ${safe(saved?.middleName)} ${safe(saved?.lastName)}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Mobile</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.mobileNumber)}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Alternate Mobile</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.alternateMobile || saved?.alternateMobileNumber) || "-"}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>WhatsApp</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.whatsAppNumber) || "-"}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Personal Email</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.personalEmail) || "-"}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Business Email</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.businessEmail) || "-"}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Gender</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.gender) || "-"}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Marital Status</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.maritalStatus) || "-"}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>DOB</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.dob) || "-"}</td></tr>
+          </tbody>
+        </table>
 
-      <h3>Applicant Details</h3>
-      <p><strong>Name:</strong> ${safe(saved?.firstName)} ${safe(saved?.middleName)} ${safe(saved?.lastName)}</p>
-      <p><strong>Mobile:</strong> ${safe(saved?.mobileNumber)}</p>
-      <p><strong>Alternate Mobile:</strong> ${safe(saved?.alternateMobile || saved?.alternateMobileNumber) || "-"}</p>
-      <p><strong>WhatsApp:</strong> ${safe(saved?.whatsAppNumber) || "-"}</p>
-      <p><strong>Personal Email:</strong> ${safe(saved?.personalEmail) || "-"}</p>
-      <p><strong>Business Email:</strong> ${safe(saved?.businessEmail) || "-"}</p>
-      <p><strong>Gender:</strong> ${safe(saved?.gender) || "-"}</p>
-      <p><strong>Marital Status:</strong> ${safe(saved?.maritalStatus) || "-"}</p>
-      <p><strong>DOB:</strong> ${safe(saved?.dob) || "-"}</p>
+        <h3 style="margin:16px 0 8px 0">KYC</h3>
+        <table style="width:100%;border-collapse:collapse;font-size:14px">
+          <tbody>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px;width:35%"><strong>PAN Number</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.panNumber) || "-"}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Aadhaar Number</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.aadhaarNumber) || "-"}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>GST Number</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.gstNumber) || "-"}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Voter ID</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.voterId) || "-"}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Driving License</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.drivingLicense) || "-"}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Passport</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.passportNo) || "-"}</td></tr>
+          </tbody>
+        </table>
 
-      <h3>KYC</h3>
-      <p><strong>PAN Number:</strong> ${safe(saved?.panNumber) || "-"}</p>
-      <p><strong>Aadhaar Number:</strong> ${safe(saved?.aadhaarNumber) || "-"}</p>
-      <p><strong>GST Number:</strong> ${safe(saved?.gstNumber) || "-"}</p>
-      <p><strong>Voter ID:</strong> ${safe(saved?.voterId) || "-"}</p>
-      <p><strong>Driving License:</strong> ${safe(saved?.drivingLicense) || "-"}</p>
-      <p><strong>Passport:</strong> ${safe(saved?.passportNo) || "-"}</p>
+        <h3 style="margin:16px 0 8px 0">Addresses</h3>
+        <table style="width:100%;border-collapse:collapse;font-size:14px">
+          <tbody>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px;width:35%"><strong>Residential Address</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.currentResidentialAddress) || "-"}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Residential City/State/Pincode</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.residentialCity) || "-"}, ${safe(saved?.residentialState) || "-"} - ${safe(saved?.currentResidentialPincode) || "-"}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Office/Shop Address</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.currentOfficeOrShopAddress) || "-"}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Office City/State/Pincode</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.officeCity) || "-"}, ${safe(saved?.officeOrShopState) || "-"} - ${safe(saved?.currentOfficePincode) || "-"}</td></tr>
+          </tbody>
+        </table>
 
-      <h3>Addresses</h3>
-      <p><strong>Residential Address:</strong> ${safe(saved?.currentResidentialAddress) || "-"}</p>
-      <p><strong>Residential City/State/Pincode:</strong> ${safe(saved?.residentialCity) || "-"}, ${safe(saved?.residentialState) || "-"} - ${safe(saved?.currentResidentialPincode) || "-"}</p>
-      <p><strong>Office/Shop Address:</strong> ${safe(saved?.currentOfficeOrShopAddress) || "-"}</p>
-      <p><strong>Office City/State/Pincode:</strong> ${safe(saved?.officeCity) || "-"}, ${safe(saved?.officeOrShopState) || "-"} - ${safe(saved?.currentOfficePincode) || "-"}</p>
+        <h3 style="margin:16px 0 8px 0">Business Details</h3>
+        <table style="width:100%;border-collapse:collapse;font-size:14px">
+          <tbody>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px;width:35%"><strong>Business Name</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.businessName) || "-"}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Business Type</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.businessType) || "-"}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Industry</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.industryType) || "-"}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Business Address</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.businessAddress) || "-"}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Business Pincode</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.businessPincode) || "-"}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Years in Business</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.yearsInBusiness) || "-"}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Annual Turnover</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.annualTurnover) || "-"}</td></tr>
+          </tbody>
+        </table>
 
-      <h3>Business Details</h3>
-      <p><strong>Business Name:</strong> ${safe(saved?.businessName) || "-"}</p>
-      <p><strong>Business Type:</strong> ${safe(saved?.businessType) || "-"}</p>
-      <p><strong>Industry:</strong> ${safe(saved?.industryType) || "-"}</p>
-      <p><strong>Business Address:</strong> ${safe(saved?.businessAddress) || "-"}</p>
-      <p><strong>Business Pincode:</strong> ${safe(saved?.businessPincode) || "-"}</p>
-      <p><strong>Years in Business:</strong> ${safe(saved?.yearsInBusiness) || "-"}</p>
-      <p><strong>Annual Turnover:</strong> ${safe(saved?.annualTurnover) || "-"}</p>
+        <h3 style="margin:16px 0 8px 0">Loan Details</h3>
+        <table style="width:100%;border-collapse:collapse;font-size:14px">
+          <tbody>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px;width:35%"><strong>Required Amount</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.requiredLoanAmount) || "-"}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Preferred Tenure</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.preferredTenure) || "-"}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Purpose</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.purpose) || "-"}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Type Of Loan</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.typeOfLoan) || "-"}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>CIBIL Issues</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.cibilIssuesDetails) || "-"}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>CIBIL Available</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.hasCibil) || "-"}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>CIBIL Score</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.cibilScore) || "-"}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Buying Goods</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.isBuyingGoods) || "-"}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Quotation Amount</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.quotationAmount) || "-"}</td></tr>
+          </tbody>
+        </table>
 
-      <h3>Loan Details</h3>
-      <p><strong>Required Amount:</strong> ${safe(saved?.requiredLoanAmount) || "-"}</p>
-      <p><strong>Preferred Tenure:</strong> ${safe(saved?.preferredTenure) || "-"}</p>
-      <p><strong>Purpose:</strong> ${safe(saved?.purpose) || "-"}</p>
-      <p><strong>Type Of Loan:</strong> ${safe(saved?.typeOfLoan) || "-"}</p>
-      <p><strong>CIBIL Issues:</strong> ${safe(saved?.cibilIssuesDetails) || "-"}</p>
-      <p><strong>CIBIL Available:</strong> ${safe(saved?.hasCibil) || "-"}</p>
-      <p><strong>CIBIL Score:</strong> ${safe(saved?.cibilScore) || "-"}</p>
-      <p><strong>Buying Goods:</strong> ${safe(saved?.isBuyingGoods) || "-"}</p>
-      <p><strong>Quotation Amount:</strong> ${safe(saved?.quotationAmount) || "-"}</p>
+        <h3 style="margin:16px 0 8px 0">Bank Details</h3>
+        <table style="width:100%;border-collapse:collapse;font-size:14px">
+          <tbody>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px;width:35%"><strong>Account Types</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.accountType) || "-"}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Primary Bank Name</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.bankName) || "-"}</td></tr>
+          </tbody>
+        </table>
+        ${Array.isArray(saved?.bankAccounts) && saved.bankAccounts.length
+          ? `
+            <h4 style="margin:12px 0 8px 0">Selected Accounts</h4>
+            <table style="width:100%;border-collapse:collapse;font-size:14px">
+              <thead>
+                <tr>
+                  <th style="border:1px solid #e5e7eb;padding:8px;text-align:left">Account Type</th>
+                  <th style="border:1px solid #e5e7eb;padding:8px;text-align:left">Bank Name</th>
+                  <th style="border:1px solid #e5e7eb;padding:8px;text-align:left">Statement</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${saved.bankAccounts
+                  .map(
+                    (a) => `
+                      <tr>
+                        <td style="border:1px solid #e5e7eb;padding:8px;vertical-align:top">${safe(a?.accountType) || "-"}</td>
+                        <td style="border:1px solid #e5e7eb;padding:8px;vertical-align:top">${safe(a?.bankName) || "-"}</td>
+                        <td style="border:1px solid #e5e7eb;padding:8px;vertical-align:top">${asLink(a?.oneYearBankStatementUrl)}</td>
+                      </tr>
+                    `
+                  )
+                  .join("")}
+              </tbody>
+            </table>
+          `
+          : ""}
 
-      <h3>Bank Details</h3>
-      <p><strong>Account Types:</strong> ${safe(saved?.accountType) || "-"}</p>
-      <p><strong>Primary Bank Name:</strong> ${safe(saved?.bankName) || "-"}</p>
-      ${Array.isArray(saved?.bankAccounts) && saved.bankAccounts.length
-        ? `
-          <h4>Selected Accounts</h4>
-          <ul>
-            ${saved.bankAccounts
-              .map(
-                (a) =>
-                  `<li>${safe(a?.accountType) || "-"} — ${safe(a?.bankName) || "-"} — ${asLink(a?.oneYearBankStatementUrl)}</li>`
-              )
-              .join("")}
-          </ul>
-        `
-        : ""}
+        <h3 style="margin:16px 0 8px 0">Co-Applicant</h3>
+        <table style="width:100%;border-collapse:collapse;font-size:14px">
+          <tbody>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px;width:35%"><strong>Name</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.coApplicantName) || "-"}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Relationship</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.relationshipWithApplicant) || "-"}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Employment Type</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.coApplicantEmploymentType) || "-"}</td></tr>
+          </tbody>
+        </table>
 
-      <h3>Co-Applicant</h3>
-      <p><strong>Name:</strong> ${safe(saved?.coApplicantName) || "-"}</p>
-      <p><strong>Relationship:</strong> ${safe(saved?.relationshipWithApplicant) || "-"}</p>
-      <p><strong>Employment Type:</strong> ${safe(saved?.coApplicantEmploymentType) || "-"}</p>
+        <h3 style="margin:16px 0 8px 0">Documents</h3>
+        <table style="width:100%;border-collapse:collapse;font-size:14px">
+          <tbody>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px;width:35%"><strong>Applicant Photo</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.applicantPhotoUrl)}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>PAN Photo</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.panPhotoUrl)}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Aadhaar Front</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.aadhaarPhotoUrl)}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Aadhaar Back</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.aadhaarBackPhotoUrl)}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>GST Certificate</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.gstCertificateUrl)}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Bank Statement</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.bankStatementUrl)}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>One Year Bank Statement</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.oneYearBankStatementUrl)}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>ITR File</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.itrFileUrl)}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Latest Home Electricity Bill</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.latestHomeElectricityBillUrl)}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Latest Office/Shop Electricity Bill</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.latestOfficeShopElectricityBillUrl)}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Assessment Year 2023-24</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.assessmentYear2324Url)}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Assessment Year 2024-25</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.assessmentYear2425Url)}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Assessment Year 2025-26</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.assessmentYear2526Url)}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Proforma Invoice</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.proformaInvoiceFileUrl)}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>CIBIL Report</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.cibilReportUrl)}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Co-Applicant PAN Photo</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.coApplicantPanPhotoUrl)}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Co-Applicant Aadhaar Front</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.coApplicantAadhaarPhotoUrl)}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Co-Applicant Aadhaar Back</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.coApplicantAadhaarBackPhotoUrl)}</td></tr>
+          </tbody>
+        </table>
 
-      <h3>Documents</h3>
-      <p>Applicant Photo: ${asLink(saved?.applicantPhotoUrl)}</p>
-      <p>PAN Photo: ${asLink(saved?.panPhotoUrl)}</p>
-      <p>Aadhaar Front: ${asLink(saved?.aadhaarPhotoUrl)}</p>
-      <p>Aadhaar Back: ${asLink(saved?.aadhaarBackPhotoUrl)}</p>
-      <p>GST Certificate: ${asLink(saved?.gstCertificateUrl)}</p>
-      <p>Bank Statement: ${asLink(saved?.bankStatementUrl)}</p>
-      <p>One Year Bank Statement: ${asLink(saved?.oneYearBankStatementUrl)}</p>
-      <p>ITR File: ${asLink(saved?.itrFileUrl)}</p>
-      <p>Latest Home Electricity Bill: ${asLink(saved?.latestHomeElectricityBillUrl)}</p>
-      <p>Latest Office/Shop Electricity Bill: ${asLink(saved?.latestOfficeShopElectricityBillUrl)}</p>
-      <p>Assessment Year 2023-24: ${asLink(saved?.assessmentYear2324Url)}</p>
-      <p>Assessment Year 2024-25: ${asLink(saved?.assessmentYear2425Url)}</p>
-      <p>Assessment Year 2025-26: ${asLink(saved?.assessmentYear2526Url)}</p>
-      <p>Proforma Invoice: ${asLink(saved?.proformaInvoiceFileUrl)}</p>
-      <p>CIBIL Report: ${asLink(saved?.cibilReportUrl)}</p>
-      <p>Co-Applicant PAN: ${asLink(saved?.coApplicantPanPhotoUrl)}</p>
-      <p>Co-Applicant Aadhaar Front: ${asLink(saved?.coApplicantAadhaarPhotoUrl)}</p>
-      <p>Co-Applicant Aadhaar Back: ${asLink(saved?.coApplicantAadhaarBackPhotoUrl)}</p>
-      ${Array.isArray(saved?.otherSupportedDocumentsUrls) && saved.otherSupportedDocumentsUrls.filter(Boolean).length
-        ? `
-          <h4>Other Supported Documents</h4>
-          <ul>
-            ${saved.otherSupportedDocumentsUrls
-              .filter(Boolean)
-              .map((u) => `<li>${asLink(u)}</li>`)
-              .join("")}
-          </ul>
-        `
-        : ""}
-      ${Array.isArray(saved?.registrationCertificates) && saved.registrationCertificates.length
-        ? `
-          <h4>Business Registration Certificates</h4>
-          <ul>
-            ${saved.registrationCertificates
-              .map(
-                (c) =>
-                  `<li>${safe(c?.certificateType) || "-"} — ${asLink(c?.fileUrl)}</li>`
-              )
-              .join("")}
-          </ul>
-        `
-        : ""}
+        ${Array.isArray(saved?.otherSupportedDocumentsUrls) && saved.otherSupportedDocumentsUrls.filter(Boolean).length
+          ? `
+            <h3 style="margin:16px 0 8px 0">Other Supported Documents</h3>
+            <ul>
+              ${saved.otherSupportedDocumentsUrls
+                .filter(Boolean)
+                .map((u) => `<li>${asLink(u)}</li>`)
+                .join("")}
+            </ul>
+          `
+          : ""}
+
+        ${Array.isArray(saved?.registrationCertificates) && saved.registrationCertificates.length
+          ? `
+            <h3 style="margin:16px 0 8px 0">Business Registration Certificates</h3>
+            <table style="width:100%;border-collapse:collapse;font-size:14px">
+              <thead>
+                <tr>
+                  <th style="border:1px solid #e5e7eb;padding:8px;text-align:left">Certificate Type</th>
+                  <th style="border:1px solid #e5e7eb;padding:8px;text-align:left">File</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${saved.registrationCertificates
+                  .map(
+                    (c) => `
+                      <tr>
+                        <td style="border:1px solid #e5e7eb;padding:8px;vertical-align:top">${safe(c?.certificateType) || "-"}</td>
+                        <td style="border:1px solid #e5e7eb;padding:8px;vertical-align:top">${asLink(c?.fileUrl)}</td>
+                      </tr>
+                    `
+                  )
+                  .join("")}
+              </tbody>
+            </table>
+          `
+          : ""}
+      </div>
     `;
+
+    const internalBrandedHtml = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8">
+        <style>
+          body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333; line-height: 1.6; margin: 0; padding: 0; background-color: #f8f9fa; }
+          .container { max-width: 820px; margin: 0 auto; padding: 20px; background-color: #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 12px; }
+          .header { background: linear-gradient(135deg, #F97415 0%, #ff8c42 100%); padding: 28px 24px; border-radius: 12px 12px 0 0; color: white; text-align: center; }
+          .header h1 { margin: 0; color: white; font-size: 24px; font-weight: 700; }
+          .header p { margin: 10px 0 0 0; color: rgba(255,255,255,0.9); font-size: 14px; }
+          .content { padding: 22px; }
+          .details-box { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 18px; border-radius: 10px; margin: 16px 0; border-left: 4px solid #F97415; }
+          .details-box p { margin: 10px 0; font-size: 14px; }
+          .application-number { background: #F97415; color: white; padding: 6px 12px; border-radius: 999px; font-weight: 700; display: inline-block; }
+          .loan-type-badge { background: #111827; color: white; padding: 6px 12px; border-radius: 999px; font-size: 12px; font-weight: 700; display: inline-block; }
+          .footer { border-top: 1px solid #e9ecef; margin-top: 20px; padding-top: 16px; text-align: center; color: #6c757d; font-size: 12px; }
+          a { color:#2563eb; text-decoration: underline; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>New Business Loan Application</h1>
+            <p>Internal Notification (Full Details + Document Links)</p>
+          </div>
+
+          <div class="content">
+            <div class="details-box">
+              <p><strong>Application Number:</strong> <span class="application-number">${safe(applicationRef)}</span></p>
+              <p><strong>Application Date:</strong> ${safe(applicationDate)}</p>
+              <p><strong>Loan Product:</strong> <span class="loan-type-badge">Business Loan</span></p>
+              <p><strong>Service Category:</strong> ${safe(saved?.serviceCategoryTitle) || safe(saved?.serviceCategoryKey) || "-"}</p>
+            </div>
+
+            ${internalDetailsHtml}
+
+            <div class="footer">
+              <p><strong>Infinity Loans & Business Solutions</strong></p>
+              <p>www.infinityloanservices.com</p>
+            </div>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+
+    const internalText = `New Business Loan Application\n\nApplication Ref: ${safe(
+      applicationRef
+    )}\nDate: ${safe(applicationDate)}\nService Category: ${safe(saved?.serviceCategoryTitle) || safe(saved?.serviceCategoryKey)}\n\nApplicant Details\nName: ${safe(
+      saved?.firstName
+    )} ${safe(saved?.middleName)} ${safe(saved?.lastName)}\nMobile: ${safe(
+      saved?.mobileNumber
+    )}\nAlternate Mobile: ${safe(saved?.alternateMobile || saved?.alternateMobileNumber) || "-"}\nWhatsApp: ${safe(saved?.whatsAppNumber) || "-"}\nPersonal Email: ${safe(saved?.personalEmail) || "-"}\nBusiness Email: ${safe(saved?.businessEmail) || "-"}\n\nKYC\nPAN: ${safe(saved?.panNumber) || "-"}\nAadhaar: ${safe(saved?.aadhaarNumber) || "-"}\nGST: ${safe(saved?.gstNumber) || "-"}\n\nAddresses\nResidential: ${safe(saved?.currentResidentialAddress) || "-"}\nOffice/Shop: ${safe(saved?.currentOfficeOrShopAddress) || "-"}\n\nBusiness Details\nBusiness Name: ${safe(saved?.businessName) || "-"}\nBusiness Type: ${safe(saved?.businessType) || "-"}\nIndustry: ${safe(saved?.industryType) || "-"}\n\nLoan Details\nAmount: ${safe(saved?.requiredLoanAmount) || "-"}\nTenure: ${safe(saved?.preferredTenure) || "-"}\nPurpose: ${safe(saved?.purpose) || "-"}\n\nDocuments\nApplicant Photo: ${safe(saved?.applicantPhotoUrl) || "-"}\nPAN Photo: ${safe(saved?.panPhotoUrl) || "-"}\nAadhaar Front: ${safe(saved?.aadhaarPhotoUrl) || "-"}\nAadhaar Back: ${safe(saved?.aadhaarBackPhotoUrl) || "-"}`;
 
     const fromAddress =
       process.env.EMAIL_SMTP_USER ||
@@ -475,7 +589,8 @@ export async function POST(req) {
               to,
               replyTo: safe(saved?.personalEmail) || undefined,
               subject: `New Business Loan Application - ${applicationRef}`,
-              html: internalHtml,
+              html: internalBrandedHtml,
+              text: internalText,
             }),
             12000
           )

@@ -11,14 +11,6 @@ import { createGmailTransporter } from "../lib/apply-now-email";
 export const runtime = "nodejs";
 export const maxDuration = 60;
 
-export const config = {
-  api: {
-    bodyParser: {
-      sizeLimit: "100mb",
-    },
-  },
-};
-
 // Cloudinary config
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -80,6 +72,22 @@ export async function POST(req) {
       formData.get("existingLoansData") || "[]"
     );
 
+    /* =========================================
+       OTHER SUPPORTED DOCUMENTS (COUNT BASED)
+    ========================================== */
+    const otherSupportedDocumentsCountRaw = formData.get("numberOfOtherDocuments");
+    const otherSupportedDocumentsCount = Number.isFinite(
+      Number(otherSupportedDocumentsCountRaw)
+    )
+      ? parseInt(String(otherSupportedDocumentsCountRaw), 10)
+      : 0;
+
+    const otherSupportedDocumentsUrls = await Promise.all(
+      Array.from({ length: Math.max(0, otherSupportedDocumentsCount) }).map(
+        async (_, idx) => await upload(formData.get(`otherSupportedDocument_${idx}`))
+      )
+    );
+
     const updatedExistingLoansData = await Promise.all(
       existingLoansData.map(async (loan, index) => {
         const file = formData.get(`existingLoanSanctionLetter_${index}`);
@@ -131,6 +139,7 @@ export async function POST(req) {
       organizationType: formData.get("organizationType"),
       industry: formData.get("industry"),
       industryOther: formData.get("industryOther"),
+      otherSector: formData.get("otherSector"),
       designation: formData.get("designation"),
       employmentType: formData.get("employmentType"),
       dateOfJoining: formData.get("dateOfJoining"),
@@ -192,6 +201,9 @@ export async function POST(req) {
         formData.get("proformaInvoiceFile")
       ),
 
+      numberOfOtherDocuments: Math.max(0, otherSupportedDocumentsCount || 0),
+      otherSupportedDocumentsUrls: otherSupportedDocumentsUrls.filter(Boolean),
+
       loan_type: "salaried",
       application_status: "pending",
       role: "borrower-salaried",
@@ -218,10 +230,31 @@ export async function POST(req) {
       return Array.from(new Set(raw));
     };
 
+    const firstEnv = (...keys) => {
+      for (const k of keys) {
+        const v = process.env?.[k];
+        if (v) return v;
+      }
+      return "";
+    };
+
+    const directorEmailRaw = firstEnv(
+      "DIRECTOR_EMAIL",
+      "DIRECTOREMAIL",
+      "DIRECTOR_MAIL",
+      "DIRECTORMAIL"
+    );
+    const supportEmailRaw = firstEnv(
+      "SUPPORT_EMAIL",
+      "SUPPORTEMAIL",
+      "SUPPORT_MAIL",
+      "SUPPORTMAIL"
+    );
+
     // For Salaried Loan internal notifications, send to director + support (and admin user if set)
     const internalRecipients = normalizeEmailList(
-      process.env.DIRECTOR_EMAIL,
-      process.env.SUPPORT_EMAIL,
+      directorEmailRaw,
+      supportEmailRaw,
       process.env.ADMIN_USER
     );
 
@@ -232,10 +265,10 @@ export async function POST(req) {
 
     const internalEmailSet = new Set(
       normalizeEmailList(
-        process.env.DIRECTOR_EMAIL,
+        directorEmailRaw,
         process.env.ADMIN_USER,
         process.env.ADMIN_EMAIL,
-        process.env.SUPPORT_EMAIL
+        supportEmailRaw
       ).map((e) => normalizeEmail(e))
     );
 
@@ -312,6 +345,20 @@ export async function POST(req) {
           .join("")
       : "";
 
+    const otherSupportedDocumentsHtml = Array.isArray(saved?.otherSupportedDocumentsUrls)
+      ? saved.otherSupportedDocumentsUrls
+          .filter(Boolean)
+          .map(
+            (u, idx) => `
+              <tr>
+                <td style="border:1px solid #e5e7eb;padding:8px;vertical-align:top">${idx + 1}</td>
+                <td style="border:1px solid #e5e7eb;padding:8px;vertical-align:top">${asLink(u)}</td>
+              </tr>
+            `
+          )
+          .join("")
+      : "";
+
     const internalHtml = `
       <div style="font-family:Arial,sans-serif;line-height:1.5">
         <h2 style="margin:0 0 8px 0">New Salaried Loan Application</h2>
@@ -364,7 +411,7 @@ export async function POST(req) {
           <tbody>
             <tr><td style="border:1px solid #e5e7eb;padding:8px;width:35%"><strong>Company</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.companyName)}</td></tr>
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Organization Type</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.organizationType)}</td></tr>
-            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Industry</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.industry)} ${safe(saved?.industryOther)}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Industry</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.industry)} ${safe(saved?.industryOther)} ${safe(saved?.otherSector)}</td></tr>
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Designation</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.designation)}</td></tr>
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Employment Type</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.employmentType)}</td></tr>
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Date Of Joining</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.dateOfJoining)}</td></tr>
@@ -423,6 +470,24 @@ export async function POST(req) {
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Proforma Invoice</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.proformaInvoiceFileUrl)}</td></tr>
           </tbody>
         </table>
+
+        ${Array.isArray(saved?.otherSupportedDocumentsUrls) &&
+        saved.otherSupportedDocumentsUrls.filter(Boolean).length
+          ? `
+            <h3 style="margin:16px 0 8px 0">Other Supported Documents</h3>
+            <table style="width:100%;border-collapse:collapse;font-size:14px">
+              <thead>
+                <tr>
+                  <th style="border:1px solid #e5e7eb;padding:8px;text-align:left">#</th>
+                  <th style="border:1px solid #e5e7eb;padding:8px;text-align:left">Document</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${otherSupportedDocumentsHtml || `<tr><td colspan="2" style="border:1px solid #e5e7eb;padding:8px">No documents provided</td></tr>`}
+              </tbody>
+            </table>
+          `
+          : ""}
 
         <h3 style="margin:16px 0 8px 0">Existing Loans</h3>
         <table style="width:100%;border-collapse:collapse;font-size:14px">
@@ -503,27 +568,42 @@ export async function POST(req) {
           .join("\n")
       : "";
 
+    const otherSupportedDocumentsText = Array.isArray(saved?.otherSupportedDocumentsUrls)
+      ? saved.otherSupportedDocumentsUrls
+          .filter(Boolean)
+          .map((u, idx) => `${idx + 1}. ${safe(u)}`)
+          .join("\n")
+      : "";
+
     const internalText = `New Salaried Loan Application\n\nApplication Ref: ${safe(
       applicationRef
     )}\nDate: ${safe(applicationDate)}\nService Category: ${safe(saved?.serviceCategoryTitle) || safe(saved?.serviceCategoryKey)}\n\nApplicant Details\nName: ${safe(
       saved?.firstName
-    )} ${safe(saved?.middleName)} ${safe(saved?.lastName)}\nDOB: ${safe(saved?.dob)}\nGender: ${safe(saved?.gender)}\nMarital Status: ${safe(saved?.maritalStatus)}\nMobile: ${safe(saved?.mobileNumber)}\nWhatsApp: ${safe(saved?.whatsappNumber)}\nAlternate Mobile: ${safe(saved?.alternateMobile)}\nPersonal Email: ${safe(saved?.personalEmail)}\nOfficial Email: ${safe(saved?.officialEmail)}\nOffice Email: ${safe(saved?.officeEmailId)}\n\nKYC\nPAN: ${safe(saved?.panNumber)}\nAadhaar: ${safe(saved?.aadhaarNumber)}\nVoter ID: ${safe(saved?.voterIdNumber)}\nDriving License: ${safe(saved?.drivingLicense)}\nPassport: ${safe(saved?.passportNumber)}\n\nAddress\nCurrent Address: ${safe(saved?.currentResidentialAddress)}\nCurrent Pincode: ${safe(saved?.currentResidentialPincode)}\nState: ${safe(saved?.state)}\nCity: ${safe(saved?.city)}\nResidence Type: ${safe(saved?.residenceType)}\nStaying Since: ${safe(saved?.stayingSinceDate)}\nPermanent Address: ${safe(saved?.permanentAddress)}\n\nEmployment\nCompany: ${safe(saved?.companyName)}\nOrganization Type: ${safe(saved?.organizationType)}\nIndustry: ${safe(saved?.industry)} ${safe(saved?.industryOther)}\nDesignation: ${safe(saved?.designation)}\nEmployment Type: ${safe(saved?.employmentType)}\nDate Of Joining: ${safe(saved?.dateOfJoining)}\nTotal Experience (Years): ${safe(saved?.totalExperienceYears)}\nOffice Location: ${safe(saved?.officeLocation)}\nOffice Pincode: ${safe(saved?.officePincode)}\n\nIncome & Loan\nMonthly Net Salary: ${safe(saved?.monthlyNetSalary)}\nSalary Credit Mode: ${safe(saved?.salaryCreditMode)}\nSalary Account Bank: ${safe(saved?.salaryAccountBankName)}\nRequired Loan Amount: ${safe(saved?.requiredLoanAmount)}\nPreferred Tenure: ${safe(saved?.preferredTenure)}\nPurpose: ${safe(saved?.purpose)}\nCIBIL Available: ${safe(saved?.hasCibil)}\nCIBIL Score: ${safe(saved?.cibilScore)}\nCIBIL Issues: ${safe(saved?.cibilIssues)}\nBuying Goods: ${safe(saved?.isBuyingGoods)}\nQuotation Amount: ${safe(saved?.quotationAmount)}\n\nCo-Applicant\nName: ${safe(saved?.coApplicantName)}\nRelation: ${safe(saved?.coApplicantRelation)}\nEmployment Type: ${safe(saved?.coApplicantEmploymentType)}\n\nDocuments (Links)\nApplicant Photo: ${safe(saved?.applicantPhotoUrl) || "-"}\nPAN Photo: ${safe(saved?.panPhotoUrl) || "-"}\nAadhaar Front: ${safe(saved?.aadhaarPhotoUrl) || "-"}\nAadhaar Back: ${safe(saved?.aadhaarBackPhotoUrl) || "-"}\nResidence Proof: ${safe(saved?.residencePhotoUrl) || "-"}\nLatest Electricity Bill: ${safe(saved?.lastElectricityBillUrl) || "-"}\nPermanent Address Electricity Bill: ${safe(saved?.permElectricityBillUrl) || "-"}\nRent Agreement: ${safe(saved?.rentAgreementUrl) || "-"}\nCompany Allotment Letter: ${safe(saved?.companyAllotmentLetterUrl) || "-"}\nOffice ID: ${safe(saved?.officeIdPhotoUrl) || "-"}\nSalary Slips: ${safe(saved?.salarySlipsUrl) || "-"}\nBank Statement: ${safe(saved?.bankStatementUrl) || "-"}\nCIBIL Report: ${safe(saved?.cibilReportUrl) || "-"}\nQuotation File: ${safe(saved?.quotationFileUrl) || "-"}\nProforma Invoice: ${safe(saved?.proformaInvoiceFileUrl) || "-"}\n\nExisting Loans\n${existingLoansText || "No existing loans provided"}\n`;
+    )} ${safe(saved?.middleName)} ${safe(saved?.lastName)}\nDOB: ${safe(saved?.dob)}\nGender: ${safe(saved?.gender)}\nMarital Status: ${safe(saved?.maritalStatus)}\nMobile: ${safe(saved?.mobileNumber)}\nWhatsApp: ${safe(saved?.whatsappNumber)}\nAlternate Mobile: ${safe(saved?.alternateMobile)}\nPersonal Email: ${safe(saved?.personalEmail)}\nOfficial Email: ${safe(saved?.officialEmail)}\nOffice Email: ${safe(saved?.officeEmailId)}\n\nKYC\nPAN: ${safe(saved?.panNumber)}\nAadhaar: ${safe(saved?.aadhaarNumber)}\nVoter ID: ${safe(saved?.voterIdNumber)}\nDriving License: ${safe(saved?.drivingLicense)}\nPassport: ${safe(saved?.passportNumber)}\n\nAddress\nCurrent Address: ${safe(saved?.currentResidentialAddress)}\nCurrent Pincode: ${safe(saved?.currentResidentialPincode)}\nState: ${safe(saved?.state)}\nCity: ${safe(saved?.city)}\nResidence Type: ${safe(saved?.residenceType)}\nStaying Since: ${safe(saved?.stayingSinceDate)}\nPermanent Address: ${safe(saved?.permanentAddress)}\n\nEmployment\nCompany: ${safe(saved?.companyName)}\nOrganization Type: ${safe(saved?.organizationType)}\nIndustry: ${safe(saved?.industry)} ${safe(saved?.industryOther)} ${safe(saved?.otherSector)}\nDesignation: ${safe(saved?.designation)}\nEmployment Type: ${safe(saved?.employmentType)}\nDate Of Joining: ${safe(saved?.dateOfJoining)}\nTotal Experience (Years): ${safe(saved?.totalExperienceYears)}\nOffice Location: ${safe(saved?.officeLocation)}\nOffice Pincode: ${safe(saved?.officePincode)}\n\nIncome & Loan\nMonthly Net Salary: ${safe(saved?.monthlyNetSalary)}\nSalary Credit Mode: ${safe(saved?.salaryCreditMode)}\nSalary Account Bank: ${safe(saved?.salaryAccountBankName)}\nRequired Loan Amount: ${safe(saved?.requiredLoanAmount)}\nPreferred Tenure: ${safe(saved?.preferredTenure)}\nPurpose: ${safe(saved?.purpose)}\nCIBIL Available: ${safe(saved?.hasCibil)}\nCIBIL Score: ${safe(saved?.cibilScore)}\nCIBIL Issues: ${safe(saved?.cibilIssues)}\nBuying Goods: ${safe(saved?.isBuyingGoods)}\nQuotation Amount: ${safe(saved?.quotationAmount)}\n\nCo-Applicant\nName: ${safe(saved?.coApplicantName)}\nRelation: ${safe(saved?.coApplicantRelation)}\nEmployment Type: ${safe(saved?.coApplicantEmploymentType)}\n\nDocuments (Links)\nApplicant Photo: ${safe(saved?.applicantPhotoUrl) || "-"}\nPAN Photo: ${safe(saved?.panPhotoUrl) || "-"}\nAadhaar Front: ${safe(saved?.aadhaarPhotoUrl) || "-"}\nAadhaar Back: ${safe(saved?.aadhaarBackPhotoUrl) || "-"}\nResidence Proof: ${safe(saved?.residencePhotoUrl) || "-"}\nLatest Electricity Bill: ${safe(saved?.lastElectricityBillUrl) || "-"}\nPermanent Address Electricity Bill: ${safe(saved?.permElectricityBillUrl) || "-"}\nRent Agreement: ${safe(saved?.rentAgreementUrl) || "-"}\nCompany Allotment Letter: ${safe(saved?.companyAllotmentLetterUrl) || "-"}\nOffice ID: ${safe(saved?.officeIdPhotoUrl) || "-"}\nSalary Slips: ${safe(saved?.salarySlipsUrl) || "-"}\nBank Statement: ${safe(saved?.bankStatementUrl) || "-"}\nCIBIL Report: ${safe(saved?.cibilReportUrl) || "-"}\nQuotation File: ${safe(saved?.quotationFileUrl) || "-"}\nProforma Invoice: ${safe(saved?.proformaInvoiceFileUrl) || "-"}\n\nExisting Loans\n${existingLoansText || "No existing loans provided"}\n`;
 
     if (internalRecipients.length > 0) {
-      await Promise.allSettled(
-        internalRecipients.map((to) =>
-          withTimeout(
-            gmailTransporter.sendMail({
-              from: fromAddress,
-              to,
-              replyTo: safe(saved?.personalEmail) || undefined,
-              subject: `New Salaried Loan Application - ${applicationRef}`,
-              html: internalBrandedHtml,
-              text: internalText,
-            }),
-            12000
-          )
-        )
+      const directorList = normalizeEmailList(directorEmailRaw);
+      const supportList = normalizeEmailList(supportEmailRaw);
+
+      const toAddress = directorList?.[0] || internalRecipients?.[0];
+      const ccAddress =
+        !toAddress && internalRecipients.length > 1
+          ? internalRecipients.slice(1)
+          : supportList.length > 0
+            ? supportList
+            : undefined;
+
+      await withTimeout(
+        gmailTransporter.sendMail({
+          from: fromAddress,
+          to: toAddress || internalRecipients,
+          cc: ccAddress,
+          replyTo: safe(saved?.personalEmail) || undefined,
+          subject: `New Salaried Loan Application - ${applicationRef}`,
+          html: internalBrandedHtml,
+          text: internalText,
+        }),
+        12000
       );
     }
 

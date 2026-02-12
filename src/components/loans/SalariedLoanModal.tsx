@@ -103,6 +103,11 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
     const residenceType = watch("residenceType");
     const hasCibil = watch("hasCibil");
     const isBuyingGoods = watch("isBuyingGoods");
+    const otherDocumentsCount = (() => {
+        const v = watch("NumberofOtherDocuments");
+        const n = Number.isFinite(Number(v)) ? parseInt(String(v), 10) : 0;
+        return Math.max(0, n || 0);
+    })();
 
     // ================= SUBMIT =================
     const onSubmit = async (data: any) => {
@@ -213,6 +218,11 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
             appendIfPresent("monthlyNetSalary", data.monthlyNetSalary);
             appendIfPresent("salaryCreditMode", data.salaryCreditMode);
             appendIfPresent("salaryAccountBankName", data.salaryAccountBankName);
+
+            // =====================================
+            // Industry (Other)
+            // =====================================
+            appendIfPresent("otherSector", data.otherSector);
 
             // =====================================
             // Existing Loans
@@ -420,6 +430,31 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                     )
                 );
 
+            // =====================================
+            // Other Supported Documents (Count Based)
+            // =====================================
+            const otherDocumentsCountRaw =
+                data.NumberofOtherDocuments !== undefined &&
+                    data.NumberofOtherDocuments !== null &&
+                    String(data.NumberofOtherDocuments).trim() !== ""
+                    ? String(data.NumberofOtherDocuments)
+                    : "0";
+            const otherDocumentsCount = Number.isFinite(Number(otherDocumentsCountRaw))
+                ? parseInt(String(otherDocumentsCountRaw), 10)
+                : 0;
+            formData.append("numberOfOtherDocuments", String(Math.max(0, otherDocumentsCount || 0)));
+
+            for (let i = 0; i < Math.max(0, otherDocumentsCount); i += 1) {
+                const key = `otherSupportedDocument_${i}`;
+                const f = pickFirstFile((data as any)?.[key]);
+                if (f) {
+                    formData.append(
+                        key,
+                        await uploadToCloudinary(f, "loan_applications")
+                    );
+                }
+            }
+
             const res = await axios.post("/api/salaried-loan", formData, {
                 timeout: 45000,
             });
@@ -468,7 +503,8 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
         { "id": 22, "name": "Renewable Energy" },
         { "id": 23, "name": "Chemicals & Petrochemicals" },
         { "id": 24, "name": "Textiles & Garments" },
-        { "id": 25, "name": "Mining & Metals" }
+        { "id": 25, "name": "Mining & Metals" },
+        { "id": 26, "name": "Other" }
     ]
 
     return (
@@ -588,17 +624,17 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
 
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Voter ID<span className="text-red-400 text-xs">(optional)</span></label>
-                                <input {...register("VoterID")} placeholder="Official Email" className="input bg-gray-200" />
+                                <input {...register("VoterID")} placeholder="Voter ID" className="input bg-gray-200" />
                             </div>
 
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Driving License <span className="text-red-400 text-xs">(optional)</span></label>
-                                <input {...register("DrivingLicense")} placeholder="Official Email" className="input bg-gray-200" />
+                                <input {...register("DrivingLicense")} placeholder="Driving License" className="input bg-gray-200" />
                             </div>
 
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Passport No.<span className="text-red-400 text-xs">(optional)</span></label>
-                                <input {...register("PasswordNo")} placeholder="Official Email" className="input bg-gray-200" />
+                                <input {...register("PasswordNo")} placeholder="Passport No." className="input bg-gray-200" />
                             </div>
 
                         </div>
@@ -659,7 +695,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                         <div className="grid md:grid-cols-3 gap-4">
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Current Address <span className="text-destructive">*</span></label>
-                                <textarea {...register("currentResidentialAddress", { required: true })} cols={5} rows={10} placeholder="Address" className="input bg-gray-200" />
+                                <textarea {...register("currentResidentialAddress", { required: true })} cols={5} rows={10} placeholder="Current Address" className="input bg-gray-200" />
                                 {getError("currentResidentialAddress") ? (
                                     <p className="text-sm text-red-600">{getError("currentResidentialAddress")}</p>
                                 ) : null}
@@ -814,6 +850,10 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                                     }
                                 </select>
                             </div>
+                            <div>
+                                <label className="text-sm font-medium">Other Industry / Sector (Please Specify)<span className="text-destructive">(optional)</span></label>
+                                <input {...register("otherSector")} placeholder="Monthly Net Salary" className="input bg-gray-200" />
+                            </div>
 
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Designation <span className="text-destructive">*</span></label>
@@ -847,7 +887,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
 
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Total Work Experience (Years) <span className="text-destructive">*</span></label>
-                                <input {...register("totalWorkExperience", { required: true })} placeholder="Monthly Net Salary" className="input bg-gray-200" />
+                                <input {...register("totalWorkExperience", { required: true })} placeholder="Total Work Experience (Years)" className="input bg-gray-200" />
                                 {getError("totalWorkExperience") ? (
                                     <p className="text-sm text-red-600">{getError("totalWorkExperience")}</p>
                                 ) : null}
@@ -855,7 +895,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
 
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Current Office Full Address <span className="text-destructive">*</span></label>
-                                <input {...register("currectOfficeAddress", { required: true })} placeholder="Monthly Net Salary" className="input bg-gray-200" />
+                                <input {...register("currectOfficeAddress", { required: true })} placeholder="Current Office Full Address" className="input bg-gray-200" />
                                 {getError("currectOfficeAddress") ? (
                                     <p className="text-sm text-red-600">{getError("currectOfficeAddress")}</p>
                                 ) : null}
@@ -863,7 +903,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
 
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Office PIN<span className="text-destructive">*</span></label>
-                                <input {...register("officePIN", { required: true })} placeholder="Monthly Net Salary" className="input bg-gray-200" />
+                                <input {...register("officePIN", { required: true })} placeholder="Office PIN" className="input bg-gray-200" />
                                 {getError("officePIN") ? (
                                     <p className="text-sm text-red-600">{getError("officePIN")}</p>
                                 ) : null}
@@ -945,7 +985,8 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                             <label className="text-sm font-medium">Number Of Existing Loans<span className="text-red-400 text-xs">(optional)</span></label>
                             <select {...register("NumberOfExistingLoans")} className="input bg-gray-200" >
                                 <option value="">Select Options</option>
-                                <option value="1">1</option>
+                                <option value="0">0</option>
+                                 <option value="1">1</option>
                                 <option value="2">2</option>
                                 <option value="3">3</option>
                                 <option value="4">4</option>
@@ -1195,9 +1236,52 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                         </div>
                     </div>
 
+                    {/* ================= J. Upload Other Supported Document================= */}
+                    <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
+                        <h3 className="mb-4 text-base font-semibold text-gray-900">J. Upload Other Supported Document</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Number of Other Documents)</label>
+                                <select {...register("NumberofOtherDocuments")} className="input bg-gray-200">
+                                    <option value="">0</option>
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                </select>
+                            </div>
+                            {otherDocumentsCount > 0 ? (
+                                <div className="space-y-3">
+                                    {Array.from({ length: otherDocumentsCount }).map((_, idx) => (
+                                        <div key={idx} className="space-y-1">
+                                            <label className="text-sm font-medium">Upload Document {idx + 1} (PDF)</label>
+                                            <input
+                                                type="file"
+                                                accept="application/pdf"
+                                                {...register(`otherSupportedDocument_${idx}`, {
+                                                    validate: (value) => {
+                                                        if (otherDocumentsCount <= 0) return true;
+                                                        const requiredCheck = !!getFileFromValue(value) || `Document ${idx + 1} is required`;
+                                                        if (requiredCheck !== true) return requiredCheck;
+                                                        return validateMax2MB(value);
+                                                    },
+                                                })}
+                                                className="input bg-gray-200"
+                                            />
+                                            {getError(`otherSupportedDocument_${idx}`) ? (
+                                                <p className="text-sm text-red-600">{getError(`otherSupportedDocument_${idx}`)}</p>
+                                            ) : null}
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : null}
+                        </div>
+                    </div>
+
+
                     {/* ================= CONSENT ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-gray-900">J. Declaration & Consent</h3>
+                        <h3 className="mb-4 text-base font-semibold text-gray-900">K. Declaration & Consent</h3>
                         <div className="space-y-3">
                             <div className="flex items-start gap-3">
                                 <input type="checkbox" {...register("consent", { required: true })} className="mt-1 h-4 w-4" />

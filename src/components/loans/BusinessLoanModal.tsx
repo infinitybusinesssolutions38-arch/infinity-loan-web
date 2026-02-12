@@ -1037,6 +1037,7 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                             <label className="text-sm font-medium">Number Of Existing Loans<span className="text-red-400 text-xs">(optional)</span></label>
                             <select {...register("NumberOfExistingLoans")} className="input bg-gray-200" >
                                 <option value="">Select Options</option>
+                                <option value="0">0</option>
                                 <option value="1">1</option>
                                 <option value="2">2</option>
                                 <option value="3">3</option>
