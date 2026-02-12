@@ -26,6 +26,12 @@ export async function POST(req) {
     await connectDB();
     const formData = await req.formData();
 
+    const generateApplicationRef = () => {
+      const ts = Date.now().toString(36).toUpperCase();
+      const rnd = Math.random().toString(36).slice(2, 8).toUpperCase();
+      return `BUS_${ts}_${rnd}`;
+    };
+
     const accountTypes = formData.getAll("accountTypes").filter(Boolean);
     const accountTypeJoined = accountTypes.length
       ? accountTypes.join(", ")
@@ -113,8 +119,7 @@ export async function POST(req) {
     // =============================
     // Generate Application Ref
     // =============================
-    const total = await BusinessLoanModel.countDocuments();
-    const applicationRef = `BUS_${String(total + 1).padStart(4, "0")}`;
+    let applicationRef = generateApplicationRef();
 
     // =============================
     // Create Document
@@ -241,7 +246,18 @@ export async function POST(req) {
       application_status: "pending",
     });
 
-    const saved = await newApplication.save();
+    let saved;
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      try {
+        saved = await newApplication.save();
+        break;
+      } catch (e) {
+        const isDupKey = e?.code === 11000 && (e?.keyPattern?.applicationRef || e?.keyValue?.applicationRef);
+        if (!isDupKey || attempt === 2) throw e;
+        applicationRef = generateApplicationRef();
+        newApplication.applicationRef = applicationRef;
+      }
+    }
 
     const applicationDate = new Date().toLocaleDateString("en-IN");
 

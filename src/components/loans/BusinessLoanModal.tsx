@@ -32,7 +32,7 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
     };
 
     const getCloudinarySignature = async (folder: string) => {
-        const res = await axios.post("/api/cloudinary-signature", { folder }, { timeout: 15000 });
+        const res = await axios.post("/api/cloudinary-signature", { folder }, { timeout: 60000 });
         if (!res?.data?.success) {
             throw new Error(res?.data?.message || "Failed to get upload signature");
         }
@@ -57,11 +57,11 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
         fd.append("signature", sig.signature);
 
         const uploadRes = await axios.post(uploadUrl, fd, {
-            timeout: 180000,
+          timeout: 15000,
             headers: { "Content-Type": "multipart/form-data" },
         });
 
-        const secureUrl = uploadRes?.data?.secure_url;
+        const secureUrl = await uploadRes?.data?.secure_url;
         if (!secureUrl || typeof secureUrl !== "string") {
             throw new Error("Cloud upload failed");
         }
@@ -802,14 +802,14 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                             </div>
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">TypeOfLoan <span className="text-destructive">*</span></label>
-                                <input {...register("typeOfLoan", { required: true })} placeholder="Required Loan Amount" className="input bg-gray-200" />
+                                <input {...register("typeOfLoan", { required: true })} placeholder="Type Of Loan" className="input bg-gray-200" />
                                 {getError("typeOfLoan") ? (
                                     <p className="text-sm text-red-600">{getError("typeOfLoan")}</p>
                                 ) : null}
                             </div>
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Please mention if you have any CIBIL issues or problems in your credit profile. Kindly specify details, if applicable.  <span className="text-destructive">(optional)</span></label>
-                                <input {...register("cibile")} placeholder="Required Loan Amount" className="input bg-gray-200" />
+                                <textarea {...register("cibile")} placeholder="cibile" cols={5} rows={20} className="input bg-gray-200" />
                             </div>
 
                         </div>
@@ -874,12 +874,12 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                             </div>
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Relationship with Applicant <span className="text-red-400 text-xs">(optional)</span></label>
-                                <input {...register("relationshipWithApplicant")} placeholder="Co-Applicant Name" className="input bg-gray-200" />
+                                <input {...register("relationshipWithApplicant")} placeholder="Relationship with Applicant" className="input bg-gray-200" />
                             </div>
 
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Co-Applicant Employment Type <span className="text-red-400 text-xs">(optional)</span></label>
-                                <input {...register("CoApplicantEmploymentType")} placeholder="Co-Applicant Name" className="input bg-gray-200" />
+                                <input {...register("CoApplicantEmploymentType")} placeholder="Co-Applicant Employment Type" className="input bg-gray-200" />
                             </div>
 
                             <div className="space-y-1">
