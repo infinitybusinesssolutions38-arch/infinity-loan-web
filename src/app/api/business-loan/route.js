@@ -6,6 +6,9 @@ import nodemailer from "nodemailer";
 import { sendLoanApplicationConfirmationEmail } from "../lib/loan-application-email";
 import { createGmailTransporter } from "../lib/apply-now-email";
 
+export const runtime = "nodejs";
+export const maxDuration = 60;
+
 // =============================
 // Cloudinary Config
 // =============================
@@ -237,18 +240,30 @@ export async function POST(req) {
 
     const applicationDate = new Date().toLocaleDateString("en-IN");
 
+    const withTimeout = (promise, ms) => {
+      return Promise.race([
+        promise,
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error("timeout")), ms)
+        ),
+      ]);
+    };
+
     // =============================
     // Client Confirmation Email
     // =============================
-    await sendLoanApplicationConfirmationEmail(
-      formData.get("personalEmail"),
-      {
-        customerName: formData.get("firstName"),
-        applicationNumber: applicationRef,
-        applicationDate,
-        loanType: "Business Loan",
-        loanAmount: formData.get("requiredLoanAmount"),
-      }
+    const emailTasks = [];
+    emailTasks.push(
+      withTimeout(
+        sendLoanApplicationConfirmationEmail(formData.get("personalEmail"), {
+          customerName: formData.get("firstName"),
+          applicationNumber: applicationRef,
+          applicationDate,
+          loanType: "Business Loan",
+          loanAmount: formData.get("requiredLoanAmount"),
+        }),
+        12000
+      )
     );
 
     // =============================
@@ -259,12 +274,14 @@ export async function POST(req) {
     const internalCc = process.env.SUPPORT_EMAIL;
 
     if (internalTo || internalCc) {
-      await gmailTransporter.sendMail({
-        from: process.env.EMAIL_HOST_USER || process.env.EMAIL_SMTP_USER,
-        to: internalTo || internalCc,
-        cc: internalTo && internalCc ? internalCc : undefined,
-        subject: `New Business Loan Application - ${applicationRef}`,
-        html: `
+      emailTasks.push(
+        withTimeout(
+          gmailTransporter.sendMail({
+            from: process.env.EMAIL_HOST_USER || process.env.EMAIL_SMTP_USER,
+            to: internalTo || internalCc,
+            cc: internalTo && internalCc ? internalCc : undefined,
+            subject: `New Business Loan Application - ${applicationRef}`,
+            html: `
         <h2>New Business Loan Application</h2>
         <p><strong>Application Ref:</strong> ${applicationRef}</p>
 
@@ -361,8 +378,13 @@ export async function POST(req) {
         `
           : ""}
       `,
-      });
+          }),
+          12000
+        )
+      );
     }
+
+    Promise.allSettled(emailTasks).catch(() => {});
 
     return NextResponse.json({
       success: true,

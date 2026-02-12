@@ -280,14 +280,24 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                     coApplicantAadhaarBackPhoto
                 );
 
-            const res = await axios.post("/api/salaried-loan", formData);
+            const res = await axios.post("/api/salaried-loan", formData, {
+                timeout: 45000,
+            });
             console.log(res.data);
+
+            if (!res?.data?.success) {
+                throw new Error(res?.data?.message || "Submission failed");
+            }
 
             alert("Your form successfully submitted!");
             onClose();
         } catch (error) {
             console.error(error);
-            alert("Submission failed");
+            const message =
+                (axios.isAxiosError(error) &&
+                    (error.response?.data as any)?.message) ||
+                (error instanceof Error ? error.message : "Submission failed");
+            alert(message);
         } finally {
             setLoading(false);
         }

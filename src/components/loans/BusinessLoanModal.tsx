@@ -361,13 +361,22 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                 formData.append(`otherDocument_${index}`, file);
             });
 
-            await axios.post("/api/business-loan", formData);
+            const res = await axios.post("/api/business-loan", formData, {
+                timeout: 45000,
+            });
+            if (!res?.data?.success) {
+                throw new Error(res?.data?.message || "Submission failed");
+            }
 
             alert("Your form successfully submitted!");
             onClose();
         } catch (error) {
             console.error(error);
-            alert("Something went wrong");
+            const message =
+                (axios.isAxiosError(error) &&
+                    (error.response?.data as any)?.message) ||
+                (error instanceof Error ? error.message : "Something went wrong");
+            alert(message);
         } finally {
             setLoading(false);
         }
