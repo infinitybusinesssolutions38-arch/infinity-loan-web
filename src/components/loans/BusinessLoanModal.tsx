@@ -1,0 +1,1200 @@
+"use client";
+
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import axios from "axios";
+
+type Props = {
+    isOpen: boolean;
+    onClose: () => void;
+    categoryKey?: string;
+    categoryTitle?: string;
+};
+
+export default function BusinessLoanModal({ isOpen, onClose, categoryKey, categoryTitle }: Props) {
+    const {
+        register,
+        handleSubmit,
+        watch,
+        formState: { errors },
+    } = useForm();
+
+    const getError = (key: string) => {
+        const err = (errors as any)?.[key];
+        if (!err) return null;
+        const msg = typeof err.message === "string" ? err.message : "";
+        return msg || "This field is required";
+    };
+
+    const [loading, setLoading] = useState(false);
+
+    // Dynamic sections
+    const [bankStatements, setBankStatements] = useState<
+        { month: string; file: File | null }[]
+    >([{ month: "", file: null }]);
+
+    const [existingLoans, setExistingLoans] = useState<
+        {
+            totalLoanAmount: string;
+            totalMonthlyEmi: string;
+            loanType: string;
+            bankName: string;
+        }[]
+    >([
+        {
+            totalLoanAmount: "",
+            totalMonthlyEmi: "",
+            loanType: "",
+            bankName: "",
+        },
+    ]);
+
+    const [businessCertificates, setBusinessCertificates] = useState<
+        { name: string; file: File | null }[]
+    >([{ name: "", file: null }]);
+
+    const [otherDocuments, setOtherDocuments] = useState<File[]>([]);
+
+    if (!isOpen) return null;
+
+    const hasCibil = watch("hasCibil");
+    const isBuyingGoods = watch("isBuyingGoods");
+    const accountTypes = watch("accountTypes");
+
+    const hasSelectedAccountTypes = Array.isArray(accountTypes)
+        ? accountTypes.length > 0
+        : typeof accountTypes === "string"
+            ? accountTypes.trim() !== ""
+            : false;
+
+    const businessRegistrationCertificates = watch("businessRegistrationCertificates");
+    const hasSelectedBusinessRegistrationCertificates = Array.isArray(
+        businessRegistrationCertificates
+    )
+        ? businessRegistrationCertificates.length > 0
+        : typeof businessRegistrationCertificates === "string"
+            ? businessRegistrationCertificates.trim() !== ""
+            : false;
+
+    const numberOfOtherDocumentsSelected = watch("NumberofOtherDocuments");
+    const otherDocumentsCount = Number.isFinite(
+        Number(numberOfOtherDocumentsSelected)
+    )
+        ? parseInt(String(numberOfOtherDocumentsSelected), 10)
+        : 0;
+
+    const toAccountKey = (value: string) =>
+        String(value || "")
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "_")
+            .replace(/^_+|_+$/g, "");
+
+    // ------------------ SUBMIT ------------------
+
+    const onSubmit = async (data: any) => {
+        try {
+            setLoading(true);
+
+            const formData = new FormData();
+
+            const appendIfPresent = (key: string, value: any) => {
+                if (typeof value === "undefined" || value === null) return;
+                const asString = typeof value === "string" ? value : String(value);
+                if (asString.trim() === "") return;
+                formData.append(key, asString);
+            };
+
+            const pickFirstFile = (value: any): File | null => {
+                if (!value) return null;
+                if (value instanceof File) return value;
+                if (value?.[0] instanceof File) return value[0];
+                return null;
+            };
+
+            if (categoryKey) formData.append("serviceCategoryKey", categoryKey);
+            if (categoryTitle) formData.append("serviceCategoryTitle", categoryTitle);
+
+            // =============================
+            // Personal Details
+            // =============================
+            appendIfPresent("firstName", data.firstName);
+            appendIfPresent("middleName", data.middleName);
+            appendIfPresent("lastName", data.lastName);
+            appendIfPresent("mobileNumber", data.mobileNumber);
+            appendIfPresent("alternateMobileNumber", data.alternateMobileNumber);
+            appendIfPresent("whatsAppNumber", data.whatsAppNumber);
+            appendIfPresent("gender", data.gender);
+            appendIfPresent("maritalStatus", data.maritalStatus);
+            appendIfPresent("dob", data.dob);
+            appendIfPresent("personalEmail", data.personalEmail);
+            appendIfPresent("businessEmail", data.businessEmail);
+            appendIfPresent("voterId", data.VoterID);
+            appendIfPresent("drivingLicense", data.DrivingLicense);
+            appendIfPresent("passportNo", data.PasswordNo);
+
+            // =============================
+            // Business Details
+            // =============================
+            appendIfPresent("businessName", data.businessName);
+            appendIfPresent("businessType", data.businessType);
+            appendIfPresent("industryType", data.industryType);
+            appendIfPresent("businessAddress", data.businessAddress);
+            appendIfPresent("businessPincode", data.businessPincode);
+            appendIfPresent("yearsInBusiness", data.yearsInBusiness);
+            appendIfPresent("annualTurnover", data.annualTurnover);
+
+            // =============================
+            // Loan Details
+            // =============================
+            appendIfPresent("requiredLoanAmount", data.requiredLoanAmount);
+            appendIfPresent("typeOfLoan", data.typeOfLoan);
+            appendIfPresent("cibilIssuesDetails", data.cibile);
+            appendIfPresent("preferredTenure", data.preferredTenure);
+            appendIfPresent("purpose", data.purpose);
+
+            // =============================
+            // Identification
+            // =============================
+            appendIfPresent("panNumber", data.panNumber);
+            appendIfPresent("aadhaarNumber", data.aadhaarNumber);
+            appendIfPresent("gstNumber", data.gstNumber);
+
+            // =============================
+            // File Uploads
+            // =============================
+            const applicantPhoto = pickFirstFile(data.applicantPhoto);
+            if (applicantPhoto) formData.append("applicantPhoto", applicantPhoto);
+
+            const panPhoto = pickFirstFile(data.panPhoto);
+            if (panPhoto) formData.append("panPhoto", panPhoto);
+
+            const aadhaarPhoto = pickFirstFile(data.aadhaarPhoto);
+            if (aadhaarPhoto) formData.append("aadhaarPhoto", aadhaarPhoto);
+
+            const aadhaarBackPhoto = pickFirstFile(data.aadhaarBackPhoto);
+            if (aadhaarBackPhoto) formData.append("aadhaarBackPhoto", aadhaarBackPhoto);
+
+            const gstCertificate = pickFirstFile(data.gstCertificate);
+            if (gstCertificate) formData.append("gstCertificate", gstCertificate);
+
+            const bankStatement = pickFirstFile(data.bankStatement);
+            if (bankStatement) formData.append("bankStatement", bankStatement);
+
+            const itrFile = pickFirstFile(data.itrFile);
+            if (itrFile) formData.append("itrFile", itrFile);
+
+            const ay2324 = pickFirstFile(data.AssessmentYear2324);
+            if (ay2324) formData.append("assessmentYear2324", ay2324);
+            const ay2425 = pickFirstFile(data.AssessmentYear2425);
+            if (ay2425) formData.append("assessmentYear2425", ay2425);
+            const ay2526 = pickFirstFile(data.AssessmentYear2526);
+            if (ay2526) formData.append("assessmentYear2526", ay2526);
+
+            const proformaInvoiceFile = pickFirstFile(data.proformaInvoiceFile);
+            if (proformaInvoiceFile) formData.append("proformaInvoiceFile", proformaInvoiceFile);
+
+            const cibilReport = pickFirstFile(data.cibilReport);
+            if (cibilReport) formData.append("cibilReport", cibilReport);
+
+            // append bank statements
+            bankStatements.forEach((item, index) => {
+                if (item.file) {
+                    formData.append(`bankStatement_${index}`, item.file);
+                }
+            });
+
+            // append existing loans
+            formData.append("existingLoanDetails", JSON.stringify(existingLoans));
+
+            // Addresses
+            appendIfPresent("currentResidentialAddress", data.currentResidentialAddress);
+            appendIfPresent("residentialState", data.state);
+            appendIfPresent("residentialCity", data.city);
+            appendIfPresent("currentResidentialPincode", data.currentResidentialPincode);
+
+            appendIfPresent("currentOfficeOrShopAddress", data.currentOfficeorShopAddress);
+            appendIfPresent("officeOrShopState", data.officeOrShopState);
+            appendIfPresent("officeCity", data.officeCity);
+            appendIfPresent("currentOfficePincode", data.currentOfficePincode);
+
+            // Bank statement (account type)
+            const accountTypesArray: string[] = Array.isArray(data.accountTypes)
+                ? data.accountTypes
+                : typeof data.accountTypes === "string" && data.accountTypes
+                    ? [data.accountTypes]
+                    : [];
+
+            accountTypesArray.forEach((v) => {
+                if (typeof v === "string" && v.trim()) formData.append("accountTypes", v);
+            });
+            appendIfPresent("accountType", accountTypesArray.join(", "));
+
+            const bankAccountsPayload: Array<{ accountType: string; bankName: string }> = [];
+            accountTypesArray.forEach((t) => {
+                const key = toAccountKey(t);
+                const bankNameKey = `bankName_${key}`;
+                const statementKey = `oneYearBankStatement_${key}`;
+
+                const bankNameValueRaw = data?.[bankNameKey];
+                const bankNameValue =
+                    typeof bankNameValueRaw === "string" ? bankNameValueRaw.trim() : "";
+                if (bankNameValue) {
+                    formData.append(bankNameKey, bankNameValue);
+                }
+
+                const statementFile = pickFirstFile(data?.[statementKey]);
+                if (statementFile) formData.append(statementKey, statementFile);
+
+                bankAccountsPayload.push({ accountType: String(t || ""), bankName: bankNameValue });
+            });
+            formData.append("bankAccounts", JSON.stringify(bankAccountsPayload));
+
+            // Co-applicant
+            appendIfPresent("coApplicantName", data.coApplicantName);
+            appendIfPresent("relationshipWithApplicant", data.relationshipWithApplicant);
+            appendIfPresent("coApplicantEmploymentType", data.CoApplicantEmploymentType);
+
+            const coApplicantPanPhoto = pickFirstFile(data.CoApplicantpanPhoto);
+            if (coApplicantPanPhoto) {
+                formData.append("CoApplicantpanPhoto", coApplicantPanPhoto);
+            }
+
+            const coApplicantAadhaarPhoto = pickFirstFile(data.CoApplicantAadhaarPhoto);
+            if (coApplicantAadhaarPhoto) {
+                formData.append("CoApplicantAadhaarPhoto", coApplicantAadhaarPhoto);
+            }
+
+            const coApplicantAadhaarBackPhoto = pickFirstFile(
+                data.CoApplicantAadhaarBackPhoto
+            );
+            if (coApplicantAadhaarBackPhoto) {
+                formData.append(
+                    "CoApplicantAadhaarBackPhoto",
+                    coApplicantAadhaarBackPhoto
+                );
+            }
+
+            // Address proof (these inputs are currently plain text)
+            const latestHomeElectricityBillFile = pickFirstFile(
+                data.LatestHomeElectricityBill
+            );
+            if (latestHomeElectricityBillFile) {
+                formData.append(
+                    "latestHomeElectricityBill",
+                    latestHomeElectricityBillFile
+                );
+            }
+
+            const latestOfficeShopElectricityBillFile = pickFirstFile(
+                data["LatestOfficeShopElectricityBill "]
+            );
+            if (latestOfficeShopElectricityBillFile) {
+                formData.append(
+                    "latestOfficeShopElectricityBill",
+                    latestOfficeShopElectricityBillFile
+                );
+            }
+
+            // Registration certificate selection
+            const businessRegistrationCertificatesArray: string[] = Array.isArray(
+                data.businessRegistrationCertificates
+            )
+                ? data.businessRegistrationCertificates
+                : typeof data.businessRegistrationCertificates === "string" &&
+                    data.businessRegistrationCertificates
+                    ? [data.businessRegistrationCertificates]
+                    : [];
+
+            businessRegistrationCertificatesArray.forEach((v) => {
+                if (typeof v === "string" && v.trim()) {
+                    formData.append("businessRegistrationCertificates", v);
+                }
+            });
+
+            const businessRegistrationCertificatesPayload: Array<{
+                certificateType: string;
+            }> = [];
+
+            businessRegistrationCertificatesArray.forEach((t) => {
+                const key = toAccountKey(t);
+                const fileKey = `businessRegistrationCertificateFile_${key}`;
+                const file = pickFirstFile(data?.[fileKey]);
+                if (file) formData.append(fileKey, file);
+
+                businessRegistrationCertificatesPayload.push({
+                    certificateType: String(t || ""),
+                });
+            });
+
+            formData.append(
+                "businessRegistrationCertificatesPayload",
+                JSON.stringify(businessRegistrationCertificatesPayload)
+            );
+
+            // Buying goods
+            appendIfPresent("isBuyingGoods", data.isBuyingGoods);
+            appendIfPresent("quotationAmount", data.quotationAmount);
+
+            // CIBIL
+            appendIfPresent("hasCibil", data.hasCibil);
+            appendIfPresent("cibilScore", data.cibilScore);
+
+            // Other counts
+            appendIfPresent("numberOfExistingLoans", data.NumberOfExistingLoans);
+            appendIfPresent("numberOfOtherDocuments", data.NumberofOtherDocuments);
+
+            for (let i = 0; i < otherDocumentsCount; i += 1) {
+                const key = `otherSupportedDocument_${i}`;
+                const file = pickFirstFile(data?.[key]);
+                if (file) formData.append(key, file);
+            }
+
+            // append business certificates
+            businessCertificates.forEach((item, index) => {
+                if (item.file) {
+                    formData.append(`businessCertificate_${index}`, item.file);
+                }
+            });
+
+            // append other documents
+            otherDocuments.forEach((file, index) => {
+                formData.append(`otherDocument_${index}`, file);
+            });
+
+            await axios.post("/api/business-loan", formData);
+
+            alert("Your form successfully submitted!");
+            onClose();
+        } catch (error) {
+            console.error(error);
+            alert("Something went wrong");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // ------------------ UI ------------------
+
+    return (
+        <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm sm:p-6 overflow-auto"
+            onClick={(e) => {
+                if (e.target === e.currentTarget) onClose();
+            }}
+        >
+            <div className="relative w-full max-w-5xl overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-black/5 max-h-[92vh] flex flex-col">
+                <div className="sticky top-0 z-10 border-b bg-gradient-to-r from-gray-950 via-gray-900 to-gray-950 px-6 pt-6 pb-5 text-white sm:px-8">
+                    <div className="relative">
+                        <button
+                            type="button"
+                            onClick={onClose}
+                            aria-label="Close"
+                            className="absolute right-3 top-3 rounded-full p-2 text-white/80 transition hover:bg-white/10 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/40"
+                        >
+                            ×
+                        </button>
+                        {/* <h2 className="text-center text-2xl font-bold tracking-tight sm:text-3xl">
+                            Business Loan Application
+                        </h2> */}
+                        {categoryTitle ? (
+                            <p className="text-center text-2xl font-bold tracking-tight sm:text-3xl">
+                                Apply for {categoryTitle}
+                            </p>
+                        ) : null}
+                    </div>
+                </div>
+
+                <form id="businessLoanForm" onSubmit={handleSubmit(onSubmit)} className="flex-1 overflow-y-auto px-6 py-6 space-y-6 sm:px-8 sm:py-8 bg-gray-50">
+
+                    {/* ================= BASIC DETAILS ================= */}
+                    <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
+                        <h3 className="mb-4 text-base font-semibold text-gray-900">A. Application Basic Details</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">First Name <span className="text-destructive">*</span></label>
+                                <input
+                                    {...register("firstName", { required: true })}
+                                    placeholder="First Name"
+                                    className="input bg-gray-200"
+                                />
+                                {getError("firstName") ? (
+                                    <p className="text-sm text-red-600">{getError("firstName")}</p>
+                                ) : null}
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Middle Name <span className="text-red-400 text-xs">(optional)</span></label>
+                                <input
+                                    {...register("middleName")}
+                                    placeholder="Middle Name"
+                                    className="input bg-gray-200"
+                                />
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Last Name <span className="text-destructive">*</span></label>
+                                <input
+                                    {...register("lastName", { required: true })}
+                                    placeholder="Last Name"
+                                    className="input bg-gray-200"
+                                />
+                                {getError("lastName") ? (
+                                    <p className="text-sm text-red-600">{getError("lastName")}</p>
+                                ) : null}
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Adhaar Linked Primary  Mobile Number <span className="text-destructive">*</span></label>
+                                <input
+                                    {...register("mobileNumber", { required: true })}
+                                    placeholder="Mobile Number"
+                                    className="input bg-gray-200"
+                                />
+                                {getError("mobileNumber") ? (
+                                    <p className="text-sm text-red-600">{getError("mobileNumber")}</p>
+                                ) : null}
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Alternate Mobile Number <span className="text-red-400 text-xs">(optional)</span></label>
+                                <input
+                                    {...register("alternateMobileNumber")}
+                                    placeholder="Mobile Number"
+                                    className="input bg-gray-200"
+                                />
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">WhatsApp Number <span className="text-red-400 text-xs">(optional)</span></label>
+                                <input
+                                    {...register("whatsAppNumber")}
+                                    placeholder="Mobile Number"
+                                    className="input bg-gray-200"
+                                />
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Gender <span className="text-destructive">*</span></label>
+                                <select {...register("gender", { required: true })} className="input bg-gray-200">
+                                    <option value="">Select Gender</option>
+                                    <option>Male</option>
+                                    <option>Female</option>
+                                    <option>Other</option>
+                                </select>
+                                {getError("gender") ? (
+                                    <p className="text-sm text-red-600">{getError("gender")}</p>
+                                ) : null}
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Marital Status <span className="text-destructive">*</span></label>
+                                <select {...register("maritalStatus", { required: true })} className="input bg-gray-200">
+                                    <option value="">Marital Status</option>
+                                    <option>Single</option>
+                                    <option>Married</option>
+                                    <option>Divorced</option>
+                                    <option>Widowed</option>
+                                </select>
+                                {getError("maritalStatus") ? (
+                                    <p className="text-sm text-red-600">{getError("maritalStatus")}</p>
+                                ) : null}
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Date of Birth <span className="text-destructive">*</span></label>
+                                <input type="date" {...register("dob", { required: true })} className="input bg-gray-200" />
+                                {getError("dob") ? (
+                                    <p className="text-sm text-red-600">{getError("dob")}</p>
+                                ) : null}
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Personal Email ID <span className="text-destructive">*</span></label>
+                                <input
+                                    {...register("personalEmail", { required: true })}
+                                    placeholder="Personal Email"
+                                    className="input bg-gray-200"
+                                />
+                                {getError("personalEmail") ? (
+                                    <p className="text-sm text-red-600">{getError("personalEmail")}</p>
+                                ) : null}
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Official Email ID <span className="text-red-400 text-xs">(optional)</span></label>
+                                <input
+                                    {...register("businessEmail")}
+                                    placeholder="Business Email"
+                                    className="input bg-gray-200"
+                                />
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Voter ID<span className="text-red-400 text-xs">(optional)</span></label>
+                                <input {...register("VoterID")} placeholder="Official Email" className="input bg-gray-200" />
+                            </div>
+
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Driving License <span className="text-red-400 text-xs">(optional)</span></label>
+                                <input {...register("DrivingLicense")} placeholder="Official Email" className="input bg-gray-200" />
+                            </div>
+
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Passport No.<span className="text-red-400 text-xs">(optional)</span></label>
+                                <input {...register("PasswordNo")} placeholder="Official Email" className="input bg-gray-200" />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* ================= Residential Address Details ================= */}
+                    <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
+                        <h3 className="mb-4 text-base font-semibold text-gray-900">B. Residential Address Details</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Current Residential Address <span className="text-destructive">*</span></label>
+                                <textarea {...register("currentResidentialAddress", { required: true })} cols={5} rows={10} placeholder="Address" className="input bg-gray-200" />
+                                {getError("currentResidentialAddress") ? (
+                                    <p className="text-sm text-red-600">{getError("currentResidentialAddress")}</p>
+                                ) : null}
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">State <span className="text-destructive">*</span></label>
+                                <input {...register("state", { required: true })} placeholder="State" className="input bg-gray-200" />
+                                {getError("state") ? (
+                                    <p className="text-sm text-red-600">{getError("state")}</p>
+                                ) : null}
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">City <span className="text-destructive">*</span></label>
+                                <input {...register("city", { required: true })} placeholder="City" className="input bg-gray-200" />
+                                {getError("city") ? (
+                                    <p className="text-sm text-red-600">{getError("city")}</p>
+                                ) : null}
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Pincode <span className="text-destructive">*</span></label>
+                                <input {...register("currentResidentialPincode", { required: true })} placeholder="Pincode" className="input bg-gray-200" />
+                                {getError("currentResidentialPincode") ? (
+                                    <p className="text-sm text-red-600">{getError("currentResidentialPincode")}</p>
+                                ) : null}
+                            </div>
+                        </div>
+                    </div>
+
+
+                    {/* ================= C. Office/Shop Address Details ================= */}
+                    <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
+                        <h3 className="mb-4 text-base font-semibold text-gray-900">C. Office/Shop Address Details</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Current Office/Shop Address <span className="text-destructive">*</span></label>
+                                <textarea {...register("currentOfficeorShopAddress", { required: true })} cols={5} rows={10} placeholder="Address" className="input bg-gray-200" />
+                                {getError("currentOfficeorShopAddress") ? (
+                                    <p className="text-sm text-red-600">{getError("currentOfficeorShopAddress")}</p>
+                                ) : null}
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">State <span className="text-destructive">*</span></label>
+                                <input {...register("officeOrShopState", { required: true })} placeholder="State" className="input bg-gray-200" />
+                                {getError("officeOrShopState") ? (
+                                    <p className="text-sm text-red-600">{getError("officeOrShopState")}</p>
+                                ) : null}
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">City <span className="text-destructive">*</span></label>
+                                <input {...register("officeCity", { required: true })} placeholder="City" className="input bg-gray-200" />
+                                {getError("officeCity") ? (
+                                    <p className="text-sm text-red-600">{getError("officeCity")}</p>
+                                ) : null}
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Pincode <span className="text-destructive">*</span></label>
+                                <input {...register("currentOfficePincode", { required: true })} placeholder="Pincode" className="input bg-gray-200" />
+                                {getError("currentOfficePincode") ? (
+                                    <p className="text-sm text-red-600">{getError("currentOfficePincode")}</p>
+                                ) : null}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* ================= D. Loan Requirement Details ================= */}
+                    <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
+                        <h3 className="mb-4 text-base font-semibold text-gray-900">D. Loan Requirement Details</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Required Loan Amount <span className="text-destructive">*</span></label>
+                                <input {...register("requiredLoanAmount", { required: true })} placeholder="Required Loan Amount" className="input bg-gray-200" />
+                                {getError("requiredLoanAmount") ? (
+                                    <p className="text-sm text-red-600">{getError("requiredLoanAmount")}</p>
+                                ) : null}
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">TypeOfLoan <span className="text-destructive">*</span></label>
+                                <input {...register("typeOfLoan", { required: true })} placeholder="Required Loan Amount" className="input bg-gray-200" />
+                                {getError("typeOfLoan") ? (
+                                    <p className="text-sm text-red-600">{getError("typeOfLoan")}</p>
+                                ) : null}
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Please mention if you have any CIBIL issues or problems in your credit profile. Kindly specify details, if applicable.  <span className="text-destructive">(optional)</span></label>
+                                <input {...register("cibile")} placeholder="Required Loan Amount" className="input bg-gray-200" />
+                            </div>
+
+                        </div>
+                    </div>
+
+                    {/* ================= ID PROOF ================= */}
+                    <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
+                        <h3 className="mb-4 text-base font-semibold text-gray-900">E. ID Proof Documents</h3>
+                        <div className="grid md:grid-cols-3 gap-4">
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">PAN Number <span className="text-destructive">*</span></label>
+                                <input {...register("panNumber", { required: true })} placeholder="PAN Number" className="input bg-gray-200" />
+                                {getError("panNumber") ? (
+                                    <p className="text-sm text-red-600">{getError("panNumber")}</p>
+                                ) : null}
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Aadhaar Number <span className="text-destructive">*</span></label>
+                                <input {...register("aadhaarNumber", { required: true })} placeholder="Aadhaar Number" className="input bg-gray-200" />
+                                {getError("aadhaarNumber") ? (
+                                    <p className="text-sm text-red-600">{getError("aadhaarNumber")}</p>
+                                ) : null}
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">PAN Photo <span className="text-destructive">*</span></label>
+                                <input type="file" {...register("panPhoto")} className="input bg-gray-200" />
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Aadhaar Front Photo <span className="text-destructive">*</span></label>
+                                <input type="file" {...register("aadhaarPhoto")} className="input bg-gray-200" />
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Aadhaar Back Photo <span className="text-destructive">*</span></label>
+                                <input type="file" {...register("aadhaarBackPhoto")} className="input bg-gray-200" />
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Applicant Photo <span className="text-destructive">*</span></label>
+                                <input type="file" {...register("applicantPhoto", { required: true })} className="input bg-gray-200" />
+                                {getError("applicantPhoto") ? (
+                                    <p className="text-sm text-red-600">{getError("applicantPhoto")}</p>
+                                ) : null}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* ================= F Co-Applicant Details ================= */}
+                    <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
+                        <h3 className="mb-4 text-base font-semibold text-gray-900">F. Co-Applicant Details (If Any)</h3>
+                        <div className="grid md:grid-cols-2 gap-4">
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Co-Applicant Name <span className="text-red-400 text-xs">(optional)</span></label>
+                                <input {...register("coApplicantName")} placeholder="Co-Applicant Name" className="input bg-gray-200" />
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Relationship with Applicant <span className="text-red-400 text-xs">(optional)</span></label>
+                                <input {...register("relationshipWithApplicant")} placeholder="Co-Applicant Name" className="input bg-gray-200" />
+                            </div>
+
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Co-Applicant Employment Type <span className="text-red-400 text-xs">(optional)</span></label>
+                                <input {...register("CoApplicantEmploymentType")} placeholder="Co-Applicant Name" className="input bg-gray-200" />
+                            </div>
+
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Co-Applicant PAN Photo <span className="text-destructive">(optional)</span></label>
+                                <input type="file" {...register("CoApplicantpanPhoto")} className="input bg-gray-200" />
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Co-Applicant Aadhaar Front Photo <span className="text-destructive">(optional)</span></label>
+                                <input type="file" {...register("CoApplicantAadhaarPhoto")} className="input bg-gray-200" />
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Co-Applicant Aadhaar Back Photo <span className="text-destructive">(optional)</span></label>
+                                <input type="file" {...register("CoApplicantAadhaarBackPhoto")} className="input bg-gray-200" />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* ================= G Address Proof Documents ================= */}
+                    <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
+                        <h3 className="mb-4 text-base font-semibold text-gray-900">G. Address Proof Documents</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Latest Home Electricity Bill <span className="text-destructive">*</span></label>
+                                <input type="file" {...register("LatestHomeElectricityBill", { required: true })} className="input bg-gray-200" />
+                                {getError("LatestHomeElectricityBill") ? (
+                                    <p className="text-sm text-red-600">{getError("LatestHomeElectricityBill")}</p>
+                                ) : null}
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Latest Office/Shop Electricity Bill  <span className="text-destructive">*</span></label>
+                                <input type="file" {...register("LatestOfficeShopElectricityBill ", { required: true })} className="input bg-gray-200" />
+                                {getError("LatestOfficeShopElectricityBill ") ? (
+                                    <p className="text-sm text-red-600">{getError("LatestOfficeShopElectricityBill ")}</p>
+                                ) : null}
+                            </div>
+
+                        </div>
+                    </div>
+
+
+
+                    {/* ================= BANK STATEMENTS ================= */}
+                    <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
+                        <h3 className="mb-4 text-base font-semibold text-gray-900">H. Bank Statement</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Account Type <span className="text-destructive">*</span></label>
+                                <div className="space-y-3">
+                                    {["Saving Account", "Current Account", "Company Account", "Joint Account with family person", "OD Account", "CC Account", "Partnership Account"].map(
+                                        (label) => (
+                                            <label
+                                                key={label}
+                                                className="flex items-center justify-between rounded-xl border border-gray-200 bg-white px-4 py-3"
+                                            >
+                                                <span className="text-sm font-semibold text-gray-900">
+                                                    {label.toLowerCase()}
+                                                </span>
+                                                <input
+                                                    type="checkbox"
+                                                    value={label}
+                                                    {...register("accountTypes", {
+                                                        validate: (value) => {
+                                                            const arr: string[] = Array.isArray(value)
+                                                                ? value
+                                                                : typeof value === "string" && value
+                                                                    ? [value]
+                                                                    : [];
+                                                            return arr.length > 0 || "Select at least one account type";
+                                                        },
+                                                    })}
+                                                    className="h-4 w-4"
+                                                />
+                                            </label>
+                                        )
+                                    )}
+                                </div>
+                                {getError("accountTypes") ? (
+                                    <p className="text-sm text-red-600">{getError("accountTypes")}</p>
+                                ) : null}
+                            </div>
+                            {hasSelectedAccountTypes ? (
+                                <div className="space-y-4">
+                                    {(Array.isArray(accountTypes)
+                                        ? accountTypes
+                                        : typeof accountTypes === "string" && accountTypes
+                                            ? [accountTypes]
+                                            : []).map((t) => {
+                                                const key = toAccountKey(t);
+                                                const bankNameKey = `bankName_${key}`;
+                                                const statementKey = `oneYearBankStatement_${key}`;
+
+                                                return (
+                                                    <div key={key} className="rounded-xl border border-gray-200 bg-white p-4">
+                                                        <div className="text-sm font-semibold text-gray-900 mb-3">
+                                                            {String(t).toLowerCase()}
+                                                        </div>
+                                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                            <div className="space-y-1">
+                                                                <label className="text-sm font-medium">Bank Name <span className="text-destructive">*</span></label>
+                                                                <input
+                                                                    {...register(bankNameKey, {
+                                                                        validate: (value) => {
+                                                                            if (!hasSelectedAccountTypes) return true;
+                                                                            const v = typeof value === "string" ? value.trim() : "";
+                                                                            return v !== "" || "Bank Name is required";
+                                                                        },
+                                                                    })}
+                                                                    placeholder="Bank Name"
+                                                                    className="input bg-gray-200"
+                                                                />
+                                                                {getError(bankNameKey) ? (
+                                                                    <p className="text-sm text-red-600">{getError(bankNameKey)}</p>
+                                                                ) : null}
+                                                            </div>
+                                                            <div className="space-y-1">
+                                                                <label className="text-sm font-medium">Upload One Year Bank Statement <span className="text-destructive">*</span></label>
+                                                                <input
+                                                                    type="file"
+                                                                    {...register(statementKey, {
+                                                                        validate: (value) => {
+                                                                            if (!hasSelectedAccountTypes) return true;
+                                                                            const file =
+                                                                                value instanceof File
+                                                                                    ? value
+                                                                                    : value?.[0] instanceof File
+                                                                                        ? value[0]
+                                                                                        : null;
+                                                                            return !!file || "One Year Bank Statement is required";
+                                                                        },
+                                                                    })}
+                                                                    className="input bg-gray-200"
+                                                                />
+                                                                {getError(statementKey) ? (
+                                                                    <p className="text-sm text-red-600">{getError(statementKey)}</p>
+                                                                ) : null}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
+                                </div>
+                            ) : null}
+                        </div>
+                    </div>
+
+                    {/* ================= EXISTING LOANS ================= */}
+                    <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
+                        <h3 className="mb-4 text-base font-semibold text-gray-900">I. Existing Loan & Credit Details</h3>
+                        <div className="flex flex-col mb-2">
+                            <label className="text-sm font-medium">Number Of Existing Loans<span className="text-red-400 text-xs">(optional)</span></label>
+                            <select {...register("NumberOfExistingLoans")} className="input bg-gray-200" >
+                                <option value="">Select Options</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+
+                            </select>
+                        </div>
+                        {existingLoans.map((loan, index) => (
+                            <div key={index} className="grid md:grid-cols-4 gap-3 mb-3">
+                                <input
+                                    placeholder="Loan Amount"
+                                    value={loan.totalLoanAmount}
+                                    onChange={(e) => {
+                                        const updated = [...existingLoans];
+                                        updated[index].totalLoanAmount = e.target.value;
+                                        setExistingLoans(updated);
+                                    }}
+                                    className="input bg-gray-200"
+                                />
+                                <input
+                                    placeholder="Monthly EMI"
+                                    value={loan.totalMonthlyEmi}
+                                    onChange={(e) => {
+                                        const updated = [...existingLoans];
+                                        updated[index].totalMonthlyEmi = e.target.value;
+                                        setExistingLoans(updated);
+                                    }}
+                                    className="input bg-gray-200"
+                                />
+                                <input
+                                    placeholder="Loan Type"
+                                    value={loan.loanType}
+                                    onChange={(e) => {
+                                        const updated = [...existingLoans];
+                                        updated[index].loanType = e.target.value;
+                                        setExistingLoans(updated);
+                                    }}
+                                    className="input bg-gray-200"
+                                />
+                                <input
+                                    placeholder="Bank Name"
+                                    value={loan.bankName}
+                                    onChange={(e) => {
+                                        const updated = [...existingLoans];
+                                        updated[index].bankName = e.target.value;
+                                        setExistingLoans(updated);
+                                    }}
+                                    className="input bg-gray-200"
+                                />
+                            </div>
+                        ))}
+
+                        <button
+                            type="button"
+                            onClick={() =>
+                                setExistingLoans([
+                                    ...existingLoans,
+                                    {
+                                        totalLoanAmount: "",
+                                        totalMonthlyEmi: "",
+                                        loanType: "",
+                                        bankName: "",
+                                    },
+                                ])
+                            }
+                            className="mt-2 inline-flex w-fit items-center justify-center rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-sm font-medium text-blue-700 transition hover:bg-blue-100"
+                        >
+                            + Add More
+                        </button>
+                    </div>
+
+                    {/* ================= J ================= */}
+                    <div>
+                        <div className="grid grid-col-3 mb-2">
+                            <div className="space-y-1">
+                                <div>
+                                    <label className="text-sm font-medium">Assessment Year 2023-24 (optional)</label>
+                                </div>
+                                <input type="file" {...register("AssessmentYear2324")} className="input bg-gray-200" />
+                            </div>
+                            <div className="space-y-1">
+                                <div>
+                                    <label className="text-sm font-medium">Assessment Year 2024-25 (optional)</label>
+                                </div>
+                                <input type="file" {...register("AssessmentYear2425")} className="input bg-gray-200" />
+                            </div>
+                            <div className="space-y-1">
+                                <div>
+                                    <label className="text-sm font-medium">Assessment Year 2025-26 (optional)</label>
+                                </div>
+                                <input type="file" {...register("AssessmentYear2526")} className="input bg-gray-200" />
+                            </div>
+
+                        </div>
+                    </div>
+                    {/* ================= K. Business Registration Certificates================= */}
+                    <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
+                        <h3 className="mb-4 text-base font-semibold text-gray-900">K. Business Registration Certificates</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Business Registration Certificates (optional)</label>
+                                <div className="space-y-3">
+                                    {["GST Registration", "MSME Udyam Aadhar", "Shop Act (Ghumsta Licence)", "Trade Licence", "Local Gram Panchayat Business Certificate Licence"].map(
+                                        (label) => (
+                                            <label
+                                                key={label}
+                                                className="flex items-center justify-between rounded-xl border border-gray-200 bg-white px-4 py-3"
+                                            >
+                                                <span className="text-sm font-semibold text-gray-900">
+                                                    {label.toLowerCase()}
+                                                </span>
+                                                <input
+                                                    type="checkbox"
+                                                    value={label}
+                                                    {...register("businessRegistrationCertificates")}
+                                                    className="h-4 w-4"
+                                                />
+                                            </label>
+                                        )
+                                    )}
+                                </div>
+                            </div>
+
+                            {hasSelectedBusinessRegistrationCertificates ? (
+                                <div className="space-y-4">
+                                    {(Array.isArray(businessRegistrationCertificates)
+                                        ? businessRegistrationCertificates
+                                        : typeof businessRegistrationCertificates === "string" &&
+                                            businessRegistrationCertificates
+                                            ? [businessRegistrationCertificates]
+                                            : []).map((t) => {
+                                                const key = toAccountKey(t);
+                                                const fileKey = `businessRegistrationCertificateFile_${key}`;
+
+                                                return (
+                                                    <div key={key} className="rounded-xl border border-gray-200 bg-white p-4">
+                                                        <div className="text-sm font-semibold text-gray-900 mb-3">
+                                                            {String(t).toLowerCase()}
+                                                        </div>
+                                                        <div className="space-y-1">
+                                                            <label className="text-sm font-medium">Upload Certificate (File)</label>
+                                                            <input
+                                                                type="file"
+                                                                {...register(fileKey)}
+                                                                className="input bg-gray-200"
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
+                                </div>
+                            ) : null}
+                        </div>
+                    </div>
+                    {/* ================= L. Buying Goods ================= */}
+                    <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
+                        <h3 className="mb-4 text-base font-semibold text-gray-900">L. Buying Goods</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-1">
+                                <div>
+                                    <label className="text-sm font-medium">Are you buying any goods <span className="text-destructive">*</span></label>
+                                </div>
+                                <select {...register("isBuyingGoods", { required: true })} className="input bg-gray-200">
+                                    <option value="">Buying Goods?</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                </select>
+                            </div>
+                            {isBuyingGoods === "Yes" && (
+                                <>
+                                    <div className="space-y-1">
+                                        <label className="text-sm font-medium">Quotation Amount (₹) <span className="text-destructive">*</span></label>
+                                        <input
+                                            type="number"
+                                            {...register("quotationAmount", {
+                                                validate: (value) =>
+                                                    isBuyingGoods !== "Yes" ||
+                                                    (value !== undefined &&
+                                                        value !== null &&
+                                                        String(value).trim() !== "") ||
+                                                    "Quotation Amount is required",
+                                            })}
+                                            placeholder="Quotation Amount"
+                                            className="input bg-gray-200"
+                                        />
+                                    </div>
+
+                                    <div className="space-y-1">
+                                        <label className="text-sm font-medium">Upload Proforma Invoice (PDF, Max 2MB) <span className="text-red-400 text-xs">(optional)</span></label>
+                                        <input
+                                            type="file"
+                                            accept="application/pdf"
+                                            {...register("proformaInvoiceFile", {
+                                                validate: (value) => {
+                                                    const file =
+                                                        value instanceof File
+                                                            ? value
+                                                            : value?.[0] instanceof File
+                                                                ? value[0]
+                                                                : null;
+                                                    if (!file) return true;
+                                                    const maxBytes = 2 * 1024 * 1024;
+                                                    return (
+                                                        file.size <= maxBytes ||
+                                                        "Max file size is 2MB"
+                                                    );
+                                                },
+                                            })}
+                                            className="input bg-gray-200"
+                                        />
+                                    </div>
+                                </>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* ================= M. CIBIL Score ================= */}
+                    <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
+                        <h3 className="mb-4 text-base font-semibold text-gray-900">M. CIBIL Score</h3>
+                        <div className="space-y-1">
+                            <div>
+                                <label className="text-sm font-medium">CIBIL Available <span className="text-destructive">*</span></label>
+                            </div>
+                            <select {...register("hasCibil", { required: true })} className="input bg-gray-200">
+                                <option value="">Do you have CIBIL?</option>
+                                <option value="Yes">I have a CIBIL score</option>
+                                <option value="No">I don't have a CIBIL score</option>
+                            </select>
+                        </div>
+
+                        {hasCibil === "Yes" && (
+                            <div className="grid md:grid-cols-2 gap-4 mt-4">
+                                <div className="space-y-1">
+                                    <label className="text-sm font-medium">CIBIL Score <span className="text-destructive">*</span></label>
+                                    <input
+                                        {...register("cibilScore", {
+                                            validate: (value) =>
+                                                hasCibil !== "Yes" ||
+                                                (value !== undefined &&
+                                                    value !== null &&
+                                                    String(value).trim() !== "") ||
+                                                "CIBIL Score is required",
+                                        })}
+                                        placeholder="CIBIL Score"
+                                        className="input bg-gray-200"
+                                    />
+                                </div>
+
+                                <div className="space-y-1">
+                                    <label className="text-sm font-medium">CIBIL Report (PDF) <span className="text-red-400 text-xs">(optional)</span></label>
+                                    <input
+                                        type="file"
+                                        accept="application/pdf"
+                                        {...register("cibilReport")}
+                                        className="input bg-gray-200"
+                                    />
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                    {/* ================= N. Upload Other Supported Document================= */}
+                    <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
+                        <h3 className="mb-4 text-base font-semibold text-gray-900">N. Upload Other Supported Document</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Number of Other Documents)</label>
+                                <select {...register("NumberofOtherDocuments")} className="input bg-gray-200">
+                                    <option value="">0</option>
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                </select>
+                            </div>
+                            {otherDocumentsCount > 0 ? (
+                                <div className="space-y-3">
+                                    {Array.from({ length: otherDocumentsCount }).map((_, idx) => (
+                                        <div key={idx} className="space-y-1">
+                                            <label className="text-sm font-medium">Upload Document {idx + 1} (PDF)</label>
+                                            <input
+                                                type="file"
+                                                accept="application/pdf"
+                                                {...register(`otherSupportedDocument_${idx}`, {
+                                                    validate: (value) => {
+                                                        if (otherDocumentsCount <= 0) return true;
+                                                        const file =
+                                                            value instanceof File
+                                                                ? value
+                                                                : value?.[0] instanceof File
+                                                                    ? value[0]
+                                                                    : null;
+                                                        return !!file || `Document ${idx + 1} is required`;
+                                                    },
+                                                })}
+                                                className="input bg-gray-200"
+                                            />
+                                            {getError(`otherSupportedDocument_${idx}`) ? (
+                                                <p className="text-sm text-red-600">{getError(`otherSupportedDocument_${idx}`)}</p>
+                                            ) : null}
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : null}
+                        </div>
+                    </div>
+
+
+
+
+
+                    {/* ================= CONSENT ================= */}
+                    <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
+                        <h3 className="mb-4 text-base font-semibold text-gray-900">O.Consent</h3>
+                        <div className="space-y-3">
+                            <div className="flex items-start gap-3">
+                                <input type="checkbox" {...register("consent", { required: true })} className="mt-1 h-4 w-4" />
+                                <span className="text-sm text-gray-700">I agree to Terms & Conditions and Privacy Policy.</span>
+                            </div>
+                            <div className="flex items-start gap-3">
+                                <input type="checkbox" {...register("consent", { required: true })} className="mt-1 h-4 w-4" />
+                                <span className="text-sm text-gray-700">I authorize Infinity Loans & Business Solutions to verify my details and share my application with Banks / NBFCs for loan evaluation.</span>
+                            </div>
+                            {getError("consent") ? (
+                                <p className="text-sm text-red-600">{getError("consent")}</p>
+                            ) : null}
+                        </div>
+                    </div>
+
+                </form>
+
+                <div className="sticky bottom-0 z-10 border-t bg-white/90 px-6 py-4 backdrop-blur sm:px-8">
+                    <div className="flex flex-col-reverse  gap-3 sm:flex-row sm:justify-end sm:gap-4">
+                        <button
+                            type="button"
+                            onClick={onClose}
+                            className="w-full rounded-xl border border-gray-300 bg-white px-6 py-2.5 text-sm font-semibold text-gray-700 shadow-sm transition hover:bg-gray-50 sm:w-auto"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="submit"
+                            form="businessLoanForm"
+                            disabled={loading}
+                            className="w-full rounded-xl px-6 py-2.5 text-sm bg-[#F97415] font-semibold text-white shadow-lg transition hover:opacity-95 disabled:opacity-60 sm:w-auto "
+                        >
+                            {loading ? "Submitting..." : "Submit"}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}

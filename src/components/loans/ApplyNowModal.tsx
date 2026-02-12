@@ -50,6 +50,7 @@ type FormState = {
   bankName?: string;
   limitAmount?: string;
   cardType?: string;
+  cibilIssues?:string;
 };
 
 export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, categoryKey, forceUnifiedForm = false }: ApplyNowModalProps) {

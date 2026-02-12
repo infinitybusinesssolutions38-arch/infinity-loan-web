@@ -509,16 +509,6 @@ export async function POST(req) {
       const supportPhone = process.env.SUPPORT_PHONE || "+91-9579880841";
       const website = process.env.COMPANY_WEBSITE || "www.infinityloanservices.com";
 
-      const transporter = nodemailer.createTransport({
-        host: process.env.EMAIL_HOST || process.env.EMAIL_HOSTNAME || "smtp.gmail.com",
-        port: Number(process.env.EMAIL_PORT || 465),
-        secure: typeof process.env.EMAIL_SECURE !== "undefined" ? String(process.env.EMAIL_SECURE).toLowerCase() === "true" : Number(process.env.EMAIL_PORT || 465) === 465,
-        auth: {
-          user: process.env.EMAIL_USER || process.env.EMAIL_HOST_USER || process.env.EMAIL_HOST_USER_NAME,
-          pass: process.env.EMAIL_PASS || process.env.EMAIL_HOST_PASSWORD || process.env.EMAIL_HOST_PASS,
-        },
-      });
-
       const fromAddress = process.env.EMAIL_FROM || process.env.EMAIL_USER;
       const from = fromAddress ? `${companyName} <${fromAddress}>` : undefined;
       const applicantTo = String(personalEmail || "").trim();
@@ -526,15 +516,23 @@ export async function POST(req) {
         .split(",")
         .map((s) => s.trim())
         .filter(Boolean);
-      const adminEnvList = [process.env.SUPPORT_EMAIL, process.env.ADMIN_USER, process.env.ADMIN_EMAIL, process.env.DIRECTOR_EMAIL];
-      const adminRecipients = Array.from(
-        new Set(
-          [
-            ...adminEnvList,
-            ...extraAdminRecipients,
-            "infinitybusinesssolutions38@gmail.com",
-          ].filter(Boolean)
-        )
+      const normalizeEmailList = (...values) => {
+        const raw = values
+          .filter(Boolean)
+          .flatMap((v) => String(v).split(","))
+          .map((v) => v.trim())
+          .map((v) => v.replace(/,+$/g, ""))
+          .map((v) => v.trim())
+          .filter(Boolean);
+        return Array.from(new Set(raw));
+      };
+
+      const adminRecipients = normalizeEmailList(
+        process.env.SUPPORT_EMAIL,
+        process.env.ADMIN_USER,
+        process.env.ADMIN_EMAIL,
+        process.env.DIRECTOR_EMAIL,
+        ...extraAdminRecipients
       );
 
       const adminSubject = `New loan application - ${applicationRef}`;
@@ -954,37 +952,6 @@ export async function POST(req) {
         }
       } catch (gmailError) {
         console.error("Failed to send admin Gmail notifications:", gmailError);
-      }
-
-      if (from && adminRecipients.length > 0) {
-        try {
-          const richAdmin = "infinitybusinesssolutions38@gmail.com";
-          const otherAdmins = adminRecipients.filter((e) => e !== richAdmin);
-
-          // Rich HTML email to dedicated recipient
-          if (richAdmin) {
-            await transporter.sendMail({
-              from,
-              to: richAdmin,
-              subject: adminSubject,
-              html: adminHtml,
-              replyTo: supportEmail || fromAddress,
-            });
-          }
-
-          // Plain text to remaining admin recipients
-          if (otherAdmins.length > 0) {
-          await transporter.sendMail({
-            from,
-            to: otherAdmins,
-            subject: adminSubject,
-            text: adminText,
-            replyTo: supportEmail || fromAddress,
-          });
-          }
-        } catch (e) {
-          console.error("apply-now admin email failed:", e?.message || e);
-        }
       }
     } catch (emailErr) {
       console.error("apply-now email failed:", emailErr?.message || emailErr);

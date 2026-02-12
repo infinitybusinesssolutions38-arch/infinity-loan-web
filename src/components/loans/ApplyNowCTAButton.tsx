@@ -33,6 +33,8 @@ export default function ApplyNowCTAButton({
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     onClick?.(e);
+
+    if (e.defaultPrevented) return;
     
     // If redirectToUnifiedForm is true, open the modal with unified form
     if (redirectToUnifiedForm) {

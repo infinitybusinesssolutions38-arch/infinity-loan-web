@@ -21,6 +21,10 @@ import {
 
 import { Button } from "@/components/ui/button";
 import ApplyNowCTAButton from "@/components/loans/ApplyNowCTAButton";
+import BusinessLoanModal from "@/components/loans/BusinessLoanModal";
+import PersonalLoanModal from "@/components/loans/PersonalLoanModal";
+import SalariedLoanModal from "@/components/loans/SalariedLoanModal";
+import CreditCardModal from "@/components/loans/CreditCardModal";
 import {
   Card,
   CardContent,
@@ -1711,6 +1715,11 @@ const TRUST_INDICATORS = [
 export default function ServicesHubClient() {
   const searchParams = useSearchParams();
   const [activeCategory, setActiveCategory] = useState<HubCategoryKey>("salaried-employees");
+  const [activeModal, setActiveModal] = useState<string | null>(null);
+  const [selectedSalariedOfferKey, setSelectedSalariedOfferKey] = useState<string | null>(null);
+  const [selectedSalariedOfferTitle, setSelectedSalariedOfferTitle] = useState<string | null>(null);
+  const [selectedBusinessOfferKey, setSelectedBusinessOfferKey] = useState<string | null>(null);
+  const [selectedBusinessOfferTitle, setSelectedBusinessOfferTitle] = useState<string | null>(null);
 
   useEffect(() => {
     const requested = searchParams.get("category") as HubCategoryKey | null;
@@ -1722,6 +1731,14 @@ export default function ServicesHubClient() {
   const activeCards = useMemo(() => SERVICES[activeCategory], [activeCategory]);
   const activeMeta = CATEGORY_META.find((c) => c.key === activeCategory)!;
   const activeGroups = GROUPED_SERVICES[activeCategory];
+
+  const isSalariedEmployeesCategory = activeCategory === "salaried-employees";
+
+  const handleOpenModal = (modalKey: string) => (e: React.MouseEvent) => {
+    const target = e.target as HTMLElement | null;
+    if (target?.closest("button, a")) return;
+    setActiveModal(modalKey);
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -1820,13 +1837,17 @@ export default function ServicesHubClient() {
               const Icon = cat.icon;
               const isActive = cat.key === activeCategory;
 
+              const handleCategoryClick = () => {
+                setActiveCategory(cat.key);
+              };
+
               return (
                 <Button
                   key={cat.key}
                   type="button"
                   size="lg"
                   variant="tab-inactive"
-                  onClick={() => setActiveCategory(cat.key)}
+                  onClick={handleCategoryClick}
                   className={`group h-auto w-full justify-start gap-4 rounded-2xl border-2 px-5 py-5 transition-all duration-300 whitespace-normal text-left leading-snug text-base sm:text-lg hover:-translate-y-0.5 hover:shadow-lg focus-visible:ring-2 focus-visible:ring-[#F97415]/40 ${isActive
                     ? "scale-[1.02] border-[#F97415] bg-gradient-to-br from-black via-neutral-900 to-black text-white"
                     : "border-white/10 bg-gradient-to-br from-black via-neutral-900 to-black text-white hover:border-[#F97415]/40"
@@ -1885,11 +1906,36 @@ export default function ServicesHubClient() {
 
                   <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                     {group.items.map((service, idx) => (
+                      (() => {
+                        const isSalariedOffer = isSalariedEmployeesCategory && service.key?.startsWith("salaried-");
+                        const isBusinessOffer =
+                          (activeCategory === "businesses" && service.key?.startsWith("business-")) ||
+                          (activeCategory === "builders-developers" && service.key?.startsWith("builder-")) ||
+                          (activeCategory === "professionals" && service.key?.startsWith("professional-")) ||
+                          (activeCategory === "govt-employees" && service.key?.startsWith("govt-employee-")) ||
+                          (activeCategory === "government-schemes" && service.key?.startsWith("govt-scheme-"));
+
+                        return (
                       <Card
                         key={service.key}
                         className={`group relative overflow-hidden border-2 bg-gradient-to-br from-black via-neutral-900 to-neutral-700 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${service.highlight ? "border-primary/30" : "border-transparent"
                           }`}
                         style={{ animationDelay: `${groupIndex * 120 + idx * 50}ms` }}
+                        onClick={
+                          isSalariedOffer
+                            ? undefined
+                            : isBusinessOffer
+                            ? undefined
+                            : service.title === "Business Loan"
+                            ? handleOpenModal("business")
+                            : service.title === "Personal Loan"
+                              ? handleOpenModal("personal")
+                              : service.title === "Salaried Loan"
+                                ? undefined
+                                : service.title === "Credit Card"
+                                  ? handleOpenModal("credit")
+                                  : undefined
+                        }
                       >
                         <div className="relative h-48 w-full overflow-hidden">
                           <Image
@@ -1928,6 +1974,24 @@ export default function ServicesHubClient() {
                               categoryKey={activeCategory}
                               className="w-full group-hover:shadow-glow-cta"
                               size="lg"
+                              onClick={(e) => {
+                                if (!isSalariedOffer && !isBusinessOffer) return;
+                                e.preventDefault();
+                                e.stopPropagation();
+
+                                if (isSalariedOffer) {
+                                  setSelectedSalariedOfferKey(service.key);
+                                  setSelectedSalariedOfferTitle(service.title);
+                                  setActiveModal("salaried");
+                                  return;
+                                }
+
+                                if (isBusinessOffer) {
+                                  setSelectedBusinessOfferKey(service.key);
+                                  setSelectedBusinessOfferTitle(service.title);
+                                  setActiveModal("business");
+                                }
+                              }}
                             >
                               Apply Now
                               <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -1938,6 +2002,8 @@ export default function ServicesHubClient() {
                           </div>
                         </CardContent>
                       </Card>
+                        );
+                      })()
                     ))}
                   </div>
                 </div>
@@ -1959,6 +2025,17 @@ export default function ServicesHubClient() {
                     className={`group relative overflow-hidden border-2 bg-gradient-to-br from-black via-neutral-900 to-neutral-700 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${service.highlight ? "border-primary/30" : "border-transparent"
                       }`}
                     style={{ animationDelay: `${idx * 60}ms` }}
+                    onClick={
+                      service.title === "Business Loan"
+                        ? handleOpenModal("business")
+                        : service.title === "Personal Loan"
+                          ? handleOpenModal("personal")
+                          : service.title === "Salaried Loan"
+                            ? handleOpenModal("salaried")
+                            : service.title === "Credit Card"
+                              ? handleOpenModal("credit")
+                              : undefined
+                    }
                   >
                     <div className="relative h-48 w-full overflow-hidden">
                       <Image
@@ -2084,6 +2161,37 @@ export default function ServicesHubClient() {
           </div>
         </div>
       </section>
+
+      {activeModal === "business" && (
+        <BusinessLoanModal
+          isOpen={true}
+          onClose={() => {
+            setActiveModal(null);
+            setSelectedBusinessOfferKey(null);
+            setSelectedBusinessOfferTitle(null);
+          }}
+          categoryKey={selectedBusinessOfferKey ?? activeCategory}
+          categoryTitle={selectedBusinessOfferTitle ?? activeMeta?.title}
+        />
+      )}
+      {activeModal === "personal" && (
+        <PersonalLoanModal isOpen={true} onClose={() => setActiveModal(null)} />
+      )}
+      {activeModal === "salaried" && (
+        <SalariedLoanModal
+          isOpen={true}
+          onClose={() => {
+            setActiveModal(null);
+            setSelectedSalariedOfferKey(null);
+            setSelectedSalariedOfferTitle(null);
+          }}
+          categoryKey={selectedSalariedOfferKey ?? activeCategory}
+          categoryTitle={selectedSalariedOfferTitle ?? activeMeta?.title}
+        />
+      )}
+      {activeModal === "credit" && (
+        <CreditCardModal isOpen={true} onClose={() => setActiveModal(null)} />
+      )}
     </div>
   );
 }

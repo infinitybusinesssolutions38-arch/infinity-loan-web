@@ -3,7 +3,6 @@ import connectDB from "../lib/db";
 import PartnerRegisterModel from "../models/partner-register-schema";
 import {
   sendPartnerConfirmationEmail,
-  sendPartnerNotificationToAdmin,
   sendPartnerNotificationToAdminEmails,
 } from "../lib/partner-email";
 import { v2 as cloudinary } from "cloudinary";
@@ -193,7 +192,6 @@ export async function POST(req) {
     // Send emails (non-blocking)
     try {
       await sendPartnerConfirmationEmail(savedPartner);
-      await sendPartnerNotificationToAdmin(savedPartner);
       await sendPartnerNotificationToAdminEmails(savedPartner);
     } catch (emailError) {
       console.error("Email sending error:", emailError);
