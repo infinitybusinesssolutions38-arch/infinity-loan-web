@@ -7,6 +7,8 @@ const nav = [
   { href: "/admin/dashboard", label: "Dashboard" },
   { href: "/admin/salary-loan-applications", label: "Salary employee Loan application" },
   { href: "/admin/business-loan-applications", label: "Business Loan application" },
+  { href: "/admin/credit-card-applications", label: "Credit Card application" },
+  { href: "/admin/partner-applications", label: "Loan Partner application" },
 ];
 
 export default function AdminSidebar() {

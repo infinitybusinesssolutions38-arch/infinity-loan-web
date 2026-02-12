@@ -110,26 +110,6 @@ export default function AdminSalaryLoanApplicationDetailPage({ params }: { param
             Ref: {item.applicationRef || "-"}
           </div>
         </div>
-
-        <div className="flex flex-col gap-2 md:flex-row">
-          <select
-            className="rounded-2xl border border-input bg-background/60 px-4 py-3 text-sm outline-none transition focus:border-primary/50 focus:bg-background focus:shadow-[0_0_0_4px_hsl(var(--primary)/0.12)]"
-            value={status}
-            onChange={(e) => setStatus(e.target.value)}
-          >
-            <option value="Pending">Pending</option>
-            <option value="Approved">Approved</option>
-            <option value="Rejected">Rejected</option>
-          </select>
-
-          <button
-            onClick={save}
-            disabled={saving}
-            className="rounded-2xl bg-gradient-to-r from-cta via-cta to-accent px-5 py-3 text-sm font-semibold text-cta-foreground shadow-glow-cta transition hover:opacity-95 disabled:opacity-50"
-          >
-            {saving ? "Saving..." : "Save"}
-          </button>
-        </div>
       </div>
 
       {error && (

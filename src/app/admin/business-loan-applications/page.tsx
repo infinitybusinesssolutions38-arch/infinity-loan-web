@@ -157,9 +157,9 @@ export default function AdminBusinessLoanApplicationsPage() {
             <tr className="text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               <th className="py-3">Ref</th>
               <th className="py-3">Business Name</th>
-              <th className="py-3">Email</th>
+              {/* <th className="py-3">Email</th> */}
               <th className="py-3">Mobile</th>
-              <th className="py-3">Status</th>
+              {/* <th className="py-3">Status</th> */}
               <th className="py-3">Action</th>
               <th className="py-3">View</th>
             </tr>
@@ -169,12 +169,12 @@ export default function AdminBusinessLoanApplicationsPage() {
               <tr key={x._id} className="border-t border-border/70">
                 <td className="py-4 font-medium">{x.applicationRef || "-"}</td>
                 <td className="py-4">{displayName(x)}</td>
-                <td className="py-4">{x.personalEmail || x.email || "-"}</td>
+                {/* <td className="py-4">{x.personalEmail || x.email || "-"}</td> */}
                 <td className="py-4">{x.mobileNumber || x.mobile || "-"}</td>
                 <td className="py-4">
-                  <span className={"inline-flex rounded-full px-2.5 py-1 text-xs font-semibold " + badge(x.status)}>
+                  {/* <span className={"inline-flex rounded-full px-2.5 py-1 text-xs font-semibold " + badge(x.status)}>
                     {x.status || "Pending"}
-                  </span>
+                  </span> */}
                 </td>
                 <td className="py-4">
                   <div className="flex flex-col gap-2 md:flex-row md:items-center">
@@ -187,19 +187,19 @@ export default function AdminBusinessLoanApplicationsPage() {
                       <option value="Approved">Approved</option>
                       <option value="Rejected">Rejected</option>
                     </select>
-                    <button
+                    {/* <button
                       onClick={() => updateStatus(String(x._id))}
                       disabled={!!rowSaving[String(x._id)]}
                       className="w-full rounded-2xl bg-gradient-to-r from-cta via-cta to-accent px-3 py-2 text-xs font-semibold text-cta-foreground shadow-glow-cta transition hover:opacity-95 disabled:opacity-50 md:w-auto"
                     >
                       {rowSaving[String(x._id)] ? "Saving..." : "Update"}
-                    </button>
+                    </button> */}
                   </div>
                 </td>
                 <td className="py-4">
                   <Link
                     href={`/admin/business-loan-applications/${x._id}`}
-                    className="rounded-2xl bg-secondary/70 px-3 py-2 text-xs font-semibold transition hover:bg-secondary"
+                    className="inline-flex items-center rounded-2xl bg-gradient-to-r from-green-500 via-emerald-600 to-teal-600 px-3 py-2 text-xs font-semibold text-white shadow-lg transition hover:opacity-90 hover:shadow-green-500/25"
                   >
                     Details
                   </Link>

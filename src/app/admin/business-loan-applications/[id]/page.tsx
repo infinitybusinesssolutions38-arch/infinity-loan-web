@@ -138,21 +138,6 @@ export default function AdminBusinessLoanApplicationDetailPage({ params }: { par
         </div>
       )}
 
-      {/* Debug Section - Check Available Fields */}
-      <div className="mt-4 rounded-2xl border border-blue-300 bg-blue-50 p-4">
-        <div className="text-xs text-blue-600 font-semibold">Debug Info - Available Fields:</div>
-        <div className="mt-2 text-xs max-h-40 overflow-y-auto">
-          <div><strong>First Name:</strong> {item.firstname || "NULL"}</div>
-          <div><strong>Last Name:</strong> {item.lastname || "NULL"}</div>
-          <div><strong>Middle Name:</strong> {item.middleName || "NULL"}</div>
-          <div><strong>Business Name:</strong> {item.businessName || "NULL"}</div>
-          <div><strong>Service Category:</strong> {item.serviceCategoryTitle || "NULL"}</div>
-          <div><strong>Loan Amount:</strong> {item.loanAmount || "NULL"}</div>
-          <div><strong>Required Loan Amount:</strong> {item.requiredLoanAmount || "NULL"}</div>
-          <div><strong>All Keys:</strong> {Object.keys(item).join(", ")}</div>
-        </div>
-      </div>
-
       <div className="mt-6 space-y-6">
         {/* A. Applicant Basic Details */}
         <div className="rounded-3xl border border-border/70 bg-card/70 p-6 shadow-sm backdrop-blur">
