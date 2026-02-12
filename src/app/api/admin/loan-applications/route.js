@@ -3,6 +3,7 @@ import connectDB from "../../lib/db";
 import { requireAdmin } from "../lib/guard";
 import PersonalLoanModel from "../../models/personal-loan-schema";
 import BusinessLoanModel from "../../models/business-loan-schema";
+import SalariedLoanModel from "../../models/salaried-loan-schema";
 
 function normalizeItem(item, type) {
   return { ...item, _type: type };

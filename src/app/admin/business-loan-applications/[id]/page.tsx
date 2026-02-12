@@ -138,6 +138,21 @@ export default function AdminBusinessLoanApplicationDetailPage({ params }: { par
         </div>
       )}
 
+      {/* Debug Section - Check Available Fields */}
+      <div className="mt-4 rounded-2xl border border-blue-300 bg-blue-50 p-4">
+        <div className="text-xs text-blue-600 font-semibold">Debug Info - Available Fields:</div>
+        <div className="mt-2 text-xs max-h-40 overflow-y-auto">
+          <div><strong>First Name:</strong> {item.firstname || "NULL"}</div>
+          <div><strong>Last Name:</strong> {item.lastname || "NULL"}</div>
+          <div><strong>Middle Name:</strong> {item.middleName || "NULL"}</div>
+          <div><strong>Business Name:</strong> {item.businessName || "NULL"}</div>
+          <div><strong>Service Category:</strong> {item.serviceCategoryTitle || "NULL"}</div>
+          <div><strong>Loan Amount:</strong> {item.loanAmount || "NULL"}</div>
+          <div><strong>Required Loan Amount:</strong> {item.requiredLoanAmount || "NULL"}</div>
+          <div><strong>All Keys:</strong> {Object.keys(item).join(", ")}</div>
+        </div>
+      </div>
+
       <div className="mt-6 space-y-6">
         {/* A. Applicant Basic Details */}
         <div className="rounded-3xl border border-border/70 bg-card/70 p-6 shadow-sm backdrop-blur">
@@ -259,29 +274,29 @@ export default function AdminBusinessLoanApplicationDetailPage({ params }: { par
           </div>
         </div>
 
-        {/* E. Loan Details */}
+        {/* D. Loan Requirement Details */}
         <div className="rounded-3xl border border-border/70 bg-card/70 p-6 shadow-sm backdrop-blur">
-          <h3 className="text-lg font-semibold mb-4 text-primary">E. Loan Details</h3>
+          <h3 className="text-lg font-semibold mb-4 text-primary">D. Loan Requirement Details</h3>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
               <div className="text-xs text-muted-foreground">Service Category</div>
               <div className="mt-1 text-sm font-semibold">{item.serviceCategoryTitle || "-"}</div>
             </div>
             <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Loan Amount</div>
-              <div className="mt-1 text-sm font-semibold">{item.loanAmount || "-"}</div>
+              <div className="text-xs text-muted-foreground">Required Loan Amount</div>
+              <div className="mt-1 text-sm font-semibold">{item.requiredLoanAmount || "-"}</div>
             </div>
             <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Loan Purpose</div>
-              <div className="mt-1 text-sm font-semibold">{item.loanPurpose || "-"}</div>
+              <div className="text-xs text-muted-foreground">Type of Loan</div>
+              <div className="mt-1 text-sm font-semibold">{item.typeOfLoan || "-"}</div>
             </div>
             <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Business Type</div>
-              <div className="mt-1 text-sm font-semibold">{item.businessType || "-"}</div>
+              <div className="text-xs text-muted-foreground">Purpose</div>
+              <div className="mt-1 text-sm font-semibold">{item.purpose || "-"}</div>
             </div>
             <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Years in Business</div>
-              <div className="mt-1 text-sm font-semibold">{item.yearsInBusiness || "-"}</div>
+              <div className="text-xs text-muted-foreground">Preferred Tenure</div>
+              <div className="mt-1 text-sm font-semibold">{item.preferredTenure || "-"}</div>
             </div>
             <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
               <div className="text-xs text-muted-foreground">Status</div>
@@ -294,198 +309,499 @@ export default function AdminBusinessLoanApplicationDetailPage({ params }: { par
           </div>
         </div>
 
-        {/* F. Business Financial Details */}
+        {/* E. ID Proof Documents */}
         <div className="rounded-3xl border border-border/70 bg-card/70 p-6 shadow-sm backdrop-blur">
-          <h3 className="text-lg font-semibold mb-4 text-primary">F. Business Financial Details</h3>
+          <h3 className="text-lg font-semibold mb-4 text-primary">E. ID Proof Documents</h3>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Annual Turnover</div>
-              <div className="mt-1 text-sm font-semibold">{item.annualTurnover || "-"}</div>
+              <div className="text-xs text-muted-foreground">Aadhaar Number</div>
+              <div className="mt-1 text-sm font-semibold">{item.aadhaarNumber || "-"}</div>
             </div>
             <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Monthly Income</div>
-              <div className="mt-1 text-sm font-semibold">{item.monthlyIncome || "-"}</div>
+              <div className="text-xs text-muted-foreground">PAN Number</div>
+              <div className="mt-1 text-sm font-semibold">{item.panNumber || "-"}</div>
             </div>
             <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Existing Loan Amount</div>
-              <div className="mt-1 text-sm font-semibold">{item.existingLoanAmount || "-"}</div>
+              <div className="text-xs text-muted-foreground">Voter ID</div>
+              <div className="mt-1 text-sm font-semibold">{item.voterId || "-"}</div>
             </div>
             <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Existing Loan EMI</div>
-              <div className="mt-1 text-sm font-semibold">{item.existingLoanEmi || "-"}</div>
+              <div className="text-xs text-muted-foreground">Driving License</div>
+              <div className="mt-1 text-sm font-semibold">{item.drivingLicense || "-"}</div>
+            </div>
+            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+              <div className="text-xs text-muted-foreground">Passport Number</div>
+              <div className="mt-1 text-sm font-semibold">{item.passportNo || "-"}</div>
+            </div>
+            {item.applicantPhotoUrl && (
+              <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+                <div className="text-xs text-muted-foreground">Applicant Photo</div>
+                <div className="mt-2">
+                  <a 
+                    href={item.applicantPhotoUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center text-xs bg-primary text-primary-foreground px-3 py-2 rounded-lg hover:bg-primary/90 transition"
+                  >
+                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                    View Photo
+                  </a>
+                </div>
+              </div>
+            )}
+            {item.panPhotoUrl && (
+              <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+                <div className="text-xs text-muted-foreground">PAN Card Photo</div>
+                <div className="mt-2">
+                  <a 
+                    href={item.panPhotoUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center text-xs bg-primary text-primary-foreground px-3 py-2 rounded-lg hover:bg-primary/90 transition"
+                  >
+                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                    View PAN
+                  </a>
+                </div>
+              </div>
+            )}
+            {item.aadhaarPhotoUrl && (
+              <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+                <div className="text-xs text-muted-foreground">Aadhaar Card Front</div>
+                <div className="mt-2">
+                  <a 
+                    href={item.aadhaarPhotoUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center text-xs bg-primary text-primary-foreground px-3 py-2 rounded-lg hover:bg-primary/90 transition"
+                  >
+                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                    View Aadhaar
+                  </a>
+                </div>
+              </div>
+            )}
+            {item.aadhaarBackPhotoUrl && (
+              <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+                <div className="text-xs text-muted-foreground">Aadhaar Card Back</div>
+                <div className="mt-2">
+                  <a 
+                    href={item.aadhaarBackPhotoUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center text-xs bg-primary text-primary-foreground px-3 py-2 rounded-lg hover:bg-primary/90 transition"
+                  >
+                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                    View Back
+                  </a>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* F. Co-Applicant Details (If Any) */}
+        <div className="rounded-3xl border border-border/70 bg-card/70 p-6 shadow-sm backdrop-blur">
+          <h3 className="text-lg font-semibold mb-4 text-primary">F. Co-Applicant Details (If Any)</h3>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+              <div className="text-xs text-muted-foreground">Co-Applicant Name</div>
+              <div className="mt-1 text-sm font-semibold">{item.coApplicantName || "-"}</div>
+            </div>
+            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+              <div className="text-xs text-muted-foreground">Relationship with Applicant</div>
+              <div className="mt-1 text-sm font-semibold">{item.relationshipWithApplicant || "-"}</div>
+            </div>
+            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+              <div className="text-xs text-muted-foreground">Co-Applicant Employment Type</div>
+              <div className="mt-1 text-sm font-semibold">{item.coApplicantEmploymentType || "-"}</div>
+            </div>
+            {item.coApplicantPanPhotoUrl && (
+              <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+                <div className="text-xs text-muted-foreground">Co-Applicant PAN Photo</div>
+                <div className="mt-2">
+                  <a 
+                    href={item.coApplicantPanPhotoUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center text-xs bg-primary text-primary-foreground px-3 py-2 rounded-lg hover:bg-primary/90 transition"
+                  >
+                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                    View PAN
+                  </a>
+                </div>
+              </div>
+            )}
+            {item.coApplicantAadhaarPhotoUrl && (
+              <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+                <div className="text-xs text-muted-foreground">Co-Applicant Aadhaar Front</div>
+                <div className="mt-2">
+                  <a 
+                    href={item.coApplicantAadhaarPhotoUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center text-xs bg-primary text-primary-foreground px-3 py-2 rounded-lg hover:bg-primary/90 transition"
+                  >
+                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                    View Aadhaar
+                  </a>
+                </div>
+              </div>
+            )}
+            {item.coApplicantAadhaarBackPhotoUrl && (
+              <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+                <div className="text-xs text-muted-foreground">Co-Applicant Aadhaar Back</div>
+                <div className="mt-2">
+                  <a 
+                    href={item.coApplicantAadhaarBackPhotoUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center text-xs bg-primary text-primary-foreground px-3 py-2 rounded-lg hover:bg-primary/90 transition"
+                  >
+                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                    View Back
+                  </a>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* G. Address Proof Documents */}
+        <div className="rounded-3xl border border-border/70 bg-card/70 p-6 shadow-sm backdrop-blur">
+          <h3 className="text-lg font-semibold mb-4 text-primary">G. Address Proof Documents</h3>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            {item.latestHomeElectricityBillUrl && (
+              <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+                <div className="text-xs text-muted-foreground">Home Electricity Bill</div>
+                <div className="mt-2">
+                  <a 
+                    href={item.latestHomeElectricityBillUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center text-xs bg-primary text-primary-foreground px-3 py-2 rounded-lg hover:bg-primary/90 transition"
+                  >
+                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                    View Bill
+                  </a>
+                </div>
+              </div>
+            )}
+            {item.latestOfficeShopElectricityBillUrl && (
+              <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+                <div className="text-xs text-muted-foreground">Office/Shop Electricity Bill</div>
+                <div className="mt-2">
+                  <a 
+                    href={item.latestOfficeShopElectricityBillUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center text-xs bg-primary text-primary-foreground px-3 py-2 rounded-lg hover:bg-primary/90 transition"
+                  >
+                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                    View Bill
+                  </a>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* H. Bank Statement */}
+        <div className="rounded-3xl border border-border/70 bg-card/70 p-6 shadow-sm backdrop-blur">
+          <h3 className="text-lg font-semibold mb-4 text-primary">H. Bank Statement</h3>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            {item.oneYearBankStatementUrl && (
+              <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+                <div className="text-xs text-muted-foreground">One Year Bank Statement</div>
+                <div className="mt-2">
+                  <a 
+                    href={item.oneYearBankStatementUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center text-xs bg-primary text-primary-foreground px-3 py-2 rounded-lg hover:bg-primary/90 transition"
+                  >
+                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                    View Statement
+                  </a>
+                </div>
+              </div>
+            )}
+            {item.bankStatementUrl && (
+              <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+                <div className="text-xs text-muted-foreground">Bank Statement</div>
+                <div className="mt-2">
+                  <a 
+                    href={item.bankStatementUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center text-xs bg-primary text-primary-foreground px-3 py-2 rounded-lg hover:bg-primary/90 transition"
+                  >
+                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                    View Statement
+                  </a>
+                </div>
+              </div>
+            )}
+            {item.bankAccounts && item.bankAccounts.map((account: any, index: number) => (
+              <div key={index} className="rounded-2xl border border-border/50 bg-background/50 p-4">
+                <div className="text-xs text-muted-foreground">{account.bankName} - {account.accountType}</div>
+                <div className="mt-2">
+                  {account.oneYearBankStatementUrl && (
+                    <a 
+                      href={account.oneYearBankStatementUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center text-xs bg-primary text-primary-foreground px-3 py-2 rounded-lg hover:bg-primary/90 transition"
+                    >
+                      <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                      View Statement
+                    </a>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* I. Existing Loan Details */}
+        <div className="rounded-3xl border border-border/70 bg-card/70 p-6 shadow-sm backdrop-blur">
+          <h3 className="text-lg font-semibold mb-4 text-primary">I. Existing Loan Details</h3>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+              <div className="text-xs text-muted-foreground">Number of Existing Loans</div>
+              <div className="mt-1 text-sm font-semibold">{item.numberOfExistingLoans || "-"}</div>
+            </div>
+            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+              <div className="text-xs text-muted-foreground">CIBIL Issues Details</div>
+              <div className="mt-1 text-sm font-semibold">{item.cibilIssuesDetails || "-"}</div>
             </div>
           </div>
         </div>
 
-        {/* G. Bank Details */}
+        {/* J. Income Tax Returns */}
         <div className="rounded-3xl border border-border/70 bg-card/70 p-6 shadow-sm backdrop-blur">
-          <h3 className="text-lg font-semibold mb-4 text-primary">G. Bank Details</h3>
+          <h3 className="text-lg font-semibold mb-4 text-primary">J. Income Tax Returns</h3>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Bank Name</div>
-              <div className="mt-1 text-sm font-semibold">{item.bankName || "-"}</div>
-            </div>
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Account Number</div>
-              <div className="mt-1 text-sm font-semibold">{item.accountNumber || "-"}</div>
-            </div>
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">IFSC Code</div>
-              <div className="mt-1 text-sm font-semibold">{item.ifscCode || "-"}</div>
-            </div>
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Branch Name</div>
-              <div className="mt-1 text-sm font-semibold">{item.branchName || "-"}</div>
-            </div>
+            {item.itrFileUrl && (
+              <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+                <div className="text-xs text-muted-foreground">ITR File</div>
+                <div className="mt-2">
+                  <a 
+                    href={item.itrFileUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center text-xs bg-primary text-primary-foreground px-3 py-2 rounded-lg hover:bg-primary/90 transition"
+                  >
+                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                    View ITR
+                  </a>
+                </div>
+              </div>
+            )}
+            {item.assessmentYear2324Url && (
+              <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+                <div className="text-xs text-muted-foreground">Assessment Year 2023-24</div>
+                <div className="mt-2">
+                  <a 
+                    href={item.assessmentYear2324Url} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center text-xs bg-primary text-primary-foreground px-3 py-2 rounded-lg hover:bg-primary/90 transition"
+                  >
+                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                    View ITR
+                  </a>
+                </div>
+              </div>
+            )}
+            {item.assessmentYear2425Url && (
+              <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+                <div className="text-xs text-muted-foreground">Assessment Year 2024-25</div>
+                <div className="mt-2">
+                  <a 
+                    href={item.assessmentYear2425Url} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center text-xs bg-primary text-primary-foreground px-3 py-2 rounded-lg hover:bg-primary/90 transition"
+                  >
+                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                    View ITR
+                  </a>
+                </div>
+              </div>
+            )}
+            {item.assessmentYear2526Url && (
+              <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+                <div className="text-xs text-muted-foreground">Assessment Year 2025-26</div>
+                <div className="mt-2">
+                  <a 
+                    href={item.assessmentYear2526Url} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center text-xs bg-primary text-primary-foreground px-3 py-2 rounded-lg hover:bg-primary/90 transition"
+                  >
+                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                    View ITR
+                  </a>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* H. Employment Details */}
+        {/* K. Business Registration Certificates */}
         <div className="rounded-3xl border border-border/70 bg-card/70 p-6 shadow-sm backdrop-blur">
-          <h3 className="text-lg font-semibold mb-4 text-primary">H. Employment Details</h3>
+          <h3 className="text-lg font-semibold mb-4 text-primary">K. Business Registration Certificates</h3>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Employment Type</div>
-              <div className="mt-1 text-sm font-semibold">{item.employmentType || "-"}</div>
+              <div className="text-xs text-muted-foreground">Business Registration Type</div>
+              <div className="mt-1 text-sm font-semibold">{item.businessRegistrationCertificates || "-"}</div>
             </div>
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Company Name</div>
-              <div className="mt-1 text-sm font-semibold">{item.companyName || "-"}</div>
-            </div>
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Work Experience</div>
-              <div className="mt-1 text-sm font-semibold">{item.workExperience || "-"}</div>
-            </div>
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Monthly Salary</div>
-              <div className="mt-1 text-sm font-semibold">{item.monthlySalary || "-"}</div>
-            </div>
+            {item.gstCertificateUrl && (
+              <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+                <div className="text-xs text-muted-foreground">GST Certificate</div>
+                <div className="mt-2">
+                  <a 
+                    href={item.gstCertificateUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center text-xs bg-primary text-primary-foreground px-3 py-2 rounded-lg hover:bg-primary/90 transition"
+                  >
+                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                    View Certificate
+                  </a>
+                </div>
+              </div>
+            )}
+            {item.registrationCertificates && item.registrationCertificates.map((cert: any, index: number) => (
+              <div key={index} className="rounded-2xl border border-border/50 bg-background/50 p-4">
+                <div className="text-xs text-muted-foreground">{cert.certificateType}</div>
+                <div className="mt-2">
+                  {cert.fileUrl && (
+                    <a 
+                      href={cert.fileUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center text-xs bg-primary text-primary-foreground px-3 py-2 rounded-lg hover:bg-primary/90 transition"
+                    >
+                      <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                      View Certificate
+                    </a>
+                  )}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
 
-        {/* I. Property Details */}
+        {/* L. Buying Goods */}
         <div className="rounded-3xl border border-border/70 bg-card/70 p-6 shadow-sm backdrop-blur">
-          <h3 className="text-lg font-semibold mb-4 text-primary">I. Property Details</h3>
+          <h3 className="text-lg font-semibold mb-4 text-primary">L. Buying Goods</h3>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Property Type</div>
-              <div className="mt-1 text-sm font-semibold">{item.propertyType || "-"}</div>
+              <div className="text-xs text-muted-foreground">Is Buying Goods</div>
+              <div className="mt-1 text-sm font-semibold">{item.isBuyingGoods || "-"}</div>
             </div>
             <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Property Value</div>
-              <div className="mt-1 text-sm font-semibold">{item.propertyValue || "-"}</div>
+              <div className="text-xs text-muted-foreground">Quotation Amount</div>
+              <div className="mt-1 text-sm font-semibold">{item.quotationAmount || "-"}</div>
             </div>
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Property Location</div>
-              <div className="mt-1 text-sm font-semibold">{item.propertyLocation || "-"}</div>
-            </div>
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Property Ownership</div>
-              <div className="mt-1 text-sm font-semibold">{item.propertyOwnership || "-"}</div>
-            </div>
+            {item.proformaInvoiceFileUrl && (
+              <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+                <div className="text-xs text-muted-foreground">Proforma Invoice</div>
+                <div className="mt-2">
+                  <a 
+                    href={item.proformaInvoiceFileUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center text-xs bg-primary text-primary-foreground px-3 py-2 rounded-lg hover:bg-primary/90 transition"
+                  >
+                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                    View Invoice
+                  </a>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* J. References */}
+        {/* M. CIBIL Score */}
         <div className="rounded-3xl border border-border/70 bg-card/70 p-6 shadow-sm backdrop-blur">
-          <h3 className="text-lg font-semibold mb-4 text-primary">J. References</h3>
+          <h3 className="text-lg font-semibold mb-4 text-primary">M. CIBIL Score</h3>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Reference 1 Name</div>
-              <div className="mt-1 text-sm font-semibold">{item.reference1Name || "-"}</div>
+              <div className="text-xs text-muted-foreground">Has CIBIL</div>
+              <div className="mt-1 text-sm font-semibold">{item.hasCibil || "-"}</div>
             </div>
             <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Reference 1 Contact</div>
-              <div className="mt-1 text-sm font-semibold">{item.reference1Contact || "-"}</div>
+              <div className="text-xs text-muted-foreground">CIBIL Score</div>
+              <div className="mt-1 text-sm font-semibold">{item.cibilScore || "-"}</div>
             </div>
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Reference 2 Name</div>
-              <div className="mt-1 text-sm font-semibold">{item.reference2Name || "-"}</div>
-            </div>
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Reference 2 Contact</div>
-              <div className="mt-1 text-sm font-semibold">{item.reference2Contact || "-"}</div>
-            </div>
+            {item.cibilReportUrl && (
+              <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+                <div className="text-xs text-muted-foreground">CIBIL Report</div>
+                <div className="mt-2">
+                  <a 
+                    href={item.cibilReportUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center text-xs bg-primary text-primary-foreground px-3 py-2 rounded-lg hover:bg-primary/90 transition"
+                  >
+                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                    View Report
+                  </a>
+                </div>
+              </div>
+            )}
           </div>
         </div>
-
-        {/* K. Additional Information */}
-        <div className="rounded-3xl border border-border/70 bg-card/70 p-6 shadow-sm backdrop-blur">
-          <h3 className="text-lg font-semibold mb-4 text-primary">K. Additional Information</h3>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Credit Score</div>
-              <div className="mt-1 text-sm font-semibold">{item.creditScore || "-"}</div>
-            </div>
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Previous Loan History</div>
-              <div className="mt-1 text-sm font-semibold">{item.previousLoanHistory || "-"}</div>
-            </div>
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Collateral Details</div>
-              <div className="mt-1 text-sm font-semibold">{item.collateralDetails || "-"}</div>
-            </div>
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Other Income Sources</div>
-              <div className="mt-1 text-sm font-semibold">{item.otherIncomeSources || "-"}</div>
-            </div>
-          </div>
-        </div>
-
-        {/* L. Verification Status */}
-        <div className="rounded-3xl border border-border/70 bg-card/70 p-6 shadow-sm backdrop-blur">
-          <h3 className="text-lg font-semibold mb-4 text-primary">L. Verification Status</h3>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">KYC Status</div>
-              <div className="mt-1 text-sm font-semibold">{item.kycStatus || "-"}</div>
-            </div>
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Document Verification</div>
-              <div className="mt-1 text-sm font-semibold">{item.documentVerification || "-"}</div>
-            </div>
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Bank Verification</div>
-              <div className="mt-1 text-sm font-semibold">{item.bankVerification || "-"}</div>
-            </div>
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Verification Date</div>
-              <div className="mt-1 text-sm font-semibold">{item.verificationDate ? new Date(item.verificationDate).toLocaleDateString() : "-"}</div>
-            </div>
-          </div>
-        </div>
-
-        {/* M. Admin Actions */}
-        <div className="rounded-3xl border border-border/70 bg-card/70 p-6 shadow-sm backdrop-blur">
-          <h3 className="text-lg font-semibold mb-4 text-primary">M. Admin Actions</h3>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Reviewed By</div>
-              <div className="mt-1 text-sm font-semibold">{item.reviewedBy || "-"}</div>
-            </div>
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Reviewed At</div>
-              <div className="mt-1 text-sm font-semibold">{item.reviewedAt ? new Date(item.reviewedAt).toLocaleDateString() : "-"}</div>
-            </div>
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Approved By</div>
-              <div className="mt-1 text-sm font-semibold">{item.approvedBy || "-"}</div>
-            </div>
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Approved At</div>
-              <div className="mt-1 text-sm font-semibold">{item.approvedAt ? new Date(item.approvedAt).toLocaleDateString() : "-"}</div>
-            </div>
-          </div>
-        </div>
-
-        {/* N. Upload Other Supported Documents */}
         <div className="rounded-3xl border border-border/70 bg-card/70 p-6 shadow-sm backdrop-blur">
           <h3 className="text-lg font-semibold mb-4 text-primary">N. Upload Other Supported Documents</h3>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
               <div className="text-xs text-muted-foreground">Document Uploads</div>
               <div className="mt-1 text-sm text-muted-foreground">
-                {item.documents && item.documents.length > 0 
+                {item.documents && item.documents.length > 0
                   ? `${item.documents.length} document(s) uploaded`
                   : "No documents uploaded"
                 }
@@ -493,7 +809,7 @@ export default function AdminBusinessLoanApplicationDetailPage({ params }: { par
             </div>
             <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
               <div className="text-xs text-muted-foreground">Complete Application Data</div>
-              <button 
+              <button
                 onClick={() => console.log("Show complete data:", item)}
                 className="mt-1 text-xs bg-primary/10 text-primary px-3 py-1 rounded-lg hover:bg-primary/20 transition"
               >
@@ -501,29 +817,60 @@ export default function AdminBusinessLoanApplicationDetailPage({ params }: { par
               </button>
             </div>
             {item.documents && item.documents.length > 0 && (
-              <>
+              <div className="col-span-2 space-y-3">
+                <h4 className="text-sm font-semibold text-primary">Uploaded Documents:</h4>
                 {item.documents.map((doc: any, index: number) => (
                   <div key={index} className="rounded-2xl border border-border/50 bg-background/50 p-4">
-                    <div className="text-xs text-muted-foreground">Document {index + 1}</div>
-                    <div className="mt-1 text-sm">
-                      <div className="font-semibold">{doc.name || doc.fileName || "Unknown"}</div>
-                      <div className="text-xs text-muted-foreground mt-1">
-                        Type: {doc.type || doc.mimeType || "Unknown"}
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="text-xs text-muted-foreground">Document {index + 1}</div>
+                        <div className="mt-1">
+                          <div className="text-sm font-semibold">{doc.name || doc.fileName || doc.originalName || "Unknown"}</div>
+                          <div className="text-xs text-muted-foreground mt-1">
+                            Type: {doc.type || doc.mimeType || doc.documentType || "Unknown"}
+                          </div>
+                          <div className="text-xs text-muted-foreground mt-1">
+                            Size: {doc.size ? `${(doc.size / 1024).toFixed(2)} KB` : "Unknown"}
+                          </div>
+                          {doc.uploadedAt && (
+                            <div className="text-xs text-muted-foreground mt-1">
+                              Uploaded: {new Date(doc.uploadedAt).toLocaleDateString()}
+                            </div>
+                          )}
+                        </div>
                       </div>
-                      {doc.url && (
-                        <a 
-                          href={doc.url} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="text-xs text-primary hover:underline mt-1 inline-block"
-                        >
-                          View Document
-                        </a>
-                      )}
+                      <div className="ml-4">
+                        {doc.url && (
+                          <a
+                            href={doc.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center text-xs bg-primary text-primary-foreground px-3 py-2 rounded-lg hover:bg-primary/90 transition"
+                          >
+                            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                            View
+                          </a>
+                        )}
+                        {doc.secureUrl && (
+                          <a
+                            href={doc.secureUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center text-xs bg-primary text-primary-foreground px-3 py-2 rounded-lg hover:bg-primary/90 transition ml-2"
+                          >
+                            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                            View
+                          </a>
+                        )}
+                      </div>
                     </div>
                   </div>
                 ))}
-              </>
+              </div>
             )}
           </div>
         </div>

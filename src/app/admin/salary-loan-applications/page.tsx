@@ -20,7 +20,7 @@ export default function AdminSalaryLoanApplicationsPage() {
     const sp = new URLSearchParams();
     if (search.trim()) sp.set("search", search.trim());
     if (status) sp.set("status", status);
-    sp.set("type", "personal"); // Filter for salary/personal loans only
+    // Don't filter by type to show all salary/personal loans
     sp.set("page", String(page));
     sp.set("limit", "10");
     return sp.toString();
@@ -37,10 +37,12 @@ export default function AdminSalaryLoanApplicationsPage() {
         if (!mounted) return;
 
         if (res.ok && data?.success) {
+          console.log("Salary Loan API Response:", data);
           setItems(data.data.items || []);
           setPages(data.data.pages || 1);
           setError(null);
         } else {
+          console.log("Salary Loan API Error:", data);
           setItems([]);
           setPages(1);
           setError(data?.message || null);

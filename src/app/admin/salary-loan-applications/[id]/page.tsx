@@ -25,9 +25,9 @@ export default function AdminSalaryLoanApplicationDetailPage({ params }: { param
         if (!mounted) return;
 
         if (res.ok && data?.success) {
-          // Only show if it's a personal/salaried loan application
-          if (data.data._type !== "personal") {
-            setError("Application not found or not a salary employee loan");
+          // Show all types for salary employee loans
+          if (data.data._type === "business") {
+            setError("This is a business loan application. Please check business loan applications.");
             return;
           }
           setItem(data.data);
@@ -138,101 +138,378 @@ export default function AdminSalaryLoanApplicationDetailPage({ params }: { param
         </div>
       )}
 
-      <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
-        <div className="rounded-3xl border border-border/70 bg-background/50 p-5">
-          <div className="text-xs text-muted-foreground">Employee Name</div>
-          <div className="mt-1 text-sm font-semibold">{name}</div>
+      <div className="mt-6 space-y-6">
+        {/* A. Applicant Basic Details */}
+        <div className="rounded-3xl border border-border/70 bg-card/70 p-6 shadow-sm backdrop-blur">
+          <h3 className="text-lg font-semibold mb-4 text-primary">A. Applicant Basic Details</h3>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+              <div className="text-xs text-muted-foreground">First Name</div>
+              <div className="mt-1 text-sm font-semibold">{item.firstname || "-"}</div>
+            </div>
+            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+              <div className="text-xs text-muted-foreground">Middle Name</div>
+              <div className="mt-1 text-sm font-semibold">{item.middleName || "-"}</div>
+            </div>
+            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+              <div className="text-xs text-muted-foreground">Last Name</div>
+              <div className="mt-1 text-sm font-semibold">{item.lastname || "-"}</div>
+            </div>
+            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+              <div className="text-xs text-muted-foreground">Gender</div>
+              <div className="mt-1 text-sm font-semibold">{item.gender || "-"}</div>
+            </div>
+            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+              <div className="text-xs text-muted-foreground">Marital Status</div>
+              <div className="mt-1 text-sm font-semibold">{item.maritalStatus || "-"}</div>
+            </div>
+            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+              <div className="text-xs text-muted-foreground">Date of Birth</div>
+              <div className="mt-1 text-sm font-semibold">{item.dob || "-"}</div>
+            </div>
+            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+              <div className="text-xs text-muted-foreground">Application Ref</div>
+              <div className="mt-1 text-sm font-semibold">{item.applicationRef || "-"}</div>
+            </div>
+          </div>
         </div>
-        <div className="rounded-3xl border border-border/70 bg-background/50 p-5">
-          <div className="text-xs text-muted-foreground">Email</div>
-          <div className="mt-1 text-sm font-semibold">{email}</div>
-        </div>
-        <div className="rounded-3xl border border-border/70 bg-background/50 p-5">
-          <div className="text-xs text-muted-foreground">Mobile</div>
-          <div className="mt-1 text-sm font-semibold">{mobile}</div>
-        </div>
-        <div className="rounded-3xl border border-border/70 bg-background/50 p-5">
-          <div className="text-xs text-muted-foreground">Status</div>
-          <div className="mt-1 text-sm font-semibold">{item.status || "Pending"}</div>
-        </div>
-        {item.loanAmount && (
-          <div className="rounded-3xl border border-border/70 bg-background/50 p-5">
-            <div className="text-xs text-muted-foreground">Loan Amount</div>
-            <div className="mt-1 text-sm font-semibold">{item.loanAmount}</div>
-          </div>
-        )}
-        {item.loanPurpose && (
-          <div className="rounded-3xl border border-border/70 bg-background/50 p-5">
-            <div className="text-xs text-muted-foreground">Loan Purpose</div>
-            <div className="mt-1 text-sm font-semibold">{item.loanPurpose}</div>
-          </div>
-        )}
-        {item.aadhaarNumber && (
-          <div className="rounded-3xl border border-border/70 bg-background/50 p-5">
-            <div className="text-xs text-muted-foreground">Aadhaar Number</div>
-            <div className="mt-1 text-sm font-semibold">{item.aadhaarNumber}</div>
-          </div>
-        )}
-        {item.panNumber && (
-          <div className="rounded-3xl border border-border/70 bg-background/50 p-5">
-            <div className="text-xs text-muted-foreground">PAN Number</div>
-            <div className="mt-1 text-sm font-semibold">{item.panNumber}</div>
-          </div>
-        )}
-        {item.currentResidentialAddress && (
-          <div className="rounded-3xl border border-border/70 bg-background/50 p-5">
-            <div className="text-xs text-muted-foreground">Residential Address</div>
-            <div className="mt-1 text-sm font-semibold">{item.currentResidentialAddress}</div>
-          </div>
-        )}
-        {item.gender && (
-          <div className="rounded-3xl border border-border/70 bg-background/50 p-5">
-            <div className="text-xs text-muted-foreground">Gender</div>
-            <div className="mt-1 text-sm font-semibold">{item.gender}</div>
-          </div>
-        )}
-        {item.maritalStatus && (
-          <div className="rounded-3xl border border-border/70 bg-background/50 p-5">
-            <div className="text-xs text-muted-foreground">Marital Status</div>
-            <div className="mt-1 text-sm font-semibold">{item.maritalStatus}</div>
-          </div>
-        )}
-        {item.dob && (
-          <div className="rounded-3xl border border-border/70 bg-background/50 p-5">
-            <div className="text-xs text-muted-foreground">Date of Birth</div>
-            <div className="mt-1 text-sm font-semibold">{item.dob}</div>
-          </div>
-        )}
-        {item.serviceCategoryTitle && (
-          <div className="rounded-3xl border border-border/70 bg-background/50 p-5">
-            <div className="text-xs text-muted-foreground">Service Category</div>
-            <div className="mt-1 text-sm font-semibold">{item.serviceCategoryTitle}</div>
-          </div>
-        )}
-        {item.createdAt && (
-          <div className="rounded-3xl border border-border/70 bg-background/50 p-5">
-            <div className="text-xs text-muted-foreground">Application Date</div>
-            <div className="mt-1 text-sm font-semibold">{new Date(item.createdAt).toLocaleDateString()}</div>
-          </div>
-        )}
-      </div>
 
-      <div className="mt-4 rounded-3xl border border-border/70 bg-background/50 p-5">
-        <div className="text-xs text-muted-foreground">Admin Remarks</div>
-        <textarea
-          className="mt-3 w-full rounded-2xl border border-input bg-background/60 px-4 py-3 text-sm outline-none transition focus:border-primary/50 focus:bg-background focus:shadow-[0_0_0_4px_hsl(var(--primary)/0.12)]"
-          rows={4}
-          value={adminRemarks}
-          onChange={(e) => setAdminRemarks(e.target.value)}
-          placeholder="Add remarks..."
-        />
-      </div>
+        {/* B. Applicant Contact Details */}
+        <div className="rounded-3xl border border-border/70 bg-card/70 p-6 shadow-sm backdrop-blur">
+          <h3 className="text-lg font-semibold mb-4 text-primary">B. Applicant Contact Details</h3>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+              <div className="text-xs text-muted-foreground">Personal Email</div>
+              <div className="mt-1 text-sm font-semibold">{item.personalEmail || "-"}</div>
+            </div>
+            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+              <div className="text-xs text-muted-foreground">Official Email</div>
+              <div className="mt-1 text-sm font-semibold">{item.officialEmail || "-"}</div>
+            </div>
+            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+              <div className="text-xs text-muted-foreground">Mobile Number</div>
+              <div className="mt-1 text-sm font-semibold">{item.mobileNumber || "-"}</div>
+            </div>
+            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+              <div className="text-xs text-muted-foreground">Alternate Mobile</div>
+              <div className="mt-1 text-sm font-semibold">{item.alternateMobile || "-"}</div>
+            </div>
+          </div>
+        </div>
 
-      <div className="mt-4 rounded-3xl border border-border/70 bg-background/50 p-5">
-        <div className="text-xs text-muted-foreground">Complete Application Details</div>
-        <pre className="mt-3 max-h-[420px] overflow-auto rounded-2xl bg-secondary/40 p-4 text-xs">
-          {JSON.stringify(item, null, 2)}
-        </pre>
+        {/* C. Residential Address Details */}
+        <div className="rounded-3xl border border-border/70 bg-card/70 p-6 shadow-sm backdrop-blur">
+          <h3 className="text-lg font-semibold mb-4 text-primary">C. Residential Address Details</h3>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+              <div className="text-xs text-muted-foreground">Current Residential Address</div>
+              <div className="mt-1 text-sm font-semibold">{item.currentResidentialAddress || "-"}</div>
+            </div>
+            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+              <div className="text-xs text-muted-foreground">Residential State</div>
+              <div className="mt-1 text-sm font-semibold">{item.residentialState || "-"}</div>
+            </div>
+            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+              <div className="text-xs text-muted-foreground">Residential City</div>
+              <div className="mt-1 text-sm font-semibold">{item.residentialCity || "-"}</div>
+            </div>
+            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+              <div className="text-xs text-muted-foreground">Residential Pincode</div>
+              <div className="mt-1 text-sm font-semibold">{item.currentResidentialPincode || "-"}</div>
+            </div>
+          </div>
+        </div>
+
+        {/* D. Office Address Details */}
+        <div className="rounded-3xl border border-border/70 bg-card/70 p-6 shadow-sm backdrop-blur">
+          <h3 className="text-lg font-semibold mb-4 text-primary">D. Office Address Details</h3>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+              <div className="text-xs text-muted-foreground">Current Office Address</div>
+              <div className="mt-1 text-sm font-semibold">{item.currentOfficeAddress || "-"}</div>
+            </div>
+            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+              <div className="text-xs text-muted-foreground">Office State</div>
+              <div className="mt-1 text-sm font-semibold">{item.officeState || "-"}</div>
+            </div>
+            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+              <div className="text-xs text-muted-foreground">Office City</div>
+              <div className="mt-1 text-sm font-semibold">{item.officeCity || "-"}</div>
+            </div>
+            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+              <div className="text-xs text-muted-foreground">Office Pincode</div>
+              <div className="mt-1 text-sm font-semibold">{item.currentOfficePincode || "-"}</div>
+            </div>
+          </div>
+        </div>
+
+        {/* E. Identity Documents */}
+        <div className="rounded-3xl border border-border/70 bg-card/70 p-6 shadow-sm backdrop-blur">
+          <h3 className="text-lg font-semibold mb-4 text-primary">E. Identity Documents</h3>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+              <div className="text-xs text-muted-foreground">Aadhaar Number</div>
+              <div className="mt-1 text-sm font-semibold">{item.aadhaarNumber || "-"}</div>
+            </div>
+            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+              <div className="text-xs text-muted-foreground">PAN Number</div>
+              <div className="mt-1 text-sm font-semibold">{item.panNumber || "-"}</div>
+            </div>
+            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+              <div className="text-xs text-muted-foreground">Voter ID Number</div>
+              <div className="mt-1 text-sm font-semibold">{item.voterIdNumber || "-"}</div>
+            </div>
+            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+              <div className="text-xs text-muted-foreground">Driving License</div>
+              <div className="mt-1 text-sm font-semibold">{item.drivingLicense || "-"}</div>
+            </div>
+            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+              <div className="text-xs text-muted-foreground">Passport Number</div>
+              <div className="mt-1 text-sm font-semibold">{item.passportNumber || "-"}</div>
+            </div>
+          </div>
+        </div>
+
+        {/* F. Document Uploads */}
+        <div className="rounded-3xl border border-border/70 bg-card/70 p-6 shadow-sm backdrop-blur">
+          <h3 className="text-lg font-semibold mb-4 text-primary">F. Document Uploads</h3>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            {item.applicantPhotoUrl && (
+              <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+                <div className="text-xs text-muted-foreground">Applicant Photo</div>
+                <div className="mt-2">
+                  <a 
+                    href={item.applicantPhotoUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center text-xs bg-primary text-primary-foreground px-3 py-2 rounded-lg hover:bg-primary/90 transition"
+                  >
+                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                    View Photo
+                  </a>
+                </div>
+              </div>
+            )}
+            {item.panPhotoUrl && (
+              <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+                <div className="text-xs text-muted-foreground">PAN Card Photo</div>
+                <div className="mt-2">
+                  <a 
+                    href={item.panPhotoUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center text-xs bg-primary text-primary-foreground px-3 py-2 rounded-lg hover:bg-primary/90 transition"
+                  >
+                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                    View PAN
+                  </a>
+                </div>
+              </div>
+            )}
+            {item.aadhaarPhotoUrl && (
+              <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+                <div className="text-xs text-muted-foreground">Aadhaar Card Front</div>
+                <div className="mt-2">
+                  <a 
+                    href={item.aadhaarPhotoUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center text-xs bg-primary text-primary-foreground px-3 py-2 rounded-lg hover:bg-primary/90 transition"
+                  >
+                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                    View Aadhaar
+                  </a>
+                </div>
+              </div>
+            )}
+            {item.aadhaarBackPhotoUrl && (
+              <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+                <div className="text-xs text-muted-foreground">Aadhaar Card Back</div>
+                <div className="mt-2">
+                  <a 
+                    href={item.aadhaarBackPhotoUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center text-xs bg-primary text-primary-foreground px-3 py-2 rounded-lg hover:bg-primary/90 transition"
+                  >
+                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                    View Back
+                  </a>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* G. Employment Details */}
+        <div className="rounded-3xl border border-border/70 bg-card/70 p-6 shadow-sm backdrop-blur">
+          <h3 className="text-lg font-semibold mb-4 text-primary">G. Employment Details</h3>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+              <div className="text-xs text-muted-foreground">Employment Type</div>
+              <div className="mt-1 text-sm font-semibold">{item.employmentType || "-"}</div>
+            </div>
+            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+              <div className="text-xs text-muted-foreground">Company Name</div>
+              <div className="mt-1 text-sm font-semibold">{item.companyName || "-"}</div>
+            </div>
+            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+              <div className="text-xs text-muted-foreground">Work Experience</div>
+              <div className="mt-1 text-sm font-semibold">{item.workExperience || "-"}</div>
+            </div>
+            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+              <div className="text-xs text-muted-foreground">Monthly Salary</div>
+              <div className="mt-1 text-sm font-semibold">{item.monthlySalary || "-"}</div>
+            </div>
+          </div>
+        </div>
+
+        {/* H. Bank Details */}
+        <div className="rounded-3xl border border-border/70 bg-card/70 p-6 shadow-sm backdrop-blur">
+          <h3 className="text-lg font-semibold mb-4 text-primary">H. Bank Details</h3>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+              <div className="text-xs text-muted-foreground">Bank Name</div>
+              <div className="mt-1 text-sm font-semibold">{item.bankName || "-"}</div>
+            </div>
+            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+              <div className="text-xs text-muted-foreground">Account Number</div>
+              <div className="mt-1 text-sm font-semibold">{item.accountNumber || "-"}</div>
+            </div>
+            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+              <div className="text-xs text-muted-foreground">IFSC Code</div>
+              <div className="mt-1 text-sm font-semibold">{item.ifscCode || "-"}</div>
+            </div>
+            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+              <div className="text-xs text-muted-foreground">Branch Name</div>
+              <div className="mt-1 text-sm font-semibold">{item.branchName || "-"}</div>
+            </div>
+          </div>
+        </div>
+
+        {/* I. Loan Details */}
+        <div className="rounded-3xl border border-border/70 bg-card/70 p-6 shadow-sm backdrop-blur">
+          <h3 className="text-lg font-semibold mb-4 text-primary">I. Loan Details</h3>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+              <div className="text-xs text-muted-foreground">Service Category</div>
+              <div className="mt-1 text-sm font-semibold">{item.serviceCategoryTitle || "-"}</div>
+            </div>
+            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+              <div className="text-xs text-muted-foreground">Loan Amount</div>
+              <div className="mt-1 text-sm font-semibold">{item.loanAmount || "-"}</div>
+            </div>
+            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+              <div className="text-xs text-muted-foreground">Loan Purpose</div>
+              <div className="mt-1 text-sm font-semibold">{item.loanPurpose || "-"}</div>
+            </div>
+            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+              <div className="text-xs text-muted-foreground">Status</div>
+              <div className="mt-1 text-sm font-semibold">{item.status || "Pending"}</div>
+            </div>
+            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+              <div className="text-xs text-muted-foreground">Application Date</div>
+              <div className="mt-1 text-sm font-semibold">{item.createdAt ? new Date(item.createdAt).toLocaleDateString() : "-"}</div>
+            </div>
+          </div>
+        </div>
+
+        {/* J. Additional Documents */}
+        <div className="rounded-3xl border border-border/70 bg-card/70 p-6 shadow-sm backdrop-blur">
+          <h3 className="text-lg font-semibold mb-4 text-primary">J. Additional Documents</h3>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            {item.bankStatementUrl && (
+              <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+                <div className="text-xs text-muted-foreground">Bank Statement</div>
+                <div className="mt-2">
+                  <a 
+                    href={item.bankStatementUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center text-xs bg-primary text-primary-foreground px-3 py-2 rounded-lg hover:bg-primary/90 transition"
+                  >
+                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                    View Statement
+                  </a>
+                </div>
+              </div>
+            )}
+            {item.itrFileUrl && (
+              <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+                <div className="text-xs text-muted-foreground">ITR File</div>
+                <div className="mt-2">
+                  <a 
+                    href={item.itrFileUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center text-xs bg-primary text-primary-foreground px-3 py-2 rounded-lg hover:bg-primary/90 transition"
+                  >
+                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                    View ITR
+                  </a>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* K. Verification Status */}
+        <div className="rounded-3xl border border-border/70 bg-card/70 p-6 shadow-sm backdrop-blur">
+          <h3 className="text-lg font-semibold mb-4 text-primary">K. Verification Status</h3>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+              <div className="text-xs text-muted-foreground">KYC Status</div>
+              <div className="mt-1 text-sm font-semibold">{item.kycStatus || "-"}</div>
+            </div>
+            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+              <div className="text-xs text-muted-foreground">Document Verification</div>
+              <div className="mt-1 text-sm font-semibold">{item.documentVerification || "-"}</div>
+            </div>
+            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+              <div className="text-xs text-muted-foreground">Bank Verification</div>
+              <div className="mt-1 text-sm font-semibold">{item.bankVerification || "-"}</div>
+            </div>
+            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+              <div className="text-xs text-muted-foreground">Verification Date</div>
+              <div className="mt-1 text-sm font-semibold">{item.verificationDate ? new Date(item.verificationDate).toLocaleDateString() : "-"}</div>
+            </div>
+          </div>
+        </div>
+
+        {/* L. Reference Details */}
+        <div className="rounded-3xl border border-border/70 bg-card/70 p-6 shadow-sm backdrop-blur">
+          <h3 className="text-lg font-semibold mb-4 text-primary">L. Reference Details</h3>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+              <div className="text-xs text-muted-foreground">Reference 1 Name</div>
+              <div className="mt-1 text-sm font-semibold">{item.reference1Name || "-"}</div>
+            </div>
+            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+              <div className="text-xs text-muted-foreground">Reference 1 Contact</div>
+              <div className="mt-1 text-sm font-semibold">{item.reference1Contact || "-"}</div>
+            </div>
+            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+              <div className="text-xs text-muted-foreground">Reference 2 Name</div>
+              <div className="mt-1 text-sm font-semibold">{item.reference2Name || "-"}</div>
+            </div>
+            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
+              <div className="text-xs text-muted-foreground">Reference 2 Contact</div>
+              <div className="mt-1 text-sm font-semibold">{item.reference2Contact || "-"}</div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div className="mt-4">
