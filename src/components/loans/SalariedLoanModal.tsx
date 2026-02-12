@@ -60,7 +60,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
         const isAllowedExt =
             fileName.endsWith(".pdf") || fileName.endsWith(".jpg") || fileName.endsWith(".jpeg");
 
-        if (!isAllowedMime && !isAllowedExt) return "Please pdf or jpg maximum 2mb";
+        if (!isAllowedMime && !isAllowedExt) return "Please pdf or jpg";
 
         if (await isPdfPasswordProtected(file)) {
             return "Password-protected PDFs are not supported";
