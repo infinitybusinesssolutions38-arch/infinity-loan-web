@@ -23,6 +23,10 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
         formState: { errors },
     } = useForm<LoanFormData>();
 
+    const SIGNATURE_TIMEOUT_MS = 30000;
+    const CLOUDINARY_UPLOAD_TIMEOUT_MS = 180000;
+    const SUBMIT_TIMEOUT_MS = 120000;
+
     const isPdfPasswordProtected = async (file: File) => {
         try {
             const isPdf =
@@ -71,7 +75,11 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
     const getCloudinarySignature = async (folder: string) => {
         let res;
         try {
-            res = await axios.post("/api/cloudinary-signature", { folder }, { timeout: 15000 });
+            res = await axios.post(
+                "/api/cloudinary-signature",
+                { folder },
+                { timeout: SIGNATURE_TIMEOUT_MS }
+            );
         } catch (err) {
             if (axios.isAxiosError(err)) {
                 const data: any = err.response?.data;
@@ -110,7 +118,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
         let uploadRes;
         try {
             uploadRes = await axios.post(uploadUrl, fd, {
-                timeout: 60000,
+                timeout: CLOUDINARY_UPLOAD_TIMEOUT_MS,
                 headers: { "Content-Type": "multipart/form-data" },
             });
         } catch (err) {
@@ -550,7 +558,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
             }
 
             const res = await axios.post("/api/salaried-loan", formData, {
-                timeout: 45000,
+                timeout: SUBMIT_TIMEOUT_MS,
             });
             console.log(res.data);
 
