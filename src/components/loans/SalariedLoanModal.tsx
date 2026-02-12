@@ -23,13 +23,31 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
         formState: { errors },
     } = useForm<LoanFormData>();
 
-    const MAX_FILE_BYTES = 2 * 1024 * 1024;
+    const isPdfPasswordProtected = async (file: File) => {
+        try {
+            const isPdf =
+                file.type === "application/pdf" ||
+                (typeof file.name === "string" && file.name.toLowerCase().endsWith(".pdf"));
+            if (!isPdf) return false;
+
+            const buf = await file.arrayBuffer();
+            const slice = buf.slice(0, Math.min(buf.byteLength, 512 * 1024));
+            const text = new TextDecoder("latin1").decode(new Uint8Array(slice));
+
+            // Heuristic: encrypted PDFs usually include an /Encrypt entry in the trailer/catalog.
+            // This catches most password-protected PDFs without changing UI.
+            return text.includes("/Encrypt");
+        } catch {
+            return false;
+        }
+    };
+
     const getFileFromValue = (value: any): File | null => {
         if (value instanceof File) return value;
         if (value?.[0] instanceof File) return value[0];
         return null;
     };
-    const validateMax2MB = (value: any) => {
+    const validateMax2MB = async (value: any) => {
         const file = getFileFromValue(value);
         if (!file) return true;
 
@@ -43,12 +61,29 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
             fileName.endsWith(".pdf") || fileName.endsWith(".jpg") || fileName.endsWith(".jpeg");
 
         if (!isAllowedMime && !isAllowedExt) return "Please pdf or jpg maximum 2mb";
-        if (file.size > MAX_FILE_BYTES) return "Please pdf or jpg maximum 2mb";
+
+        if (await isPdfPasswordProtected(file)) {
+            return "Password-protected PDFs are not supported";
+        }
         return true;
     };
 
     const getCloudinarySignature = async (folder: string) => {
-        const res = await axios.post("/api/cloudinary-signature", { folder }, { timeout: 15000 });
+        let res;
+        try {
+            res = await axios.post("/api/cloudinary-signature", { folder }, { timeout: 15000 });
+        } catch (err) {
+            if (axios.isAxiosError(err)) {
+                const data: any = err.response?.data;
+                const msg =
+                    data?.message ||
+                    (typeof data === "string" ? data : "") ||
+                    err.message;
+                throw new Error(`Cloudinary signature failed: ${msg}`);
+            }
+            throw err;
+        }
+
         if (!res?.data?.success) {
             throw new Error(res?.data?.message || "Failed to get upload signature");
         }
@@ -72,10 +107,26 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
         fd.append("folder", sig.folder);
         fd.append("signature", sig.signature);
 
-        const uploadRes = await axios.post(uploadUrl, fd, {
-            timeout: 60000,
-            headers: { "Content-Type": "multipart/form-data" },
-        });
+        let uploadRes;
+        try {
+            uploadRes = await axios.post(uploadUrl, fd, {
+                timeout: 60000,
+                headers: { "Content-Type": "multipart/form-data" },
+            });
+        } catch (err) {
+            if (axios.isAxiosError(err)) {
+                const data: any = err.response?.data;
+                const cloudMsg =
+                    data?.error?.message ||
+                    data?.message ||
+                    (typeof data === "string" ? data : "");
+                const finalMsg = cloudMsg
+                    ? `Cloudinary upload failed: ${cloudMsg}`
+                    : `Cloudinary upload failed: ${err.message}`;
+                throw new Error(finalMsg);
+            }
+            throw err;
+        }
 
         const secureUrl = uploadRes?.data?.secure_url;
         if (!secureUrl || typeof secureUrl !== "string") {

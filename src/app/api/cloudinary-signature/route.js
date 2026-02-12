@@ -12,6 +12,25 @@ export async function POST(req) {
     const body = await req.json().catch(() => ({}));
     const folder = body?.folder || "loan_applications";
 
+    if (!process.env.CLOUDINARY_CLOUD_NAME) {
+      return NextResponse.json(
+        { success: false, message: "Missing CLOUDINARY_CLOUD_NAME" },
+        { status: 400 }
+      );
+    }
+    if (!process.env.CLOUDINARY_API_KEY) {
+      return NextResponse.json(
+        { success: false, message: "Missing CLOUDINARY_API_KEY" },
+        { status: 400 }
+      );
+    }
+    if (!process.env.CLOUDINARY_API_SECRET) {
+      return NextResponse.json(
+        { success: false, message: "Missing CLOUDINARY_API_SECRET" },
+        { status: 400 }
+      );
+    }
+
     const timestamp = Math.round(Date.now() / 1000);
 
     const paramsToSign = {

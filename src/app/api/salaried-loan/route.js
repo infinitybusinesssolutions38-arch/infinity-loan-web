@@ -62,8 +62,22 @@ export async function POST(req) {
     /* =========================================
        GENERATE APPLICATION REF
     ========================================== */
-    const total = await SalariedLoanModel.countDocuments();
-    const applicationRef = `SAL_${String(total + 1).padStart(4, "0")}`;
+    const parseRefNumber = (ref) => {
+      if (!ref) return 0;
+      const m = String(ref).match(/SAL_(\d+)/i);
+      return m ? parseInt(m[1], 10) : 0;
+    };
+
+    const getNextApplicationRef = async (offset = 0) => {
+      const last = await SalariedLoanModel.findOne(
+        { applicationRef: { $regex: /^SAL_\d+$/ } },
+        { applicationRef: 1 }
+      ).sort({ applicationRef: -1 });
+
+      const lastNum = parseRefNumber(last?.applicationRef);
+      const nextNum = Math.max(0, lastNum) + 1 + Math.max(0, offset);
+      return `SAL_${String(nextNum).padStart(4, "0")}`;
+    };
 
     /* =========================================
        HANDLE EXISTING LOANS
@@ -127,9 +141,7 @@ export async function POST(req) {
     /* =========================================
        CREATE DOCUMENT
     ========================================== */
-    const newApplication = new SalariedLoanModel({
-      applicationRef,
-
+    const applicationBase = {
       firstName: formData.get("firstName"),
       middleName: formData.get("middleName"),
       lastName: formData.get("lastName"),
@@ -244,9 +256,31 @@ export async function POST(req) {
       loan_type: "salaried",
       application_status: "pending",
       role: "borrower-salaried",
-    });
+    };
 
-    const saved = await newApplication.save();
+    let saved;
+    let applicationRef;
+    for (let attempt = 0; attempt < 5; attempt += 1) {
+      applicationRef = await getNextApplicationRef(attempt);
+      try {
+        const newApplication = new SalariedLoanModel({
+          applicationRef,
+          ...applicationBase,
+        });
+        saved = await newApplication.save();
+        break;
+      } catch (err) {
+        const code = err?.code;
+        const dupField = err?.keyPattern ? Object.keys(err.keyPattern)[0] : "";
+        const isRefDup = code === 11000 && dupField === "applicationRef";
+        if (isRefDup) continue;
+        throw err;
+      }
+    }
+
+    if (!saved) {
+      throw new Error("Failed to generate unique applicationRef");
+    }
 
     /* =========================================
        EMAIL NOTIFICATIONS
