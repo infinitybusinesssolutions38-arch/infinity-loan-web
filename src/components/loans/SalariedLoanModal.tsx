@@ -754,28 +754,28 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                             </div>
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">PAN Photo <span className="text-destructive">*</span></label>
-                                <input type="file" {...register("panPhoto", { validate: validateMax2MB })} className="input bg-gray-200" />
+                                <input type="file" {...register("panPhoto", {required:true})} className="input bg-gray-200" />
                                 {getError("panPhoto") ? (
                                     <p className="text-sm text-red-600">{getError("panPhoto")}</p>
                                 ) : null}
                             </div>
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Aadhaar Front Photo <span className="text-destructive">*</span></label>
-                                <input type="file" {...register("aadhaarPhoto", { validate: validateMax2MB })} className="input bg-gray-200" />
+                                <input type="file" {...register("aadhaarPhoto", { required:true})} className="input bg-gray-200" />
                                 {getError("aadhaarPhoto") ? (
                                     <p className="text-sm text-red-600">{getError("aadhaarPhoto")}</p>
                                 ) : null}
                             </div>
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Aadhaar Back Photo <span className="text-destructive">*</span></label>
-                                <input type="file" {...register("aadhaarBackPhoto", { validate: validateMax2MB })} className="input bg-gray-200" />
+                                <input type="file" {...register("aadhaarBackPhoto", { required:true })} className="input bg-gray-200" />
                                 {getError("aadhaarBackPhoto") ? (
                                     <p className="text-sm text-red-600">{getError("aadhaarBackPhoto")}</p>
                                 ) : null}
                             </div>
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Applicant Photo <span className="text-destructive">*</span></label>
-                                <input type="file" {...register("applicantPhoto", { required: true, validate: validateMax2MB })} className="input bg-gray-200" />
+                                <input type="file" {...register("applicantPhoto", { required: true })} className="input bg-gray-200" />
                                 {getError("applicantPhoto") ? (
                                     <p className="text-sm text-red-600">{getError("applicantPhoto")}</p>
                                 ) : null}
@@ -831,7 +831,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                             {residenceType === "Owned" && (
                                 <div className="space-y-1">
                                     <label className="text-sm font-medium">Upload latest electricity bill <span className="text-red-400 text-xs">(optional)</span></label>
-                                    <input type="file" {...register("latestElectricityBill", { validate: validateMax2MB })} className="input bg-gray-200" />
+                                    <input type="file" {...register("latestElectricityBill")} className="input bg-gray-200" />
                                     {getError("latestElectricityBill") ? (
                                         <p className="text-sm text-red-600">{getError("latestElectricityBill")}</p>
                                     ) : null}
@@ -846,14 +846,14 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                                     </div>
                                     <div className="space-y-1">
                                         <label className="text-sm font-medium">Permanent Address Electricity Bill <span className="text-red-400 text-xs">(optional)</span></label>
-                                        <input type="file" {...register("permanentAddressElectricityBill", { validate: validateMax2MB })} className="input bg-gray-200" />
+                                        <input type="file" {...register("permanentAddressElectricityBill")} className="input bg-gray-200" />
                                         {getError("permanentAddressElectricityBill") ? (
                                             <p className="text-sm text-red-600">{getError("permanentAddressElectricityBill")}</p>
                                         ) : null}
                                     </div>
                                     <div className="space-y-1">
                                         <label className="text-sm font-medium">Rent Agreement <span className="text-red-400 text-xs">(optional)</span></label>
-                                        <input type="file" {...register("rentAgreement", { validate: validateMax2MB })} className="input bg-gray-200" />
+                                        <input type="file" {...register("rentAgreement")} className="input bg-gray-200" />
                                         {getError("rentAgreement") ? (
                                             <p className="text-sm text-red-600">{getError("rentAgreement")}</p>
                                         ) : null}
@@ -869,14 +869,14 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                                     </div>
                                     <div className="space-y-1">
                                         <label className="text-sm font-medium">Permanent Address Electricity Bill <span className="text-red-400 text-xs">(optional)</span></label>
-                                        <input type="file" {...register("permanentAddressElectricityBill", { validate: validateMax2MB })} className="input bg-gray-200" />
+                                        <input type="file" {...register("permanentAddressElectricityBill")} className="input bg-gray-200" />
                                         {getError("permanentAddressElectricityBill") ? (
                                             <p className="text-sm text-red-600">{getError("permanentAddressElectricityBill")}</p>
                                         ) : null}
                                     </div>
                                     <div className="space-y-1">
                                         <label className="text-sm font-medium">Company Allotment Letter <span className="text-red-400 text-xs">(optional)</span></label>
-                                        <input type="file" {...register("companyAllotmentLetter", { validate: validateMax2MB })} className="input bg-gray-200" />
+                                        <input type="file" {...register("companyAllotmentLetter")} className="input bg-gray-200" />
                                         {getError("companyAllotmentLetter") ? (
                                             <p className="text-sm text-red-600">{getError("companyAllotmentLetter")}</p>
                                         ) : null}
@@ -1009,7 +1009,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                             </div>
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Office ID Card Photo (pdf, jpg allowed )   <span className="text-destructive">*</span></label>
-                                <input type="file" {...register("officeIDCardPhoto", { required: true, validate: validateMax2MB })} className="input bg-gray-200" />
+                                <input type="file" {...register("officeIDCardPhoto", { required: true })} className="input bg-gray-200" />
                                 {getError("officeIDCardPhoto") ? (
                                     <p className="text-sm text-red-600">{getError("officeIDCardPhoto")}</p>
                                 ) : null}
@@ -1057,14 +1057,14 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                             </div>
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Last 6 Months Salary Slips (pdf, jpg allowed ) <span className="text-destructive">*</span></label>
-                                <input type="file" {...register("LastThreeMonthsSalarySlips", { required: true, validate: validateMax2MB })} className="input bg-gray-200" />
+                                <input type="file" {...register("LastThreeMonthsSalarySlips", { required: true })} className="input bg-gray-200" />
                                 {getError("LastThreeMonthsSalarySlips") ? (
                                     <p className="text-sm text-red-600">{getError("LastThreeMonthsSalarySlips")}</p>
                                 ) : null}
                             </div>
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Last 6 Months Bank Statement (pdf, jpg allowed ) <span className="text-destructive">*</span></label>
-                                <input type="file" {...register("lastSixMonthsBankStatement", { required: true, validate: validateMax2MB })} className="input bg-gray-200" />
+                                <input type="file" {...register("lastSixMonthsBankStatement", { required: true })} className="input bg-gray-200" />
                                 {getError("lastSixMonthsBankStatement") ? (
                                     <p className="text-sm text-red-600">{getError("lastSixMonthsBankStatement")}</p>
                                 ) : null}
@@ -1194,7 +1194,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                                     <input
                                         type="file"
                                         accept="application/pdf"
-                                        {...register("cibilReport", { validate: validateMax2MB })}
+                                        {...register("cibilReport")}
                                         className="input bg-gray-200"
                                     />
                                     {getError("cibilReport") ? (
@@ -1344,21 +1344,21 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
 
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Co-Applicant PAN Card Photo <span className="text-destructive">(optional)</span></label>
-                                <input type="file" {...register("CoApplicantpanPhoto", { validate: validateMax2MB })} className="input bg-gray-200" />
+                                <input type="file" {...register("CoApplicantpanPhoto")} className="input bg-gray-200" />
                                 {getError("CoApplicantpanPhoto") ? (
                                     <p className="text-sm text-red-600">{getError("CoApplicantpanPhoto")}</p>
                                 ) : null}
                             </div>
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Co-Applicant Aadhaar Front Photo <span className="text-destructive">(optional)</span></label>
-                                <input type="file" {...register("CoApplicantAadhaarPhoto", { validate: validateMax2MB })} className="input bg-gray-200" />
+                                <input type="file" {...register("CoApplicantAadhaarPhoto")} className="input bg-gray-200" />
                                 {getError("CoApplicantAadhaarPhoto") ? (
                                     <p className="text-sm text-red-600">{getError("CoApplicantAadhaarPhoto")}</p>
                                 ) : null}
                             </div>
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Co-Applicant Aadhaar Back Photo <span className="text-destructive">(optional)</span></label>
-                                <input type="file" {...register("CoApplicantAadhaarBackPhoto", { validate: validateMax2MB })} className="input bg-gray-200" />
+                                <input type="file" {...register("CoApplicantAadhaarBackPhoto")} className="input bg-gray-200" />
                                 {getError("CoApplicantAadhaarBackPhoto") ? (
                                     <p className="text-sm text-red-600">{getError("CoApplicantAadhaarBackPhoto")}</p>
                                 ) : null}
