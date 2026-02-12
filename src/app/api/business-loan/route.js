@@ -261,137 +261,224 @@ export async function POST(req) {
       ]);
     };
 
-    // =============================
-    // Client Confirmation Email
-    // =============================
-    const emailTasks = [];
-    emailTasks.push(
-      withTimeout(
-        sendLoanApplicationConfirmationEmail(formData.get("personalEmail"), {
-          customerName: formData.get("firstName"),
-          applicationNumber: applicationRef,
-          applicationDate,
-          loanType: "Business Loan",
-          loanAmount: formData.get("requiredLoanAmount"),
-        }),
-        12000
-      )
+    const normalizeEmailList = (...values) => {
+      const raw = values
+        .filter(Boolean)
+        .flatMap((v) => String(v).split(","))
+        .map((v) => v.trim())
+        .map((v) => v.replace(/,+$/g, ""))
+        .map((v) => v.trim())
+        .filter(Boolean);
+      return Array.from(new Set(raw));
+    };
+
+    const normalizeEmail = (value) => {
+      if (!value) return "";
+      return String(value).trim().toLowerCase();
+    };
+
+    const internalEmailSet = new Set(
+      normalizeEmailList(
+        process.env.DIRECTOR_EMAIL,
+        process.env.ADMIN_USER,
+        process.env.ADMIN_EMAIL,
+        process.env.SUPPORT_EMAIL
+      ).map((e) => normalizeEmail(e))
     );
 
-    // =============================
-    // Admin + Director Email (Full Details) via Gmail SMTP
-    // =============================
-    const gmailTransporter = createGmailTransporter();
-    const internalTo = process.env.DIRECTOR_EMAIL;
-    const internalCc = process.env.SUPPORT_EMAIL;
+    const isInternalEmail = (value) => {
+      const email = normalizeEmail(value);
+      if (!email) return false;
+      return internalEmailSet.has(email);
+    };
 
-    if (internalTo || internalCc) {
+    // =============================
+    // Client Confirmation Email (Template)
+    // =============================
+    const emailTasks = [];
+    const personalEmail = saved?.personalEmail;
+    const businessEmail = saved?.businessEmail;
+    const candidateCustomerEmail = !isInternalEmail(personalEmail)
+      ? personalEmail
+      : !isInternalEmail(businessEmail)
+        ? businessEmail
+        : null;
+
+    if (candidateCustomerEmail) {
       emailTasks.push(
         withTimeout(
-          gmailTransporter.sendMail({
-            from: process.env.EMAIL_HOST_USER || process.env.EMAIL_SMTP_USER,
-            to: internalTo || internalCc,
-            cc: internalTo && internalCc ? internalCc : undefined,
-            subject: `New Business Loan Application - ${applicationRef}`,
-            html: `
-        <h2>New Business Loan Application</h2>
-        <p><strong>Application Ref:</strong> ${applicationRef}</p>
-
-        <h3>Service Category</h3>
-        <p>${formData.get("serviceCategoryTitle") || formData.get("serviceCategoryKey") || "-"}</p>
-
-        <h3>Applicant Details</h3>
-        <p>Name: ${formData.get("firstName")} ${formData.get("lastName")}</p>
-        <p>Email: ${formData.get("personalEmail")}</p>
-        <p>Mobile: ${formData.get("mobileNumber")}</p>
-        <p>WhatsApp: ${formData.get("whatsAppNumber") || "-"}</p>
-        <p>Gender: ${formData.get("gender") || "-"}</p>
-        <p>Marital Status: ${formData.get("maritalStatus") || "-"}</p>
-        <p>DOB: ${formData.get("dob") || "-"}</p>
-
-        <h3>Addresses</h3>
-        <p>Residential: ${formData.get("currentResidentialAddress") || "-"}</p>
-        <p>Residential City/State/Pincode: ${formData.get("residentialCity") || "-"}, ${formData.get("residentialState") || "-"} - ${formData.get("currentResidentialPincode") || "-"}</p>
-        <p>Office/Shop: ${formData.get("currentOfficeOrShopAddress") || "-"}</p>
-        <p>Office City/State/Pincode: ${formData.get("officeCity") || "-"}, ${formData.get("officeOrShopState") || "-"} - ${formData.get("currentOfficePincode") || "-"}</p>
-
-        <h3>Business Details</h3>
-        <p>Business Name: ${formData.get("businessName")}</p>
-        <p>Business Type: ${formData.get("businessType")}</p>
-        <p>Industry: ${formData.get("industryType")}</p>
-        <p>Years in Business: ${formData.get("yearsInBusiness")}</p>
-        <p>Annual Turnover: ${formData.get("annualTurnover")}</p>
-
-        <h3>Bank Details</h3>
-        <p>Account Type: ${accountTypeJoined || "-"}</p>
-        <p>Bank Name: ${formData.get("bankName") || "-"}</p>
-        ${bankAccounts?.length
-          ? `
-        <h4>Selected Accounts</h4>
-        <ul>
-          ${bankAccounts
-            .map(
-              (a) =>
-                `<li>${a.accountType || "-"} — ${a.bankName || "-"} — ${a.oneYearBankStatementUrl || "Not Uploaded"}</li>`
-            )
-            .join("")}
-        </ul>
-        `
-          : ""}
-
-        <h3>Loan Details</h3>
-        <p>Amount: ${formData.get("requiredLoanAmount")}</p>
-        <p>Tenure: ${formData.get("preferredTenure")}</p>
-        <p>Purpose: ${formData.get("purpose")}</p>
-        <p>Type Of Loan: ${formData.get("typeOfLoan") || "-"}</p>
-        <p>CIBIL Issues: ${formData.get("cibilIssuesDetails") || "-"}</p>
-        <p>CIBIL Available: ${formData.get("hasCibil") || "-"}</p>
-        <p>CIBIL Score: ${formData.get("cibilScore") || "-"}</p>
-        <p>Buying Goods: ${formData.get("isBuyingGoods") || "-"}</p>
-        <p>Quotation Amount: ${formData.get("quotationAmount") || "-"}</p>
-
-        <h3>Documents</h3>
-        <p>Applicant Photo: ${saved.applicantPhotoUrl || "Not Uploaded"}</p>
-        <p>PAN: ${saved.panPhotoUrl || "Not Uploaded"}</p>
-        <p>Aadhaar: ${saved.aadhaarPhotoUrl || "Not Uploaded"}</p>
-        <p>GST Certificate: ${saved.gstCertificateUrl || "Not Uploaded"}</p>
-        <p>Bank Statement: ${saved.bankStatementUrl || "Not Uploaded"}</p>
-        <p>One Year Bank Statement: ${saved.oneYearBankStatementUrl || "Not Uploaded"}</p>
-        <p>ITR File: ${saved.itrFileUrl || "Not Uploaded"}</p>
-        <p>Latest Home Electricity Bill: ${saved.latestHomeElectricityBillUrl || "Not Uploaded"}</p>
-        <p>Latest Office/Shop Electricity Bill: ${saved.latestOfficeShopElectricityBillUrl || "Not Uploaded"}</p>
-        <p>Assessment Year 2023-24: ${saved.assessmentYear2324Url || "Not Uploaded"}</p>
-        <p>Assessment Year 2024-25: ${saved.assessmentYear2425Url || "Not Uploaded"}</p>
-        <p>Assessment Year 2025-26: ${saved.assessmentYear2526Url || "Not Uploaded"}</p>
-        <p>Proforma Invoice: ${saved.proformaInvoiceFileUrl || "Not Uploaded"}</p>
-        <p>CIBIL Report: ${saved.cibilReportUrl || "Not Uploaded"}</p>
-        ${otherSupportedDocumentsUrls.filter(Boolean).length
-          ? `
-        <h4>Other Supported Documents</h4>
-        <ul>
-          ${otherSupportedDocumentsUrls
-            .filter(Boolean)
-            .map((u) => `<li>${u}</li>`)
-            .join("")}
-        </ul>
-        `
-          : ""}
-        ${registrationCertificates?.length
-          ? `
-        <h4>Business Registration Certificates</h4>
-        <ul>
-          ${registrationCertificates
-            .map(
-              (c) =>
-                `<li>${c.certificateType || "-"} — ${c.fileUrl || "Not Uploaded"}</li>`
-            )
-            .join("")}
-        </ul>
-        `
-          : ""}
-      `,
+          sendLoanApplicationConfirmationEmail(candidateCustomerEmail, {
+            customerName: saved?.firstName,
+            applicationNumber: applicationRef,
+            applicationDate,
+            loanType: "Business Loan",
+            loanAmount: saved?.requiredLoanAmount,
           }),
           12000
+        )
+      );
+    }
+
+    // =============================
+    // Internal Email (Full Details) via Gmail SMTP
+    // =============================
+    const gmailTransporter = createGmailTransporter();
+    const internalRecipients = normalizeEmailList(
+      process.env.DIRECTOR_EMAIL,
+      process.env.SUPPORT_EMAIL,
+      process.env.ADMIN_USER
+    );
+
+    const safe = (v) => {
+      if (v === null || typeof v === "undefined") return "";
+      return String(v);
+    };
+
+    const asLink = (u) => {
+      const url = typeof u === "string" ? u.trim() : "";
+      if (!url) return "-";
+      return `<a href="${url}" target="_blank" rel="noreferrer">View</a>`;
+    };
+
+    const internalHtml = `
+      <h2>New Business Loan Application</h2>
+      <p><strong>Application Ref:</strong> ${safe(applicationRef)}</p>
+      <p><strong>Application Date:</strong> ${safe(applicationDate)}</p>
+
+      <h3>Service Category</h3>
+      <p>${safe(saved?.serviceCategoryTitle) || safe(saved?.serviceCategoryKey) || "-"}</p>
+
+      <h3>Applicant Details</h3>
+      <p><strong>Name:</strong> ${safe(saved?.firstName)} ${safe(saved?.middleName)} ${safe(saved?.lastName)}</p>
+      <p><strong>Mobile:</strong> ${safe(saved?.mobileNumber)}</p>
+      <p><strong>Alternate Mobile:</strong> ${safe(saved?.alternateMobile || saved?.alternateMobileNumber) || "-"}</p>
+      <p><strong>WhatsApp:</strong> ${safe(saved?.whatsAppNumber) || "-"}</p>
+      <p><strong>Personal Email:</strong> ${safe(saved?.personalEmail) || "-"}</p>
+      <p><strong>Business Email:</strong> ${safe(saved?.businessEmail) || "-"}</p>
+      <p><strong>Gender:</strong> ${safe(saved?.gender) || "-"}</p>
+      <p><strong>Marital Status:</strong> ${safe(saved?.maritalStatus) || "-"}</p>
+      <p><strong>DOB:</strong> ${safe(saved?.dob) || "-"}</p>
+
+      <h3>KYC</h3>
+      <p><strong>PAN Number:</strong> ${safe(saved?.panNumber) || "-"}</p>
+      <p><strong>Aadhaar Number:</strong> ${safe(saved?.aadhaarNumber) || "-"}</p>
+      <p><strong>GST Number:</strong> ${safe(saved?.gstNumber) || "-"}</p>
+      <p><strong>Voter ID:</strong> ${safe(saved?.voterId) || "-"}</p>
+      <p><strong>Driving License:</strong> ${safe(saved?.drivingLicense) || "-"}</p>
+      <p><strong>Passport:</strong> ${safe(saved?.passportNo) || "-"}</p>
+
+      <h3>Addresses</h3>
+      <p><strong>Residential Address:</strong> ${safe(saved?.currentResidentialAddress) || "-"}</p>
+      <p><strong>Residential City/State/Pincode:</strong> ${safe(saved?.residentialCity) || "-"}, ${safe(saved?.residentialState) || "-"} - ${safe(saved?.currentResidentialPincode) || "-"}</p>
+      <p><strong>Office/Shop Address:</strong> ${safe(saved?.currentOfficeOrShopAddress) || "-"}</p>
+      <p><strong>Office City/State/Pincode:</strong> ${safe(saved?.officeCity) || "-"}, ${safe(saved?.officeOrShopState) || "-"} - ${safe(saved?.currentOfficePincode) || "-"}</p>
+
+      <h3>Business Details</h3>
+      <p><strong>Business Name:</strong> ${safe(saved?.businessName) || "-"}</p>
+      <p><strong>Business Type:</strong> ${safe(saved?.businessType) || "-"}</p>
+      <p><strong>Industry:</strong> ${safe(saved?.industryType) || "-"}</p>
+      <p><strong>Business Address:</strong> ${safe(saved?.businessAddress) || "-"}</p>
+      <p><strong>Business Pincode:</strong> ${safe(saved?.businessPincode) || "-"}</p>
+      <p><strong>Years in Business:</strong> ${safe(saved?.yearsInBusiness) || "-"}</p>
+      <p><strong>Annual Turnover:</strong> ${safe(saved?.annualTurnover) || "-"}</p>
+
+      <h3>Loan Details</h3>
+      <p><strong>Required Amount:</strong> ${safe(saved?.requiredLoanAmount) || "-"}</p>
+      <p><strong>Preferred Tenure:</strong> ${safe(saved?.preferredTenure) || "-"}</p>
+      <p><strong>Purpose:</strong> ${safe(saved?.purpose) || "-"}</p>
+      <p><strong>Type Of Loan:</strong> ${safe(saved?.typeOfLoan) || "-"}</p>
+      <p><strong>CIBIL Issues:</strong> ${safe(saved?.cibilIssuesDetails) || "-"}</p>
+      <p><strong>CIBIL Available:</strong> ${safe(saved?.hasCibil) || "-"}</p>
+      <p><strong>CIBIL Score:</strong> ${safe(saved?.cibilScore) || "-"}</p>
+      <p><strong>Buying Goods:</strong> ${safe(saved?.isBuyingGoods) || "-"}</p>
+      <p><strong>Quotation Amount:</strong> ${safe(saved?.quotationAmount) || "-"}</p>
+
+      <h3>Bank Details</h3>
+      <p><strong>Account Types:</strong> ${safe(saved?.accountType) || "-"}</p>
+      <p><strong>Primary Bank Name:</strong> ${safe(saved?.bankName) || "-"}</p>
+      ${Array.isArray(saved?.bankAccounts) && saved.bankAccounts.length
+        ? `
+          <h4>Selected Accounts</h4>
+          <ul>
+            ${saved.bankAccounts
+              .map(
+                (a) =>
+                  `<li>${safe(a?.accountType) || "-"} — ${safe(a?.bankName) || "-"} — ${asLink(a?.oneYearBankStatementUrl)}</li>`
+              )
+              .join("")}
+          </ul>
+        `
+        : ""}
+
+      <h3>Co-Applicant</h3>
+      <p><strong>Name:</strong> ${safe(saved?.coApplicantName) || "-"}</p>
+      <p><strong>Relationship:</strong> ${safe(saved?.relationshipWithApplicant) || "-"}</p>
+      <p><strong>Employment Type:</strong> ${safe(saved?.coApplicantEmploymentType) || "-"}</p>
+
+      <h3>Documents</h3>
+      <p>Applicant Photo: ${asLink(saved?.applicantPhotoUrl)}</p>
+      <p>PAN Photo: ${asLink(saved?.panPhotoUrl)}</p>
+      <p>Aadhaar Front: ${asLink(saved?.aadhaarPhotoUrl)}</p>
+      <p>Aadhaar Back: ${asLink(saved?.aadhaarBackPhotoUrl)}</p>
+      <p>GST Certificate: ${asLink(saved?.gstCertificateUrl)}</p>
+      <p>Bank Statement: ${asLink(saved?.bankStatementUrl)}</p>
+      <p>One Year Bank Statement: ${asLink(saved?.oneYearBankStatementUrl)}</p>
+      <p>ITR File: ${asLink(saved?.itrFileUrl)}</p>
+      <p>Latest Home Electricity Bill: ${asLink(saved?.latestHomeElectricityBillUrl)}</p>
+      <p>Latest Office/Shop Electricity Bill: ${asLink(saved?.latestOfficeShopElectricityBillUrl)}</p>
+      <p>Assessment Year 2023-24: ${asLink(saved?.assessmentYear2324Url)}</p>
+      <p>Assessment Year 2024-25: ${asLink(saved?.assessmentYear2425Url)}</p>
+      <p>Assessment Year 2025-26: ${asLink(saved?.assessmentYear2526Url)}</p>
+      <p>Proforma Invoice: ${asLink(saved?.proformaInvoiceFileUrl)}</p>
+      <p>CIBIL Report: ${asLink(saved?.cibilReportUrl)}</p>
+      <p>Co-Applicant PAN: ${asLink(saved?.coApplicantPanPhotoUrl)}</p>
+      <p>Co-Applicant Aadhaar Front: ${asLink(saved?.coApplicantAadhaarPhotoUrl)}</p>
+      <p>Co-Applicant Aadhaar Back: ${asLink(saved?.coApplicantAadhaarBackPhotoUrl)}</p>
+      ${Array.isArray(saved?.otherSupportedDocumentsUrls) && saved.otherSupportedDocumentsUrls.filter(Boolean).length
+        ? `
+          <h4>Other Supported Documents</h4>
+          <ul>
+            ${saved.otherSupportedDocumentsUrls
+              .filter(Boolean)
+              .map((u) => `<li>${asLink(u)}</li>`)
+              .join("")}
+          </ul>
+        `
+        : ""}
+      ${Array.isArray(saved?.registrationCertificates) && saved.registrationCertificates.length
+        ? `
+          <h4>Business Registration Certificates</h4>
+          <ul>
+            ${saved.registrationCertificates
+              .map(
+                (c) =>
+                  `<li>${safe(c?.certificateType) || "-"} — ${asLink(c?.fileUrl)}</li>`
+              )
+              .join("")}
+          </ul>
+        `
+        : ""}
+    `;
+
+    const fromAddress =
+      process.env.EMAIL_SMTP_USER ||
+      process.env.EMAIL_HOST_USER ||
+      process.env.EMAIL_USER ||
+      process.env.EMAIL_FROM;
+
+    if (internalRecipients.length > 0) {
+      emailTasks.push(
+        ...internalRecipients.map((to) =>
+          withTimeout(
+            gmailTransporter.sendMail({
+              from: fromAddress,
+              to,
+              replyTo: safe(saved?.personalEmail) || undefined,
+              subject: `New Business Loan Application - ${applicationRef}`,
+              html: internalHtml,
+            }),
+            12000
+          )
         )
       );
     }
