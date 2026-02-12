@@ -5,9 +5,8 @@ import { usePathname } from "next/navigation";
 
 const nav = [
   { href: "/admin/dashboard", label: "Dashboard" },
-  { href: "/admin/users", label: "Users" },
-  { href: "/admin/enquiries", label: "Loan Enquiries" },
-  { href: "/admin/loan-applications", label: "Loan Applications" },
+  { href: "/admin/salary-loan-applications", label: "Salary employee Loan application" },
+  { href: "/admin/business-loan-applications", label: "Business Loan application" },
 ];
 
 export default function AdminSidebar() {

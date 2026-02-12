@@ -4,16 +4,26 @@ import { requireAdmin } from "../../lib/guard";
 import { isValidObjectId } from "../../lib/validate";
 import PersonalLoanModel from "../../../models/personal-loan-schema";
 import BusinessLoanModel from "../../../models/business-loan-schema";
+import SalariedLoanModel from "../../../models/salaried-loan-schema";
 import nodemailer from "nodemailer";
 
 export const runtime = "nodejs";
 
 async function findApplicationById(id) {
   const personal = await PersonalLoanModel.findById(id).lean();
-  if (personal) return { item: personal, type: "personal" };
+  if (personal) {
+    return { item: personal, type: "personal" };
+  }
 
   const business = await BusinessLoanModel.findById(id).lean();
-  if (business) return { item: business, type: "business" };
+  if (business) {
+    return { item: business, type: "business" };
+  }
+
+  const salaried = await SalariedLoanModel.findById(id).lean();
+  if (salaried) {
+    return { item: salaried, type: "personal" }; // Treat salaried as personal for admin
+  }
 
   return { item: null, type: null };
 }
@@ -24,6 +34,7 @@ export async function GET(req, { params }) {
 
   const resolvedParams = await params;
   const id = resolvedParams?.id;
+  
   if (!isValidObjectId(id)) {
     return NextResponse.json({ success: false, message: "Invalid application id" }, { status: 400 });
   }
@@ -31,6 +42,7 @@ export async function GET(req, { params }) {
   await connectDB();
 
   const { item, type } = await findApplicationById(id);
+  
   if (!item) {
     return NextResponse.json({ success: false, message: "Application not found" }, { status: 404 });
   }
@@ -74,7 +86,9 @@ export async function PATCH(req, { params }) {
   if (adminRemarks !== undefined) update.adminRemarks = adminRemarks;
   update.reviewedAt = new Date();
 
-  const Model = type === "personal" ? PersonalLoanModel : BusinessLoanModel;
+  const Model = type === "business" ? BusinessLoanModel : 
+               (item._source === "salaried" || item.loanType === "salaried") ? SalariedLoanModel : 
+               PersonalLoanModel;
 
   const updated = await Model.findByIdAndUpdate(id, update, { new: true }).lean();
 

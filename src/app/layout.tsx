@@ -6,6 +6,7 @@ import { Footer } from "./components/Footer";
 import { LoanModalProvider } from "@/components/LoanModalProvider";
 import StickyContactButtons from "./components/StickyContactButtons";
 import SuccessBadge from "./components/SuccessBadge";
+import LayoutClient from "./components/LayoutClient";
 
 
 const geistSans = Geist({
@@ -34,13 +35,7 @@ export default function RootLayout({
                 className={`${geistSans.variable} ${geistMono.variable} bg-white antialiased`}
                 suppressHydrationWarning
             >
-                <LoanModalProvider>
-                    <Navbar />
-                     <SuccessBadge />
-                    <StickyContactButtons />
-                    {children}
-                    <Footer />
-                </LoanModalProvider>
+                <LayoutClient>{children}</LayoutClient>
             </body>
         </html>
     );
