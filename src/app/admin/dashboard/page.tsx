@@ -127,7 +127,7 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Main Stats Grid */}
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-5">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-6">
         <StatCard 
           title="Total Users" 
           value={stats?.users ?? "-"} 
@@ -151,6 +151,12 @@ export default function AdminDashboardPage() {
           value={stats?.creditCardApplications ?? "-"} 
           href="/admin/credit-card-applications"
           subtitle="Card applications"
+        />
+        <StatCard 
+          title="Partner Apps" 
+          value={stats?.partnerApplications ?? "-"} 
+          href="/admin/partner-applications"
+          subtitle="Join us forms"
         />
         <StatCard 
           title="Approval Rate" 
@@ -181,10 +187,10 @@ export default function AdminDashboardPage() {
         <div className="flex items-center justify-between gap-4">
           <div>
             <div className="text-sm font-semibold">Application Type Breakdown</div>
-            <div className="mt-1 text-xs text-muted-foreground">Personal vs Business vs Credit Card applications</div>
+            <div className="mt-1 text-xs text-muted-foreground">Personal vs Business vs Credit Card vs Partner applications</div>
           </div>
         </div>
-        <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-3">
+        <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-4">
           <MetricCard
             title="Personal Loans"
             value={stats?.applicationTypeSummary?.personal || 0}
@@ -202,6 +208,12 @@ export default function AdminDashboardPage() {
             value={stats?.applicationTypeSummary?.creditCard || 0}
             total={stats?.totalApplications || 1}
             color="yellow"
+          />
+          <MetricCard
+            title="Partner Apps"
+            value={stats?.applicationTypeSummary?.partner || 0}
+            total={stats?.totalApplications || 1}
+            color="primary"
           />
         </div>
       </div>
@@ -307,6 +319,9 @@ export default function AdminDashboardPage() {
                   </div>
                   <div className="text-xs text-muted-foreground">
                     Credit Card: {trend.creditCard || 0}
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    Partner: {trend.partner || 0}
                   </div>
                   <div className="rounded-full bg-primary/10 px-2 py-1 text-xs font-semibold text-primary">
                     Total: {trend.total}

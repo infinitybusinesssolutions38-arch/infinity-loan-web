@@ -53,26 +53,28 @@ export async function GET(req) {
   const applicationTypeSummary = {
     personal: personalCount,
     business: businessCount,
-    creditCard: creditCardCount
+    creditCard: creditCardCount,
+    partner: partnerCount
   };
 
   // Get recent applications (last 7 days)
   const sevenDaysAgo = new Date();
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
-  const [recentPersonal, recentBusiness, recentCreditCards] = await Promise.all([
+  const [recentPersonal, recentBusiness, recentCreditCards, recentPartners] = await Promise.all([
     PersonalLoanModel.countDocuments({ createdAt: { $gte: sevenDaysAgo } }),
     BusinessLoanModel.countDocuments({ createdAt: { $gte: sevenDaysAgo } }),
-    CreditCardModel.countDocuments({ createdAt: { $gte: sevenDaysAgo } })
+    CreditCardModel.countDocuments({ createdAt: { $gte: sevenDaysAgo } }),
+    PartnerRegisterModel.countDocuments({ createdAt: { $gte: sevenDaysAgo } })
   ]);
 
-  const recentApplications = recentPersonal + recentBusiness + recentCreditCards;
+  const recentApplications = recentPersonal + recentBusiness + recentCreditCards + recentPartners;
 
   // Get monthly trends (last 6 months)
   const sixMonthsAgo = new Date();
   sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
 
-  const [monthlyPersonal, monthlyBusiness, monthlyCreditCards] = await Promise.all([
+  const [monthlyPersonal, monthlyBusiness, monthlyCreditCards, monthlyPartners] = await Promise.all([
     PersonalLoanModel.aggregate([
       { $match: { createdAt: { $gte: sixMonthsAgo } } },
       {
@@ -102,14 +104,24 @@ export async function GET(req) {
         }
       },
       { $sort: { _id: 1 } }
+    ]),
+    PartnerRegisterModel.aggregate([
+      { $match: { createdAt: { $gte: sixMonthsAgo } } },
+      {
+        $group: {
+          _id: { $dateToString: { format: "%Y-%m", date: "$createdAt" } },
+          count: { $sum: 1 }
+        }
+      },
+      { $sort: { _id: 1 } }
     ])
   ]);
 
   // Combine monthly data
   const monthlyTrends = {};
-  [...monthlyPersonal, ...monthlyBusiness, ...monthlyCreditCards].forEach(item => {
+  [...monthlyPersonal, ...monthlyBusiness, ...monthlyCreditCards, ...monthlyPartners].forEach(item => {
     if (!monthlyTrends[item._id]) {
-      monthlyTrends[item._id] = { personal: 0, business: 0, creditCard: 0, total: 0 };
+      monthlyTrends[item._id] = { personal: 0, business: 0, creditCard: 0, partner: 0, total: 0 };
     }
     monthlyTrends[item._id].total += item.count;
   });
@@ -129,6 +141,12 @@ export async function GET(req) {
   monthlyCreditCards.forEach(item => {
     if (monthlyTrends[item._id]) {
       monthlyTrends[item._id].creditCard = item.count;
+    }
+  });
+
+  monthlyPartners.forEach(item => {
+    if (monthlyTrends[item._id]) {
+      monthlyTrends[item._id].partner = item.count;
     }
   });
 
