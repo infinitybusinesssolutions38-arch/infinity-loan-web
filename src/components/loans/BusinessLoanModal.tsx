@@ -870,14 +870,14 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                             </div>
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Shop/office photo <span className="text-destructive">(optional)</span></label>
-                                <input type="file" {...register("Shopofficephoto")} placeholder="Pincode" className="py-2 px-1 rounded-md bg-gray-200" />
+                                <input type="file" {...register("Shopofficephoto")} placeholder="Pincode" className="py-2 px-2 mx-2 w-[80%] rounded-md bg-gray-200" />
                             </div>
                             <div className="space-y-1">
                                 <label className="text-sm font-medium"> Additional photo  upload option <span className="text-destructive">(optional)</span></label>
-                                <input type="file" {...register("Additionalphotouploadoption")} placeholder="Pincode" className="py-2 px-1 rounded-md bg-gray-200" />
+                                <input type="file" {...register("Additionalphotouploadoption")} placeholder="Pincode" className="py-2 mx-2 w-[80%] px-2 rounded-md bg-gray-200" />
                             </div>
                             <div className="space-y-1">
-                                <label className="text-sm font-medium">type of company <span className="text-destructive">(optional)</span></label>
+                                <label className="text-sm font-medium">Type of Company <span className="text-destructive">(optional)</span></label>
                                 <select  {...register("typeofcompany")} className="py-2 px-1 rounded-md bg-gray-200" >
                                     <option value="">Select your business type</option>
                                     {businessTypes.map((l, idx) => (
@@ -1314,10 +1314,7 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                                 </select>
                             </div>
                             <div className="space-y-1">
-                                <input type="file" accept="application/pdf" {...register("yearlyGstReturnFile", { required: true, validate: validateMax2MB })} className="input bg-gray-200" />
-                                {getError("yearlyGstReturnFile") ? (
-                                    <p className="text-sm text-red-600">{getError("yearlyGstReturnFile")}</p>
-                                ) : null}
+                                <input type="file" accept="application/pdf" {...register("yearlyGstReturnFile", { validate: validateMax2MB })} className="input bg-gray-200" />
                             </div>
 
                         </div>
@@ -1329,7 +1326,7 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                         <h3 className="mb-4 text-base font-bold text-gray-900">L. Business Registration Certificates(one document mandatory)</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1">
-                                <label className="text-sm font-medium">Business Registration Certificates (optional)</label>
+                                <label className="text-sm font-medium">Business Registration Certificates <span className="text-red-400">*</span></label>
                                 <div className="space-y-3">
                                     {["GST Registration", "MSME Udyam Aadhar", "Shop Act (Ghumsta Licence)", "Trade Licence", "Local Gram Panchayat Business Certificate Licence",
                                         "food licence", "ISO certificate", "startup India certificate", "import export licence / certificate", "company incorporation certificate", "Company PAN Card"].map(
