@@ -384,16 +384,20 @@ export async function POST(req) {
     const emailTasks = [];
     const personalEmail = saved?.personalEmail;
     const businessEmail = saved?.businessEmail;
-    const candidateCustomerEmail = !isInternalEmail(personalEmail)
-      ? personalEmail
-      : !isInternalEmail(businessEmail)
-        ? businessEmail
-        : null;
+    const customerEmails = Array.from(
+      new Set(
+        [personalEmail, businessEmail]
+          .map((e) => (typeof e === "string" ? e.trim() : ""))
+          .filter(Boolean)
+          .filter((e) => !isInternalEmail(e))
+          .map((e) => normalizeEmail(e))
+      )
+    );
 
-    if (candidateCustomerEmail) {
+    for (const customerEmail of customerEmails) {
       emailTasks.push(
         withTimeout(
-          sendLoanApplicationConfirmationEmail(candidateCustomerEmail, {
+          sendLoanApplicationConfirmationEmail(customerEmail, {
             customerName: saved?.firstName,
             applicationNumber: applicationRef,
             applicationDate,
