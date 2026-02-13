@@ -47,6 +47,7 @@ export async function POST(req) {
       accountTypes.map(async (t) => {
         const key = toAccountKey(t);
         const bankName = formData.get(`bankName_${key}`);
+        const statementPassword = formData.get(`accountPassword_${key}`);
         const oneYearBankStatementUrl = await upload(
           formData.get(`oneYearBankStatement_${key}`)
         );
@@ -54,6 +55,7 @@ export async function POST(req) {
           accountType: t,
           bankName,
           oneYearBankStatementUrl,
+          statementPassword,
         };
       })
     );
@@ -71,6 +73,30 @@ export async function POST(req) {
           await upload(formData.get(`otherSupportedDocument_${idx}`))
       )
     );
+
+    const otherSupportedDocumentsNames = Array.from({
+      length: Math.max(0, otherSupportedDocumentsCount),
+    }).map((_, idx) => formData.get(`otherSupportedDocumentName_${idx}`));
+
+    const referenceCountRaw = formData.get("referenceCount");
+    const referenceCount = Number.isFinite(Number(referenceCountRaw))
+      ? parseInt(String(referenceCountRaw), 10)
+      : 1;
+    const safeRefCount = Math.max(1, Math.min(10, referenceCount || 1));
+
+    const references = Array.from({ length: safeRefCount }).map((_, idx) => {
+      const suffix = idx === 0 ? "" : `_${idx}`;
+      return {
+        fullName: formData.get(`referenceFullName${suffix}`),
+        mobile: formData.get(`referenceMobile${suffix}`),
+        relation: formData.get(`referenceRelation${suffix}`),
+        email: formData.get(`referenceEmail${suffix}`),
+        address: formData.get(`referenceAddress${suffix}`),
+        state: formData.get(`referenceState${suffix}`),
+        city: formData.get(`referenceCity${suffix}`),
+        pincode: formData.get(`referencePincode${suffix}`),
+      };
+    });
 
     const businessRegistrationCertificates = formData
       .getAll("businessRegistrationCertificates")
@@ -183,6 +209,12 @@ export async function POST(req) {
       coApplicantName: formData.get("coApplicantName"),
       relationshipWithApplicant: formData.get("relationshipWithApplicant"),
       coApplicantEmploymentType: formData.get("coApplicantEmploymentType"),
+      coApplicantMobileNumber: formData.get("coApplicantMobileNumber"),
+      coApplicantEmailId: formData.get("coApplicantEmailId"),
+      coApplicantAddress: formData.get("coApplicantAddress"),
+      coApplicantState: formData.get("coApplicantState"),
+      coApplicantCity: formData.get("coApplicantCity"),
+      coApplicantPincode: formData.get("coApplicantPincode"),
       coApplicantPanPhotoUrl: await upload(formData.get("CoApplicantpanPhoto")),
       coApplicantAadhaarPhotoUrl: await upload(formData.get("CoApplicantAadhaarPhoto")),
       coApplicantAadhaarBackPhotoUrl: await upload(
@@ -206,7 +238,24 @@ export async function POST(req) {
 
       // Buying goods
       isBuyingGoods: formData.get("isBuyingGoods"),
+      goodsName: formData.get("goodsName"),
       quotationAmount: formData.get("quotationAmount"),
+
+      // Medical history
+      medicalHistory: formData.get("medicalHistory"),
+      medicalHistoryDetails: formData.get("medicalHistoryDetails"),
+
+      // Habbit
+      habbit: formData.get("habbit"),
+      habbitDetails: formData.get("habbitDetails"),
+
+      // Civil/Criminal case history
+      caseHistory: formData.get("caseHistory"),
+      caseHistoryDetails: formData.get("caseHistoryDetails"),
+
+      // Applicant assets
+      applicantAssetType: formData.get("applicantAssetType"),
+      applicantAssetMarketPrice: formData.get("applicantAssetMarketPrice"),
 
       // CIBIL
       hasCibil: formData.get("hasCibil"),
@@ -217,6 +266,11 @@ export async function POST(req) {
       numberOfOtherDocuments: formData.get("numberOfOtherDocuments"),
 
       otherSupportedDocumentsUrls: otherSupportedDocumentsUrls.filter(Boolean),
+      otherSupportedDocumentsNames: otherSupportedDocumentsNames
+        .map((v) => (v ? String(v) : ""))
+        .filter(Boolean),
+
+      references,
 
       // Identification
       panNumber: formData.get("panNumber"),
@@ -235,6 +289,8 @@ export async function POST(req) {
       assessmentYear2324Url: await upload(formData.get("assessmentYear2324")),
       assessmentYear2425Url: await upload(formData.get("assessmentYear2425")),
       assessmentYear2526Url: await upload(formData.get("assessmentYear2526")),
+      yearlyGstReturnType: formData.get("yearlyGstReturnType"),
+      yearlyGstReturnFileUrl: await upload(formData.get("yearlyGstReturnFile")),
       proformaInvoiceFileUrl: await upload(formData.get("proformaInvoiceFile")),
       cibilReportUrl: await upload(formData.get("cibilReport")),
       oneYearBankStatementUrl:
@@ -437,7 +493,16 @@ export async function POST(req) {
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>CIBIL Available</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.hasCibil) || "-"}</td></tr>
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>CIBIL Score</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.cibilScore) || "-"}</td></tr>
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Buying Goods</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.isBuyingGoods) || "-"}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Goods Name</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.goodsName) || "-"}</td></tr>
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Quotation Amount</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.quotationAmount) || "-"}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Medical History</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.medicalHistory) || "-"}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Medical History Details</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.medicalHistoryDetails) || "-"}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Habbit</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.habbit) || "-"}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Habbit Details</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.habbitDetails) || "-"}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Civil/Criminal Case history</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.caseHistory) || "-"}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Case History Details</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.caseHistoryDetails) || "-"}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Applicant Asset Type</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.applicantAssetType) || "-"}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Applicant Asset Market Price</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.applicantAssetMarketPrice) || "-"}</td></tr>
           </tbody>
         </table>
 
@@ -457,6 +522,7 @@ export async function POST(req) {
                   <th style="border:1px solid #e5e7eb;padding:8px;text-align:left">Account Type</th>
                   <th style="border:1px solid #e5e7eb;padding:8px;text-align:left">Bank Name</th>
                   <th style="border:1px solid #e5e7eb;padding:8px;text-align:left">Statement</th>
+                  <th style="border:1px solid #e5e7eb;padding:8px;text-align:left">Password</th>
                 </tr>
               </thead>
               <tbody>
@@ -467,6 +533,7 @@ export async function POST(req) {
                         <td style="border:1px solid #e5e7eb;padding:8px;vertical-align:top">${safe(a?.accountType) || "-"}</td>
                         <td style="border:1px solid #e5e7eb;padding:8px;vertical-align:top">${safe(a?.bankName) || "-"}</td>
                         <td style="border:1px solid #e5e7eb;padding:8px;vertical-align:top">${asLink(a?.oneYearBankStatementUrl)}</td>
+                        <td style="border:1px solid #e5e7eb;padding:8px;vertical-align:top">${safe(a?.statementPassword) || "-"}</td>
                       </tr>
                     `
                   )
@@ -482,6 +549,12 @@ export async function POST(req) {
             <tr><td style="border:1px solid #e5e7eb;padding:8px;width:35%"><strong>Name</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.coApplicantName) || "-"}</td></tr>
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Relationship</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.relationshipWithApplicant) || "-"}</td></tr>
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Employment Type</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.coApplicantEmploymentType) || "-"}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Mobile</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.coApplicantMobileNumber) || "-"}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Email</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.coApplicantEmailId) || "-"}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Address</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.coApplicantAddress) || "-"}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>State</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.coApplicantState) || "-"}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>City</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.coApplicantCity) || "-"}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Pincode</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.coApplicantPincode) || "-"}</td></tr>
           </tbody>
         </table>
 
@@ -501,6 +574,8 @@ export async function POST(req) {
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Assessment Year 2023-24</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.assessmentYear2324Url)}</td></tr>
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Assessment Year 2024-25</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.assessmentYear2425Url)}</td></tr>
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Assessment Year 2025-26</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.assessmentYear2526Url)}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Yearly GST Return Type</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.yearlyGstReturnType) || "-"}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Yearly GST Return File</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.yearlyGstReturnFileUrl)}</td></tr>
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Proforma Invoice</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.proformaInvoiceFileUrl)}</td></tr>
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>CIBIL Report</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.cibilReportUrl)}</td></tr>
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Co-Applicant PAN Photo</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.coApplicantPanPhotoUrl)}</td></tr>
@@ -515,9 +590,53 @@ export async function POST(req) {
             <ul>
               ${saved.otherSupportedDocumentsUrls
                 .filter(Boolean)
-                .map((u) => `<li>${asLink(u)}</li>`)
+                .map((u, idx) => {
+                  const n = Array.isArray(saved?.otherSupportedDocumentsNames)
+                    ? saved.otherSupportedDocumentsNames[idx]
+                    : "";
+                  const title = n ? `${safe(n)}: ` : "";
+                  return `<li>${title}${asLink(u)}</li>`;
+                })
                 .join("")}
             </ul>
+          `
+          : ""}
+
+        ${Array.isArray(saved?.references) && saved.references.length
+          ? `
+            <h3 style="margin:16px 0 8px 0">References</h3>
+            <table style="width:100%;border-collapse:collapse;font-size:14px">
+              <thead>
+                <tr>
+                  <th style="border:1px solid #e5e7eb;padding:8px;text-align:left">Name</th>
+                  <th style="border:1px solid #e5e7eb;padding:8px;text-align:left">Mobile</th>
+                  <th style="border:1px solid #e5e7eb;padding:8px;text-align:left">Relation</th>
+                  <th style="border:1px solid #e5e7eb;padding:8px;text-align:left">Email</th>
+                  <th style="border:1px solid #e5e7eb;padding:8px;text-align:left">Address</th>
+                  <th style="border:1px solid #e5e7eb;padding:8px;text-align:left">State</th>
+                  <th style="border:1px solid #e5e7eb;padding:8px;text-align:left">City</th>
+                  <th style="border:1px solid #e5e7eb;padding:8px;text-align:left">Pincode</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${saved.references
+                  .map(
+                    (r) => `
+                      <tr>
+                        <td style="border:1px solid #e5e7eb;padding:8px;vertical-align:top">${safe(r?.fullName) || "-"}</td>
+                        <td style="border:1px solid #e5e7eb;padding:8px;vertical-align:top">${safe(r?.mobile) || "-"}</td>
+                        <td style="border:1px solid #e5e7eb;padding:8px;vertical-align:top">${safe(r?.relation) || "-"}</td>
+                        <td style="border:1px solid #e5e7eb;padding:8px;vertical-align:top">${safe(r?.email) || "-"}</td>
+                        <td style="border:1px solid #e5e7eb;padding:8px;vertical-align:top">${safe(r?.address) || "-"}</td>
+                        <td style="border:1px solid #e5e7eb;padding:8px;vertical-align:top">${safe(r?.state) || "-"}</td>
+                        <td style="border:1px solid #e5e7eb;padding:8px;vertical-align:top">${safe(r?.city) || "-"}</td>
+                        <td style="border:1px solid #e5e7eb;padding:8px;vertical-align:top">${safe(r?.pincode) || "-"}</td>
+                      </tr>
+                    `
+                  )
+                  .join("")}
+              </tbody>
+            </table>
           `
           : ""}
 
@@ -602,7 +721,35 @@ export async function POST(req) {
       saved?.firstName
     )} ${safe(saved?.middleName)} ${safe(saved?.lastName)}\nMobile: ${safe(
       saved?.mobileNumber
-    )}\nAlternate Mobile: ${safe(saved?.alternateMobile || saved?.alternateMobileNumber) || "-"}\nWhatsApp: ${safe(saved?.whatsAppNumber) || "-"}\nPersonal Email: ${safe(saved?.personalEmail) || "-"}\nBusiness Email: ${safe(saved?.businessEmail) || "-"}\n\nKYC\nPAN: ${safe(saved?.panNumber) || "-"}\nAadhaar: ${safe(saved?.aadhaarNumber) || "-"}\nGST: ${safe(saved?.gstNumber) || "-"}\n\nAddresses\nResidential: ${safe(saved?.currentResidentialAddress) || "-"}\nOffice/Shop: ${safe(saved?.currentOfficeOrShopAddress) || "-"}\n\nBusiness Details\nBusiness Name: ${safe(saved?.businessName) || "-"}\nBusiness Type: ${safe(saved?.businessType) || "-"}\nIndustry: ${safe(saved?.industryType) || "-"}\n\nLoan Details\nAmount: ${safe(saved?.requiredLoanAmount) || "-"}\nTenure: ${safe(saved?.preferredTenure) || "-"}\nPurpose: ${safe(saved?.purpose) || "-"}\n\nDocuments\nApplicant Photo: ${safe(saved?.applicantPhotoUrl) || "-"}\nPAN Photo: ${safe(saved?.panPhotoUrl) || "-"}\nAadhaar Front: ${safe(saved?.aadhaarPhotoUrl) || "-"}\nAadhaar Back: ${safe(saved?.aadhaarBackPhotoUrl) || "-"}`;
+    )}\nAlternate Mobile: ${safe(saved?.alternateMobile || saved?.alternateMobileNumber) || "-"}\nWhatsApp: ${safe(saved?.whatsAppNumber) || "-"}\nPersonal Email: ${safe(saved?.personalEmail) || "-"}\nBusiness Email: ${safe(saved?.businessEmail) || "-"}\n\nKYC\nPAN: ${safe(saved?.panNumber) || "-"}\nAadhaar: ${safe(saved?.aadhaarNumber) || "-"}\nGST: ${safe(saved?.gstNumber) || "-"}\n\nAddresses\nResidential: ${safe(saved?.currentResidentialAddress) || "-"}\nOffice/Shop: ${safe(saved?.currentOfficeOrShopAddress) || "-"}\n\nBusiness Details\nBusiness Name: ${safe(saved?.businessName) || "-"}\nBusiness Type: ${safe(saved?.businessType) || "-"}\nIndustry: ${safe(saved?.industryType) || "-"}\n\nLoan Details\nAmount: ${safe(saved?.requiredLoanAmount) || "-"}\nTenure: ${safe(saved?.preferredTenure) || "-"}\nPurpose: ${safe(saved?.purpose) || "-"}\nBuying Goods: ${safe(saved?.isBuyingGoods) || "-"}\nGoods Name: ${safe(saved?.goodsName) || "-"}\nQuotation Amount: ${safe(saved?.quotationAmount) || "-"}\nMedical History: ${safe(saved?.medicalHistory) || "-"}\nMedical History Details: ${safe(saved?.medicalHistoryDetails) || "-"}`;
+
+    const referencesText = Array.isArray(saved?.references)
+      ? saved.references
+          .map(
+            (r, idx) =>
+              `${idx + 1}. ${safe(r?.fullName) || "-"} | ${safe(r?.mobile) || "-"} | ${safe(r?.relation) || "-"} | ${safe(r?.email) || "-"} | ${safe(r?.address) || "-"} | ${safe(r?.state) || "-"} | ${safe(r?.city) || "-"} | ${safe(r?.pincode) || "-"}`
+          )
+          .join("\n")
+      : "";
+
+    const otherDocsText = Array.isArray(saved?.otherSupportedDocumentsUrls)
+      ? saved.otherSupportedDocumentsUrls
+          .filter(Boolean)
+          .map((u, idx) => {
+            const n = Array.isArray(saved?.otherSupportedDocumentsNames)
+              ? saved.otherSupportedDocumentsNames[idx]
+              : "";
+            const title = n ? `${safe(n)}: ` : "";
+            return `${idx + 1}. ${title}${safe(u)}`;
+          })
+          .join("\n")
+      : "";
+
+    const coApplicantText = `Co-Applicant\nName: ${safe(saved?.coApplicantName) || "-"}\nRelationship: ${safe(saved?.relationshipWithApplicant) || "-"}\nEmployment Type: ${safe(saved?.coApplicantEmploymentType) || "-"}\nMobile: ${safe(saved?.coApplicantMobileNumber) || "-"}\nEmail: ${safe(saved?.coApplicantEmailId) || "-"}\nAddress: ${safe(saved?.coApplicantAddress) || "-"}\nState: ${safe(saved?.coApplicantState) || "-"}\nCity: ${safe(saved?.coApplicantCity) || "-"}\nPincode: ${safe(saved?.coApplicantPincode) || "-"}`;
+
+    const internalTextWithHabbit = `${internalText}\nHabbit: ${safe(saved?.habbit) || "-"}\nHabbit Details: ${safe(saved?.habbitDetails) || "-"}\nCivil/Criminal Case history: ${safe(saved?.caseHistory) || "-"}\nCase History Details: ${safe(saved?.caseHistoryDetails) || "-"}\nApplicant Asset Type: ${safe(saved?.applicantAssetType) || "-"}\nApplicant Asset Market Price: ${safe(saved?.applicantAssetMarketPrice) || "-"}\n\n${coApplicantText}${referencesText ? `\n\nReferences\n${referencesText}` : ""}${otherDocsText ? `\n\nOther Supported Documents\n${otherDocsText}` : ""}`;
+
+    const internalTextFinal = `${internalTextWithHabbit}\n\nDocuments\nApplicant Photo: ${safe(saved?.applicantPhotoUrl) || "-"}\nPAN Photo: ${safe(saved?.panPhotoUrl) || "-"}\nAadhaar Front: ${safe(saved?.aadhaarPhotoUrl) || "-"}\nAadhaar Back: ${safe(saved?.aadhaarBackPhotoUrl) || "-"}`;
 
     const fromAddress =
       process.env.EMAIL_SMTP_USER ||
@@ -631,7 +778,7 @@ export async function POST(req) {
             replyTo: safe(saved?.personalEmail) || undefined,
             subject: `New Business Loan Application - ${applicationRef}`,
             html: internalBrandedHtml,
-            text: internalText,
+            text: internalTextFinal,
           }),
           12000
         )
@@ -639,7 +786,7 @@ export async function POST(req) {
     }
 
     if (emailTasks.length > 0) {
-      await withTimeout(Promise.allSettled(emailTasks), 15000);
+      await withTimeout(Promise.allSettled(emailTasks), 45000);
     }
 
     return NextResponse.json({

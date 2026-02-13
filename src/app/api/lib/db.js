@@ -20,6 +20,18 @@ const connectDB = async () => {
 
     try {
         cached.conn = await cached.promise;
+
+        if (!globalWithMongoose.__businessLoanEmailIndexDropped) {
+            globalWithMongoose.__businessLoanEmailIndexDropped = true;
+            try {
+                await cached.conn.connection.db
+                    .collection("borrowerbusinessloans")
+                    .dropIndex("personalEmail_1");
+            } catch (err) {
+                // Ignore: index may not exist or may already be dropped.
+            }
+        }
+
         globalWithMongoose.__mongoose = cached;
         return cached.conn;
     } catch (error) {

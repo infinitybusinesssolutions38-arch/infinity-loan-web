@@ -17,7 +17,7 @@ const BorrowerBusinessSchema = new mongoose.Schema(
     alternateMobile: { type: String, required: false },
     alternateMobileNumber: { type: String, required: false },
     whatsAppNumber: { type: String, required: false },
-    personalEmail: { type: String, required: true, unique: true, sparse: true },
+    personalEmail: { type: String, required: true, sparse: true },
     businessEmail: { type: String, required: false },
 
     gender: { type: String, required: false },
@@ -56,6 +56,7 @@ const BorrowerBusinessSchema = new mongoose.Schema(
                 accountType: { type: String },
                 bankName: { type: String },
                 oneYearBankStatementUrl: { type: String },
+                statementPassword: { type: String },
             },
         ],
         required: false,
@@ -99,6 +100,12 @@ const BorrowerBusinessSchema = new mongoose.Schema(
     coApplicantName: { type: String, required: false },
     relationshipWithApplicant: { type: String, required: false },
     coApplicantEmploymentType: { type: String, required: false },
+    coApplicantMobileNumber: { type: String, required: false },
+    coApplicantEmailId: { type: String, required: false },
+    coApplicantAddress: { type: String, required: false },
+    coApplicantState: { type: String, required: false },
+    coApplicantCity: { type: String, required: false },
+    coApplicantPincode: { type: String, required: false },
     coApplicantPanPhotoUrl: { type: String, required: false },
     coApplicantAadhaarPhotoUrl: { type: String, required: false },
     coApplicantAadhaarBackPhotoUrl: { type: String, required: false },
@@ -125,7 +132,24 @@ const BorrowerBusinessSchema = new mongoose.Schema(
 
     // Buying goods
     isBuyingGoods: { type: String, required: false },
+    goodsName: { type: String, required: false },
     quotationAmount: { type: String, required: false },
+
+    // Medical history
+    medicalHistory: { type: String, required: false },
+    medicalHistoryDetails: { type: String, required: false },
+
+    // Habbit
+    habbit: { type: String, required: false },
+    habbitDetails: { type: String, required: false },
+
+    // Civil/Criminal case history
+    caseHistory: { type: String, required: false },
+    caseHistoryDetails: { type: String, required: false },
+
+    // Applicant assets
+    applicantAssetType: { type: String, required: false },
+    applicantAssetMarketPrice: { type: String, required: false },
 
     // CIBIL
     hasCibil: { type: String, required: false },
@@ -135,6 +159,25 @@ const BorrowerBusinessSchema = new mongoose.Schema(
     numberOfOtherDocuments: { type: String, required: false },
 
     otherSupportedDocumentsUrls: { type: [String], required: false, default: [] },
+    otherSupportedDocumentsNames: { type: [String], required: false, default: [] },
+
+    // References
+    references: {
+        type: [
+            {
+                fullName: { type: String },
+                mobile: { type: String },
+                relation: { type: String },
+                email: { type: String },
+                address: { type: String },
+                state: { type: String },
+                city: { type: String },
+                pincode: { type: String },
+            },
+        ],
+        required: false,
+        default: [],
+    },
 
     // Documents
     applicantPhotoUrl: { type: String, required: false },
@@ -148,6 +191,8 @@ const BorrowerBusinessSchema = new mongoose.Schema(
     assessmentYear2324Url: { type: String, required: false },
     assessmentYear2425Url: { type: String, required: false },
     assessmentYear2526Url: { type: String, required: false },
+    yearlyGstReturnType: { type: String, required: false },
+    yearlyGstReturnFileUrl: { type: String, required: false },
     proformaInvoiceFileUrl: { type: String, required: false },
     cibilReportUrl: { type: String, required: false },
     oneYearBankStatementUrl: { type: String, required: false },
