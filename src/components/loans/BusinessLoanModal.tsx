@@ -1302,8 +1302,8 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1">
-                                <label className="text-sm font-medium">Yearly  GST Return <span className="text-destructive">*</span></label>
-                                <select {...register("yearlyGstReturnType", { required: true })} className="input bg-gray-200" >
+                                <label className="text-sm font-medium">Yearly  GST Return <span className="text-destructive">(optional)</span></label>
+                                <select {...register("yearlyGstReturnType")} className="input bg-gray-200" >
                                     <option value="">--select--</option>
                                     <option value="upload GSTR1  GSTR-1">GSTR1 </option>
                                     <option value=" GSTR-2"> GSTR-2</option>
@@ -1389,7 +1389,7 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                     </div>
                     {/* ================= L. Buying Goods ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-bold text-gray-900">L. Buying Goods</h3>
+                        <h3 className="mb-4 text-base font-bold text-gray-900">M. Buying Goods</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1">
                                 <div>
@@ -1458,7 +1458,7 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= M. CIBIL Score ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-gray-900">M. Applicant CIBIL Score </h3>
+                        <h3 className="mb-4 text-base font-semibold text-gray-900">N. Applicant CIBIL Score </h3>
                         <div className="space-y-1">
                             <div>
                                 <label className="text-sm font-medium">CIBIL Available <span className="text-destructive">*</span></label>
@@ -1504,9 +1504,9 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                         )}
                     </div>
 
-                     {/* ================= J. Upload Other Supported Document================= */}
+                    {/* ================= J. Upload Other Supported Document================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-gray-900">K. Upload Other Supported Document</h3>
+                        <h3 className="mb-4 text-base font-bold text-gray-900">O. Upload Other Supported Document</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Number of Other Documents</label>
@@ -1567,42 +1567,43 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= reference name details ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-gray-900">L. Reference name details</h3>
-
+                        <h3 className="mb-4 text-base font-semibold text-gray-900">P. Reference name details</h3>
+                        <span>(Give 4 Reference Details)</span>
                         {Array.from({ length: Math.max(1, referenceCount || 1) }).map((_, idx) => {
                             const suffix = idx === 0 ? "" : `_${idx}`;
                             return (
                                 <div key={idx} className="grid md:grid-cols-2 gap-4">
+
                                     <div className="flex flex-col items-start gap-3">
-                                        <label className="text-sm font-medium">First Reference Full Name<span className="text-destructive">(optional)</span></label>
-                                        <input type="text" {...register(`FirstReferenceFullName${suffix}`)} placeholder="First Reference Full Name" className="input bg-gray-200 " />
+                                        <label className="text-sm font-medium">{idx + 1} Reference Full Name<span className="text-destructive">(optional)</span></label>
+                                        <input type="text" {...register(`FirstReferenceFullName${suffix}`)} placeholder={`${idx + 1} Reference Full Name`} className="input bg-gray-200 " />
                                     </div>
                                     <div className="flex flex flex-col  items-start gap-3">
-                                        <label className="text-sm font-medium">Reference Mobile Number<span className="text-destructive">(optional)</span></label>
+                                        <label className="text-sm font-medium">{idx + 1} Reference Mobile Number<span className="text-destructive">(optional)</span></label>
                                         <input type="text" {...register(`ReferenceMobileNumber${suffix}`)} placeholder="Reference Mobile Number" className="input bg-gray-200" />
                                     </div>
                                     <div className="flex flex flex-col  items-start gap-3">
-                                        <label className="text-sm font-medium">Relation With Aplicant<span className="text-destructive">(optional)</span></label>
+                                        <label className="text-sm font-medium">{idx + 1} Relation With Aplicant<span className="text-destructive">(optional)</span></label>
                                         <input type="text" {...register(`RelationWithAplicant${suffix}`)} placeholder="Relation With Aplicant" className="input bg-gray-200" />
                                     </div>
                                     <div className="flex  flex flex-col  items-start gap-3">
-                                        <label className="text-sm font-medium">Email ID <span className="text-destructive">(optional)</span></label>
+                                        <label className="text-sm font-medium">{idx + 1} Email ID <span className="text-destructive">(optional)</span></label>
                                         <input type="text" {...register(`ReferenceEmailId${suffix}`)} placeholder="Email ID" className="input bg-gray-200" />
                                     </div>
                                     <div className="flex flex flex-col  items-start gap-3">
-                                        <label className="text-sm font-medium">Address <span className="text-destructive">(optional)</span></label>
+                                        <label className="text-sm font-medium">{idx + 1} Address <span className="text-destructive">(optional)</span></label>
                                         <input type="text" {...register(`ReferenceAddress${suffix}`)} placeholder="Address" className="input bg-gray-200" />
                                     </div>
                                     <div className="flex flex flex-col  items-start gap-3">
-                                        <label className="text-sm font-medium">State <span className="text-destructive">(optional)</span></label>
+                                        <label className="text-sm font-medium">{idx + 1} State <span className="text-destructive">(optional)</span></label>
                                         <input type="text" {...register(`ReferenceState${suffix}`)} placeholder="State" className="input bg-gray-200" />
                                     </div>
                                     <div className="flex flex flex-col  items-start gap-3">
-                                        <label className="text-sm font-medium">City <span className="text-destructive">(optional)</span></label>
+                                        <label className="text-sm font-medium">{idx + 1} City <span className="text-destructive">(optional)</span></label>
                                         <input type="text" {...register(`ReferenceCity${suffix}`)} placeholder="City" className="input bg-gray-200" />
                                     </div>
                                     <div className="flex flex flex-col  items-start gap-3">
-                                        <label className="text-sm font-medium">Pincode <span className="text-destructive">(optional)</span></label>
+                                        <label className="text-sm font-medium">{idx + 1} Pincode <span className="text-destructive">(optional)</span></label>
                                         <input type="text" {...register(`ReferencePincode${suffix}`)} placeholder="Pincode" className="input bg-gray-200" />
                                     </div>
                                 </div>
@@ -1617,9 +1618,9 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                         </button>
                     </div>
 
-                    {/* ================= Applicant Assets details ================= */}
+                    {/* ================= Q. Applicant Assets details ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-gray-900">P. Applicant Assets details</h3>
+                        <h3 className="mb-4 text-base font-bold text-gray-900">Q. Applicant  Assets details digital or physical</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Assets (Digital or Physical) <span className="text-destructive">(optional)</span></label>
@@ -1627,6 +1628,16 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                                     <option value="">Select Asset</option>
                                     <option value="Gold">Gold (market price)</option>
                                     <option value="Bike">Bike (market price)</option>
+                                    <option value="RealEstate">Real Estate / Property (market value)</option>
+                                    <option value="Gold">Gold (market value)</option>
+                                    <option value="Cash">Cash & Cash Equivalents</option>
+                                    <option value="Stocks">Stocks / Shares (current value)</option>
+                                    <option value="Bonds">Bonds (current value)</option>
+                                    <option value="Commodities">Commodities (market value)</option>
+                                    <option value="Vehicles">Vehicles (market value)</option>
+                                    <option value="Jewelry">Jewelry & Art (market value)</option>
+                                    <option value="BankDeposits">Bank Deposits / Fixed Deposits</option>
+                                    <option value="RetirementPlans">Retirement / Pension Plans</option>
                                 </select>
                             </div>
                             <div className="space-y-1">
@@ -1643,10 +1654,12 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= Medical History ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-gray-900">M. Medical History</h3>
+                        <h3 className="mb-4 text-base font-bold text-gray-900">R.Applicant Medical History</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1">
-                                <label className="text-sm font-medium">Medical History <span className="text-destructive">*</span></label>
+                                <div>
+                                    <label className="text-sm font-medium">Medical History <span className="text-destructive">*</span></label>
+                                </div>
                                 <select {...register("medicalHistory", { required: true })} className="input bg-gray-200">
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
@@ -1659,7 +1672,9 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
 
                             {medicalHistory === "Yes" ? (
                                 <div className="space-y-1">
-                                    <label className="text-sm font-medium">Specify <span className="text-destructive">*</span></label>
+                                    <div>
+                                        <label className="text-sm font-medium">Specify <span className="text-destructive">*</span></label>
+                                    </div>
                                     <input
                                         type="text"
                                         {...register("medicalHistoryDetails", {
@@ -1683,10 +1698,12 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= Habbit ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-gray-900">N. Habbit</h3>
+                        <h3 className="mb-4 text-base font-bold text-gray-900">S.Applicant Addictive Habits</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1">
-                                <label className="text-sm font-medium">Habbit <span className="text-destructive">*</span></label>
+                                <div>
+                                    <label className="text-sm font-medium">Addictive Habits<span className="text-destructive">*</span></label>
+                                </div>
                                 <select {...register("habbit", { required: true })} className="input bg-gray-200">
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
@@ -1699,7 +1716,9 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
 
                             {habbit === "Yes" ? (
                                 <div className="space-y-1">
-                                    <label className="text-sm font-medium">Specify <span className="text-destructive">*</span></label>
+                                    <div>
+                                        <label className="text-sm font-medium">Specify <span className="text-destructive">*</span></label>
+                                    </div>
                                     <input
                                         type="text"
                                         {...register("habbitDetails", {
@@ -1723,10 +1742,12 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= Civil or Criminal Case history ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-gray-900">O. Civil or Criminal Case history</h3>
+                        <h3 className="mb-4 text-base font-bold text-gray-900">T.Applicant Civil or Criminal Case history</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1">
-                                <label className="text-sm font-medium">Civil or Criminal Case history <span className="text-destructive">*</span></label>
+                                <div>
+                                    <label className="text-sm font-medium">Civil or Criminal Case history <span className="text-destructive">*</span></label>
+                                </div>
                                 <select {...register("caseHistory", { required: true })} className="input bg-gray-200">
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
@@ -1739,7 +1760,9 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
 
                             {caseHistory === "Yes" ? (
                                 <div className="space-y-1">
-                                    <label className="text-sm font-medium">Specify <span className="text-destructive">*</span></label>
+                                    <div>
+                                        <label className="text-sm font-medium">Specify <span className="text-destructive">*</span></label>
+                                    </div>
                                     <input
                                         type="text"
                                         {...register("caseHistoryDetails", {
@@ -1764,7 +1787,7 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= CONSENT ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-gray-900">O.Consent</h3>
+                        <h3 className="mb-4 text-base font-bold text-gray-900">U.Consent</h3>
                         <div className="space-y-3">
                             <div className="flex items-start gap-3">
                                 <input type="checkbox" {...register("consent", { required: true })} className="mt-1 h-4 w-4" />
