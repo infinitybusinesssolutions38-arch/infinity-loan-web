@@ -23,6 +23,7 @@ const BorrowerBusinessSchema = new mongoose.Schema(
     gender: { type: String, required: false },
     maritalStatus: { type: String, required: false },
     dob: { type: String, required: false },
+    age: { type: String, required: false },
 
     voterId: { type: String, required: false },
     drivingLicense: { type: String, required: false },
@@ -138,6 +139,7 @@ const BorrowerBusinessSchema = new mongoose.Schema(
     // Medical history
     medicalHistory: { type: String, required: false },
     medicalHistoryDetails: { type: String, required: false },
+    medicalDocumentUrl: { type: String, required: false },
 
     // Habbit
     habbit: { type: String, required: false },
@@ -150,6 +152,18 @@ const BorrowerBusinessSchema = new mongoose.Schema(
     // Applicant assets
     applicantAssetType: { type: String, required: false },
     applicantAssetMarketPrice: { type: String, required: false },
+    applicantAssetOngoingLoan: { type: String, required: false },
+    applicantAssets: {
+        type: [
+            {
+                applicantAssetType: { type: String },
+                applicantAssetMarketPrice: { type: String },
+                applicantAssetOngoingLoan: { type: String },
+            },
+        ],
+        required: false,
+        default: [],
+    },
 
     // CIBIL
     hasCibil: { type: String, required: false },
@@ -193,6 +207,16 @@ const BorrowerBusinessSchema = new mongoose.Schema(
     assessmentYear2526Url: { type: String, required: false },
     yearlyGstReturnType: { type: String, required: false },
     yearlyGstReturnFileUrl: { type: String, required: false },
+    yearlyGstReturns: {
+        type: [
+            {
+                gstType: { type: String },
+                fileUrl: { type: String },
+            },
+        ],
+        required: false,
+        default: [],
+    },
     proformaInvoiceFileUrl: { type: String, required: false },
     cibilReportUrl: { type: String, required: false },
     oneYearBankStatementUrl: { type: String, required: false },

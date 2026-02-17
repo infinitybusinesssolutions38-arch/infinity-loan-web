@@ -26,6 +26,16 @@ export async function POST(req) {
     await connectDB();
     const formData = await req.formData();
 
+    const safeJsonParse = (value, fallback) => {
+      try {
+        if (!value) return fallback;
+        const raw = typeof value === "string" ? value : String(value);
+        return JSON.parse(raw);
+      } catch (e) {
+        return fallback;
+      }
+    };
+
     const generateApplicationRef = () => {
       const ts = Date.now().toString(36).toUpperCase();
       const rnd = Math.random().toString(36).slice(2, 8).toUpperCase();
@@ -115,6 +125,23 @@ export async function POST(req) {
       })
     );
 
+    const yearlyGstReturnTypes = formData
+      .getAll("yearlyGstReturnTypes")
+      .filter(Boolean)
+      .map((v) => String(v).trim())
+      .filter(Boolean);
+
+    const yearlyGstReturns = await Promise.all(
+      yearlyGstReturnTypes.map(async (t) => {
+        const key = toAccountKey(t);
+        const fileUrl = await upload(formData.get(`yearlyGstReturnFile_${key}`));
+        return {
+          gstType: t,
+          fileUrl,
+        };
+      })
+    );
+
     // =============================
     // Upload Helper
     // =============================
@@ -150,6 +177,25 @@ export async function POST(req) {
     // =============================
     // Create Document
     // =============================
+    const applicantAssetsPayload = safeJsonParse(
+      formData.get("applicantAssetsPayload"),
+      []
+    );
+    const applicantAssets = Array.isArray(applicantAssetsPayload)
+      ? applicantAssetsPayload
+          .map((x) => ({
+            applicantAssetType: x?.applicantAssetType,
+            applicantAssetMarketPrice: x?.applicantAssetMarketPrice,
+            applicantAssetOngoingLoan: x?.applicantAssetOngoingLoan,
+          }))
+          .filter(
+            (x) =>
+              x?.applicantAssetType ||
+              x?.applicantAssetMarketPrice ||
+              x?.applicantAssetOngoingLoan
+          )
+      : [];
+
     const newApplication = new BusinessLoanModel({
       applicationRef,
 
@@ -167,6 +213,7 @@ export async function POST(req) {
       gender: formData.get("gender"),
       maritalStatus: formData.get("maritalStatus"),
       dob: formData.get("dob"),
+      age: formData.get("age"),
       personalEmail: formData.get("personalEmail"),
       businessEmail: formData.get("businessEmail"),
       voterId: formData.get("voterId"),
@@ -199,6 +246,7 @@ export async function POST(req) {
       cibilIssuesDetails: formData.get("cibilIssuesDetails"),
       preferredTenure: formData.get("preferredTenure"),
       purpose: formData.get("purpose"),
+      existingLoanDetails: formData.get("existingLoanDetails"),
 
       // Bank
       accountTypes,
@@ -244,6 +292,7 @@ export async function POST(req) {
       // Medical history
       medicalHistory: formData.get("medicalHistory"),
       medicalHistoryDetails: formData.get("medicalHistoryDetails"),
+      medicalDocumentUrl: await upload(formData.get("medicalDocument")),
 
       // Habbit
       habbit: formData.get("habbit"),
@@ -256,6 +305,8 @@ export async function POST(req) {
       // Applicant assets
       applicantAssetType: formData.get("applicantAssetType"),
       applicantAssetMarketPrice: formData.get("applicantAssetMarketPrice"),
+      applicantAssetOngoingLoan: formData.get("applicantAssetOngoingLoan"),
+      applicantAssets,
 
       // CIBIL
       hasCibil: formData.get("hasCibil"),
@@ -289,8 +340,13 @@ export async function POST(req) {
       assessmentYear2324Url: await upload(formData.get("assessmentYear2324")),
       assessmentYear2425Url: await upload(formData.get("assessmentYear2425")),
       assessmentYear2526Url: await upload(formData.get("assessmentYear2526")),
-      yearlyGstReturnType: formData.get("yearlyGstReturnType"),
-      yearlyGstReturnFileUrl: await upload(formData.get("yearlyGstReturnFile")),
+      yearlyGstReturnType:
+        yearlyGstReturnTypes.length > 0
+          ? yearlyGstReturnTypes.join(", ")
+          : formData.get("yearlyGstReturnType"),
+      yearlyGstReturnFileUrl:
+        yearlyGstReturns?.[0]?.fileUrl || (await upload(formData.get("yearlyGstReturnFile"))),
+      yearlyGstReturns: yearlyGstReturns.filter((x) => x?.gstType || x?.fileUrl),
       proformaInvoiceFileUrl: await upload(formData.get("proformaInvoiceFile")),
       cibilReportUrl: await upload(formData.get("cibilReport")),
       oneYearBankStatementUrl:
@@ -424,6 +480,17 @@ export async function POST(req) {
       return String(v);
     };
 
+    const safeJsonParse = (value, fallback) => {
+      try {
+        if (!value) return fallback;
+        const raw = typeof value === "string" ? value : String(value);
+        if (!raw.trim()) return fallback;
+        return JSON.parse(raw);
+      } catch {
+        return fallback;
+      }
+    };
+
     const asLink = (u) => {
       const url = typeof u === "string" ? u.trim() : "";
       if (!url) return "-";
@@ -448,6 +515,7 @@ export async function POST(req) {
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Gender</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.gender) || "-"}</td></tr>
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Marital Status</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.maritalStatus) || "-"}</td></tr>
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>DOB</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.dob) || "-"}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Age</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.age) || "-"}</td></tr>
           </tbody>
         </table>
 
@@ -496,19 +564,89 @@ export async function POST(req) {
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>CIBIL Issues</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.cibilIssuesDetails) || "-"}</td></tr>
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>CIBIL Available</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.hasCibil) || "-"}</td></tr>
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>CIBIL Score</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.cibilScore) || "-"}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Number Of Existing Loans</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.numberOfExistingLoans) || "-"}</td></tr>
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Buying Goods</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.isBuyingGoods) || "-"}</td></tr>
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Goods Name</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.goodsName) || "-"}</td></tr>
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Quotation Amount</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.quotationAmount) || "-"}</td></tr>
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Medical History</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.medicalHistory) || "-"}</td></tr>
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Medical History Details</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.medicalHistoryDetails) || "-"}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Medical Document</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.medicalDocumentUrl) || "-"}</td></tr>
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Habbit</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.habbit) || "-"}</td></tr>
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Habbit Details</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.habbitDetails) || "-"}</td></tr>
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Civil/Criminal Case history</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.caseHistory) || "-"}</td></tr>
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Case History Details</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.caseHistoryDetails) || "-"}</td></tr>
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Applicant Asset Type</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.applicantAssetType) || "-"}</td></tr>
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Applicant Asset Market Price</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.applicantAssetMarketPrice) || "-"}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Applicant Asset On Going Loan</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.applicantAssetOngoingLoan) || "-"}</td></tr>
           </tbody>
         </table>
+
+        ${Array.isArray(saved?.applicantAssets) && saved.applicantAssets.length
+          ? `
+            <h4 style="margin:12px 0 8px 0">Applicant Assets (List)</h4>
+            <table style="width:100%;border-collapse:collapse;font-size:14px">
+              <thead>
+                <tr>
+                  <th style="border:1px solid #e5e7eb;padding:8px;text-align:left">Asset Type</th>
+                  <th style="border:1px solid #e5e7eb;padding:8px;text-align:left">Market Price</th>
+                  <th style="border:1px solid #e5e7eb;padding:8px;text-align:left">On Going Loan</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${saved.applicantAssets
+                  .map(
+                    (a) => `
+                      <tr>
+                        <td style="border:1px solid #e5e7eb;padding:8px;vertical-align:top">${safe(a?.applicantAssetType) || "-"}</td>
+                        <td style="border:1px solid #e5e7eb;padding:8px;vertical-align:top">${safe(a?.applicantAssetMarketPrice) || "-"}</td>
+                        <td style="border:1px solid #e5e7eb;padding:8px;vertical-align:top">${safe(a?.applicantAssetOngoingLoan) || "-"}</td>
+                      </tr>
+                    `
+                  )
+                  .join("")}
+              </tbody>
+            </table>
+          `
+          : ""}
+
+        ${(() => {
+          const parsed = safeJsonParse(saved?.existingLoanDetails, []);
+          const loans = Array.isArray(parsed) ? parsed : [];
+          if (!loans.length) return "";
+          return `
+            <h4 style="margin:12px 0 8px 0">Existing Loans Details</h4>
+            <table style="width:100%;border-collapse:collapse;font-size:14px">
+              <thead>
+                <tr>
+                  <th style="border:1px solid #e5e7eb;padding:8px;text-align:left">Loan Amount</th>
+                  <th style="border:1px solid #e5e7eb;padding:8px;text-align:left">Monthly EMI</th>
+                  <th style="border:1px solid #e5e7eb;padding:8px;text-align:left">Loan Type</th>
+                  <th style="border:1px solid #e5e7eb;padding:8px;text-align:left">Bank Name</th>
+                  <th style="border:1px solid #e5e7eb;padding:8px;text-align:left">Loan Tenure</th>
+                  <th style="border:1px solid #e5e7eb;padding:8px;text-align:left">Loan EMI</th>
+                  <th style="border:1px solid #e5e7eb;padding:8px;text-align:left">Closing Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${loans
+                  .map(
+                    (l) => `
+                      <tr>
+                        <td style="border:1px solid #e5e7eb;padding:8px;vertical-align:top">${safe(l?.totalLoanAmount) || "-"}</td>
+                        <td style="border:1px solid #e5e7eb;padding:8px;vertical-align:top">${safe(l?.totalMonthlyEmi) || "-"}</td>
+                        <td style="border:1px solid #e5e7eb;padding:8px;vertical-align:top">${safe(l?.loanType) || "-"}</td>
+                        <td style="border:1px solid #e5e7eb;padding:8px;vertical-align:top">${safe(l?.bankName) || "-"}</td>
+                        <td style="border:1px solid #e5e7eb;padding:8px;vertical-align:top">${safe(l?.loanTenure) || "-"}</td>
+                        <td style="border:1px solid #e5e7eb;padding:8px;vertical-align:top">${safe(l?.loanEmi) || "-"}</td>
+                        <td style="border:1px solid #e5e7eb;padding:8px;vertical-align:top">${safe(l?.closingDate) || "-"}</td>
+                      </tr>
+                    `
+                  )
+                  .join("")}
+              </tbody>
+            </table>
+          `;
+        })()}
 
         <h3 style="margin:16px 0 8px 0">Bank Details</h3>
         <table style="width:100%;border-collapse:collapse;font-size:14px">
@@ -580,6 +718,18 @@ export async function POST(req) {
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Assessment Year 2025-26</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.assessmentYear2526Url)}</td></tr>
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Yearly GST Return Type</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.yearlyGstReturnType) || "-"}</td></tr>
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Yearly GST Return File</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.yearlyGstReturnFileUrl)}</td></tr>
+            ${Array.isArray(saved?.yearlyGstReturns) && saved.yearlyGstReturns.length
+              ? `
+                <tr><td colspan="2" style="border:1px solid #e5e7eb;padding:8px"><strong>All GST Returns</strong></td></tr>
+                ${saved.yearlyGstReturns
+                  .filter((x) => x && (x.gstType || x.fileUrl))
+                  .map(
+                    (x) =>
+                      `<tr><td style="border:1px solid #e5e7eb;padding:8px">${safe(x?.gstType) || "-"}</td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(x?.fileUrl)}</td></tr>`
+                  )
+                  .join("")}
+              `
+              : ""}
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Proforma Invoice</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.proformaInvoiceFileUrl)}</td></tr>
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>CIBIL Report</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.cibilReportUrl)}</td></tr>
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Co-Applicant PAN Photo</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.coApplicantPanPhotoUrl)}</td></tr>
@@ -719,13 +869,40 @@ export async function POST(req) {
       </html>
     `;
 
+    const assetsText = Array.isArray(saved?.applicantAssets)
+      ? saved.applicantAssets
+          .filter(
+            (a) =>
+              a?.applicantAssetType ||
+              a?.applicantAssetMarketPrice ||
+              a?.applicantAssetOngoingLoan
+          )
+          .map(
+            (a, idx) =>
+              `${idx + 1}. Asset Type: ${safe(a?.applicantAssetType) || "-"}, Market Price: ${safe(a?.applicantAssetMarketPrice) || "-"}, On Going Loan: ${safe(a?.applicantAssetOngoingLoan) || "-"}`
+          )
+          .join("\n")
+      : "";
+
     const internalText = `New Business Loan Application\n\nApplication Ref: ${safe(
       applicationRef
     )}\nDate: ${safe(applicationDate)}\nService Category: ${safe(saved?.serviceCategoryTitle) || safe(saved?.serviceCategoryKey)}\n\nApplicant Details\nName: ${safe(
       saved?.firstName
     )} ${safe(saved?.middleName)} ${safe(saved?.lastName)}\nMobile: ${safe(
       saved?.mobileNumber
-    )}\nAlternate Mobile: ${safe(saved?.alternateMobile || saved?.alternateMobileNumber) || "-"}\nWhatsApp: ${safe(saved?.whatsAppNumber) || "-"}\nPersonal Email: ${safe(saved?.personalEmail) || "-"}\nBusiness Email: ${safe(saved?.businessEmail) || "-"}\n\nKYC\nPAN: ${safe(saved?.panNumber) || "-"}\nAadhaar: ${safe(saved?.aadhaarNumber) || "-"}\nGST: ${safe(saved?.gstNumber) || "-"}\n\nAddresses\nResidential: ${safe(saved?.currentResidentialAddress) || "-"}\nOffice/Shop: ${safe(saved?.currentOfficeOrShopAddress) || "-"}\n\nBusiness Details\nBusiness Name: ${safe(saved?.businessName) || "-"}\nBusiness Type: ${safe(saved?.businessType) || "-"}\nIndustry: ${safe(saved?.industryType) || "-"}\n\nLoan Details\nAmount: ${safe(saved?.requiredLoanAmount) || "-"}\nTenure: ${safe(saved?.preferredTenure) || "-"}\nPurpose: ${safe(saved?.purpose) || "-"}\nBuying Goods: ${safe(saved?.isBuyingGoods) || "-"}\nGoods Name: ${safe(saved?.goodsName) || "-"}\nQuotation Amount: ${safe(saved?.quotationAmount) || "-"}\nMedical History: ${safe(saved?.medicalHistory) || "-"}\nMedical History Details: ${safe(saved?.medicalHistoryDetails) || "-"}`;
+    )}\nAge: ${safe(saved?.age) || "-"}\nAlternate Mobile: ${safe(saved?.alternateMobile || saved?.alternateMobileNumber) || "-"}\nWhatsApp: ${safe(saved?.whatsAppNumber) || "-"}\nPersonal Email: ${safe(saved?.personalEmail) || "-"}\nBusiness Email: ${safe(saved?.businessEmail) || "-"}\n\nKYC\nPAN: ${safe(saved?.panNumber) || "-"}\nAadhaar: ${safe(saved?.aadhaarNumber) || "-"}\nGST: ${safe(saved?.gstNumber) || "-"}\n\nAddresses\nResidential: ${safe(saved?.currentResidentialAddress) || "-"}\nOffice/Shop: ${safe(saved?.currentOfficeOrShopAddress) || "-"}\n\nBusiness Details\nBusiness Name: ${safe(saved?.businessName) || "-"}\nBusiness Type: ${safe(saved?.businessType) || "-"}\nIndustry: ${safe(saved?.industryType) || "-"}\n\nLoan Details\nAmount: ${safe(saved?.requiredLoanAmount) || "-"}\nTenure: ${safe(saved?.preferredTenure) || "-"}\nPurpose: ${safe(saved?.purpose) || "-"}\nNumber Of Existing Loans: ${safe(saved?.numberOfExistingLoans) || "-"}\nBuying Goods: ${safe(saved?.isBuyingGoods) || "-"}\nGoods Name: ${safe(saved?.goodsName) || "-"}\nQuotation Amount: ${safe(saved?.quotationAmount) || "-"}\nMedical History: ${safe(saved?.medicalHistory) || "-"}\nMedical History Details: ${safe(saved?.medicalHistoryDetails) || "-"}`;
+
+    const existingLoansText = (() => {
+      const parsed = safeJsonParse(saved?.existingLoanDetails, []);
+      const loans = Array.isArray(parsed) ? parsed : [];
+      if (!loans.length) return "";
+      return loans
+        .map(
+          (l, idx) =>
+            `${idx + 1}. ${safe(l?.totalLoanAmount) || "-"} | ${safe(l?.totalMonthlyEmi) || "-"} | ${safe(l?.loanType) || "-"} | ${safe(l?.bankName) || "-"} | ${safe(l?.loanTenure) || "-"} | ${safe(l?.loanEmi) || "-"} | ${safe(l?.closingDate) || "-"}`
+        )
+        .join("\n");
+    })();
 
     const referencesText = Array.isArray(saved?.references)
       ? saved.references
@@ -751,9 +928,16 @@ export async function POST(req) {
 
     const coApplicantText = `Co-Applicant\nName: ${safe(saved?.coApplicantName) || "-"}\nRelationship: ${safe(saved?.relationshipWithApplicant) || "-"}\nEmployment Type: ${safe(saved?.coApplicantEmploymentType) || "-"}\nMobile: ${safe(saved?.coApplicantMobileNumber) || "-"}\nEmail: ${safe(saved?.coApplicantEmailId) || "-"}\nAddress: ${safe(saved?.coApplicantAddress) || "-"}\nState: ${safe(saved?.coApplicantState) || "-"}\nCity: ${safe(saved?.coApplicantCity) || "-"}\nPincode: ${safe(saved?.coApplicantPincode) || "-"}`;
 
-    const internalTextWithHabbit = `${internalText}\nHabbit: ${safe(saved?.habbit) || "-"}\nHabbit Details: ${safe(saved?.habbitDetails) || "-"}\nCivil/Criminal Case history: ${safe(saved?.caseHistory) || "-"}\nCase History Details: ${safe(saved?.caseHistoryDetails) || "-"}\nApplicant Asset Type: ${safe(saved?.applicantAssetType) || "-"}\nApplicant Asset Market Price: ${safe(saved?.applicantAssetMarketPrice) || "-"}\n\n${coApplicantText}${referencesText ? `\n\nReferences\n${referencesText}` : ""}${otherDocsText ? `\n\nOther Supported Documents\n${otherDocsText}` : ""}`;
+    const internalTextWithHabbit = `${internalText}\nMedical Document: ${safe(saved?.medicalDocumentUrl) || "-"}\nHabbit: ${safe(saved?.habbit) || "-"}\nHabbit Details: ${safe(saved?.habbitDetails) || "-"}\nCivil/Criminal Case history: ${safe(saved?.caseHistory) || "-"}\nCase History Details: ${safe(saved?.caseHistoryDetails) || "-"}\nApplicant Asset Type: ${safe(saved?.applicantAssetType) || "-"}\nApplicant Asset Market Price: ${safe(saved?.applicantAssetMarketPrice) || "-"}\nApplicant Asset On Going Loan: ${safe(saved?.applicantAssetOngoingLoan) || "-"}${existingLoansText ? `\n\nExisting Loans Details\n${existingLoansText}` : ""}\n\n${coApplicantText}${referencesText ? `\n\nReferences\n${referencesText}` : ""}${otherDocsText ? `\n\nOther Supported Documents\n${otherDocsText}` : ""}`;
 
-    const internalTextFinal = `${internalTextWithHabbit}\n\nDocuments\nApplicant Photo: ${safe(saved?.applicantPhotoUrl) || "-"}\nPAN Photo: ${safe(saved?.panPhotoUrl) || "-"}\nAadhaar Front: ${safe(saved?.aadhaarPhotoUrl) || "-"}\nAadhaar Back: ${safe(saved?.aadhaarBackPhotoUrl) || "-"}`;
+    const gstReturnsText = Array.isArray(saved?.yearlyGstReturns)
+      ? saved.yearlyGstReturns
+          .filter((x) => x && (x.gstType || x.fileUrl))
+          .map((x, idx) => `${idx + 1}. ${safe(x?.gstType) || "-"}: ${safe(x?.fileUrl) || "-"}`)
+          .join("\n")
+      : "";
+
+    const internalTextFinal = `${internalTextWithHabbit}${assetsText ? `\n\nApplicant Assets (List)\n${assetsText}` : ""}${gstReturnsText ? `\n\nGST Returns\n${gstReturnsText}` : ""}\n\nDocuments\nApplicant Photo: ${safe(saved?.applicantPhotoUrl) || "-"}\nPAN Photo: ${safe(saved?.panPhotoUrl) || "-"}\nAadhaar Front: ${safe(saved?.aadhaarPhotoUrl) || "-"}\nAadhaar Back: ${safe(saved?.aadhaarBackPhotoUrl) || "-"}`;
 
     const fromAddress =
       process.env.EMAIL_SMTP_USER ||
