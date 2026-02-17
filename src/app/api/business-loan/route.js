@@ -30,8 +30,9 @@ export async function POST(req) {
       try {
         if (!value) return fallback;
         const raw = typeof value === "string" ? value : String(value);
+        if (!raw.trim()) return fallback;
         return JSON.parse(raw);
-      } catch (e) {
+      } catch {
         return fallback;
       }
     };
@@ -478,17 +479,6 @@ export async function POST(req) {
     const safe = (v) => {
       if (v === null || typeof v === "undefined") return "";
       return String(v);
-    };
-
-    const safeJsonParse = (value, fallback) => {
-      try {
-        if (!value) return fallback;
-        const raw = typeof value === "string" ? value : String(value);
-        if (!raw.trim()) return fallback;
-        return JSON.parse(raw);
-      } catch {
-        return fallback;
-      }
     };
 
     const asLink = (u) => {

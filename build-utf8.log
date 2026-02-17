@@ -1,0 +1,43 @@
+﻿
+> fortune-loan-services-web@0.1.0 build
+> next build
+
+Γû▓ Next.js 16.1.6 (Turbopack)
+- Environments: .env
+
+  Creating an optimized production build ...
+/*! ≡ƒî╝ daisyUI 5.3.10 */
+node.exe : Found 1 warning while optimizing generated CSS:
+At C:\Program Files\nodejs\npm.ps1:29 char:3
++   & $NODE_EXE $NPM_CLI_JS $args
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Found 1 warning... generated CSS::String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+
+[2mΓöé }[22m
+[2mΓöé @layer base {[22m
+[2mΓöé[22m   @property --radialprogress {
+[2mΓöå[22m            [33m[2m^--[22m Unknown at rule: @property[39m
+[2mΓöå[22m
+[2mΓöé     syntax: "<percentage>";[22m
+[2mΓöé     inherits: true;[22m
+
+
+> Build error occurred
+Error: Turbopack build failed with 1 errors:
+./src/app/api/business-loan/route.js:483:11
+Ecmascript file had an error
+[0m [90m 481 |[39m     }[33m;[39m
+ [90m 482 |[39m
+[31m[1m>[22m[39m[90m 483 |[39m     [36mconst[39m safeJsonParse [33m=[39m (value[33m,[39m fallback) [33m=>[39m {
+ [90m     |[39m           [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m
+[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 484 |[39m       [36mtry[39m {
+ [90m 485 |[39m         [36mif[39m ([33m![39mvalue) [36mreturn[39m fallback[33m;[39m
+ [90m 486 |[39m         [36mconst[39m raw [33m=[39m [36mtypeof[39m value [33m===[39m [32m"string"[39m [33m?[39m value [33m:[39m [33mString[39m(value)[33m;[39m[0m
+
+the name `safeJsonParse` is defined multiple times
+
+
+    at <unknown> (./src/app/api/business-loan/route.js:483:11)
