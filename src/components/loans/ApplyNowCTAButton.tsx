@@ -32,6 +32,20 @@ export default function ApplyNowCTAButton({
   const router = useRouter();
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const isLoggedIn = (() => {
+      try {
+        return Boolean(localStorage.getItem("token"));
+      } catch {
+        return false;
+      }
+    })();
+
+    if (!isLoggedIn) {
+      const next = `${window.location.pathname}${window.location.search}`;
+      router.push(`/login?next=${encodeURIComponent(next)}`);
+      return;
+    }
+
     onClick?.(e);
 
     if (e.defaultPrevented) return;

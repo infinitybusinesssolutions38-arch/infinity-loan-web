@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState } from "react";
+import { useRouter } from "next/navigation";
 import ApplyNowModal from "./loans/ApplyNowModal";
 
 type LoanModalContextType = {
@@ -18,9 +19,26 @@ export function LoanModalProvider({
     children: React.ReactNode;
 }) {
     const [isOpen, setIsOpen] = useState(false);
+    const router = useRouter();
 
     const value: LoanModalContextType = {
-        open: () => setIsOpen(true),
+        open: () => {
+            const isLoggedIn = (() => {
+                try {
+                    return Boolean(localStorage.getItem("token"));
+                } catch {
+                    return false;
+                }
+            })();
+
+            if (!isLoggedIn) {
+                const next = `${window.location.pathname}${window.location.search}`;
+                router.push(`/login?next=${encodeURIComponent(next)}`);
+                return;
+            }
+
+            setIsOpen(true);
+        },
         close: () => setIsOpen(false),
     };
 

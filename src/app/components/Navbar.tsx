@@ -2,7 +2,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React from "react";
+import React, { useEffect, useState } from "react";
+
 import {
   Briefcase,
   Banknote,
@@ -51,6 +52,38 @@ const SERVICES_DROPDOWN_ITEMS = [
 
 const Navbar = () => {
   const pathname = usePathname();
+
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const sync = () => {
+      try {
+        setIsLoggedIn(Boolean(localStorage.getItem("token")));
+      } catch {
+        setIsLoggedIn(false);
+      }
+    };
+
+    sync();
+    window.addEventListener("storage", sync);
+    return () => window.removeEventListener("storage", sync);
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/logout", { method: "POST" });
+    } catch {
+      // ignore
+    } finally {
+      try {
+        localStorage.removeItem("token");
+      } catch {
+        // ignore
+      }
+      setIsLoggedIn(false);
+      window.location.href = "/login";
+    }
+  };
 
   const navLinkClass = (active: boolean) =>
     `relative py-2 transition-colors duration-200 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:bg-[#F97415] after:transition-all after:duration-300 ${
@@ -152,7 +185,7 @@ const Navbar = () => {
             <li>
               <Link
                 href="/join-us"
-                className={navLinkClass(pathname === "/emi-calculator")}
+                className={navLinkClass(pathname === "/join-us")}
               >
                 Join Us
               </Link>
@@ -161,14 +194,32 @@ const Navbar = () => {
         </div>
 
         {/* RIGHT */}
-        {/* <div className="flex shrink-0">
-          <Link
-            href="/login"
-            className="btn btn-md border-none bg-[#F97415] text-white transition-all duration-300 hover:bg-[#F97415]/90 hover:shadow-lg hover:-translate-y-0.5"
-          >
-            Login
-          </Link>
-        </div> */}
+        <div className="flex shrink-0 items-center gap-2 mx-2">
+          {isLoggedIn ? (
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="btn btn-md border-none bg-[#F97415] text-white transition-all duration-300 hover:bg-[#F97415]/90 hover:shadow-lg hover:-translate-y-0.5"
+            >
+              Logout
+            </button>
+          ) : (
+            <>
+              <Link
+                href="/login"
+                className="btn btn-md border-none bg-[#F97415] text-white transition-all duration-300 hover:bg-[#F97415]/90 hover:shadow-lg hover:-translate-y-0.5"
+              >
+                Login
+              </Link>
+              <Link
+                href="/register"
+                className="btn btn-md border border-[#F97415]/40 bg-[#F97415]/10 text-white transition-all duration-300 hover:bg-[#F97415]/15 hover:shadow-lg hover:-translate-y-0.5"
+              >
+                Sign Up
+              </Link>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );

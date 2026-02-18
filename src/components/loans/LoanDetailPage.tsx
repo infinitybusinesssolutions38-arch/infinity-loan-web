@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ArrowLeft, ArrowRight, Percent, Calendar, Banknote, Sparkles } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -21,6 +22,25 @@ export default function LoanDetailPage({ loanType }: LoanDetailPageProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const data = LOAN_DETAILS[loanType];
   const HeroIcon = data.heroIcon;
+  const router = useRouter();
+
+  const handleApplyNow = () => {
+    const isLoggedIn = (() => {
+      try {
+        return Boolean(localStorage.getItem("token"));
+      } catch {
+        return false;
+      }
+    })();
+
+    if (!isLoggedIn) {
+      const next = `${window.location.pathname}${window.location.search}`;
+      router.push(`/login?next=${encodeURIComponent(next)}`);
+      return;
+    }
+
+    setIsModalOpen(true);
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -72,7 +92,7 @@ export default function LoanDetailPage({ loanType }: LoanDetailPageProps) {
                 <Button
                   variant="cta"
                   size="xl"
-                  onClick={() => setIsModalOpen(true)}
+                  onClick={handleApplyNow}
                   className="group"
                 >
                   Apply Now
@@ -141,7 +161,7 @@ export default function LoanDetailPage({ loanType }: LoanDetailPageProps) {
             <Button
               variant="cta"
               size="xl"
-              onClick={() => setIsModalOpen(true)}
+              onClick={handleApplyNow}
               className="animate-pulse-subtle group"
             >
               Apply Now
