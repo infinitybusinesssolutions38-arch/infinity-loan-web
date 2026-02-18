@@ -196,13 +196,21 @@ const Navbar = () => {
         {/* RIGHT */}
         <div className="flex shrink-0 items-center gap-2 mx-2">
           {isLoggedIn ? (
-            <button
-              type="button"
-              onClick={handleLogout}
-              className="btn btn-md border-none bg-[#F97415] text-white transition-all duration-300 hover:bg-[#F97415]/90 hover:shadow-lg hover:-translate-y-0.5"
-            >
-              Logout
-            </button>
+            <>
+              <Link
+                href="/profile"
+                className="btn btn-md border border-[#F97415]/40 bg-[#F97415]/10 text-white transition-all duration-300 hover:bg-[#F97415]/15 hover:shadow-lg hover:-translate-y-0.5"
+              >
+                Profile
+              </Link>
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="btn btn-md border-none bg-[#F97415] text-white transition-all duration-300 hover:bg-[#F97415]/90 hover:shadow-lg hover:-translate-y-0.5"
+              >
+                Logout
+              </button>
+            </>
           ) : (
             <>
               <Link

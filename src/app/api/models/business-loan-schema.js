@@ -175,6 +175,30 @@ const BorrowerBusinessSchema = new mongoose.Schema(
     otherSupportedDocumentsUrls: { type: [String], required: false, default: [] },
     otherSupportedDocumentsNames: { type: [String], required: false, default: [] },
 
+    additionalDocuments: {
+        type: [
+            {
+                documentName: { type: String, required: true },
+                documentUrl: { type: String, required: true },
+                uploadedAt: { type: Date, default: Date.now },
+            },
+        ],
+        required: false,
+        default: [],
+    },
+
+    paymentReceipts: {
+        type: [
+            {
+                receiptName: { type: String, required: true },
+                receiptUrl: { type: String, required: true },
+                uploadedAt: { type: Date, default: Date.now },
+            },
+        ],
+        required: false,
+        default: [],
+    },
+
     // References
     references: {
         type: [
