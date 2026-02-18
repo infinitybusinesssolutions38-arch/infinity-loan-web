@@ -2,63 +2,47 @@ import { NextResponse } from "next/server";
 import connectDB from "../lib/db";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import PersonalLoanModel from "../models/personal-loan-schema";
-import BusinessLoanModel from "../models/business-loan-schema";
-import { validateOTP, clearOTP } from "../lib/otp-service";
+import UserModel from "../models/user-schema";
 
 
 export async function POST(req) {
     try {
         await connectDB();
-        const { email, otp } = await req.json();
+        const { email, password } = await req.json();
 
         const normalizedEmail = String(email || "").trim().toLowerCase();
-        const emailRegex = new RegExp(`^${normalizedEmail.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "i");
+        const rawPassword = String(password || "");
 
-        if (!normalizedEmail || !otp) {
-            return NextResponse.json({ success: false, message: "Email and OTP are required" });
+        if (!normalizedEmail || !rawPassword) {
+            return NextResponse.json(
+                { success: false, message: "Email and password are required" },
+                { status: 400 }
+            );
         }
 
-        // Validate OTP
-        if (!validateOTP(normalizedEmail, otp)) {
-            return NextResponse.json({ success: false, message: "Invalid or expired OTP" });
-        }
-
-        // Search user across all collections
-        let user =
-            (await UserModel.findOne({
-                email: { $regex: emailRegex },
-            })) ||
-            (await IndividaulLoanModel.findOne({ email: { $regex: emailRegex } })) ||
-            (await OrganizationLoanModel.findOne({ email: { $regex: emailRegex } })) ||
-            (await NRILoanModel.findOne({ email: { $regex: emailRegex } })) ||
-            (await HUFLoanModel.findOne({ email: { $regex: emailRegex } })) ||
-            (await PersonalLoanModel.findOne({ email: { $regex: emailRegex } })) ||
-            (await BusinessLoanModel.findOne({ email: { $regex: emailRegex } }));
-
+        const user = await UserModel.findOne({ email: normalizedEmail });
         if (!user) {
-            const allowAutoRegister =
-                process.env.ALLOW_OTP_AUTO_REGISTER === "true" || process.env.NODE_ENV !== "production";
-
-            if (!allowAutoRegister) {
-                return NextResponse.json(
-                    { success: false, message: "Account not found for this email. Please register first." },
-                    { status: 404 }
-                );
-            }
-
-            const defaultRole = String(process.env.DEFAULT_USER_ROLE || "borrower-personal").trim();
-            const randomPassword = `otp-${Math.random().toString(36).slice(2)}-${Date.now()}`;
-            const hashedPassword = await bcrypt.hash(randomPassword, 10);
-
-            user = await UserModel.create({
-                email: normalizedEmail,
-                password: hashedPassword,
-                role: defaultRole,
-            });
+            return NextResponse.json(
+                { success: false, message: "Account not found. Please register first." },
+                { status: 404 }
+            );
         }
 
-        // Identify role type
+        if (user.isDisabled) {
+            return NextResponse.json(
+                { success: false, message: "Account is disabled" },
+                { status: 403 }
+            );
+        }
+
+        const isValid = await bcrypt.compare(rawPassword, user.password);
+        if (!isValid) {
+            return NextResponse.json(
+                { success: false, message: "Invalid credentials" },
+                { status: 401 }
+            );
+        }
+
         const role = user.role || "unknown";
 
         // Generate JWT
@@ -67,9 +51,6 @@ export async function POST(req) {
             process.env.JWT_SECRET,
             { expiresIn: "7d" }
         );
-
-        // Clear OTP after successful verification
-        clearOTP(normalizedEmail);
 
         // Set cookie
         const res = NextResponse.json({
