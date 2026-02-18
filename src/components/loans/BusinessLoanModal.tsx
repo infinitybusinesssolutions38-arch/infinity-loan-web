@@ -748,7 +748,7 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* =================A. BASIC DETAILS ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-bold text-blue-500">A. Applicant Basic Details</h3>
+                        <h3 className="mb-4 text-base font-bold text-blue-500">1. Applicant Basic Details</h3>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 
                             <div className="space-y-1">
@@ -886,7 +886,7 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= B. Residential Address Details ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-bold text-blue-500">B.Applicant Current Residential Address Details</h3>
+                        <h3 className="mb-4 text-base font-bold text-blue-500">2. Applicant Current Residential Address Details</h3>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Current Residential Address <span className="text-destructive">*</span></label>
@@ -922,7 +922,7 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= C. Office/Shop Address Details ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-bold text-blue-500">C.Applicant Current Office/Shop Address Details</h3>
+                        <h3 className="mb-4 text-base font-bold text-blue-500">3. Applicant Current Office/Shop Address Details</h3>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Current Office/Shop Address <span className="text-destructive">*</span></label>
@@ -974,7 +974,7 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= D. Loan Requirement Details ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-bold text-blue-500">D. Applicant Loan Requirement Details</h3>
+                        <h3 className="mb-4 text-base font-bold text-blue-500">4. Applicant Loan Requirement Details</h3>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Required Loan Amount <span className="text-destructive">*</span></label>
@@ -1005,7 +1005,7 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= E. ID PROOF ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-bold text-blue-500">E. Applicant KYC Document Details</h3>
+                        <h3 className="mb-4 text-base font-bold text-blue-500">5. Applicant KYC Document Details</h3>
                         <div className="grid md:grid-cols-3 gap-4">
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">PAN Number <span className="text-destructive">*</span></label>
@@ -1054,7 +1054,7 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= F Co-Applicant Details ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-bold text-blue-500">F. Co-Applicant Details (If Any)</h3>
+                        <h3 className="mb-4 text-base font-bold text-blue-500">6. Co-Applicant Details (If Any)</h3>
                         <div className="grid md:grid-cols-2 gap-4">
                             <div className="space-y-1 flex flex-col">
                                 <label className="text-sm font-medium">Co-Applicant Name <span className="text-red-400 text-xs">(optional)</span></label>
@@ -1127,7 +1127,7 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= G Address Proof Documents ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-bold text-blue-500">G. Applicant Address Proof Documents</h3>
+                        <h3 className="mb-4 text-base font-bold text-blue-500">7. Applicant Address Proof Documents</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Latest Home Electricity Bill (Only PDF Allowed) <span className="text-destructive">*</span></label>
@@ -1152,7 +1152,7 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                     {/* ================= H. BANK STATEMENTS ================= */}
 
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-1 text-base font-bold text-blue-500">H. Applicant Bank Statement Details</h3>
+                        <h3 className="mb-1 text-base font-bold text-blue-500">8. Applicant Bank Statement Details</h3>
                         <span className="text-sm">(pdf should not be protected with password  else write down the password)</span>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1">
@@ -1264,7 +1264,7 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* =================I. EXISTING LOANS ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-bold text-blue-500">I. Applicant Existing Loan Details</h3>
+                        <h3 className="mb-4 text-base font-bold text-blue-500">9. Applicant Existing Loan Details</h3>
                         <div className="flex flex-col mb-2">
                             <label className="text-sm font-medium">Number Of Existing Loans<span className="text-red-400 text-xs">(optional)</span></label>
                             <select {...register("NumberOfExistingLoans")} className="input bg-gray-200" >
@@ -1391,7 +1391,7 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= J ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-bold text-blue-500">J.Applicant Income Tax Return</h3>
+                        <h3 className="mb-4 text-base font-bold text-blue-500">10. Applicant Income Tax Return</h3>
                         <div className="grid grid-col-2 gap-3">
                             <div className="space-y-1">
                                 <div>
@@ -1426,7 +1426,7 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* =================K Applicant  GST Return ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-bold text-blue-500">K. Applicant   GST Return </h3>
+                        <h3 className="mb-4 text-base font-bold text-blue-500">11. Applicant   GST Return </h3>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1">
@@ -1516,9 +1516,9 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                     </div>
 
 
-                    {/* ================= L. Business Registration Certificates================= */}
+                    {/* ================= 12. Business Registration Certificates ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-bold text-blue-500">L. Business Registration Certificates(one document mandatory)</h3>
+                        <h3 className="mb-4 text-base font-bold text-blue-500">12. Business Registration Certificates(one document mandatory)</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Business Registration Certificates <span className="text-red-400">*</span></label>
@@ -1580,9 +1580,9 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                             ) : null}
                         </div>
                     </div>
-                    {/* ================= M. Buying Goods ================= */}
+                    {/* ================= 13. Buying Goods ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-bold text-blue-500">M. Buying Goods</h3>
+                        <h3 className="mb-4 text-base font-bold text-blue-500">13. Buying Goods</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1">
                                 <div>
@@ -1649,9 +1649,9 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                         </div>
                     </div>
 
-                    {/* ================= N. CIBIL Score ================= */}
+                    {/* ================= 14. Applicant CIBIL Score ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-blue-500">N. Applicant CIBIL Score </h3>
+                        <h3 className="mb-4 text-base font-semibold text-blue-500">14. Applicant CIBIL Score</h3>
                         <div className="space-y-1">
                             <div>
                                 <label className="text-sm font-medium">CIBIL Available <span className="text-destructive">*</span></label>
@@ -1697,9 +1697,9 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                         )}
                     </div>
 
-                    {/* ================= O. Upload Other Supported Document================= */}
+                    {/* ================= 15. Upload Other Supported Document ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-bold text-blue-500">O. Upload Other Supported Document</h3>
+                        <h3 className="mb-4 text-base font-bold text-blue-500">15. Upload Other Supported Document</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Number of Other Documents</label>
@@ -1758,9 +1758,9 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
 
 
 
-                    {/* =================P. reference name details ================= */}
+                    {/* ================= 16. Reference name details ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-blue-500">P. Reference name details</h3>
+                        <h3 className="mb-4 text-base font-semibold text-blue-500">16. Reference name details</h3>
                         <span>(Give 4 Reference Details)</span>
                         {Array.from({ length: Math.max(1, referenceCount || 1) }).map((_, idx) => {
                             const suffix = idx === 0 ? "" : `_${idx}`;
@@ -1812,9 +1812,9 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                         </button>
                     </div>
 
-                    {/* ================= Q. Applicant Assets details ================= */}
+                    {/* ================= 17. Applicant Assets details ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-bold text-blue-500">Q. Applicant  Assets details digital or physical</h3>
+                        <h3 className="mb-4 text-base font-bold text-blue-500">17. Applicant Assets details digital or physical</h3>
                         {Array.from({ length: applicantAssetsCount }).map((_, idx) => (
                             <div key={idx} className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-1">
@@ -1855,9 +1855,9 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                             </button>
                     </div>
 
-                    {/* ================= Medical History ================= */}
+                    {/* ================= 18. Applicant Medical History ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-bold text-blue-500">R.Applicant Medical History</h3>
+                        <h3 className="mb-4 text-base font-bold text-blue-500">18. Applicant Medical History</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1">
                                 <div>
@@ -1915,9 +1915,9 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                         </div>
                     </div>
 
-                    {/* ================= Habbit ================= */}
+                    {/* ================= 19. Applicant Addictive Habits ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-bold text-blue-500">S.Applicant Addictive Habits</h3>
+                        <h3 className="mb-4 text-base font-bold text-blue-500">19. Applicant Addictive Habits</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1">
                                 <div>
@@ -1959,9 +1959,9 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                         </div>
                     </div>
 
-                    {/* ================= Civil or Criminal Case history ================= */}
+                    {/* ================= 20. Applicant Civil or Criminal Case history ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-bold text-blue-500">T.Applicant Civil or Criminal Case history</h3>
+                        <h3 className="mb-4 text-base font-bold text-blue-500">20. Applicant Civil or Criminal Case history</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1">
                                 <div>
@@ -2004,13 +2004,15 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                     </div>
 
 
-                    {/* ================= CONSENT ================= */}
+                    {/* ================= 21. Consent ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-bold text-blue-500">U.Consent</h3>
+                        <h3 className="mb-4 text-base font-bold text-blue-500">21. Consent</h3>
                         <div className="space-y-3">
                             <div className="flex items-start gap-3">
                                 <input type="checkbox" {...register("consent", { required: true })} className="mt-1 h-4 w-4" />
-                                <span className="text-sm text-gray-700">I agree to Terms & Conditions and Privacy Policy.</span>
+                                <div>
+                                    <p className="text-sm font-semibold text-gray-900">I declare that the information provided is true and correct.</p>
+                                </div>
                             </div>
                             <div className="flex items-start gap-3">
                                 <input type="checkbox" {...register("consent", { required: true })} className="mt-1 h-4 w-4" />

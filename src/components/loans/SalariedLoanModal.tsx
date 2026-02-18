@@ -23,6 +23,13 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
         formState: { errors },
     } = useForm<LoanFormData>();
 
+    const toAccountKey = (value: any) => {
+        return String(value || "")
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "_")
+            .replace(/^_+|_+$/g, "");
+    };
+
     const SIGNATURE_TIMEOUT_MS = 90000;
     const CLOUDINARY_UPLOAD_TIMEOUT_MS = 180000;
     const SUBMIT_TIMEOUT_MS = 120000;
@@ -71,6 +78,37 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
         if (await isPdfPasswordProtected(file)) {
             return "Password-protected PDFs are not supported";
         }
+
+        if (file.size > 2 * 1024 * 1024) return "Max size is 2 MB";
+        return true;
+    };
+
+    const validatePdfOnlyMax2MB = async (value: any) => {
+        const file = getFileFromValue(value);
+        if (!file) return true;
+
+        const isAllowedMime = file.type === "application/pdf";
+        const fileName = typeof file.name === "string" ? file.name.toLowerCase() : "";
+        const isAllowedExt = fileName.endsWith(".pdf");
+        if (!isAllowedMime && !isAllowedExt) return "Please upload PDF only";
+
+        if (await isPdfPasswordProtected(file)) {
+            return "Password-protected PDFs are not supported";
+        }
+        if (file.size > 2 * 1024 * 1024) return "Max size is 2 MB";
+        return true;
+    };
+
+    const validateMax1MBJpegOnly = async (value: any) => {
+        const file = getFileFromValue(value);
+        if (!file) return true;
+
+        const isAllowedMime = file.type === "image/jpeg" || file.type === "image/jpg";
+        const fileName = typeof file.name === "string" ? file.name.toLowerCase() : "";
+        const isAllowedExt = fileName.endsWith(".jpg") || fileName.endsWith(".jpeg");
+        if (!isAllowedMime && !isAllowedExt) return "Please upload JPEG only";
+
+        if (file.size > 1 * 1024 * 1024) return "Max size is 1 MB";
         return true;
     };
 
@@ -169,6 +207,8 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
 
     const [referenceCount, setReferenceCount] = useState(1);
 
+    const [applicantAssetsCount, setApplicantAssetsCount] = useState(1);
+
     // Dynamic Existing Loans
     const [existingLoans, setExistingLoans] = useState<
         {
@@ -176,6 +216,9 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
             totalMonthlyEmi: string;
             loanType: string;
             bankName: string;
+            loanTenure: string;
+            loanEmi: string;
+            closingDate: string;
         }[]
     >([
         {
@@ -183,6 +226,9 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
             totalMonthlyEmi: "",
             loanType: "",
             bankName: "",
+            loanTenure: "",
+            loanEmi: "",
+            closingDate: "",
         },
     ]);
 
@@ -191,6 +237,13 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
     const residenceType = watch("residenceType");
     const hasCibil = watch("hasCibil");
     const isBuyingGoods = watch("isBuyingGoods");
+    const medicalHistory = watch("medicalHistory");
+    const habbit = watch("habbit");
+    const caseHistory = watch("caseHistory");
+    const accountTypes = watch("accountTypes");
+    const hasSelectedAccountTypes =
+        (Array.isArray(accountTypes) && accountTypes.length > 0) ||
+        (typeof accountTypes === "string" && String(accountTypes).trim() !== "");
     const otherDocumentsCount = (() => {
         const v = watch("NumberofOtherDocuments");
         const n = Number.isFinite(Number(v)) ? parseInt(String(v), 10) : 0;
@@ -233,6 +286,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
             appendIfPresent("middleName", data.middleName);
             appendIfPresent("lastName", data.lastName);
             appendIfPresent("dob", data.dob);
+            appendIfPresent("age", data.age);
             appendIfPresent("gender", data.gender);
             appendIfPresent("maritalStatus", data.maritalStatus);
 
@@ -340,8 +394,96 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
             appendIfPresent("quotationAmount", data.quotationAmount);
             appendIfPresent("productName", data.productName);
 
+            // =====================================
+            // Bank statement (account type)
+            // =====================================
+            const accountTypesArray: string[] = Array.isArray(data.accountTypes)
+                ? data.accountTypes
+                : typeof data.accountTypes === "string" && data.accountTypes
+                    ? [data.accountTypes]
+                    : [];
+
+            accountTypesArray.forEach((v) => {
+                if (typeof v === "string" && v.trim()) formData.append("accountTypes", v);
+            });
+            appendIfPresent("accountType", accountTypesArray.join(", "));
+
+            const bankAccountsPayload: Array<{ accountType: string; bankName: string }> = [];
+            for (const t of accountTypesArray) {
+                const key = toAccountKey(t);
+                const bankNameKey = `bankName_${key}`;
+                const statementKey = `oneYearBankStatement_${key}`;
+                const passwordKey = `accountPassword_${key}`;
+
+                const bankNameValueRaw = (data as any)?.[bankNameKey];
+                const bankNameValue =
+                    typeof bankNameValueRaw === "string" ? bankNameValueRaw.trim() : "";
+                if (bankNameValue) {
+                    formData.append(bankNameKey, bankNameValue);
+                }
+
+                const statementFile = pickFirstFile((data as any)?.[statementKey]);
+                if (statementFile) {
+                    formData.append(
+                        statementKey,
+                        await uploadToCloudinary(statementFile, "loan_applications")
+                    );
+                }
+
+                appendIfPresent(passwordKey, (data as any)?.[passwordKey]);
+
+                bankAccountsPayload.push({ accountType: String(t || ""), bankName: bankNameValue });
+            }
+            formData.append("bankAccounts", JSON.stringify(bankAccountsPayload));
+
             appendIfPresent("purpose", data.purposeOfLoan);
             appendIfPresent("cibilIssues", data.cibilIssues);
+
+            // =====================================
+            // Medical History / Habits / Case History
+            // =====================================
+            appendIfPresent("medicalHistory", data.medicalHistory);
+            appendIfPresent("medicalHistoryDetails", data.medicalHistoryDetails);
+            appendIfPresent("habbit", data.habbit);
+            appendIfPresent("habbitDetails", data.habbitDetails);
+            appendIfPresent("caseHistory", data.caseHistory);
+            appendIfPresent("caseHistoryDetails", data.caseHistoryDetails);
+
+            // =====================================
+            // Applicant Assets (Dynamic)
+            // =====================================
+            appendIfPresent("applicantAssetType", data.applicantAssetType);
+            appendIfPresent("applicantAssetMarketPrice", data.applicantAssetMarketPrice);
+            appendIfPresent("applicantAssetOngoingLoan", data.applicantAssetOngoingLoan);
+
+            const applicantAssetsPayload: Array<{
+                applicantAssetType?: string;
+                applicantAssetMarketPrice?: string;
+                applicantAssetOngoingLoan?: string;
+            }> = [];
+
+            for (let i = 0; i < applicantAssetsCount; i += 1) {
+                const typeKey = i === 0 ? "applicantAssetType" : `applicantAssetType_${i}`;
+                const priceKey = i === 0 ? "applicantAssetMarketPrice" : `applicantAssetMarketPrice_${i}`;
+                const ongoingLoanKey = i === 0 ? "applicantAssetOngoingLoan" : `applicantAssetOngoingLoan_${i}`;
+
+                const applicantAssetType = (data as any)?.[typeKey];
+                const applicantAssetMarketPrice = (data as any)?.[priceKey];
+                const applicantAssetOngoingLoan = (data as any)?.[ongoingLoanKey];
+
+                const t = applicantAssetType !== undefined && applicantAssetType !== null ? String(applicantAssetType).trim() : "";
+                const p = applicantAssetMarketPrice !== undefined && applicantAssetMarketPrice !== null ? String(applicantAssetMarketPrice).trim() : "";
+                const o = applicantAssetOngoingLoan !== undefined && applicantAssetOngoingLoan !== null ? String(applicantAssetOngoingLoan).trim() : "";
+
+                if (!t && !p && !o) continue;
+                applicantAssetsPayload.push({
+                    applicantAssetType: t,
+                    applicantAssetMarketPrice: p,
+                    applicantAssetOngoingLoan: o,
+                });
+            }
+
+            formData.append("applicantAssetsPayload", JSON.stringify(applicantAssetsPayload));
 
             // =====================================
             // Co-Applicant
@@ -405,6 +547,30 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                 formData.append(
                     "aadhaarBackPhoto",
                     await uploadToCloudinary(aadhaarBackPhoto, "loan_applications")
+                );
+            }
+
+            const AssessmentYear2324 = pickFirstFile(data.AssessmentYear2324);
+            if (AssessmentYear2324) {
+                formData.append(
+                    "AssessmentYear2324",
+                    await uploadToCloudinary(AssessmentYear2324, "loan_applications")
+                );
+            }
+
+            const AssessmentYear2425 = pickFirstFile(data.AssessmentYear2425);
+            if (AssessmentYear2425) {
+                formData.append(
+                    "AssessmentYear2425",
+                    await uploadToCloudinary(AssessmentYear2425, "loan_applications")
+                );
+            }
+
+            const AssessmentYear2526 = pickFirstFile(data.AssessmentYear2526);
+            if (AssessmentYear2526) {
+                formData.append(
+                    "AssessmentYear2526",
+                    await uploadToCloudinary(AssessmentYear2526, "loan_applications")
                 );
             }
 
@@ -505,6 +671,14 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                     "quotationFile",
                     await uploadToCloudinary(quotationFile, "loan_applications")
                 );
+
+            const medicalDocument = pickFirstFile(data.medicalDocument);
+            if (medicalDocument) {
+                formData.append(
+                    "medicalDocument",
+                    await uploadToCloudinary(medicalDocument, "loan_applications")
+                );
+            }
 
             const proformaInvoiceFile = pickFirstFile(data.proformaInvoiceFile);
             if (proformaInvoiceFile)
@@ -653,7 +827,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= PERSONAL DETAILS ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-gray-900">A. Applicant basic details</h3>
+                        <h3 className="mb-4 text-base font-semibold text-blue-500">1. Applicant Basic Details</h3>
                         <div className="grid md:grid-cols-3 gap-4">
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">First Name <span className="text-destructive">*</span></label>
@@ -681,6 +855,13 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                                 ) : null}
                             </div>
                             <div className="space-y-1">
+                                <label className="text-sm font-medium">Age <span className="text-destructive">*</span></label>
+                                <input type="text" {...register("age", { required: true })} placeholder="Age" className="input bg-gray-200" />
+                                {getError("age") ? (
+                                    <p className="text-sm text-red-600">{getError("age")}</p>
+                                ) : null}
+                            </div>
+                            <div className="space-y-1">
                                 <label className="text-sm font-medium">Gender <span className="text-destructive">*</span></label>
                                 <select {...register("gender", { required: true })} className="input bg-gray-200">
                                     <option value="">Select Gender</option>
@@ -705,13 +886,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                                     <p className="text-sm text-red-600">{getError("maritalStatus")}</p>
                                 ) : null}
                             </div>
-                        </div>
-                    </div>
 
-                    {/* ================= CONTACT ================= */}
-                    <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-gray-900">B.Applicant Contact Details</h3>
-                        <div className="grid md:grid-cols-3 gap-4">
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Adhaar Linked Primary Mobile Number <span className="text-destructive">*</span></label>
                                 <input {...register("mobileNumber", { required: true })} placeholder="Mobile Number" className="input bg-gray-200" />
@@ -719,14 +894,17 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                                     <p className="text-sm text-red-600">{getError("mobileNumber")}</p>
                                 ) : null}
                             </div>
+
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Alternate Mobile Number <span className="text-red-400 text-xs">(optional)</span></label>
+                                <input {...register("alternateMobile")} placeholder="Mobile Number" className="input bg-gray-200" />
+                            </div>
+
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">WhatsApp Number <span className="text-red-400 text-xs">(optional)</span></label>
-                                <input {...register("whatsappNumber")} placeholder="WhatsApp Number" className="input bg-gray-200" />
+                                <input {...register("whatsappNumber")} placeholder="Mobile Number" className="input bg-gray-200" />
                             </div>
-                            <div className="space-y-1">
-                                <label className="text-sm font-medium">Alternate Mobile <span className="text-red-400 text-xs">(optional)</span></label>
-                                <input {...register("alternateMobile")} placeholder="Alternate Mobile" className="input bg-gray-200" />
-                            </div>
+
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Personal Email ID <span className="text-destructive">*</span></label>
                                 <input {...register("personalEmail", { required: true })} placeholder="Personal Email" className="input bg-gray-200" />
@@ -734,32 +912,32 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                                     <p className="text-sm text-red-600">{getError("personalEmail")}</p>
                                 ) : null}
                             </div>
+
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Official Email ID<span className="text-red-400 text-xs">(optional)</span></label>
-                                <input {...register("officialEmail")} placeholder="Official Email" className="input bg-gray-200" />
+                                <input {...register("officialEmail")} placeholder="Business Email" className="input bg-gray-200" />
                             </div>
 
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Voter ID<span className="text-red-400 text-xs">(optional)</span></label>
-                                <input {...register("VoterID")} placeholder="Voter ID" className="input bg-gray-200" />
+                                <input {...register("VoterID")} placeholder="Official Email" className="input bg-gray-200" />
                             </div>
 
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Driving License <span className="text-red-400 text-xs">(optional)</span></label>
-                                <input {...register("DrivingLicense")} placeholder="Driving License" className="input bg-gray-200" />
+                                <input {...register("DrivingLicense")} placeholder="Official Email" className="input bg-gray-200" />
                             </div>
 
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Passport No.<span className="text-red-400 text-xs">(optional)</span></label>
-                                <input {...register("PasswordNo")} placeholder="Passport No." className="input bg-gray-200" />
+                                <input {...register("PasswordNo")} placeholder="Official Email" className="input bg-gray-200" />
                             </div>
-
                         </div>
                     </div>
 
                     {/* ================= ID DETAILS ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-gray-900">C. Applicant KYC Details</h3>
+                        <h3 className="mb-4 text-base font-semibold text-blue-500">2. Applicant KYC Details</h3>
                         <div className="grid md:grid-cols-3 gap-4">
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">PAN Number <span className="text-destructive">*</span></label>
@@ -776,29 +954,49 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                                 ) : null}
                             </div>
                             <div className="space-y-1">
-                                <label className="text-sm font-medium">PAN Photo <span className="text-destructive">*</span></label>
-                                <input type="file" {...register("panPhoto", {required:true})} className="input bg-gray-200" />
+                                <label className="text-sm font-medium">PAN Card Photo <span className="text-destructive">JPEG or PDF allowed (Max size: 2 MB)*</span></label>
+                                <input
+                                    type="file"
+                                    accept="image/jpeg,image/jpg,application/pdf"
+                                    {...register("panPhoto", { required: true, validate: validateMax2MB })}
+                                    className="input bg-gray-200"
+                                />
                                 {getError("panPhoto") ? (
                                     <p className="text-sm text-red-600">{getError("panPhoto")}</p>
                                 ) : null}
                             </div>
                             <div className="space-y-1">
-                                <label className="text-sm font-medium">Aadhaar Front Photo <span className="text-destructive">*</span></label>
-                                <input type="file" {...register("aadhaarPhoto", { required:true})} className="input bg-gray-200" />
+                                <label className="text-sm font-medium">Aadhaar Card Front Photo <span className="text-destructive">JPEG or PDF allowed (Max size: 2 MB)*</span></label>
+                                <input
+                                    type="file"
+                                    accept="image/jpeg,image/jpg,application/pdf"
+                                    {...register("aadhaarPhoto", { required: true, validate: validateMax2MB })}
+                                    className="input bg-gray-200"
+                                />
                                 {getError("aadhaarPhoto") ? (
                                     <p className="text-sm text-red-600">{getError("aadhaarPhoto")}</p>
                                 ) : null}
                             </div>
                             <div className="space-y-1">
-                                <label className="text-sm font-medium">Aadhaar Back Photo <span className="text-destructive">*</span></label>
-                                <input type="file" {...register("aadhaarBackPhoto", { required:true })} className="input bg-gray-200" />
+                                <label className="text-sm font-medium">Aadhaar Card Back Photo <span className="text-destructive">JPEG or PDF allowed (Max size: 2 MB)*</span></label>
+                                <input
+                                    type="file"
+                                    accept="image/jpeg,image/jpg,application/pdf"
+                                    {...register("aadhaarBackPhoto", { required: true, validate: validateMax2MB })}
+                                    className="input bg-gray-200"
+                                />
                                 {getError("aadhaarBackPhoto") ? (
                                     <p className="text-sm text-red-600">{getError("aadhaarBackPhoto")}</p>
                                 ) : null}
                             </div>
                             <div className="space-y-1">
-                                <label className="text-sm font-medium">Applicant Photo <span className="text-destructive">*</span></label>
-                                <input type="file" {...register("applicantPhoto", { required: true })} className="input bg-gray-200" />
+                                <label className="text-sm font-medium">Applicant Photo <span className="text-destructive">JPEG only (Max size: 2 MB)*</span></label>
+                                <input
+                                    type="file"
+                                    accept="image/jpeg,image/jpg"
+                                    {...register("applicantPhoto", { required: true, validate: validateMax2MB })}
+                                    className="input bg-gray-200"
+                                />
                                 {getError("applicantPhoto") ? (
                                     <p className="text-sm text-red-600">{getError("applicantPhoto")}</p>
                                 ) : null}
@@ -808,7 +1006,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= ADDRESS ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-gray-900">D. Applicant Current Residential Address Details</h3>
+                        <h3 className="mb-4 text-base font-semibold text-blue-500">3. Applicant Current Residential Address Details</h3>
                         <div className="grid md:grid-cols-3 gap-4">
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Current Address <span className="text-destructive">*</span></label>
@@ -851,15 +1049,26 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                                 ) : null}
                             </div>
 
-                            {residenceType === "Owned" && (
-                                <div className="space-y-1">
-                                    <label className="text-sm font-medium">Upload latest electricity bill <span className="text-red-400 text-xs">(optional)</span></label>
-                                    <input type="file" {...register("latestElectricityBill")} className="input bg-gray-200" />
-                                    {getError("latestElectricityBill") ? (
-                                        <p className="text-sm text-red-600">{getError("latestElectricityBill")}</p>
-                                    ) : null}
-                                </div>
-                            )}
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Home photo <span className="text-destructive">(JPEG only, Max size: 1 MB)</span></label>
+                                <input type="file" {...register("residencePhoto", { validate: validateMax1MBJpegOnly })} className="input bg-gray-200" />
+                                {getError("residencePhoto") ? (
+                                    <p className="text-sm text-red-600">{getError("residencePhoto")}</p>
+                                ) : null}
+                            </div>
+
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Home Electricity Bill <span className="text-destructive">(JPEG or PDF allowed (Max size: 2 MB))</span></label>
+                                <input
+                                    type="file"
+                                    accept="image/jpeg,image/jpg,application/pdf"
+                                    {...register("latestElectricityBill", { validate: validateMax2MB })}
+                                    className="input bg-gray-200"
+                                />
+                                {getError("latestElectricityBill") ? (
+                                    <p className="text-sm text-red-600">{getError("latestElectricityBill")}</p>
+                                ) : null}
+                            </div>
 
                             {residenceType === "Rented" && (
                                 <>
@@ -920,7 +1129,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= EMPLOYMENT ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-gray-900">E.Applicant Employment Details</h3>
+                        <h3 className="mb-4 text-base font-semibold text-blue-500">4. Applicant Employment Details</h3>
                         <div className="grid md:grid-cols-3 gap-4">
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Current working company name <span className="text-destructive">*</span></label>
@@ -1042,7 +1251,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= Income Details ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-gray-900">F. Applicant income details</h3>
+                        <h3 className="mb-4 text-base font-semibold text-blue-500">5. Applicant Income Details</h3>
                         <div className="grid md:grid-cols-2 gap-4">
                             <div className="space-y-1">
                                 <div>
@@ -1097,7 +1306,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= EXISTING LOANS ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-gray-900">G. Applicant existing loans details</h3>
+                        <h3 className="mb-4 text-base font-semibold text-blue-500">6. Applicant Existing Loans Details</h3>
                         <div className="flex flex-col mb-2">
                             <label className="text-sm font-medium">Number Of Existing Loans<span className="text-red-400 text-xs">(optional)</span></label>
                             <select {...register("NumberOfExistingLoans")} className="input bg-gray-200" >
@@ -1156,6 +1365,45 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                                     }}
                                     className="input bg-gray-200"
                                 />
+
+                                <select
+                                    value={loan.loanTenure}
+                                    onChange={(e) => {
+                                        const updated = [...existingLoans];
+                                        updated[index].loanTenure = e.target.value;
+                                        setExistingLoans(updated);
+                                    }}
+                                    className="input bg-gray-200"
+                                >
+                                    <option value="">Loan Tenure (Years)</option>
+                                    {Array.from({ length: 50 }).map((_, i) => (
+                                        <option key={i + 1} value={String(i + 1)}>
+                                            {i + 1}
+                                        </option>
+                                    ))}
+                                </select>
+
+                                <input
+                                    placeholder="Loan EMI"
+                                    value={loan.loanEmi}
+                                    onChange={(e) => {
+                                        const updated = [...existingLoans];
+                                        updated[index].loanEmi = e.target.value;
+                                        setExistingLoans(updated);
+                                    }}
+                                    className="input bg-gray-200"
+                                />
+
+                                <input
+                                    type="date"
+                                    value={loan.closingDate}
+                                    onChange={(e) => {
+                                        const updated = [...existingLoans];
+                                        updated[index].closingDate = e.target.value;
+                                        setExistingLoans(updated);
+                                    }}
+                                    className="input bg-gray-200"
+                                />
                             </div>
                         ))}
 
@@ -1169,6 +1417,9 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                                         totalMonthlyEmi: "",
                                         loanType: "",
                                         bankName: "",
+                                        loanTenure: "",
+                                        loanEmi: "",
+                                        closingDate: "",
                                     },
                                 ])
                             }
@@ -1177,9 +1428,172 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                             + Add More
                         </button>
                     </div>
+
+                    {/* ================= Income Tax Return ================= */}
+                    <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
+                        <h3 className="mb-4 text-base font-semibold text-blue-500">7. Form 16</h3>
+                        <div className="grid grid-col-2 gap-3">
+                            <div className="space-y-1">
+                                <div>
+                                    <label className="text-sm font-medium">Assessment Year 2023-24 <span className="text-destructive">(Optional - PDF only (Max 2 MB))</span></label>
+                                </div>
+                                <input
+                                    type="file"
+                                    accept="application/pdf"
+                                    {...register("AssessmentYear2324", { validate: validatePdfOnlyMax2MB })}
+                                    className="input bg-gray-200"
+                                />
+                                {getError("AssessmentYear2324") ? (
+                                    <p className="text-sm text-red-600">{getError("AssessmentYear2324")}</p>
+                                ) : null}
+                            </div>
+                            <div className="space-y-1">
+                                <div>
+                                    <label className="text-sm font-medium">Assessment Year 2024-25 <span className="text-destructive">(Optional - PDF only (Max 2 MB))</span></label>
+                                </div>
+                                <input
+                                    type="file"
+                                    accept="application/pdf"
+                                    {...register("AssessmentYear2425", { validate: validatePdfOnlyMax2MB })}
+                                    className="input bg-gray-200"
+                                />
+                                {getError("AssessmentYear2425") ? (
+                                    <p className="text-sm text-red-600">{getError("AssessmentYear2425")}</p>
+                                ) : null}
+                            </div>
+                            <div className="space-y-1">
+                                <div>
+                                    <label className="text-sm font-medium">Assessment Year 2025-26 <span className="text-destructive">(Optional - PDF only (Max 2 MB))</span></label>
+                                </div>
+                                <input
+                                    type="file"
+                                    accept="application/pdf"
+                                    {...register("AssessmentYear2526", { validate: validatePdfOnlyMax2MB })}
+                                    className="input bg-gray-200"
+                                />
+                                {getError("AssessmentYear2526") ? (
+                                    <p className="text-sm text-red-600">{getError("AssessmentYear2526")}</p>
+                                ) : null}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* ================= Bank Statement Details ================= */}
+                    <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
+                        <h3 className="mb-1 text-base font-semibold text-blue-500">8. Applicant Bank Statement Details</h3>
+                        <span className="text-sm">(pdf should not be protected with password else write down the password)</span>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium">Account Type <span className="text-destructive">*</span></label>
+                                <div className="space-y-3">
+                                    {["Saving Account", "Joint Account with family person", "OD Account", "CC Account"].map(
+                                        (label) => (
+                                            <label
+                                                key={label}
+                                                className="flex items-center justify-between rounded-xl border border-gray-200 bg-white px-4 py-3"
+                                            >
+                                                <span className="text-sm font-semibold text-gray-900">
+                                                    {label.toLowerCase()}
+                                                </span>
+                                                <input
+                                                    type="checkbox"
+                                                    value={label}
+                                                    {...register("accountTypes", {
+                                                        validate: (value) => {
+                                                            const arr: string[] = Array.isArray(value)
+                                                                ? value
+                                                                : typeof value === "string" && value
+                                                                    ? [value]
+                                                                    : [];
+                                                            return arr.length > 0 || "Select at least one account type";
+                                                        },
+                                                    })}
+                                                    className="h-4 w-4"
+                                                />
+                                            </label>
+                                        )
+                                    )}
+                                </div>
+                                {getError("accountTypes") ? (
+                                    <p className="text-sm text-red-600">{getError("accountTypes")}</p>
+                                ) : null}
+                            </div>
+
+                            {hasSelectedAccountTypes ? (
+                                <div className="space-y-4">
+                                    {(Array.isArray(accountTypes)
+                                        ? accountTypes
+                                        : typeof accountTypes === "string" && accountTypes
+                                            ? [accountTypes]
+                                            : []).map((t) => {
+                                                const key = toAccountKey(t);
+                                                const bankNameKey = `bankName_${key}`;
+                                                const statementKey = `oneYearBankStatement_${key}`;
+                                                const passwordKey = `accountPassword_${key}`;
+
+                                                return (
+                                                    <div key={key} className="rounded-xl border border-gray-200 bg-white p-4">
+                                                        <div className="text-sm font-semibold text-gray-900 mb-3">
+                                                            {String(t).toLowerCase()}
+                                                        </div>
+                                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                            <div className="space-y-1">
+                                                                <label className="text-sm font-medium">Bank Name <span className="text-destructive">*</span></label>
+                                                                <input
+                                                                    {...register(bankNameKey, {
+                                                                        validate: (value) => {
+                                                                            if (!hasSelectedAccountTypes) return true;
+                                                                            const v = typeof value === "string" ? value.trim() : "";
+                                                                            return v !== "" || "Bank Name is required";
+                                                                        },
+                                                                    })}
+                                                                    placeholder="Bank Name"
+                                                                    className="input bg-gray-200"
+                                                                />
+                                                                {getError(bankNameKey) ? (
+                                                                    <p className="text-sm text-red-600">{getError(bankNameKey)}</p>
+                                                                ) : null}
+                                                            </div>
+                                                            <div className="space-y-1">
+                                                                <label className="text-sm font-medium">Upload One Year Bank Statement <span className="text-destructive">*</span></label>
+                                                                <input
+                                                                    type="file"
+                                                                    accept="application/pdf"
+                                                                    {...register(statementKey, {
+                                                                        validate: (value) => {
+                                                                            if (!hasSelectedAccountTypes) return true;
+                                                                            const requiredCheck =
+                                                                                !!getFileFromValue(value) ||
+                                                                                "One Year Bank Statement is required";
+                                                                            if (requiredCheck !== true) return requiredCheck;
+                                                                            return validateMax2MB(value);
+                                                                        },
+                                                                    })}
+                                                                    className="input bg-gray-200"
+                                                                />
+                                                                {getError(statementKey) ? (
+                                                                    <p className="text-sm text-red-600">{getError(statementKey)}</p>
+                                                                ) : null}
+                                                            </div>
+                                                            <div className="space-y-1 md:col-span-2">
+                                                                <label className="text-sm font-medium">Password <span className="text-red-400 text-xs">(optional)</span></label>
+                                                                <input
+                                                                    {...register(passwordKey)}
+                                                                    placeholder="Password"
+                                                                    className="input bg-gray-200"
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
+                                </div>
+                            ) : null}
+                        </div>
+                    </div>
                     {/* ================= G.Credit Score ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-gray-900">H. Applicant CIBIL  Score Details</h3>
+                        <h3 className="mb-4 text-base font-semibold text-blue-500">9. Applicant CIBIL  Score Details</h3>
                         <div className="space-y-1">
                             <div>
                                 <label className="text-sm font-medium">CIBIL Available <span className="text-destructive">*</span></label>
@@ -1227,9 +1641,204 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                             </div>
                         )}
                     </div>
+
+                    {/* ================= Q. Applicant Assets details ================= */}
+                    <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
+                        <h3 className="mb-4 text-base font-semibold text-blue-500">10. Applicant Assets Details Digital or physical</h3>
+                        {Array.from({ length: applicantAssetsCount }).map((_, idx) => (
+                            <div key={idx} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="space-y-1">
+                                    <label className="text-sm font-medium">Assets (Digital or Physical) <span className="text-destructive">(optional)</span></label>
+                                    <input
+                                        type="text"
+                                        {...register(idx === 0 ? "applicantAssetType" : `applicantAssetType_${idx}`)}
+                                        className="input bg-gray-200"
+                                    />
+                                </div>
+
+                                <div className="space-y-1">
+                                    <label className="text-sm font-medium">Market Price <span className="text-destructive">(optional)</span></label>
+                                    <input
+                                        type="number"
+                                        {...register(idx === 0 ? "applicantAssetMarketPrice" : `applicantAssetMarketPrice_${idx}`)}
+                                        placeholder="Enter market price"
+                                        className="input bg-gray-200"
+                                    />
+                                </div>
+
+                                <div className="space-y-1">
+                                    <label className="text-sm font-medium">On Going Loan <span className="text-destructive">(optional)</span></label>
+                                    <select
+                                        {...register(idx === 0 ? "applicantAssetOngoingLoan" : `applicantAssetOngoingLoan_${idx}`)}
+                                        className="input bg-gray-200"
+                                    >
+                                        <option value="">--select option--</option>
+                                        <option value="Yes">Yes</option>
+                                        <option value="No">No</option>
+                                    </select>
+                                </div>
+                            </div>
+                        ))}
+                        <button
+                            type="button"
+                            className="mt-3 inline-flex w-fit items-center justify-center rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-sm font-medium text-blue-700 transition hover:bg-blue-100"
+                            onClick={() => setApplicantAssetsCount((c) => Math.max(1, (c || 1) + 1))}
+                        >
+                            Add More
+                        </button>
+                    </div>
+
+                    {/* ================= Medical History ================= */}
+                    <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
+                        <h3 className="mb-4 text-base font-semibold text-blue-500">11. Applicant Medical History</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-1">
+                                <div>
+                                    <label className="text-sm font-medium">Medical History <span className="text-destructive">*</span></label>
+                                </div>
+                                <select {...register("medicalHistory", { required: true })} className="input bg-gray-200">
+                                    <option value="">Select</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                </select>
+                                {getError("medicalHistory") ? (
+                                    <p className="text-sm text-red-600">{getError("medicalHistory")}</p>
+                                ) : null}
+                            </div>
+
+                            {medicalHistory === "Yes" ? (
+                                <div className="space-y-1">
+                                    <div>
+                                        <label className="text-sm font-medium">Specify <span className="text-destructive">*</span></label>
+                                    </div>
+                                    <input
+                                        type="text"
+                                        {...register("medicalHistoryDetails", {
+                                            validate: (value) =>
+                                                medicalHistory !== "Yes" ||
+                                                (value !== undefined &&
+                                                    value !== null &&
+                                                    String(value).trim() !== "") ||
+                                                "Please specify medical history",
+                                        })}
+                                        placeholder="Specify"
+                                        className="input bg-gray-200"
+                                    />
+                                    {getError("medicalHistoryDetails") ? (
+                                        <p className="text-sm text-red-600">{getError("medicalHistoryDetails")}</p>
+                                    ) : null}
+                                </div>
+                            ) : null}
+
+                            {medicalHistory === "Yes" ? (
+                                <div className="space-y-1">
+                                    <div>
+                                        <label className="text-sm font-medium">Upload Medical Document <span className="text-destructive">(optional)</span></label>
+                                    </div>
+                                    <input
+                                        type="file"
+                                        {...register("medicalDocument", { validate: validateMax2MB })}
+                                        className="input bg-gray-200"
+                                    />
+                                    {getError("medicalDocument") ? (
+                                        <p className="text-sm text-red-600">{getError("medicalDocument")}</p>
+                                    ) : null}
+                                </div>
+                            ) : null}
+                        </div>
+                    </div>
+
+                    {/* ================= Habbit ================= */}
+                    <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
+                        <h3 className="mb-4 text-base font-semibold text-blue-500">12. Applicant Addictive Habits</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-1">
+                                <div>
+                                    <label className="text-sm font-medium">Addictive Habits<span className="text-destructive">*</span></label>
+                                </div>
+                                <select {...register("habbit", { required: true })} className="input bg-gray-200">
+                                    <option value="">Select</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                </select>
+                                {getError("habbit") ? (
+                                    <p className="text-sm text-red-600">{getError("habbit")}</p>
+                                ) : null}
+                            </div>
+
+                            {habbit === "Yes" ? (
+                                <div className="space-y-1">
+                                    <div>
+                                        <label className="text-sm font-medium">Specify <span className="text-destructive">*</span></label>
+                                    </div>
+                                    <input
+                                        type="text"
+                                        {...register("habbitDetails", {
+                                            validate: (value) =>
+                                                habbit !== "Yes" ||
+                                                (value !== undefined &&
+                                                    value !== null &&
+                                                    String(value).trim() !== "") ||
+                                                "Please specify habbit",
+                                        })}
+                                        placeholder="Specify"
+                                        className="input bg-gray-200"
+                                    />
+                                    {getError("habbitDetails") ? (
+                                        <p className="text-sm text-red-600">{getError("habbitDetails")}</p>
+                                    ) : null}
+                                </div>
+                            ) : null}
+                        </div>
+                    </div>
+
+                    {/* ================= Civil or Criminal Case history ================= */}
+                    <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
+                        <h3 className="mb-4 text-base font-semibold text-blue-500">13. Applicant Civil or Criminal Case history</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-1">
+                                <div>
+                                    <label className="text-sm font-medium">Civil or Criminal Case history <span className="text-destructive">*</span></label>
+                                </div>
+                                <select {...register("caseHistory", { required: true })} className="input bg-gray-200">
+                                    <option value="">Select</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                </select>
+                                {getError("caseHistory") ? (
+                                    <p className="text-sm text-red-600">{getError("caseHistory")}</p>
+                                ) : null}
+                            </div>
+
+                            {caseHistory === "Yes" ? (
+                                <div className="space-y-1">
+                                    <div>
+                                        <label className="text-sm font-medium">Specify <span className="text-destructive">*</span></label>
+                                    </div>
+                                    <input
+                                        type="text"
+                                        {...register("caseHistoryDetails", {
+                                            validate: (value) =>
+                                                caseHistory !== "Yes" ||
+                                                (value !== undefined &&
+                                                    value !== null &&
+                                                    String(value).trim() !== "") ||
+                                                "Please specify case history",
+                                        })}
+                                        placeholder="Specify"
+                                        className="input bg-gray-200"
+                                    />
+                                    {getError("caseHistoryDetails") ? (
+                                        <p className="text-sm text-red-600">{getError("caseHistoryDetails")}</p>
+                                    ) : null}
+                                </div>
+                            ) : null}
+                        </div>
+                    </div>
+
                     {/* ================= LOAN DETAILS ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-gray-900">I. Loan Requirement Details</h3>
+                        <h3 className="mb-4 text-base font-semibold text-blue-500">14. Loan Requirement Details</h3>
                         <div className="grid md:grid-cols-2 gap-4">
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Required Loan Amount <span className="text-destructive">*</span></label>
@@ -1334,7 +1943,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= DOCUMENTS ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-gray-900">J. Co-Applicant Details (If Any)</h3>
+                        <h3 className="mb-4 text-base font-semibold text-blue-500">15. Co-Applicant Details (If Any)</h3>
                         <div className="grid md:grid-cols-2 gap-4">
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Co-Applicant Name <span className="text-red-400 text-xs">(optional)</span></label>
@@ -1366,22 +1975,37 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                             </div>
 
                             <div className="space-y-1">
-                                <label className="text-sm font-medium">Co-Applicant PAN Card Photo <span className="text-destructive">(optional)</span></label>
-                                <input type="file" {...register("CoApplicantpanPhoto")} className="input bg-gray-200" />
+                                <label className="text-sm font-medium">Co-Applicant PAN Card Photo <span className="text-destructive">(optional, JPEG or PDF allowed (Max size: 2 MB))</span></label>
+                                <input
+                                    type="file"
+                                    accept="image/jpeg,image/jpg,application/pdf"
+                                    {...register("CoApplicantpanPhoto", { validate: validateMax2MB })}
+                                    className="input bg-gray-200"
+                                />
                                 {getError("CoApplicantpanPhoto") ? (
                                     <p className="text-sm text-red-600">{getError("CoApplicantpanPhoto")}</p>
                                 ) : null}
                             </div>
                             <div className="space-y-1">
-                                <label className="text-sm font-medium">Co-Applicant Aadhaar Front Photo <span className="text-destructive">(optional)</span></label>
-                                <input type="file" {...register("CoApplicantAadhaarPhoto")} className="input bg-gray-200" />
+                                <label className="text-sm font-medium">Co-Applicant Aadhaar Front Photo <span className="text-destructive">(optional, JPEG or PDF allowed (Max size: 2 MB))</span></label>
+                                <input
+                                    type="file"
+                                    accept="image/jpeg,image/jpg,application/pdf"
+                                    {...register("CoApplicantAadhaarPhoto", { validate: validateMax2MB })}
+                                    className="input bg-gray-200"
+                                />
                                 {getError("CoApplicantAadhaarPhoto") ? (
                                     <p className="text-sm text-red-600">{getError("CoApplicantAadhaarPhoto")}</p>
                                 ) : null}
                             </div>
                             <div className="space-y-1">
-                                <label className="text-sm font-medium">Co-Applicant Aadhaar Back Photo <span className="text-destructive">(optional)</span></label>
-                                <input type="file" {...register("CoApplicantAadhaarBackPhoto")} className="input bg-gray-200" />
+                                <label className="text-sm font-medium">Co-Applicant Aadhaar Back Photo <span className="text-destructive">(optional,JPEG or PDF allowed (Max size: 2 MB))</span></label>
+                                <input
+                                    type="file"
+                                    accept="image/jpeg,image/jpg,application/pdf"
+                                    {...register("CoApplicantAadhaarBackPhoto", { validate: validateMax2MB })}
+                                    className="input bg-gray-200"
+                                />
                                 {getError("CoApplicantAadhaarBackPhoto") ? (
                                     <p className="text-sm text-red-600">{getError("CoApplicantAadhaarBackPhoto")}</p>
                                 ) : null}
@@ -1391,7 +2015,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= J. Upload Other Supported Document================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-gray-900">K. Upload Other Supported Document</h3>
+                        <h3 className="mb-4 text-base font-semibold text-blue-500">16. Upload Other Supported Document</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Number of Other Documents</label>
@@ -1447,7 +2071,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= reference name details ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-gray-900">L. Reference name details</h3>
+                        <h3 className="mb-4 text-base font-semibold text-blue-500">17. Reference name details</h3>
 
                         {Array.from({ length: Math.max(1, referenceCount || 1) }).map((_, idx) => {
                             const suffix = idx === 0 ? "" : `_${idx}`;
@@ -1499,7 +2123,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= CONSENT ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-gray-900">M. Declaration & Consent</h3>
+                        <h3 className="mb-4 text-base font-semibold text-blue-500">18. Declaration & Consent</h3>
                         <div className="space-y-3">
                             <div className="flex items-start gap-3">
                                 <input type="checkbox" {...register("consent", { required: true })} className="mt-1 h-4 w-4" />
