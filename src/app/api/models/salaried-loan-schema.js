@@ -11,6 +11,7 @@ const SalariedLoanSchema = new mongoose.Schema(
     serviceCategoryKey: { type: String, required: false },
     serviceCategoryTitle: { type: String, required: false },
     dob: { type: String, required: true },
+    age: { type: String, required: false },
     gender: { type: String, enum: ["Male", "Female", "Other"], required: true },
     maritalStatus: {
         type: String,
@@ -77,6 +78,22 @@ const SalariedLoanSchema = new mongoose.Schema(
     },
     salaryAccountBankName: { type: String, required: true },
 
+    // Bank statement details
+    accountType: { type: String, required: false },
+    accountTypes: { type: [String], required: false, default: [] },
+    bankAccounts: {
+        type: [
+            {
+                accountType: { type: String },
+                bankName: { type: String },
+                oneYearBankStatementUrl: { type: String },
+                statementPassword: { type: String },
+            },
+        ],
+        required: false,
+        default: [],
+    },
+
     // Existing loans
     numberOfExistingLoans: { type: Number, default: 0 },
     existingLoansData: [
@@ -85,6 +102,9 @@ const SalariedLoanSchema = new mongoose.Schema(
             totalMonthlyEmi: { type: String, required: false },
             loanType: { type: String, required: false },
             bankName: { type: String, required: false },
+            loanTenure: { type: String, required: false },
+            loanEmi: { type: String, required: false },
+            closingDate: { type: String, required: false },
             emiDelayPast3Months: { type: String, required: false },
             loanSanctionLetterUrl: { type: String, required: false },
         }
@@ -102,6 +122,28 @@ const SalariedLoanSchema = new mongoose.Schema(
     isBuyingGoods: { type: String, enum: ["Yes", "No"], required: false },
     productName: { type: String, required: false },
     quotationAmount: { type: String, required: false },
+
+    // Medical history
+    medicalHistory: { type: String, required: false },
+    medicalHistoryDetails: { type: String, required: false },
+    medicalDocumentUrl: { type: String, required: false },
+
+    // Addictive habits
+    habbit: { type: String, required: false },
+    habbitDetails: { type: String, required: false },
+
+    // Civil/Criminal case history
+    caseHistory: { type: String, required: false },
+    caseHistoryDetails: { type: String, required: false },
+
+    // Applicant assets
+    applicantAssets: [
+        {
+            applicantAssetType: { type: String, required: false },
+            applicantAssetMarketPrice: { type: String, required: false },
+            applicantAssetOngoingLoan: { type: String, required: false },
+        },
+    ],
 
     // Co-applicant
     coApplicantName: { type: String, required: false },
@@ -137,12 +179,17 @@ const SalariedLoanSchema = new mongoose.Schema(
     officeIdPhotoUrl: { type: String, required: false },
     salarySlipsUrl: { type: String, required: false },
     bankStatementUrl: { type: String, required: false },
+    oneYearBankStatementUrl: { type: String, required: false },
     cibilReportUrl: { type: String, required: false },
     lastElectricityBillUrl: { type: String, required: false },
     permElectricityBillUrl: { type: String, required: false },
     rentAgreementUrl: { type: String, required: false },
     companyAllotmentLetterUrl: { type: String, required: false },
     quotationFileUrl: { type: String, required: false },
+
+    assessmentYear2324Url: { type: String, required: false },
+    assessmentYear2425Url: { type: String, required: false },
+    assessmentYear2526Url: { type: String, required: false },
     proformaInvoiceFileUrl: { type: String, required: false },
 
     // Other supported documents

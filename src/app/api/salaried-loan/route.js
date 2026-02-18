@@ -23,6 +23,34 @@ export async function POST(req) {
     await connectDB();
     const formData = await req.formData();
 
+    const accountTypes = formData.getAll("accountTypes").filter(Boolean);
+    const accountTypeJoined = accountTypes.length
+      ? accountTypes.join(", ")
+      : formData.get("accountType");
+
+    const toAccountKey = (value) =>
+      String(value || "")
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "_")
+        .replace(/^_+|_+$/g, "");
+
+    const bankAccounts = await Promise.all(
+      accountTypes.map(async (t) => {
+        const key = toAccountKey(t);
+        const bankName = formData.get(`bankName_${key}`);
+        const statementPassword = formData.get(`accountPassword_${key}`);
+        const oneYearBankStatementUrl = await upload(
+          formData.get(`oneYearBankStatement_${key}`)
+        );
+        return {
+          accountType: t,
+          bankName,
+          oneYearBankStatementUrl,
+          statementPassword,
+        };
+      })
+    );
+
     const withTimeout = (promise, ms) => {
       return Promise.race([
         promise,
@@ -116,6 +144,20 @@ export async function POST(req) {
     );
 
     /* =========================================
+       APPLICANT ASSETS (DYNAMIC)
+    ========================================== */
+    const applicantAssetsPayloadRaw = formData.get("applicantAssetsPayload");
+    let applicantAssetsPayload = [];
+    try {
+      applicantAssetsPayload = JSON.parse(
+        applicantAssetsPayloadRaw ? String(applicantAssetsPayloadRaw) : "[]"
+      );
+      if (!Array.isArray(applicantAssetsPayload)) applicantAssetsPayload = [];
+    } catch {
+      applicantAssetsPayload = [];
+    }
+
+    /* =========================================
        REFERENCES (DYNAMIC)
     ========================================== */
     const referenceCountRaw = formData.get("referenceCount");
@@ -148,6 +190,7 @@ export async function POST(req) {
       serviceCategoryKey: formData.get("serviceCategoryKey"),
       serviceCategoryTitle: formData.get("serviceCategoryTitle"),
       dob: formData.get("dob"),
+      age: formData.get("age"),
       gender: formData.get("gender"),
       maritalStatus: formData.get("maritalStatus"),
 
@@ -191,6 +234,10 @@ export async function POST(req) {
       salaryCreditMode: formData.get("salaryCreditMode"),
       salaryAccountBankName: formData.get("salaryAccountBankName"),
 
+      accountTypes,
+      accountType: accountTypeJoined,
+      bankAccounts,
+
       numberOfExistingLoans: parseInt(
         formData.get("numberOfExistingLoans") || "0"
       ),
@@ -206,6 +253,15 @@ export async function POST(req) {
       isBuyingGoods: formData.get("isBuyingGoods"),
       productName: formData.get("productName"),
       quotationAmount: formData.get("quotationAmount"),
+
+      medicalHistory: formData.get("medicalHistory"),
+      medicalHistoryDetails: formData.get("medicalHistoryDetails"),
+      habbit: formData.get("habbit"),
+      habbitDetails: formData.get("habbitDetails"),
+      caseHistory: formData.get("caseHistory"),
+      caseHistoryDetails: formData.get("caseHistoryDetails"),
+
+      applicantAssets: applicantAssetsPayload,
 
       coApplicantName: formData.get("coApplicantName"),
       coApplicantRelation: formData.get("coApplicantRelation"),
@@ -241,11 +297,20 @@ export async function POST(req) {
       officeIdPhotoUrl: await upload(formData.get("officeIdPhoto")),
       salarySlipsUrl: await upload(formData.get("salarySlips")),
       bankStatementUrl: await upload(formData.get("bankStatement")),
+      oneYearBankStatementUrl:
+        bankAccounts?.[0]?.oneYearBankStatementUrl ||
+        (await upload(formData.get("oneYearBankStatement"))),
       cibilReportUrl: await upload(formData.get("cibilReport")),
       quotationFileUrl: await upload(formData.get("quotationFile")),
       proformaInvoiceFileUrl: await upload(
         formData.get("proformaInvoiceFile")
       ),
+
+      assessmentYear2324Url: await upload(formData.get("AssessmentYear2324")),
+      assessmentYear2425Url: await upload(formData.get("AssessmentYear2425")),
+      assessmentYear2526Url: await upload(formData.get("AssessmentYear2526")),
+
+      medicalDocumentUrl: await upload(formData.get("medicalDocument")),
 
       numberOfOtherDocuments: Math.max(0, otherSupportedDocumentsCount || 0),
       otherSupportedDocumentsUrls: otherSupportedDocumentsUrls.filter(Boolean),
