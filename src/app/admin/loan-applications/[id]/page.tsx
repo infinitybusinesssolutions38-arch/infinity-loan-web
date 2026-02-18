@@ -17,7 +17,11 @@ export default function AdminLoanApplicationDetailPage({ params }: { params: { i
     (async () => {
       try {
         setLoading(true);
-        const res = await fetch(`/api/admin/loan-applications/${params.id}`, { credentials: "include" });
+        const res = await fetch(`/api/admin/loan-applications/${params.id}`, {
+          credentials: "include",
+          cache: "no-store",
+          headers: { "Pragma": "no-cache", "Cache-Control": "no-cache" },
+        });
         const data = await res.json().catch(() => ({}));
 
         if (!mounted) return;
@@ -158,6 +162,66 @@ export default function AdminLoanApplicationDetailPage({ params }: { params: { i
           placeholder="Add remarks..."
         />
       </div>
+
+      {Array.isArray(item.additionalDocuments) && item.additionalDocuments.length > 0 ? (
+        <div className="mt-4 rounded-3xl border border-border/70 bg-background/50 p-5">
+          <div className="text-xs text-muted-foreground">Additional Documents</div>
+          <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2">
+            {item.additionalDocuments.map((doc: any, idx: number) => (
+              <div key={idx} className="rounded-2xl border border-border/50 bg-background/50 p-4">
+                <div className="text-sm font-semibold">{doc?.documentName || `Document ${idx + 1}`}</div>
+                {doc?.uploadedAt ? (
+                  <div className="mt-1 text-xs text-muted-foreground">
+                    Uploaded: {new Date(doc.uploadedAt).toLocaleString()}
+                  </div>
+                ) : null}
+                {doc?.documentUrl ? (
+                  <div className="mt-3">
+                    <a
+                      href={doc.documentUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center text-xs bg-primary text-primary-foreground px-3 py-2 rounded-lg hover:bg-primary/90 transition"
+                    >
+                      View Document
+                    </a>
+                  </div>
+                ) : null}
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : null}
+
+      {Array.isArray(item.paymentReceipts) && item.paymentReceipts.length > 0 ? (
+        <div className="mt-4 rounded-3xl border border-border/70 bg-background/50 p-5">
+          <div className="text-xs text-muted-foreground">Payment Receipts</div>
+          <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2">
+            {item.paymentReceipts.map((r: any, idx: number) => (
+              <div key={idx} className="rounded-2xl border border-border/50 bg-background/50 p-4">
+                <div className="text-sm font-semibold">{r?.receiptName || `Receipt ${idx + 1}`}</div>
+                {r?.uploadedAt ? (
+                  <div className="mt-1 text-xs text-muted-foreground">
+                    Uploaded: {new Date(r.uploadedAt).toLocaleString()}
+                  </div>
+                ) : null}
+                {r?.receiptUrl ? (
+                  <div className="mt-3">
+                    <a
+                      href={r.receiptUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center text-xs bg-primary text-primary-foreground px-3 py-2 rounded-lg hover:bg-primary/90 transition"
+                    >
+                      View Receipt
+                    </a>
+                  </div>
+                ) : null}
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : null}
 
       <div className="mt-4 rounded-3xl border border-border/70 bg-background/50 p-5">
         <div className="text-xs text-muted-foreground">Raw Details</div>

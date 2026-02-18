@@ -47,7 +47,11 @@ export async function GET(req, { params }) {
     return NextResponse.json({ success: false, message: "Application not found" }, { status: 404 });
   }
 
-  return NextResponse.json({ success: true, data: { ...item, _type: type } });
+  const res = NextResponse.json({ success: true, data: { ...item, _type: type } });
+  res.headers.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+  res.headers.set("Pragma", "no-cache");
+  res.headers.set("Expires", "0");
+  return res;
 }
 
 export async function PATCH(req, { params }) {
@@ -137,5 +141,9 @@ export async function PATCH(req, { params }) {
     }
   }
 
-  return NextResponse.json({ success: true, data: { ...updated, _type: type } });
+  const res = NextResponse.json({ success: true, data: { ...updated, _type: type } });
+  res.headers.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+  res.headers.set("Pragma", "no-cache");
+  res.headers.set("Expires", "0");
+  return res;
 }

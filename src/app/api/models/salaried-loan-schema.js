@@ -197,6 +197,30 @@ const SalariedLoanSchema = new mongoose.Schema(
     otherSupportedDocumentsUrls: [{ type: String, required: false }],
     otherSupportedDocumentsNames: [{ type: String, required: false }],
 
+    additionalDocuments: {
+        type: [
+            {
+                documentName: { type: String, required: true },
+                documentUrl: { type: String, required: true },
+                uploadedAt: { type: Date, default: Date.now },
+            },
+        ],
+        required: false,
+        default: [],
+    },
+
+    paymentReceipts: {
+        type: [
+            {
+                receiptName: { type: String, required: true },
+                receiptUrl: { type: String, required: true },
+                uploadedAt: { type: Date, default: Date.now },
+            },
+        ],
+        required: false,
+        default: [],
+    },
+
     // Meta
     loan_type: { type: String, required: true, default: "salaried" },
 
