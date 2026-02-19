@@ -21,6 +21,7 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
     } = useForm();
 
     const MAX_FILE_BYTES = 5 * 1024 * 1024;
+    const MAX_ITR_FILE_BYTES = 7 * 1024 * 1024;
     const getFileFromValue = (value: any): File | null => {
         if (value instanceof File) return value;
         if (value?.[0] instanceof File) return value[0];
@@ -30,6 +31,15 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
         const file = getFileFromValue(value);
         if (!file) return true;
         return file.size <= MAX_FILE_BYTES || "Max file size is 5MB";
+    };
+    const validatePdfOnlyMax7MB = (value: any) => {
+        const file = getFileFromValue(value);
+        if (!file) return true;
+        const isAllowedMime = file.type === "application/pdf";
+        const fileName = typeof file.name === "string" ? file.name.toLowerCase() : "";
+        const isAllowedExt = fileName.endsWith(".pdf");
+        if (!isAllowedMime && !isAllowedExt) return "Please upload PDF only";
+        return file.size <= MAX_ITR_FILE_BYTES || "Max file size is 7MB";
     };
     const [referenceCount, setReferenceCount] = useState(1);
     const [applicantAssetsCount, setApplicantAssetsCount] = useState(1);
@@ -1437,27 +1447,27 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                         <div className="grid grid-col-2 gap-3">
                             <div className="space-y-1">
                                 <div>
-                                    <label className="text-sm font-medium">Assessment Year 2023-24 <span className="text-destructive">(Optional - PDF only (Max 5 MB))</span></label>
+                                    <label className="text-sm font-medium">Assessment Year 2023-24 <span className="text-destructive">(Optional - PDF only (Max 7 MB))</span></label>
                                 </div>
-                                <input type="file" {...register("AssessmentYear2324", { validate: validateMax2MB })} className="input bg-gray-200" />
+                                <input type="file" accept="application/pdf" {...register("AssessmentYear2324", { validate: validatePdfOnlyMax7MB })} className="input bg-gray-200" />
                                 {getError("AssessmentYear2324") ? (
                                     <p className="text-sm text-red-600">{getError("AssessmentYear2324")}</p>
                                 ) : null}
                             </div>
                             <div className="space-y-1">
                                 <div>
-                                    <label className="text-sm font-medium">Assessment Year 2024-25 <span className="text-destructive">(Optional - PDF only (Max 5 MB))</span></label>
+                                    <label className="text-sm font-medium">Assessment Year 2024-25 <span className="text-destructive">(Optional - PDF only (Max 7 MB))</span></label>
                                 </div>
-                                <input type="file" {...register("AssessmentYear2425", { validate: validateMax2MB })} className="input bg-gray-200" />
+                                <input type="file" accept="application/pdf" {...register("AssessmentYear2425", { validate: validatePdfOnlyMax7MB })} className="input bg-gray-200" />
                                 {getError("AssessmentYear2425") ? (
                                     <p className="text-sm text-red-600">{getError("AssessmentYear2425")}</p>
                                 ) : null}
                             </div>
                             <div className="space-y-1">
                                 <div>
-                                    <label className="text-sm font-medium">Assessment Year 2025-26 <span className="text-destructive">(Optional - PDF only (Max 5 MB))</span></label>
+                                    <label className="text-sm font-medium">Assessment Year 2025-26 <span className="text-destructive">(Optional - PDF only (Max 7 MB))</span></label>
                                 </div>
-                                <input type="file" {...register("AssessmentYear2526", { validate: validateMax2MB })} className="input bg-gray-200" />
+                                <input type="file" accept="application/pdf" {...register("AssessmentYear2526", { validate: validatePdfOnlyMax7MB })} className="input bg-gray-200" />
                                 {getError("AssessmentYear2526") ? (
                                     <p className="text-sm text-red-600">{getError("AssessmentYear2526")}</p>
                                 ) : null}
