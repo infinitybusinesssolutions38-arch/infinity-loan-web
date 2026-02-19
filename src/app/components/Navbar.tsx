@@ -55,10 +55,61 @@ const Navbar = () => {
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+  const getTokenExpiryMs = (token: string): number | null => {
+    try {
+      const parts = token.split(".");
+      if (parts.length < 2) return null;
+
+      const base64 = parts[1].replace(/-/g, "+").replace(/_/g, "/");
+      const padded = base64.padEnd(base64.length + ((4 - (base64.length % 4)) % 4), "=");
+      const json = JSON.parse(atob(padded));
+      if (!json || typeof json.exp !== "number") return null;
+      return json.exp * 1000;
+    } catch {
+      return null;
+    }
+  };
+
   useEffect(() => {
+    let logoutTimer: number | null = null;
+
     const sync = () => {
+      if (logoutTimer) {
+        window.clearTimeout(logoutTimer);
+        logoutTimer = null;
+      }
+
       try {
-        setIsLoggedIn(Boolean(localStorage.getItem("token")));
+        const token = localStorage.getItem("token");
+        setIsLoggedIn(Boolean(token));
+
+        if (token) {
+          const expMs = getTokenExpiryMs(token);
+          if (expMs) {
+            const msLeft = expMs - Date.now();
+            if (msLeft <= 0) {
+              localStorage.removeItem("token");
+              setIsLoggedIn(false);
+              return;
+            }
+
+            logoutTimer = window.setTimeout(async () => {
+              try {
+                await fetch("/api/logout", { method: "POST" });
+              } catch {
+                // ignore
+              } finally {
+                try {
+                  localStorage.removeItem("token");
+                } catch {
+                  // ignore
+                }
+                setIsLoggedIn(false);
+                window.location.href = "/login";
+              }
+            }, msLeft);
+          }
+        }
       } catch {
         setIsLoggedIn(false);
       }
@@ -66,7 +117,14 @@ const Navbar = () => {
 
     sync();
     window.addEventListener("storage", sync);
-    return () => window.removeEventListener("storage", sync);
+
+    return () => {
+      window.removeEventListener("storage", sync);
+      if (logoutTimer) {
+        window.clearTimeout(logoutTimer);
+        logoutTimer = null;
+      }
+    };
   }, []);
 
   const handleLogout = async () => {
