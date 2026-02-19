@@ -11,12 +11,13 @@ export async function POST(req) {
         const body = await req.json();
         const fullName = String(body?.fullName || "").trim();
         const email = String(body?.email || "").trim().toLowerCase();
+        const mobile = String(body?.mobile || "").trim();
         const password = String(body?.password || "");
         const otp = String(body?.otp || "").trim();
 
-        if (!fullName || !email || !password || !otp) {
+        if (!fullName || !email || !mobile || !password || !otp) {
             return NextResponse.json(
-                { success: false, message: "Full name, email, password and OTP are required" },
+                { success: false, message: "Full name, email, mobile number, password and OTP are required" },
                 { status: 400 }
             );
         }
@@ -28,10 +29,10 @@ export async function POST(req) {
             );
         }
 
-        const existing = await UserModel.findOne({ email });
+        const existing = await UserModel.findOne({ $or: [{ email }, { mobile }] });
         if (existing) {
             return NextResponse.json(
-                { success: false, message: "Email already registered" },
+                { success: false, message: "Email or mobile number already registered" },
                 { status: 409 }
             );
         }
@@ -42,6 +43,7 @@ export async function POST(req) {
         const user = await UserModel.create({
             fullName,
             email,
+            mobile,
             password: hashedPassword,
             role: defaultRole,
         });
