@@ -20,7 +20,7 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
         formState: { errors },
     } = useForm();
 
-    const MAX_FILE_BYTES = 2 * 1024 * 1024;
+    const MAX_FILE_BYTES = 5 * 1024 * 1024;
     const getFileFromValue = (value: any): File | null => {
         if (value instanceof File) return value;
         if (value?.[0] instanceof File) return value[0];
@@ -29,7 +29,7 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
     const validateMax2MB = (value: any) => {
         const file = getFileFromValue(value);
         if (!file) return true;
-        return file.size <= MAX_FILE_BYTES || "Max file size is 2MB";
+        return file.size <= MAX_FILE_BYTES || "Max file size is 5MB";
     };
     const [referenceCount, setReferenceCount] = useState(1);
     const [applicantAssetsCount, setApplicantAssetsCount] = useState(1);
@@ -953,11 +953,11 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                                 ) : null}
                             </div>
                             <div className="space-y-1">
-                                <label className="text-sm font-medium">Shop/office photo  <span className="text-destructive">(Optional (JPEG only, Max size: 2 MB))</span></label>
+                                <label className="text-sm font-medium">Shop/office photo  <span className="text-destructive">(Optional (JPEG only, Max size: 5 MB))</span></label>
                                 <input type="file" {...register("Shopofficephoto")} placeholder="Pincode" className="py-2 px-2 mx-2 w-[80%] rounded-md bg-gray-200" />
                             </div>
                             <div className="space-y-1">
-                                <label className="text-sm font-medium"> Additional photo  upload option <span className="text-destructive">(Optional (JPEG only, Max size: 2 MB))</span></label>
+                                <label className="text-sm font-medium"> Additional photo  upload option <span className="text-destructive">(Optional (JPEG only, Max size: 5 MB))</span></label>
                                 <input type="file" {...register("Additionalphotouploadoption")} placeholder="Pincode" className="py-2 mx-2 w-[80%] px-2 rounded-md bg-gray-200" />
                             </div>
                             <div className="space-y-1">
@@ -1022,28 +1022,28 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                                 ) : null}
                             </div>
                             <div className="space-y-1">
-                                <label className="text-sm font-medium">PAN Card Photo <span className="text-destructive">JPEG or PDF allowed (Max size: 2 MB)*</span></label>
+                                <label className="text-sm font-medium">PAN Card Photo <span className="text-destructive">JPEG or PDF allowed (Max size: 5 MB)*</span></label>
                                 <input type="file" {...register("panPhoto", { validate: validateMax2MB })} className="input bg-gray-200" />
                                 {getError("panPhoto") ? (
                                     <p className="text-sm text-red-600">{getError("panPhoto")}</p>
                                 ) : null}
                             </div>
                             <div className="space-y-1">
-                                <label className="text-sm font-medium">Aadhaar Card Front Photo <span className="text-destructive">JPEG or PDF allowed (Max size: 2 MB)*</span></label>
+                                <label className="text-sm font-medium">Aadhaar Card Front Photo <span className="text-destructive">JPEG or PDF allowed (Max size: 5 MB)*</span></label>
                                 <input type="file" {...register("aadhaarPhoto", { validate: validateMax2MB })} className="input bg-gray-200" />
                                 {getError("aadhaarPhoto") ? (
                                     <p className="text-sm text-red-600">{getError("aadhaarPhoto")}</p>
                                 ) : null}
                             </div>
                             <div className="space-y-1">
-                                <label className="text-sm font-medium">Aadhaar Card Back Photo <span className="text-destructive">JPEG or PDF allowed (Max size: 2 MB)*</span></label>
+                                <label className="text-sm font-medium">Aadhaar Card Back Photo <span className="text-destructive">JPEG or PDF allowed (Max size: 5 MB)*</span></label>
                                 <input type="file" {...register("aadhaarBackPhoto", { validate: validateMax2MB })} className="input bg-gray-200" />
                                 {getError("aadhaarBackPhoto") ? (
                                     <p className="text-sm text-red-600">{getError("aadhaarBackPhoto")}</p>
                                 ) : null}
                             </div>
                             <div className="space-y-1">
-                                <label className="text-sm font-medium">Applicant Photo <span className="text-destructive">JPEG only (Max size: 2 MB)*</span></label>
+                                <label className="text-sm font-medium">Applicant Photo <span className="text-destructive">JPEG only (Max size: 5 MB)*</span></label>
                                 <input type="file" {...register("applicantPhoto", { required: true, validate: validateMax2MB })} className="input bg-gray-200" />
                                 {getError("applicantPhoto") ? (
                                     <p className="text-sm text-red-600">{getError("applicantPhoto")}</p>
@@ -1071,21 +1071,21 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                             </div>
 
                             <div className="space-y-1 flex flex-col">
-                                <label className="text-sm font-medium">Co-Applicant PAN Card Photo <span className="text-destructive">(optional, JPEG or PDF allowed (Max size: 2 MB))</span></label>
+                                <label className="text-sm font-medium">Co-Applicant PAN Card Photo <span className="text-destructive">(optional, JPEG or PDF allowed (Max size: 5 MB))</span></label>
                                 <input type="file" {...register("CoApplicantpanPhoto", { validate: validateMax2MB })} className="input bg-gray-200" />
                                 {getError("CoApplicantpanPhoto") ? (
                                     <p className="text-sm text-red-600">{getError("CoApplicantpanPhoto")}</p>
                                 ) : null}
                             </div>
                             <div className="space-y-1 flex flex-col">
-                                <label className="text-sm font-medium">Co-Applicant Aadhaar Front Photo <span className="text-destructive">(optional, JPEG or PDF allowed (Max size: 2 MB))</span></label>
+                                <label className="text-sm font-medium">Co-Applicant Aadhaar Front Photo <span className="text-destructive">(optional, JPEG or PDF allowed (Max size: 5 MB))</span></label>
                                 <input type="file" {...register("CoApplicantAadhaarPhoto", { validate: validateMax2MB })} className="input bg-gray-200" />
                                 {getError("CoApplicantAadhaarPhoto") ? (
                                     <p className="text-sm text-red-600">{getError("CoApplicantAadhaarPhoto")}</p>
                                 ) : null}
                             </div>
                             <div className="space-y-1 flex flex-col">
-                                <label className="text-sm font-medium">Co-Applicant Aadhaar Back Photo <span className="text-destructive">(optional,JPEG or PDF allowed (Max size: 2 MB))</span></label>
+                                <label className="text-sm font-medium">Co-Applicant Aadhaar Back Photo <span className="text-destructive">(optional,JPEG or PDF allowed (Max size: 5 MB))</span></label>
                                 <input type="file" {...register("CoApplicantAadhaarBackPhoto", { validate: validateMax2MB })} className="input bg-gray-200" />
                                 {getError("CoApplicantAadhaarBackPhoto") ? (
                                     <p className="text-sm text-red-600">{getError("CoApplicantAadhaarBackPhoto")}</p>
@@ -1395,7 +1395,7 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                         <div className="grid grid-col-2 gap-3">
                             <div className="space-y-1">
                                 <div>
-                                    <label className="text-sm font-medium">Assessment Year 2023-24 <span className="text-destructive">(Optional - PDF only (Max 2 MB))</span></label>
+                                    <label className="text-sm font-medium">Assessment Year 2023-24 <span className="text-destructive">(Optional - PDF only (Max 5 MB))</span></label>
                                 </div>
                                 <input type="file" {...register("AssessmentYear2324", { validate: validateMax2MB })} className="input bg-gray-200" />
                                 {getError("AssessmentYear2324") ? (
@@ -1404,7 +1404,7 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                             </div>
                             <div className="space-y-1">
                                 <div>
-                                    <label className="text-sm font-medium">Assessment Year 2024-25 <span className="text-destructive">(Optional - PDF only (Max 2 MB))</span></label>
+                                    <label className="text-sm font-medium">Assessment Year 2024-25 <span className="text-destructive">(Optional - PDF only (Max 5 MB))</span></label>
                                 </div>
                                 <input type="file" {...register("AssessmentYear2425", { validate: validateMax2MB })} className="input bg-gray-200" />
                                 {getError("AssessmentYear2425") ? (
@@ -1413,7 +1413,7 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                             </div>
                             <div className="space-y-1">
                                 <div>
-                                    <label className="text-sm font-medium">Assessment Year 2025-26 <span className="text-destructive">(Optional - PDF only (Max 2 MB))</span></label>
+                                    <label className="text-sm font-medium">Assessment Year 2025-26 <span className="text-destructive">(Optional - PDF only (Max 5 MB))</span></label>
                                 </div>
                                 <input type="file" {...register("AssessmentYear2526", { validate: validateMax2MB })} className="input bg-gray-200" />
                                 {getError("AssessmentYear2526") ? (
@@ -1632,7 +1632,7 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
 
 
                                     <div className="space-y-1">
-                                        <label className="text-sm font-medium">Upload Proforma Invoice (PDF, Max 2MB) <span className="text-red-400 text-xs">(optional)</span></label>
+                                        <label className="text-sm font-medium">Upload Proforma Invoice (PDF, Max 5MB) <span className="text-red-400 text-xs">(optional)</span></label>
                                         <input
                                             type="file"
                                             accept="application/pdf"
@@ -1722,7 +1722,7 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                                 <div className="space-y-3">
                                     {Array.from({ length: otherDocumentsCount }).map((_, idx) => (
                                         <div key={idx} className="space-y-1">
-                                            <label className="text-sm font-medium">Upload Document {idx + 1} <span className="text-destructive">(Only PDF, Max:2mb)</span>  </label>
+                                            <label className="text-sm font-medium">Upload Document {idx + 1} <span className="text-destructive">(Only PDF, Max:5mb)</span>  </label>
                                             <input
                                                 type="text"
                                                 {...register(`otherSupportedDocumentName_${idx}`)}

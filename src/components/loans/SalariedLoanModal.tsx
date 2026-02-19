@@ -79,7 +79,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
             return "Password-protected PDFs are not supported";
         }
 
-        if (file.size > 2 * 1024 * 1024) return "Max size is 2 MB";
+        if (file.size > 5 * 1024 * 1024) return "Max size is 5 MB";
         return true;
     };
 
@@ -95,7 +95,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
         if (await isPdfPasswordProtected(file)) {
             return "Password-protected PDFs are not supported";
         }
-        if (file.size > 2 * 1024 * 1024) return "Max size is 2 MB";
+        if (file.size > 5 * 1024 * 1024) return "Max size is 5 MB";
         return true;
     };
 
@@ -954,7 +954,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                                 ) : null}
                             </div>
                             <div className="space-y-1">
-                                <label className="text-sm font-medium">PAN Card Photo <span className="text-destructive">JPEG or PDF allowed (Max size: 2 MB)*</span></label>
+                                <label className="text-sm font-medium">PAN Card Photo <span className="text-destructive">JPEG or PDF allowed (Max size: 5 MB)*</span></label>
                                 <input
                                     type="file"
                                     accept="image/jpeg,image/jpg,application/pdf"
@@ -966,7 +966,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                                 ) : null}
                             </div>
                             <div className="space-y-1">
-                                <label className="text-sm font-medium">Aadhaar Card Front Photo <span className="text-destructive">JPEG or PDF allowed (Max size: 2 MB)*</span></label>
+                                <label className="text-sm font-medium">Aadhaar Card Front Photo <span className="text-destructive">JPEG or PDF allowed (Max size: 5 MB)*</span></label>
                                 <input
                                     type="file"
                                     accept="image/jpeg,image/jpg,application/pdf"
@@ -978,7 +978,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                                 ) : null}
                             </div>
                             <div className="space-y-1">
-                                <label className="text-sm font-medium">Aadhaar Card Back Photo <span className="text-destructive">JPEG or PDF allowed (Max size: 2 MB)*</span></label>
+                                <label className="text-sm font-medium">Aadhaar Card Back Photo <span className="text-destructive">JPEG or PDF allowed (Max size: 5 MB)*</span></label>
                                 <input
                                     type="file"
                                     accept="image/jpeg,image/jpg,application/pdf"
@@ -990,7 +990,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                                 ) : null}
                             </div>
                             <div className="space-y-1">
-                                <label className="text-sm font-medium">Applicant Photo <span className="text-destructive">JPEG only (Max size: 2 MB)*</span></label>
+                                <label className="text-sm font-medium">Applicant Photo <span className="text-destructive">JPEG only (Max size: 5 MB)*</span></label>
                                 <input
                                     type="file"
                                     accept="image/jpeg,image/jpg"
@@ -1058,7 +1058,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                             </div>
 
                             <div className="space-y-1">
-                                <label className="text-sm font-medium">Home Electricity Bill <span className="text-destructive">(JPEG or PDF allowed (Max size: 2 MB))</span></label>
+                                <label className="text-sm font-medium">Home Electricity Bill <span className="text-destructive">(JPEG or PDF allowed (Max size: 5 MB))</span></label>
                                 <input
                                     type="file"
                                     accept="image/jpeg,image/jpg,application/pdf"
@@ -1435,7 +1435,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                         <div className="grid grid-col-2 gap-3">
                             <div className="space-y-1">
                                 <div>
-                                    <label className="text-sm font-medium">Assessment Year 2023-24 <span className="text-destructive">(Optional - PDF only (Max 2 MB))</span></label>
+                                    <label className="text-sm font-medium">Assessment Year 2023-24 <span className="text-destructive">(Optional - PDF only (Max 5 MB))</span></label>
                                 </div>
                                 <input
                                     type="file"
@@ -1449,7 +1449,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                             </div>
                             <div className="space-y-1">
                                 <div>
-                                    <label className="text-sm font-medium">Assessment Year 2024-25 <span className="text-destructive">(Optional - PDF only (Max 2 MB))</span></label>
+                                    <label className="text-sm font-medium">Assessment Year 2024-25 <span className="text-destructive">(Optional - PDF only (Max 5 MB))</span></label>
                                 </div>
                                 <input
                                     type="file"
@@ -1463,7 +1463,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                             </div>
                             <div className="space-y-1">
                                 <div>
-                                    <label className="text-sm font-medium">Assessment Year 2025-26 <span className="text-destructive">(Optional - PDF only (Max 2 MB))</span></label>
+                                    <label className="text-sm font-medium">Assessment Year 2025-26 <span className="text-destructive">(Optional - PDF only (Max 5 MB))</span></label>
                                 </div>
                                 <input
                                     type="file"
@@ -1975,7 +1975,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                             </div>
 
                             <div className="space-y-1">
-                                <label className="text-sm font-medium">Co-Applicant PAN Card Photo <span className="text-destructive">(optional, JPEG or PDF allowed (Max size: 2 MB))</span></label>
+                                <label className="text-sm font-medium">Co-Applicant PAN Card Photo <span className="text-destructive">(optional, JPEG or PDF allowed (Max size: 5 MB))</span></label>
                                 <input
                                     type="file"
                                     accept="image/jpeg,image/jpg,application/pdf"
@@ -1987,7 +1987,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                                 ) : null}
                             </div>
                             <div className="space-y-1">
-                                <label className="text-sm font-medium">Co-Applicant Aadhaar Front Photo <span className="text-destructive">(optional, JPEG or PDF allowed (Max size: 2 MB))</span></label>
+                                <label className="text-sm font-medium">Co-Applicant Aadhaar Front Photo <span className="text-destructive">(optional, JPEG or PDF allowed (Max size: 5 MB))</span></label>
                                 <input
                                     type="file"
                                     accept="image/jpeg,image/jpg,application/pdf"
@@ -1999,7 +1999,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                                 ) : null}
                             </div>
                             <div className="space-y-1">
-                                <label className="text-sm font-medium">Co-Applicant Aadhaar Back Photo <span className="text-destructive">(optional,JPEG or PDF allowed (Max size: 2 MB))</span></label>
+                                <label className="text-sm font-medium">Co-Applicant Aadhaar Back Photo <span className="text-destructive">(optional,JPEG or PDF allowed (Max size: 5 MB))</span></label>
                                 <input
                                     type="file"
                                     accept="image/jpeg,image/jpg,application/pdf"
