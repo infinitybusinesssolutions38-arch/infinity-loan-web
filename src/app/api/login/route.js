@@ -49,10 +49,10 @@ export async function POST(req) {
         const token = jwt.sign(
             { id: user._id, role },
             process.env.JWT_SECRET,
-            { expiresIn: "7d" }
+            { expiresIn: "24h" } // Token expires in 24 hours
         );
 
-        // Set cookie
+        // Set cookie with 24h expiry
         const res = NextResponse.json({
             success: true,
             message: "Login successful",
@@ -65,7 +65,9 @@ export async function POST(req) {
             secure: process.env.NODE_ENV === "production",
             sameSite: "strict",
             path: "/",
+            maxAge: 60 * 60 * 24
         });
+
 
         return res;
     } catch (err) {
