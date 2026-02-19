@@ -45,7 +45,7 @@ export async function POST(request) {
                 <table role="presentation" width="600" cellspacing="0" cellpadding="0" align="center" style="border-collapse:separate;width:100%;max-width:600px;background:#ffffff;border:1px solid #e8ebf3;border-radius:16px;overflow:hidden">
                   <tr>
                     <td style="padding:18px 20px;background:linear-gradient(135deg,#0b1220,#111827)">
-                      <div style="font-family:Arial,sans-serif;font-size:14px;color:#ffffff;letter-spacing:0.6px;font-weight:700;text-transform:uppercase">Infinity Loan Services</div>
+                      <div style="font-family:Arial,sans-serif;font-size:14px;color:#ffffff;letter-spacing:0.6px;font-weight:700;text-transform:uppercase">Infinity Loans & Business Solutions</div>
                       <div style="font-family:Arial,sans-serif;font-size:12px;color:rgba(255,255,255,0.75);margin-top:6px">Email verification for registration</div>
                     </td>
                   </tr>

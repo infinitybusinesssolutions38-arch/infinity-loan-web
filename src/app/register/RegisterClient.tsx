@@ -11,6 +11,7 @@ const RegisterClient: React.FC = () => {
 
     const [fullName, setFullName] = useState("");
     const [email, setEmail] = useState("");
+    const [mobile, setMobile] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [otp, setOtp] = useState("");
@@ -30,7 +31,7 @@ const RegisterClient: React.FC = () => {
 
         const normalizedEmail = String(email || "").trim().toLowerCase();
 
-        if (!fullName.trim() || !normalizedEmail || !password || !confirmPassword) {
+        if (!fullName.trim() || !normalizedEmail || !mobile.trim() || !password || !confirmPassword) {
             setMessage({ type: "error", text: "Please fill all fields" });
             return;
         }
@@ -80,6 +81,7 @@ const RegisterClient: React.FC = () => {
             const res = await axios.post("/api/register", {
                 fullName: fullName.trim(),
                 email: normalizedEmail,
+                mobile: mobile.trim(),
                 password,
                 otp: otp.trim(),
             });
@@ -212,6 +214,18 @@ const RegisterClient: React.FC = () => {
                                         placeholder="you@example.com"
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
+                                        className="w-full"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-foreground mb-2">Mobile Number</label>
+                                    <Input
+                                        id="mobile"
+                                        type="tel"
+                                        placeholder="Enter mobile number"
+                                        value={mobile}
+                                        onChange={(e) => setMobile(e.target.value)}
                                         className="w-full"
                                     />
                                 </div>
