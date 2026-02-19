@@ -2078,36 +2078,36 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                             return (
                                 <div key={idx} className="grid md:grid-cols-2 gap-4">
                                     <div className="flex flex-col items-start gap-3">
-                                        <label className="text-sm font-medium">First Reference Full Name<span className="text-destructive">(optional)</span></label>
-                                        <input type="text" {...register(`FirstReferenceFullName${suffix}`)} placeholder="First Reference Full Name" className="input bg-gray-200 " />
+                                        <label className="text-sm font-medium">First Reference Full Name<span className="text-destructive">*</span></label>
+                                        <input type="text" {...register(`FirstReferenceFullName${suffix}`, { required: true })} placeholder="First Reference Full Name" className="input bg-gray-200 " />
                                     </div>
                                     <div className="flex flex flex-col  items-start gap-3">
-                                        <label className="text-sm font-medium">Reference Mobile Number<span className="text-destructive">(optional)</span></label>
-                                        <input type="text" {...register(`ReferenceMobileNumber${suffix}`)} placeholder="Reference Mobile Number" className="input bg-gray-200" />
+                                        <label className="text-sm font-medium">Reference Mobile Number<span className="text-destructive">*</span></label>
+                                        <input type="text" {...register(`ReferenceMobileNumber${suffix}`, { required: true })} placeholder="Reference Mobile Number" className="input bg-gray-200" />
                                     </div>
                                     <div className="flex flex flex-col  items-start gap-3">
-                                        <label className="text-sm font-medium">Relation With Aplicant<span className="text-destructive">(optional)</span></label>
-                                        <input type="text" {...register(`RelationWithAplicant${suffix}`)} placeholder="Relation With Aplicant" className="input bg-gray-200" />
+                                        <label className="text-sm font-medium">Relation With Aplicant<span className="text-destructive">*</span></label>
+                                        <input type="text" {...register(`RelationWithAplicant${suffix}`, { required: true })} placeholder="Relation With Aplicant" className="input bg-gray-200" />
                                     </div>
                                     <div className="flex  flex flex-col  items-start gap-3">
-                                        <label className="text-sm font-medium">Email ID <span className="text-destructive">(optional)</span></label>
-                                        <input type="text" {...register(`ReferenceEmailId${suffix}`)} placeholder="Email ID" className="input bg-gray-200" />
+                                        <label className="text-sm font-medium">Email ID <span className="text-destructive">*</span></label>
+                                        <input type="text" {...register(`ReferenceEmailId${suffix}`, { required: true })} placeholder="Email ID" className="input bg-gray-200" />
                                     </div>
                                     <div className="flex flex flex-col  items-start gap-3">
-                                        <label className="text-sm font-medium">Address <span className="text-destructive">(optional)</span></label>
-                                        <input type="text" {...register(`ReferenceAddress${suffix}`)} placeholder="Address" className="input bg-gray-200" />
+                                        <label className="text-sm font-medium">Address <span className="text-destructive">*</span></label>
+                                        <input type="text" {...register(`ReferenceAddress${suffix}`, { required: true })} placeholder="Address" className="input bg-gray-200" />
                                     </div>
                                     <div className="flex flex flex-col  items-start gap-3">
-                                        <label className="text-sm font-medium">State <span className="text-destructive">(optional)</span></label>
-                                        <input type="text" {...register(`ReferenceState${suffix}`)} placeholder="State" className="input bg-gray-200" />
+                                        <label className="text-sm font-medium">State <span className="text-destructive">*</span></label>
+                                        <input type="text" {...register(`ReferenceState${suffix}`, { required: true })} placeholder="State" className="input bg-gray-200" />
                                     </div>
                                     <div className="flex flex flex-col  items-start gap-3">
-                                        <label className="text-sm font-medium">City <span className="text-destructive">(optional)</span></label>
-                                        <input type="text" {...register(`ReferenceCity${suffix}`)} placeholder="City" className="input bg-gray-200" />
+                                        <label className="text-sm font-medium">City <span className="text-destructive">*</span></label>
+                                        <input type="text" {...register(`ReferenceCity${suffix}`, { required: true })} placeholder="City" className="input bg-gray-200" />
                                     </div>
                                     <div className="flex flex flex-col  items-start gap-3">
-                                        <label className="text-sm font-medium">Pincode <span className="text-destructive">(optional)</span></label>
-                                        <input type="text" {...register(`ReferencePincode${suffix}`)} placeholder="Pincode" className="input bg-gray-200" />
+                                        <label className="text-sm font-medium">Pincode <span className="text-destructive">*</span></label>
+                                        <input type="text" {...register(`ReferencePincode${suffix}`, { required: true })} placeholder="Pincode" className="input bg-gray-200" />
                                     </div>
                                 </div>
                             );

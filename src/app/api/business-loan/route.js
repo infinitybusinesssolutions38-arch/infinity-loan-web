@@ -74,7 +74,7 @@ export async function POST(req) {
 
 
 
-    const generateApplicationRef = () => {
+    const generateRandomApplicationRef = () => {
 
       const ts = Date.now().toString(36).toUpperCase();
 
@@ -83,6 +83,54 @@ export async function POST(req) {
       return `BUS_${ts}_${rnd}`;
 
     };
+
+    const toSafeUpperToken = (value, maxLen) => {
+
+      const raw = typeof value === "string" ? value : String(value || "");
+
+      const cleaned = raw
+
+        .trim()
+
+        .toUpperCase()
+
+        .replace(/[^A-Z0-9]/g, "");
+
+      if (!cleaned) return "";
+
+      return typeof maxLen === "number" ? cleaned.slice(0, maxLen) : cleaned;
+
+    };
+
+    const generatePreferredApplicationRef = (nameRaw, panRaw) => {
+
+      const name4 = toSafeUpperToken(nameRaw, 4);
+
+      const pan = toSafeUpperToken(panRaw);
+
+      if (!name4 || !pan) return null;
+
+      return `BUS_${name4}_${pan}`;
+
+    };
+
+
+
+    // =============================
+
+    // Generate Application Ref
+
+    // =============================
+
+    const preferredRef = generatePreferredApplicationRef(
+
+      formData.get("firstName") || formData.get("businessName"),
+
+      formData.get("panNumber")
+
+    );
+
+    let applicationRef = preferredRef || generateRandomApplicationRef();
 
 
 
@@ -175,6 +223,17 @@ export async function POST(req) {
       length: Math.max(0, otherSupportedDocumentsCount),
 
     }).map((_, idx) => formData.get(`otherSupportedDocumentName_${idx}`));
+
+    const numberOfExistingLoansRaw = formData.get("numberOfExistingLoans");
+    const numberOfExistingLoans = Number.isFinite(Number(numberOfExistingLoansRaw))
+      ? parseInt(String(numberOfExistingLoansRaw), 10)
+      : 0;
+
+    const loanAccountStatementUrls = await Promise.all(
+      Array.from({ length: Math.max(0, numberOfExistingLoans) }).map(
+        async (_, idx) => await upload(formData.get(`loanAccountStatement_${idx}`))
+      )
+    );
 
 
 
@@ -337,20 +396,6 @@ export async function POST(req) {
       });
 
     }
-
-
-
-    // =============================
-
-    // Generate Application Ref
-
-    // =============================
-
-    let applicationRef = generateApplicationRef();
-
-
-
-    // =============================
 
     // Create Document
 
@@ -632,6 +677,8 @@ export async function POST(req) {
 
       numberOfOtherDocuments: formData.get("numberOfOtherDocuments"),
 
+      loanAccountStatementUrls: loanAccountStatementUrls.filter(Boolean),
+
 
 
       otherSupportedDocumentsUrls: otherSupportedDocumentsUrls.filter(Boolean),
@@ -734,7 +781,17 @@ export async function POST(req) {
 
         if (!isDupKey || attempt === 2) throw e;
 
-        applicationRef = generateApplicationRef();
+        if (preferredRef) {
+
+          const rnd = Math.random().toString(36).slice(2, 6).toUpperCase();
+
+          applicationRef = `${preferredRef}_${rnd}`;
+
+        } else {
+
+          applicationRef = generateRandomApplicationRef();
+
+        }
 
         newApplication.applicationRef = applicationRef;
 
@@ -1406,6 +1463,30 @@ export async function POST(req) {
 
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Assessment Year 2025-26</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.assessmentYear2526Url)}</td></tr>
 
+            ${Array.isArray(saved?.loanAccountStatementUrls) && saved.loanAccountStatementUrls.filter(Boolean).length
+
+              ? `
+
+                <tr><td colspan="2" style="border:1px solid #e5e7eb;padding:8px"><strong>Loan Account Statements</strong></td></tr>
+
+                ${saved.loanAccountStatementUrls
+
+                  .filter(Boolean)
+
+                  .map(
+
+                    (u, idx) =>
+
+                      `<tr><td style="border:1px solid #e5e7eb;padding:8px">Statement ${idx + 1}</td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(u)}</td></tr>`
+
+                  )
+
+                  .join("")}
+
+              `
+
+              : ""}
+
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Yearly GST Return Type</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${safe(saved?.yearlyGstReturnType) || "-"}</td></tr>
 
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Yearly GST Return File</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.yearlyGstReturnFileUrl)}</td></tr>
@@ -1698,6 +1779,10 @@ export async function POST(req) {
 
               <p>www.infinityloanservices.com</p>
 
+              <p style="margin-top:10px; font-size:12px; color:#666;">
+                <strong>Confidentiality & Privacy Notice:</strong> This email and any attachments may contain confidential information. All applicant data is securely handled and used only for processing loan applications in accordance with applicable data protection laws.
+              </p>
+
             </div>
 
           </div>
@@ -1865,40 +1950,15 @@ export async function POST(req) {
 
 
     if (internalRecipients.length > 0) {
-
-      const directorList = normalizeEmailList(directorEmailRaw);
-
-      const supportList = normalizeEmailList(supportEmailRaw);
-
-
-
-      const toAddress = directorList?.[0] || internalRecipients?.[0];
-
-      const ccAddress =
-
-        !toAddress && internalRecipients.length > 1
-
-          ? internalRecipients.slice(1)
-
-          : supportList.length > 0
-
-            ? supportList
-
-            : undefined;
-
-
-
       emailTasks.push(
 
         withTimeout(
 
           gmailTransporter.sendMail({
 
-            from: fromAddress,
+            from: process.env.ADMIN_USER,
 
-            to: toAddress || internalRecipients,
-
-            cc: ccAddress,
+            to: internalRecipients,
 
             replyTo: safe(saved?.personalEmail) || undefined,
 
