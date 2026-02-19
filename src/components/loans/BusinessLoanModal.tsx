@@ -124,12 +124,17 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
     const habbit = watch("habbit");
     const caseHistory = watch("caseHistory");
     const accountTypes = watch("accountTypes");
+    const numberOfExistingLoansSelected = watch("NumberOfExistingLoans");
 
     const hasSelectedAccountTypes = Array.isArray(accountTypes)
         ? accountTypes.length > 0
         : typeof accountTypes === "string"
             ? accountTypes.trim() !== ""
             : false;
+
+    const existingLoansCount = Number.isFinite(Number(numberOfExistingLoansSelected))
+        ? Number(numberOfExistingLoansSelected)
+        : 0;
 
     const businessRegistrationCertificates = watch("businessRegistrationCertificates");
     const hasSelectedBusinessRegistrationCertificates = Array.isArray(
@@ -617,6 +622,14 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
             // Other counts
             appendIfPresent("numberOfExistingLoans", data.NumberOfExistingLoans);
             appendIfPresent("numberOfOtherDocuments", data.NumberofOtherDocuments);
+
+            const loanAccountStatement = pickFirstFile((data as any)?.loanAccountStatement);
+            if (loanAccountStatement) {
+                formData.append(
+                    "loanAccountStatement",
+                    await uploadToCloudinary(loanAccountStatement, "loan_applications/business")
+                );
+            }
 
             for (let i = 0; i < otherDocumentsCount; i += 1) {
                 appendIfPresent(
@@ -1281,6 +1294,31 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
 
                             </select>
                         </div>
+
+                        <div className="space-y-1 mb-3">
+                            <label className="text-sm font-medium">
+                                Loan Account Statement{" "}
+                                <span className="text-destructive">
+                                    (PDF only, Max size: 5 MB{existingLoansCount > 0 ? "*" : ""})
+                                </span>
+                            </label>
+                            <input
+                                type="file"
+                                accept="application/pdf"
+                                {...register("loanAccountStatement", {
+                                    validate: (value) => {
+                                        if (existingLoansCount <= 0) return true;
+                                        const requiredCheck = !!getFileFromValue(value) || "Loan Account Statement is required";
+                                        if (requiredCheck !== true) return requiredCheck;
+                                        return validateMax2MB(value);
+                                    },
+                                })}
+                                className="input bg-gray-200"
+                            />
+                            {getError("loanAccountStatement") ? (
+                                <p className="text-sm text-red-600">{getError("loanAccountStatement")}</p>
+                            ) : null}
+                        </div>
                         {existingLoans.map((loan, index) => (
                             <div key={index} className="grid md:grid-cols-4 gap-3 mb-3">
                                 <input
@@ -1342,7 +1380,7 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                                 </select>
 
                                 <input
-                                    placeholder="Loan EMI"
+                                    placeholder="Pending Loan Amount"
                                     value={loan.loanEmi}
                                     onChange={(e) => {
                                         const updated = [...existingLoans];
@@ -1352,6 +1390,8 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                                     className="input bg-gray-200"
                                 />
 
+                                <div>
+                                    <label className="text-sm font-medium">Year & Month of loan closing.</label>
                                 <input
                                     type="date"
                                     value={loan.closingDate}
@@ -1362,7 +1402,7 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                                     }}
                                     className="input bg-gray-200"
                                 />
-
+                                </div>
 
                             </div>
                         ))}
