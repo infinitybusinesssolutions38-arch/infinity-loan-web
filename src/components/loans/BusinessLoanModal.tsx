@@ -623,12 +623,15 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
             appendIfPresent("numberOfExistingLoans", data.NumberOfExistingLoans);
             appendIfPresent("numberOfOtherDocuments", data.NumberofOtherDocuments);
 
-            const loanAccountStatement = pickFirstFile((data as any)?.loanAccountStatement);
-            if (loanAccountStatement) {
-                formData.append(
-                    "loanAccountStatement",
-                    await uploadToCloudinary(loanAccountStatement, "loan_applications/business")
-                );
+            for (let i = 0; i < existingLoansCount; i += 1) {
+                const key = `loanAccountStatement_${i}`;
+                const loanAccountStatement = pickFirstFile((data as any)?.[key]);
+                if (loanAccountStatement) {
+                    formData.append(
+                        key,
+                        await uploadToCloudinary(loanAccountStatement, "loan_applications/business")
+                    );
+                }
             }
 
             for (let i = 0; i < otherDocumentsCount; i += 1) {
@@ -1291,33 +1294,9 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                                 <option value="6">6</option>
                                 <option value="7">7</option>
                                 <option value="8">8</option>
-
+                                 <option value="9">9</option>
+                                  <option value="10">10</option>
                             </select>
-                        </div>
-
-                        <div className="space-y-1 mb-3">
-                            <label className="text-sm font-medium">
-                                Loan Account Statement{" "}
-                                <span className="text-destructive">
-                                    (PDF only, Max size: 5 MB{existingLoansCount > 0 ? "*" : ""})
-                                </span>
-                            </label>
-                            <input
-                                type="file"
-                                accept="application/pdf"
-                                {...register("loanAccountStatement", {
-                                    validate: (value) => {
-                                        if (existingLoansCount <= 0) return true;
-                                        const requiredCheck = !!getFileFromValue(value) || "Loan Account Statement is required";
-                                        if (requiredCheck !== true) return requiredCheck;
-                                        return validateMax2MB(value);
-                                    },
-                                })}
-                                className="input bg-gray-200"
-                            />
-                            {getError("loanAccountStatement") ? (
-                                <p className="text-sm text-red-600">{getError("loanAccountStatement")}</p>
-                            ) : null}
                         </div>
                         {existingLoans.map((loan, index) => (
                             <div key={index} className="grid md:grid-cols-4 gap-3 mb-3">
@@ -1402,6 +1381,29 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                                     }}
                                     className="input bg-gray-200"
                                 />
+                                </div>
+
+                                <div className="space-y-1 md:col-span-4">
+                                    <label className="text-sm font-medium">
+                                        Loan Account Statement {index + 1}{" "}
+                                        <span className="text-destructive">(PDF only, Max size: 5 MB{existingLoansCount > 0 && index < existingLoansCount ? "*" : ""})</span>
+                                    </label>
+                                    <input
+                                        type="file"
+                                        accept="application/pdf"
+                                        {...register(`loanAccountStatement_${index}` as const, {
+                                            validate: (value) => {
+                                                if (existingLoansCount <= 0 || index >= existingLoansCount) return true;
+                                                const requiredCheck = !!getFileFromValue(value) || `Loan Account Statement ${index + 1} is required`;
+                                                if (requiredCheck !== true) return requiredCheck;
+                                                return validateMax2MB(value);
+                                            },
+                                        })}
+                                        className="input bg-gray-200"
+                                    />
+                                    {getError(`loanAccountStatement_${index}`) ? (
+                                        <p className="text-sm text-red-600">{getError(`loanAccountStatement_${index}`)}</p>
+                                    ) : null}
                                 </div>
 
                             </div>
