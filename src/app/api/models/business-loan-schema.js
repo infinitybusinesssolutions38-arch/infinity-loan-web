@@ -229,6 +229,9 @@ const BorrowerBusinessSchema = new mongoose.Schema(
     assessmentYear2324Url: { type: String, required: false },
     assessmentYear2425Url: { type: String, required: false },
     assessmentYear2526Url: { type: String, required: false },
+
+    loanAccountStatementUrls: { type: [String], required: false, default: [] },
+
     yearlyGstReturnType: { type: String, required: false },
     yearlyGstReturnFileUrl: { type: String, required: false },
     yearlyGstReturns: {
