@@ -22,6 +22,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
     title: "Home - Infinity Loans & Business Solutions",
     description: "Infinity Loans & Business Solutions",
+    icons: {
+        icon: [{ url: "/logo.png", type: "image/png" }],
+        shortcut: ["/logo.png"],
+        apple: [{ url: "/logo.png" }],
+    },
 };
 
 export default function RootLayout({

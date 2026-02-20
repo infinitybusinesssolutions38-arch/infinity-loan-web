@@ -90,21 +90,22 @@ export async function POST(req) {
     /* =========================================
        GENERATE APPLICATION REF
     ========================================== */
-    const parseRefNumber = (ref) => {
-      if (!ref) return 0;
-      const m = String(ref).match(/SAL_(\d+)/i);
-      return m ? parseInt(m[1], 10) : 0;
-    };
+    const sanitizeRefPart = (value) =>
+      String(value || "")
+        .trim()
+        .toUpperCase()
+        .replace(/[^A-Z0-9]+/g, "")
+        .slice(0, 32);
 
-    const getNextApplicationRef = async (offset = 0) => {
-      const last = await SalariedLoanModel.findOne(
-        { applicationRef: { $regex: /^SAL_\d+$/ } },
-        { applicationRef: 1 }
-      ).sort({ applicationRef: -1 });
+    const buildApplicationRef = (attempt = 0) => {
+      const firstNameRaw = formData.get("firstName");
+      const panRaw = formData.get("panNumber");
 
-      const lastNum = parseRefNumber(last?.applicationRef);
-      const nextNum = Math.max(0, lastNum) + 1 + Math.max(0, offset);
-      return `SAL_${String(nextNum).padStart(4, "0")}`;
+      const first4 = sanitizeRefPart(firstNameRaw).slice(0, 4).padEnd(4, "X");
+      const pan = sanitizeRefPart(panRaw).slice(0, 20);
+
+      const base = `SAL_${first4}${pan ? `_${pan}` : ""}`;
+      return attempt > 0 ? `${base}_${attempt + 1}` : base;
     };
 
     /* =========================================
@@ -326,7 +327,7 @@ export async function POST(req) {
     let saved;
     let applicationRef;
     for (let attempt = 0; attempt < 5; attempt += 1) {
-      applicationRef = await getNextApplicationRef(attempt);
+      applicationRef = buildApplicationRef(attempt);
       try {
         const newApplication = new SalariedLoanModel({
           applicationRef,
@@ -450,10 +451,18 @@ export async function POST(req) {
       const recipients = [candidateCustomerEmail, additionalCustomerEmail].filter(Boolean);
 
       for (const to of recipients) {
-        await withTimeout(
-          sendLoanApplicationConfirmationEmail(to, confirmationPayload),
-          12000
-        );
+        try {
+          await withTimeout(
+            sendLoanApplicationConfirmationEmail(to, confirmationPayload),
+            12000
+          );
+        } catch (err) {
+          console.error("Failed to send applicant confirmation email", {
+            to,
+            applicationRef,
+            error: err instanceof Error ? err.message : err,
+          });
+        }
       }
     } else {
       console.warn(
@@ -825,18 +834,27 @@ export async function POST(req) {
             ? supportList
             : undefined;
 
-      await withTimeout(
-        gmailTransporter.sendMail({
-          from: fromAddress,
+      try {
+        await withTimeout(
+          gmailTransporter.sendMail({
+            from: fromAddress,
+            to: toAddress || internalRecipients,
+            cc: ccAddress,
+            replyTo: safe(saved?.personalEmail) || undefined,
+            subject: `New Salaried Loan Application - ${applicationRef}`,
+            html: internalBrandedHtml,
+            text: internalTextFinal,
+          }),
+          12000
+        );
+      } catch (err) {
+        console.error("Failed to send internal salaried-loan notification email", {
           to: toAddress || internalRecipients,
           cc: ccAddress,
-          replyTo: safe(saved?.personalEmail) || undefined,
-          subject: `New Salaried Loan Application - ${applicationRef}`,
-          html: internalBrandedHtml,
-          text: internalTextFinal,
-        }),
-        12000
-      );
+          applicationRef,
+          error: err instanceof Error ? err.message : err,
+        });
+      }
     }
 
     return NextResponse.json({
