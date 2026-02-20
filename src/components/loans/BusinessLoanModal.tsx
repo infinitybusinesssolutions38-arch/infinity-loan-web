@@ -89,6 +89,9 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
     };
 
     const [loading, setLoading] = useState(false);
+    const [submitSuccess, setSubmitSuccess] = useState<
+        null | { applicationRef?: string; data?: any }
+    >(null);
 
     // Dynamic sections
     const [bankStatements, setBankStatements] = useState<
@@ -185,9 +188,21 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
 
             const pickFirstFile = (value: any): File | null => {
                 if (!value) return null;
+                if (typeof value === "string") return null;
                 if (value instanceof File) return value;
                 if (value?.[0] instanceof File) return value[0];
                 return null;
+            };
+
+            const appendFileOrUrl = async (targetKey: string, value: any, folder: string) => {
+                if (!value) return;
+                if (typeof value === "string") {
+                    appendIfPresent(targetKey, value);
+                    return;
+                }
+                const f = pickFirstFile(value);
+                if (!f) return;
+                formData.append(targetKey, await uploadToCloudinary(f, folder));
             };
 
             if (categoryKey) formData.append("serviceCategoryKey", categoryKey);
@@ -242,37 +257,10 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
             // =============================
             // File Uploads
             // =============================
-            const applicantPhoto = pickFirstFile(data.applicantPhoto);
-            if (applicantPhoto) {
-                formData.append(
-                    "applicantPhoto",
-                    await uploadToCloudinary(applicantPhoto, "loan_applications/business")
-                );
-            }
-
-            const panPhoto = pickFirstFile(data.panPhoto);
-            if (panPhoto) {
-                formData.append(
-                    "panPhoto",
-                    await uploadToCloudinary(panPhoto, "loan_applications/business")
-                );
-            }
-
-            const aadhaarPhoto = pickFirstFile(data.aadhaarPhoto);
-            if (aadhaarPhoto) {
-                formData.append(
-                    "aadhaarPhoto",
-                    await uploadToCloudinary(aadhaarPhoto, "loan_applications/business")
-                );
-            }
-
-            const aadhaarBackPhoto = pickFirstFile(data.aadhaarBackPhoto);
-            if (aadhaarBackPhoto) {
-                formData.append(
-                    "aadhaarBackPhoto",
-                    await uploadToCloudinary(aadhaarBackPhoto, "loan_applications/business")
-                );
-            }
+            await appendFileOrUrl("applicantPhoto", data.applicantPhoto, "loan_applications/business");
+            await appendFileOrUrl("panPhoto", data.panPhoto, "loan_applications/business");
+            await appendFileOrUrl("aadhaarPhoto", data.aadhaarPhoto, "loan_applications/business");
+            await appendFileOrUrl("aadhaarBackPhoto", data.aadhaarBackPhoto, "loan_applications/business");
 
             const gstCertificate = pickFirstFile(data.gstCertificate);
             if (gstCertificate) {
@@ -501,7 +489,9 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
             const latestHomeElectricityBillFile = pickFirstFile(
                 data.LatestHomeElectricityBill
             );
-            if (latestHomeElectricityBillFile) {
+            if (typeof data.LatestHomeElectricityBill === "string") {
+                appendIfPresent("latestHomeElectricityBill", data.LatestHomeElectricityBill);
+            } else if (latestHomeElectricityBillFile) {
                 formData.append(
                     "latestHomeElectricityBill",
                     await uploadToCloudinary(
@@ -514,7 +504,12 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
             const latestOfficeShopElectricityBillFile = pickFirstFile(
                 data["LatestOfficeShopElectricityBill "]
             );
-            if (latestOfficeShopElectricityBillFile) {
+            if (typeof data["LatestOfficeShopElectricityBill "] === "string") {
+                appendIfPresent(
+                    "latestOfficeShopElectricityBill",
+                    data["LatestOfficeShopElectricityBill "]
+                );
+            } else if (latestOfficeShopElectricityBillFile) {
                 formData.append(
                     "latestOfficeShopElectricityBill",
                     await uploadToCloudinary(
@@ -702,8 +697,10 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                 throw new Error(res?.data?.message || "Submission failed");
             }
 
-            alert("Your form successfully submitted!");
-            onClose();
+            setSubmitSuccess({
+                applicationRef: res?.data?.applicationRef,
+                data: res?.data?.data,
+            });
         } catch (error) {
             console.error(error);
             const message =
@@ -770,7 +767,65 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                     </div>
                 </div>
 
-                <form id="businessLoanForm" onSubmit={handleSubmit(onSubmit)} className="flex-1 overflow-y-auto px-6 py-6 space-y-6 sm:px-8 sm:py-8 bg-gray-50">
+                {submitSuccess ? (
+                    <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6 sm:px-8 sm:py-8 bg-gray-50">
+                        <div className="rounded-2xl border border-green-200 bg-green-50 p-5 shadow-sm sm:p-6">
+                            <h3 className="text-base font-semibold text-green-700">Application submitted successfully</h3>
+                            <div className="mt-2 text-sm text-green-800">
+                                <div>
+                                    <span className="font-semibold">Application Number:</span>{" "}
+                                    {submitSuccess.applicationRef || "-"}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
+                            <h3 className="mb-4 text-base font-semibold text-blue-500">Uploaded Documents</h3>
+                            {(() => {
+                                const data = submitSuccess.data || {};
+                                const entries = Object.entries(data);
+                                const docs: Array<{ label: string; url: string }> = [];
+
+                                for (const [k, v] of entries) {
+                                    if (!v) continue;
+                                    if (typeof v === "string" && k.toLowerCase().includes("url")) {
+                                        docs.push({ label: k, url: v });
+                                        continue;
+                                    }
+                                    if (Array.isArray(v) && k.toLowerCase().includes("url")) {
+                                        v.filter(Boolean).forEach((u: any, idx: number) => {
+                                            if (typeof u === "string") {
+                                                docs.push({ label: `${k} ${idx + 1}`, url: u });
+                                            }
+                                        });
+                                        continue;
+                                    }
+                                }
+
+                                const uniqueDocs = docs.filter((d, idx) => docs.findIndex((x) => x.url === d.url) === idx);
+
+                                return uniqueDocs.length ? (
+                                    <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                                        {uniqueDocs.map((d) => (
+                                            <a
+                                                key={d.url}
+                                                href={d.url}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="rounded-xl border border-border/70 bg-background/50 p-4 text-sm font-medium text-blue-700 hover:bg-background/70"
+                                            >
+                                                {d.label}
+                                            </a>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="text-sm text-gray-600">No document links found in the response.</div>
+                                );
+                            })()}
+                        </div>
+                    </div>
+                ) : (
+                    <form id="businessLoanForm" onSubmit={handleSubmit(onSubmit)} className="flex-1 overflow-y-auto px-6 py-6 space-y-6 sm:px-8 sm:py-8 bg-gray-50">
 
                     {/* =================A. BASIC DETAILS ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
@@ -2076,28 +2131,28 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                         </div>
                     </div>
 
-                </form>
+                    </form>
+                )}
 
                 <div className="sticky bottom-0 z-10 border-t bg-white/90 px-6 py-4 backdrop-blur sm:px-8">
-                    <div className="flex flex-col-reverse  gap-3 sm:flex-row sm:justify-end sm:gap-4">
-                        <button
-                            type="button"
-                            onClick={onClose}
-                            className="w-full rounded-xl border border-gray-300 bg-white px-6 py-2.5 text-sm font-semibold text-gray-700 shadow-sm transition hover:bg-gray-50 sm:w-auto"
-                        >
+                    <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end sm:gap-4">
+                        <button type="button" onClick={onClose} className="w-full rounded-xl border border-gray-300 bg-white px-6 py-2.5 text-sm font-semibold text-gray-700 shadow-sm transition hover:bg-gray-50 sm:w-auto">
                             Cancel
                         </button>
-                        <button
-                            type="submit"
-                            form="businessLoanForm"
-                            disabled={loading}
-                            className="w-full rounded-xl px-6 py-2.5 text-sm bg-[#F97415] font-semibold text-white shadow-lg transition hover:opacity-95 disabled:opacity-60 sm:w-auto "
-                        >
-                            {loading ? "Submitting..." : "Submit"}
-                        </button>
+                        {!submitSuccess ? (
+                            <button
+                                type="submit"
+                                form="businessLoanForm"
+                                disabled={loading}
+                                className="w-full rounded-xl px-6 py-2.5 text-sm bg-[#F97415] font-semibold text-white shadow-lg transition hover:opacity-95 disabled:opacity-60 sm:w-auto "
+                            >
+                                {loading ? "Submitting..." : "Submit"}
+                            </button>
+                        ) : null}
                     </div>
                 </div>
             </div>
         </div>
     );
+
 }

@@ -41,10 +41,33 @@ export const sendPartnerConfirmationEmail = async (partnerData) => {
     const transporter = createPrimaryTransporter();
 
     const htmlContent = `
+      <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 700px; margin: 0 auto; padding: 0;">
+        <div style="background: #ffffff; padding: 28px 20px; text-align: center; border-bottom: 4px solid #F97415;">
+          <h1 style="margin: 0; font-size: 22px; font-weight: 800; color: #1a1a1a;">Infinity Loans & Business Solutions</h1>
+          <p style="margin: 8px 0 0 0; font-size: 13px; color: #6b7280;">Channel Partner Application</p>
+        </div>
 
-    <!-- ✅ YOUR FULL CUSTOMER HTML EXACTLY SAME (NOT CHANGED) -->
-    ${/* PASTE YOUR FULL CUSTOMER HTML HERE EXACTLY AS YOU SENT */""}
+        <div style="padding: 26px 20px; background: #ffffff; color: #111827; line-height: 1.7;">
+          <p style="margin: 0 0 12px 0; font-size: 15px;">Hi${partnerData?.fullName ? ` ${partnerData.fullName}` : ""},</p>
+          <p style="margin: 0 0 12px 0; font-size: 15px;">
+            Thank you for submitting your Channel Partner application. After reviewing your application, our team will get back to you in
+            <strong>24 - 48 hours</strong>.
+          </p>
+          <p style="margin: 0; font-size: 14px; color: #374151;">If you have any questions, you can reply to this email.</p>
 
+          <div style="margin-top: 18px; padding: 14px 16px; background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 10px;">
+            <p style="margin: 0; font-size: 13px; color: #0c4a6e;"><strong>Privacy Note:</strong> The information and documents you submitted will be used only for reviewing your application and contacting you about the onboarding process. We handle your data securely and do not share it with unauthorized parties.</p>
+          </div>
+
+          <div style="margin-top: 18px; padding: 14px 16px; background: #fff7ed; border: 1px solid #fed7aa; border-radius: 10px;">
+            <p style="margin: 0; font-size: 13px; color: #9a3412;">This is an automated confirmation. Please do not share sensitive passwords over email.</p>
+          </div>
+        </div>
+
+        <div style="background: #111827; padding: 14px 20px; text-align: center; color: #e5e7eb;">
+          <p style="margin: 0; font-size: 12px;">© ${new Date().getFullYear()} Infinity Loans & Business Solutions</p>
+        </div>
+      </div>
     `;
 
     await transporter.sendMail({
@@ -71,7 +94,6 @@ export const sendPartnerNotificationToAdminEmails = async (partnerData) => {
 
     const adminEmails = [
       process.env.DIRECTOR_EMAIL,
-      process.env.ADMIN_EMAIL,
     ].filter(Boolean);
 
     if (adminEmails.length === 0) {
@@ -145,7 +167,7 @@ export const sendPartnerNotificationToAdminEmails = async (partnerData) => {
               ${partnerData.aadhaarFrontUrl ? `<li><a href="${partnerData.aadhaarFrontUrl}" target="_blank" style="color: #F97415; text-decoration: none;">📄 Aadhaar Front</a></li>` : ''}
               ${partnerData.aadhaarBackUrl ? `<li><a href="${partnerData.aadhaarBackUrl}" target="_blank" style="color: #F97415; text-decoration: none;">📄 Aadhaar Back</a></li>` : ''}
               ${partnerData.panFrontUrl ? `<li><a href="${partnerData.panFrontUrl}" target="_blank" style="color: #F97415; text-decoration: none;">📄 PAN Card</a></li>` : ''}
-              ${partnerData.bankPassbookUrl ? `<li><a href="${partnerData.bankPassbookUrl}" target="_blank" style="color: #F97415; text-decoration: none;">📄 Bank Passbook</a></li>` : ''}
+              ${partnerData.bankPassbookUrl ? `<li><a href="${partnerData.bankPassbookUrl}" target="_blank" style="color: #F97415; text-decoration: none;">📄 Bank Passbook / Cancelled Cheque</a></li>` : ''}
               ${partnerData.passportPhotoUrl ? `<li><a href="${partnerData.passportPhotoUrl}" target="_blank" style="color: #F97415; text-decoration: none;">📄 Passport Photo</a></li>` : ''}
             </ul>
           </div>
@@ -155,11 +177,17 @@ export const sendPartnerNotificationToAdminEmails = async (partnerData) => {
             <h3 style="margin-top: 0; color: #F97415;">⚡ Action Required</h3>
             <p>Please review the application and uploaded documents. Contact the partner within 24-48 hours for further discussion and onboarding process.</p>
           </div>
+
+          <!-- Privacy / Confidentiality Note -->
+          <div style="background: #f0f9ff; padding: 18px; border-radius: 8px; margin: 25px 0; border: 1px solid #bae6fd;">
+            <h3 style="margin-top: 0; color: #0369a1;">🔒 Privacy Note</h3>
+            <p style="margin: 0;">This email contains personal information and document links submitted by the applicant. Please handle it confidentially, use it only for application review/onboarding, and do not forward or share it with unauthorized parties.</p>
+          </div>
         </div>
 
         <!-- Footer -->
         <div style="background: #1a1a1a; padding: 20px; text-align: center; color: white;">
-          <p style="margin: 0; font-size: 12px;">© 2024 Infinity Loans & Business Solutions</p>
+          <p style="margin: 0; font-size: 12px;">© 2026 Infinity Loans & Business Solutions</p>
         </div>
       </div>
     `;

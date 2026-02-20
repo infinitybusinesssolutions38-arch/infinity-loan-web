@@ -462,7 +462,7 @@ export default function JoinUsClient() {
                   {/* Bank Passbook */}
                   <div>
                     <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Bank Passbook <span className="text-[#F97415]">*</span>
+                      Bank Passbook / Cancelled Cheque <span className="text-[#F97415]">*</span>
                     </label>
                     <div className="relative">
                       <input

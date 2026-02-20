@@ -5,9 +5,13 @@ export const createGmailTransporter = () => {
   const host =
     process.env.EMAIL_SMTP_HOST ||
     process.env.EMAIL_smtp_HOST ||
+    process.env.EMAIL_HOST ||
     "smtp.gmail.com";
   const port = parseInt(
-    process.env.EMAIL_SMTP_PORT || process.env.EMAIL_smtp_PORT || "465",
+    process.env.EMAIL_SMTP_PORT ||
+      process.env.EMAIL_smtp_PORT ||
+      process.env.EMAIL_PORT ||
+      "465",
     10
   );
   const user =
@@ -22,7 +26,7 @@ export const createGmailTransporter = () => {
   return nodemailer.createTransport({
     host,
     port,
-    secure: true, // Gmail uses SSL on port 465
+    secure: port === 465,
     auth: {
       user,
       pass,

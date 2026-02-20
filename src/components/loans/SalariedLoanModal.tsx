@@ -1960,8 +1960,8 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                             </div>
 
                             <div className="space-y-1">
-                                <label className="text-sm font-medium">Co-Applicant Photo  <span className="text-red-400 text-xs">*</span></label>
-                                <input type="file" {...register("CoApplicantPhont", { required: true })} className="input bg-gray-200" />
+                                <label className="text-sm font-medium">Co-Applicant Photo  <span className="text-red-400 text-xs">(optional)</span></label>
+                                <input type="file" {...register("CoApplicantPhont")} className="input bg-gray-200" />
                             </div>
 
                             <div className="space-y-1">
