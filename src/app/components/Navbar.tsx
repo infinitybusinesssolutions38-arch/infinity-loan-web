@@ -232,13 +232,35 @@ const Navbar = () => {
                 Contact
               </Link>
             </li>
-            <li>
-              <Link
-                href="/emi-calculator"
-                className={navLinkClass(pathname === "/emi-calculator")}
-              >
-                EMI Calculator
-              </Link>
+            <li className="group relative">
+              <span className="cursor-pointer relative py-2 transition-colors duration-200 hover:text-[#F97415] after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-[#F97415] after:transition-all after:duration-300 hover:after:w-full">
+                Calculator
+              </span>
+
+              <div className="absolute top-full left-1/2 -translate-x-1/2 pt-4 hidden group-hover:block">
+                <div className="w-56 rounded-2xl bg-black/95 p-2 shadow-2xl border border-white/10 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 backdrop-blur-lg">
+                  <div className="grid grid-cols-1 gap-1 text-sm normal-case">
+                    <Link
+                      href="/emi-calculator"
+                      className="flex items-center gap-2 rounded-md px-3 py-2 text-white/90 transition-all duration-200 hover:bg-white/10 hover:text-white"
+                    >
+                      EMI Calculator
+                    </Link>
+                    <Link
+                      href="/obligation-calculator"
+                      className="flex items-center gap-2 rounded-md px-3 py-2 text-white/90 transition-all duration-200 hover:bg-white/10 hover:text-white"
+                    >
+                      Obligation Calculator
+                    </Link>
+                    <Link
+                      href="/abb-calculator"
+                      className="flex items-center gap-2 rounded-md px-3 py-2 text-white/90 transition-all duration-200 hover:bg-white/10 hover:text-white"
+                    >
+                      ABB Calculator
+                    </Link>
+                  </div>
+                </div>
+              </div>
             </li>
             <li>
               <Link
