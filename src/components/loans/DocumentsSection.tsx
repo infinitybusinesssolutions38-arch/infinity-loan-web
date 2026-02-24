@@ -8,9 +8,11 @@ import { Badge } from "@/components/ui/badge";
 
 interface DocumentsSectionProps {
   documents: Document[];
+  variant?: "default" | "personal";
+  anchorId?: string;
 }
 
-export default function DocumentsSection({ documents }: DocumentsSectionProps) {
+export default function DocumentsSection({ documents, variant = "default", anchorId }: DocumentsSectionProps) {
   const [visibleItems, setVisibleItems] = useState<Set<number>>(new Set());
   const [checkedItems, setCheckedItems] = useState<Set<number>>(new Set());
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -55,11 +57,21 @@ export default function DocumentsSection({ documents }: DocumentsSectionProps) {
   const optionalDocs = documents.filter((d) => !d.required);
 
   return (
-    <section className="py-12 lg:py-16">
+    <section id={anchorId} className={`py-12 lg:py-16 ${variant === "personal" ? "bg-black" : ""}`}>
       <div className="container mx-auto px-4">
         <div className="text-center mb-10">
-          <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">Required Documents</h2>
-          <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
+          <h2
+            className={`text-3xl font-bold tracking-tight sm:text-4xl ${
+              variant === "personal" ? "text-white" : "text-foreground"
+            }`}
+          >
+            Required Documents
+          </h2>
+          <p
+            className={`mt-4 text-lg max-w-2xl mx-auto ${
+              variant === "personal" ? "text-white/70" : "text-muted-foreground"
+            }`}
+          >
             Keep these documents ready for a smooth and quick application process
           </p>
         </div>
@@ -67,8 +79,10 @@ export default function DocumentsSection({ documents }: DocumentsSectionProps) {
         <div className="max-w-4xl mx-auto space-y-8">
           <div>
             <div className="flex items-center gap-2 mb-4">
-              <AlertCircle className="h-5 w-5 text-destructive" />
-              <h3 className="text-xl font-bold text-foreground">Mandatory Documents</h3>
+              <AlertCircle className={`h-5 w-5 ${variant === "personal" ? "text-[#F97415]" : "text-destructive"}`} />
+              <h3 className={`text-xl font-bold ${variant === "personal" ? "text-white" : "text-foreground"}`}>
+                Mandatory Documents
+              </h3>
             </div>
 
             <div className="space-y-3">
@@ -81,7 +95,15 @@ export default function DocumentsSection({ documents }: DocumentsSectionProps) {
                   onClick={() => toggleCheck(idx)}
                   className={`
                     group flex items-center gap-4 rounded-xl border-2 p-4 cursor-pointer transition-all duration-500
-                    ${checkedItems.has(idx) ? "border-accent bg-accent/5" : "border-border bg-card hover:border-primary/30"}
+                    ${
+                      variant === "personal"
+                        ? checkedItems.has(idx)
+                          ? "border-[#F97415]/70 bg-[#F97415]/10"
+                          : "border-white/10 bg-white/5 hover:border-[#F97415]/40"
+                        : checkedItems.has(idx)
+                          ? "border-accent bg-accent/5"
+                          : "border-border bg-card hover:border-primary/30"
+                    }
                     ${visibleItems.has(idx) ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-8"}
                   `}
                   style={{ transitionDelay: `${idx * 80}ms` }}
@@ -90,9 +112,13 @@ export default function DocumentsSection({ documents }: DocumentsSectionProps) {
                     className={`
                     flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border-2 transition-all duration-300
                     ${
-                      checkedItems.has(idx)
-                        ? "border-accent bg-accent text-accent-foreground scale-110"
-                        : "border-muted-foreground/30 group-hover:border-primary"
+                      variant === "personal"
+                        ? checkedItems.has(idx)
+                          ? "border-[#F97415] bg-[#F97415] text-black scale-110"
+                          : "border-white/20 text-white group-hover:border-[#F97415]"
+                        : checkedItems.has(idx)
+                          ? "border-accent bg-accent text-accent-foreground scale-110"
+                          : "border-muted-foreground/30 group-hover:border-primary"
                     }
                   `}
                   >
@@ -101,17 +127,32 @@ export default function DocumentsSection({ documents }: DocumentsSectionProps) {
 
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
-                      <FileText className="h-4 w-4 text-primary" />
+                      <FileText className={`h-4 w-4 ${variant === "personal" ? "text-[#F97415]" : "text-primary"}`} />
                       <span
-                        className={`font-semibold transition-colors ${checkedItems.has(idx) ? "text-accent" : "text-foreground"}`}
+                        className={`font-semibold transition-colors ${
+                          variant === "personal"
+                            ? checkedItems.has(idx)
+                              ? "text-[#F97415]"
+                              : "text-white"
+                            : checkedItems.has(idx)
+                              ? "text-accent"
+                              : "text-foreground"
+                        }`}
                       >
                         {doc.name}
                       </span>
-                      <Badge variant="destructive" className="text-xs">
+                      <Badge
+                        variant="destructive"
+                        className={`text-xs ${variant === "personal" ? "bg-[#F97415] text-black hover:bg-[#F97415]" : ""}`}
+                      >
                         Required
                       </Badge>
                     </div>
-                    {doc.description && <p className="mt-1 text-sm text-muted-foreground">{doc.description}</p>}
+                    {doc.description && (
+                      <p className={`mt-1 text-sm ${variant === "personal" ? "text-white/70" : "text-muted-foreground"}`}>
+                        {doc.description}
+                      </p>
+                    )}
                   </div>
                 </div>
               ))}
@@ -121,9 +162,13 @@ export default function DocumentsSection({ documents }: DocumentsSectionProps) {
           {optionalDocs.length > 0 && (
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <FileText className="h-5 w-5 text-muted-foreground" />
-                <h3 className="text-xl font-bold text-foreground">Optional Documents</h3>
-                <span className="text-sm text-muted-foreground">(if applicable)</span>
+                <FileText className={`h-5 w-5 ${variant === "personal" ? "text-white/60" : "text-muted-foreground"}`} />
+                <h3 className={`text-xl font-bold ${variant === "personal" ? "text-white" : "text-foreground"}`}>
+                  Optional Documents
+                </h3>
+                <span className={`text-sm ${variant === "personal" ? "text-white/60" : "text-muted-foreground"}`}>
+                  (if applicable)
+                </span>
               </div>
 
               <div className="space-y-3">
@@ -139,9 +184,13 @@ export default function DocumentsSection({ documents }: DocumentsSectionProps) {
                       className={`
                         group flex items-center gap-4 rounded-xl border-2 p-4 cursor-pointer transition-all duration-500
                         ${
-                          checkedItems.has(actualIdx)
-                            ? "border-accent bg-accent/5"
-                            : "border-border bg-card/50 hover:border-primary/30"
+                          variant === "personal"
+                            ? checkedItems.has(actualIdx)
+                              ? "border-[#F97415]/70 bg-[#F97415]/10"
+                              : "border-white/10 bg-white/5 hover:border-[#F97415]/40"
+                            : checkedItems.has(actualIdx)
+                              ? "border-accent bg-accent/5"
+                              : "border-border bg-card/50 hover:border-primary/30"
                         }
                         ${visibleItems.has(actualIdx) ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-8"}
                       `}
@@ -151,9 +200,13 @@ export default function DocumentsSection({ documents }: DocumentsSectionProps) {
                         className={`
                         flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border-2 transition-all duration-300
                         ${
-                          checkedItems.has(actualIdx)
-                            ? "border-accent bg-accent text-accent-foreground scale-110"
-                            : "border-muted-foreground/20 group-hover:border-primary"
+                          variant === "personal"
+                            ? checkedItems.has(actualIdx)
+                              ? "border-[#F97415] bg-[#F97415] text-black scale-110"
+                              : "border-white/20 text-white group-hover:border-[#F97415]"
+                            : checkedItems.has(actualIdx)
+                              ? "border-accent bg-accent text-accent-foreground scale-110"
+                              : "border-muted-foreground/20 group-hover:border-primary"
                         }
                       `}
                       >
@@ -162,19 +215,34 @@ export default function DocumentsSection({ documents }: DocumentsSectionProps) {
 
                       <div className="flex-1">
                         <div className="flex items-center gap-2">
-                          <FileText className="h-4 w-4 text-muted-foreground" />
+                          <FileText
+                            className={`h-4 w-4 ${variant === "personal" ? "text-white/60" : "text-muted-foreground"}`}
+                          />
                           <span
                             className={`font-medium transition-colors ${
-                              checkedItems.has(actualIdx) ? "text-accent" : "text-foreground"
+                              variant === "personal"
+                                ? checkedItems.has(actualIdx)
+                                  ? "text-[#F97415]"
+                                  : "text-white"
+                                : checkedItems.has(actualIdx)
+                                  ? "text-accent"
+                                  : "text-foreground"
                             }`}
                           >
                             {doc.name}
                           </span>
-                          <Badge variant="secondary" className="text-xs">
+                          <Badge
+                            variant="secondary"
+                            className={`text-xs ${variant === "personal" ? "bg-white/10 text-white hover:bg-white/10" : ""}`}
+                          >
                             Optional
                           </Badge>
                         </div>
-                        {doc.description && <p className="mt-1 text-sm text-muted-foreground">{doc.description}</p>}
+                        {doc.description && (
+                          <p className={`mt-1 text-sm ${variant === "personal" ? "text-white/70" : "text-muted-foreground"}`}>
+                            {doc.description}
+                          </p>
+                        )}
                       </div>
                     </div>
                   );
