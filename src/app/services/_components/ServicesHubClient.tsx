@@ -1908,12 +1908,19 @@ export default function ServicesHubClient() {
                     {group.items.map((service, idx) => (
                       (() => {
                         const isSalariedOffer = isSalariedEmployeesCategory && service.key?.startsWith("salaried-");
+                        const isBusinessDetailCategory =
+                          activeCategory === "businesses" ||
+                          activeCategory === "builders-developers" ||
+                          activeCategory === "professionals" ||
+                          activeCategory === "govt-employees" ||
+                          activeCategory === "government-schemes";
+
                         const isBusinessOffer =
                           (activeCategory === "businesses" && service.key?.startsWith("business-")) ||
                           (activeCategory === "builders-developers" && service.key?.startsWith("builder-")) ||
-                          (activeCategory === "professionals" && service.key?.startsWith("professional-")) ||
-                          (activeCategory === "govt-employees" && service.key?.startsWith("govt-employee-")) ||
-                          (activeCategory === "government-schemes" && service.key?.startsWith("govt-scheme-"));
+                          (activeCategory === "professionals" && (service.key?.startsWith("professional-") || service.key?.startsWith("pro-"))) ||
+                          (activeCategory === "govt-employees" && (service.key?.startsWith("govt-employee-") || service.key?.startsWith("govt-emp-"))) ||
+                          (activeCategory === "government-schemes" && (service.key?.startsWith("govt-scheme-") || service.key?.startsWith("govt-")));
 
                         return (
                       <Card
@@ -1996,9 +2003,63 @@ export default function ServicesHubClient() {
                               Apply Now
                               <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                             </ApplyNowCTAButton>
-                            <Button asChild variant="outline" className="w-full text-black border-white/30 hover:bg-white/10 hover:text-white">
-                              <Link href={service.infoHref}>Learn More</Link>
-                            </Button>
+                            {isSalariedOffer ? (
+                              <div className="grid grid-cols-1 gap-2">
+                                <Button
+                                  asChild
+                                  variant="outline"
+                                  className="w-full text-black border-white/30 hover:bg-white/10 hover:text-white"
+                                >
+                                  <Link href="/personal-loan#eligibility">Check Eligibility</Link>
+                                </Button>
+                                <Button
+                                  asChild
+                                  variant="outline"
+                                  className="w-full text-black border-white/30 hover:bg-white/10 hover:text-white"
+                                >
+                                  <Link href="/personal-loan#benefits">Key Benefits</Link>
+                                </Button>
+                                <Button
+                                  asChild
+                                  variant="outline"
+                                  className="w-full text-black border-white/30 hover:bg-white/10 hover:text-white"
+                                >
+                                  <Link href="/personal-loan#documents">Required Documents</Link>
+                                </Button>
+                              </div>
+                            ) : isBusinessDetailCategory ? (
+                              <div className="grid grid-cols-1 gap-2">
+                                <Button
+                                  asChild
+                                  variant="outline"
+                                  className="w-full text-black border-white/30 hover:bg-white/10 hover:text-white"
+                                >
+                                  <Link href="/business-loan#eligibility">Check Eligibility</Link>
+                                </Button>
+                                <Button
+                                  asChild
+                                  variant="outline"
+                                  className="w-full text-black border-white/30 hover:bg-white/10 hover:text-white"
+                                >
+                                  <Link href="/business-loan#benefits">Key Benefits</Link>
+                                </Button>
+                                <Button
+                                  asChild
+                                  variant="outline"
+                                  className="w-full text-black border-white/30 hover:bg-white/10 hover:text-white"
+                                >
+                                  <Link href="/business-loan#documents">Required Documents</Link>
+                                </Button>
+                              </div>
+                            ) : (
+                              <Button
+                                asChild
+                                variant="outline"
+                                className="w-full text-black border-white/30 hover:bg-white/10 hover:text-white"
+                              >
+                                <Link href={service.infoHref}>Learn More</Link>
+                              </Button>
+                            )}
                           </div>
                         </CardContent>
                       </Card>
@@ -2075,9 +2136,29 @@ export default function ServicesHubClient() {
                           Apply Now
                           <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                         </ApplyNowCTAButton>
-                        <Button asChild variant="outline" className="w-full text-gray-700 border-white/30 hover:bg-white/10 hover:text-white">
-                          <Link href={service.infoHref} >Learn More</Link>
-                        </Button>
+                        <div className="grid grid-cols-1 gap-2">
+                          <Button
+                            asChild
+                            variant="outline"
+                            className="w-full text-gray-700 border-white/30 hover:bg-white/10 hover:text-white"
+                          >
+                            <Link href="/services/credit-cards#eligibility">Check Eligibility</Link>
+                          </Button>
+                          <Button
+                            asChild
+                            variant="outline"
+                            className="w-full text-gray-700 border-white/30 hover:bg-white/10 hover:text-white"
+                          >
+                            <Link href="/services/credit-cards#benefits">Key Benefits</Link>
+                          </Button>
+                          <Button
+                            asChild
+                            variant="outline"
+                            className="w-full text-gray-700 border-white/30 hover:bg-white/10 hover:text-white"
+                          >
+                            <Link href="/services/credit-cards#documents">Required Documents</Link>
+                          </Button>
+                        </div>
                       </div>
                     </CardContent>
                   </Card>

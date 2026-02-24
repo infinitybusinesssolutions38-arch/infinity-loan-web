@@ -24,6 +24,9 @@ export default function LoanDetailPage({ loanType }: LoanDetailPageProps) {
   const HeroIcon = data.heroIcon;
   const router = useRouter();
 
+  const sectionVariant =
+    loanType === "personal-loan" || loanType === "business-loan" || loanType === "credit-cards" ? "personal" : "default";
+
   const handleApplyNow = () => {
     const isLoggedIn = (() => {
       try {
@@ -147,9 +150,9 @@ export default function LoanDetailPage({ loanType }: LoanDetailPageProps) {
         </div>
       </section>
 
-      <EligibilitySection criteria={data.eligibility} />
-      <BenefitsSection benefits={data.benefits} />
-      <DocumentsSection documents={data.documents} />
+      <EligibilitySection criteria={data.eligibility} variant={sectionVariant} anchorId="eligibility" />
+      <BenefitsSection benefits={data.benefits} variant={sectionVariant} anchorId="benefits" />
+      <DocumentsSection documents={data.documents} variant={sectionVariant} anchorId="documents" />
 
       <section className="py-16 lg:py-24 bg-gradient-to-br from-secondary/50 to-secondary">
         <div className="container mx-auto px-4 text-center">

@@ -6,9 +6,11 @@ import type { Benefit } from "@/data/loanDetails";
 
 interface BenefitsSectionProps {
   benefits: Benefit[];
+  variant?: "default" | "personal";
+  anchorId?: string;
 }
 
-export default function BenefitsSection({ benefits }: BenefitsSectionProps) {
+export default function BenefitsSection({ benefits, variant = "default", anchorId }: BenefitsSectionProps) {
   const [visibleItems, setVisibleItems] = useState<Set<number>>(new Set());
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -37,11 +39,24 @@ export default function BenefitsSection({ benefits }: BenefitsSectionProps) {
   }, [benefits]);
 
   return (
-    <section className="py-12 lg:py-16 bg-secondary/30">
+    <section
+      id={anchorId}
+      className={`py-12 lg:py-16 ${variant === "personal" ? "bg-black" : "bg-secondary/30"}`}
+    >
       <div className="container mx-auto px-4">
         <div className="text-center mb-10">
-          <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">Key Benefits</h2>
-          <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
+          <h2
+            className={`text-3xl font-bold tracking-tight sm:text-4xl ${
+              variant === "personal" ? "text-white" : "text-foreground"
+            }`}
+          >
+            Key Benefits
+          </h2>
+          <p
+            className={`mt-4 text-lg max-w-2xl mx-auto ${
+              variant === "personal" ? "text-white/70" : "text-muted-foreground"
+            }`}
+          >
             Why thousands of customers trust us for their financial needs
           </p>
         </div>
@@ -56,26 +71,50 @@ export default function BenefitsSection({ benefits }: BenefitsSectionProps) {
                   itemRefs.current[idx] = el;
                 }}
                 className={`
-                  group relative rounded-2xl bg-card p-6 shadow-lg transition-all duration-500
+                  group relative rounded-2xl p-6 shadow-lg transition-all duration-500
+                  ${variant === "personal" ? "bg-white/5 border border-white/10" : "bg-card"}
                   ${visibleItems.has(idx) ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}
-                  hover:shadow-xl hover:-translate-y-2
+                  ${variant === "personal" ? "hover:border-[#F97415]/40 hover:shadow-[0_0_0_1px_rgba(249,116,21,0.18),0_20px_60px_-20px_rgba(249,116,21,0.35)]" : "hover:shadow-xl"}
+                  hover:-translate-y-2
                 `}
                 style={{ transitionDelay: `${idx * 100}ms` }}
               >
-                <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-accent/0 to-primary/0 opacity-0 transition-opacity duration-300 group-hover:opacity-10" />
+                <div
+                  className={`absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-10 ${
+                    variant === "personal" ? "bg-gradient-to-br from-[#F97415]/0 to-white/0" : "bg-gradient-to-br from-accent/0 to-primary/0"
+                  }`}
+                />
 
                 <div className="relative">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-accent/10 text-accent transition-all duration-300 group-hover:bg-accent group-hover:text-accent-foreground group-hover:scale-110 group-hover:shadow-glow-accent">
+                  <div
+                    className={`flex h-14 w-14 items-center justify-center rounded-xl transition-all duration-300 group-hover:scale-110 ${
+                      variant === "personal"
+                        ? "bg-[#F97415]/15 text-[#F97415] group-hover:bg-[#F97415] group-hover:text-black"
+                        : "bg-accent/10 text-accent group-hover:bg-accent group-hover:text-accent-foreground group-hover:shadow-glow-accent"
+                    }`}
+                  >
                     <Icon className="h-7 w-7" />
                   </div>
 
-                  <h3 className="mt-5 text-xl font-bold text-foreground group-hover:text-primary transition-colors duration-300">
+                  <h3
+                    className={`mt-5 text-xl font-bold transition-colors duration-300 ${
+                      variant === "personal" ? "text-white group-hover:text-[#F97415]" : "text-foreground group-hover:text-primary"
+                    }`}
+                  >
                     {benefit.title}
                   </h3>
 
-                  <p className="mt-2 text-muted-foreground">{benefit.description}</p>
+                  <p className={`mt-2 ${variant === "personal" ? "text-white/70" : "text-muted-foreground"}`}>
+                    {benefit.description}
+                  </p>
 
-                  <div className="mt-4 h-1 w-0 rounded-full bg-gradient-to-r from-accent to-primary transition-all duration-500 group-hover:w-full" />
+                  <div
+                    className={`mt-4 h-1 w-0 rounded-full transition-all duration-500 group-hover:w-full ${
+                      variant === "personal"
+                        ? "bg-gradient-to-r from-[#F97415] to-white/40"
+                        : "bg-gradient-to-r from-accent to-primary"
+                    }`}
+                  />
                 </div>
               </div>
             );
