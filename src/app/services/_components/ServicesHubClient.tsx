@@ -81,6 +81,25 @@ const getCardImageSrc = (params: {
 const SALARIED_TITLE_TO_FILE_NAME: Record<string, string> = {
   "Personal Loan": "personal loan.png",
   "Digital / Paperless Loan": "Digital  Paperless Loan.png",
+  "Personal & Instant Personal Loan": "Personal & Instant Personal Loan.png",
+  "Digital / Paperless Personal Loan": "Digital  Paperless Personal Loan.png",
+  "Salary Loan (Private / Government / PSU)": "Salary Loan (Private  Government  PSU).png",
+  "Pension & Senior Citizen Loan": "Pension & Senior Citizen Loan.png",
+  "Medical & Personal Emergency Loan": "Medical & Personal Emergency Loan.png",
+  "Wedding, Festival & Lifestyle Loan": "Wedding, Festival & Lifestyle Loan.png",
+  "Debt Consolidation Loan": "Debt Consolidation Loan.png",
+  "Credit Card / Personal Loan Balance Transfer":
+    "Credit Card  Personal Loan Balance Transfer.png",
+  "Home Purchase, Construction & Renovation Loan":
+    "Home Purchase, Construction & Renovation Loan.png",
+  "Ready & Under-Construction Property Loan": "Ready & Under-Construction Property Loan.png",
+  "Affordable Housing Loan": "Affordable Housing Loan.png",
+  "Loan Against Property (if salaried)": "Loan Against Property (LAP).png",
+  "Car, Two-Wheeler & Three-Wheeler Loan": "Car, Two-Wheeler & Three-Wheeler Loan.png",
+  "EV Loan": "EV Loan.png",
+  "New & Used Vehicle Loan": "New & Used Vehicle Loan.png",
+  "Education Loan (India & Abroad)": "Education Loan (India & Abroad).png",
+  "Student Overdraft Loan": "Student Overdraft Loan.png",
   "Open Plot / Plot Purchase Loan": "Open Plot  Plot Purchase Loan.png",
   "Salary Advance / Short-Term Loan": "Salary Advance  Short-Term.png",
   "Travel / Holiday Loan": "Travel  Holiday Loan.png",
@@ -127,9 +146,37 @@ const BUSINESS_KEY_TO_FILE_NAME: Record<string, string> = {
   "business-digital-paperless-business-loan": "digital.png",
 };
 
-const getBusinessCardImageSrc = (key: string) => {
-  const fileName = BUSINESS_KEY_TO_FILE_NAME[key];
-  if (!fileName) return undefined;
+const BUSINESS_TITLE_TO_FILE_NAME: Record<string, string> = {
+  "HUF Entity Loan": "HUF_Entity_Loan.png",
+  "OPC Private Limited Company Loan": "OPC Private Limited Company Loan.png",
+  "Corporate Working Capital Loan": "Corporate Working Capital Loan.png",
+  "Corporate Overdraft / Cash Credit Facility": "Corporate Overdraft  Cash Credit Facility.png",
+  "Trade Finance": "trade_finance.png",
+  "Inventory Finance": "inventory_finance.png",
+  "Invoice Discounting": "invoice.png",
+  "PO-Based Funding": "po_bassed.png",
+  "GST-Based Loan": "GST-bassed.png",
+  "Bank Statement-Based Loan": "bank_statement.png",
+  "Supply Chain Finance": "supply_chain.png",
+  "Heavy / CNC / Textile / Printing Machinery Loan": "heavy_CNC.png",
+  "Construction & Mining Equipment Loan": "machinary_&_mining.png",
+  "Solar & Renewable Equipment Finance": "solar_and_renewable.png",
+  "Imported Machinery Finance": "imported_machinary.png",
+  "Machinery Refinance": "machinary_refinance.png",
+  "Line of Credit": "line_of_credit.png",
+  "IT / SaaS Company Loan": "it_saas.png",
+  "Logistics Company Loan": "logistics.png",
+  "Real Estate Company Loan": "realistate.png",
+  "Hospital Group Loan": "hospital_group.png",
+  "Educational Institution Loan": "education_institution.png",
+  "Business Overdraft / Cash Credit": "overdraft_od.png",
+};
+
+const getBusinessCardImageSrc = (params: { key: string; title: string }) => {
+  const keyFileName = BUSINESS_KEY_TO_FILE_NAME[params.key];
+  const titleMappedFileName = BUSINESS_TITLE_TO_FILE_NAME[params.title];
+  const titleFileName = `${params.title.replace(/ \/ /g, "  ")}.png`;
+  const fileName = keyFileName ?? titleMappedFileName ?? titleFileName;
   return `/all-business/smart_loan_&_funding/${encodeURIComponent(fileName)}`;
 };
 
@@ -142,7 +189,7 @@ const PROFESSIONAL_TITLE_TO_FILE_NAME: Record<string, string> = {
 const getProfessionalCardImageSrc = (title: string) => {
   const folderName = "Smart Loan & Funding Solutions for All Professionals";
   const fileName =
-    PROFESSIONAL_TITLE_TO_FILE_NAME[title] ?? `${title.replace(" / ", "  ")}.png`;
+    PROFESSIONAL_TITLE_TO_FILE_NAME[title] ?? `${title.replace(/ \/ /g, "  ")}.png`;
   return `/all-prof/${encodeURIComponent(folderName)}/${encodeURIComponent(fileName)}`;
 };
 
@@ -155,6 +202,8 @@ const getGovtEmployeeCardImageSrc = (title: string) => {
 
 const GOVT_SCHEME_TITLE_TO_FILE_NAME: Record<string, string> = {
   "SC / ST Category Business Loan": "SC _ ST Category Business Loan.png",
+  "Dairy / Poultry Loan": "Dairy  Poultry Loan.png",
+  "Rural Infrastructure Loan": "Rural Infrastructure Loan.png",
 };
 
 const getGovtSchemeCardImageSrc = (title: string) => {
@@ -164,16 +213,29 @@ const getGovtSchemeCardImageSrc = (title: string) => {
 
 const BUILDER_DEVELOPER_TITLE_TO_FILE_NAME: Record<string, string> = {
   "Project Restructuring / Takeover Loan": "Project Restructuring  Takeover Loan.png",
+  "Residential / Commercial Project Finance": "Residential  Commercial Project Finance.png",
+  "Bridge / Structured Finance": "Bridge  Structured Finance.png",
 };
 
 const getBuilderDeveloperCardImageSrc = (title: string) => {
   const folderName = "Smart Loan & Project Funding Solutions for Builders & Developers";
-  const fileName = BUILDER_DEVELOPER_TITLE_TO_FILE_NAME[title] ?? `${title}.png`;
+  const fileName =
+    BUILDER_DEVELOPER_TITLE_TO_FILE_NAME[title] ?? `${title.replace(/ \/ /g, "  ")}.png`;
   return `/developers/${encodeURIComponent(folderName)}/${encodeURIComponent(fileName)}`;
 };
 
 const CREDIT_CARD_TITLE_TO_FILE_NAME: Record<string, string> = {
   "Credit Line / Flexi Loan": "Credit Line  Flexi Loan.png",
+  "Business Credit Card": "Business Credit Card.png",
+  "Personal Credit Card": "Personal Credit Card.png",
+  "Corporate Credit Card": "Corporate Credit Card.png",
+  "EMI Card": "EMI Card.png",
+  "Buy Now Pay Later (BNPL)": "Buy Now Pay Later (BNPL).png",
+  "Postpaid Credit Line": "Postpaid Credit Line.png",
+  "Subscription Financing": "Subscription Financing.png",
+  "Overdraft Against Credit Card": "Overdraft Against Credit Card.png",
+  "Personal Loan on Credit Card": "Personal Loan on Credit Card.png",
+  "Balance Transfer Cards": "Balance Transfer Cards.png",
 };
 
 const getCreditCardImageSrc = (title: string) => {
@@ -1259,7 +1321,7 @@ const BUSINESS_LOAN_SERVICES: ServiceGroup = {
         "Educational Institution Loan",
       ],
     }),
-  ].map((item) => ({ ...item, imageSrc: getBusinessCardImageSrc(item.key) })),
+  ].map((item) => ({ ...item, imageSrc: getBusinessCardImageSrc({ key: item.key, title: item.title }) })),
 };
 
 const PROFESSIONAL_LOAN_SERVICES: ServiceGroup = {
@@ -1593,6 +1655,46 @@ const GOVT_SCHEME_SERVICES: ServiceGroup = {
       badge: "Mudra",
     },
     {
+      key: "govt-scheme-pm-vishwakarma-loan",
+      title: "PM Vishwakarma Loan",
+      description: "Scheme support for eligible artisans and craftsmen with guided application process.",
+      applyHref: "/apply-now?product=govt-scheme-pm-vishwakarma-loan",
+      infoHref: "/services/government-schemes",
+      badge: "Scheme",
+    },
+    {
+      key: "govt-scheme-pm-svanidhi-loan",
+      title: "PM SVANidhi Loan",
+      description: "Credit support for street vendors under PM SVANidhi with eligibility guidance.",
+      applyHref: "/apply-now?product=govt-scheme-pm-svanidhi-loan",
+      infoHref: "/services/government-schemes",
+      badge: "Urban",
+    },
+    {
+      key: "govt-scheme-eclgs-loan",
+      title: "ECLGS Loan",
+      description: "Emergency Credit Line Guarantee Scheme aligned support for eligible businesses.",
+      applyHref: "/apply-now?product=govt-scheme-eclgs-loan",
+      infoHref: "/services/government-schemes",
+      badge: "Guarantee",
+    },
+    {
+      key: "govt-scheme-startup-india-seed-fund-scheme",
+      title: "Startup India Seed Fund Scheme",
+      description: "Seed funding assistance for eligible startups with scheme/process guidance.",
+      applyHref: "/apply-now?product=govt-scheme-startup-india-seed-fund-scheme",
+      infoHref: "/services/government-schemes",
+      badge: "Startup",
+    },
+    {
+      key: "govt-scheme-state-and-central-subsidy-linked-loans",
+      title: "State & Central Subsidy Linked Loans",
+      description: "Subsidy-linked loan support across eligible state and central government schemes.",
+      applyHref: "/apply-now?product=govt-scheme-state-and-central-subsidy-linked-loans",
+      infoHref: "/services/government-schemes",
+      badge: "Subsidy",
+    },
+    {
       key: "govt-scheme-stand-up-india-loan",
       title: "Stand-Up India Loan",
       description: "Support for women and SC/ST entrepreneurs to start greenfield enterprises.",
@@ -1667,6 +1769,70 @@ const GOVT_SCHEME_SERVICES: ServiceGroup = {
       applyHref: "/apply-now?product=govt-scheme-agriculture-and-allied-activity-loan",
       infoHref: "/services/government-schemes",
       badge: "Agri",
+    },
+    {
+      key: "govt-scheme-agriculture-loan",
+      title: "Agriculture Loan",
+      description: "Agriculture loan support with eligibility checks and documentation guidance.",
+      applyHref: "/apply-now?product=govt-scheme-agriculture-loan",
+      infoHref: "/services/government-schemes",
+      badge: "Agri",
+    },
+    {
+      key: "govt-scheme-crop-loan",
+      title: "Crop Loan",
+      description: "Seasonal crop finance assistance with scheme-aligned support.",
+      applyHref: "/apply-now?product=govt-scheme-crop-loan",
+      infoHref: "/services/government-schemes",
+      badge: "Agri",
+    },
+    {
+      key: "govt-scheme-dairy-poultry-loan",
+      title: "Dairy / Poultry Loan",
+      description: "Loans for dairy and poultry activities with guided scheme support.",
+      applyHref: "/apply-now?product=govt-scheme-dairy-poultry-loan",
+      infoHref: "/services/government-schemes",
+      badge: "Agri",
+    },
+    {
+      key: "govt-scheme-tractor-and-farm-equipment-loan",
+      title: "Tractor & Farm Equipment Loan",
+      description: "Financing support for tractors and farm equipment under eligible programs.",
+      applyHref: "/apply-now?product=govt-scheme-tractor-and-farm-equipment-loan",
+      infoHref: "/services/government-schemes",
+      badge: "Agri",
+    },
+    {
+      key: "govt-scheme-irrigation-loan",
+      title: "Irrigation Loan",
+      description: "Support for irrigation system financing with scheme/document guidance.",
+      applyHref: "/apply-now?product=govt-scheme-irrigation-loan",
+      infoHref: "/services/government-schemes",
+      badge: "Agri",
+    },
+    {
+      key: "govt-scheme-cold-storage-loan",
+      title: "Cold Storage Loan",
+      description: "Funding support for cold storage setup and allied infrastructure.",
+      applyHref: "/apply-now?product=govt-scheme-cold-storage-loan",
+      infoHref: "/services/government-schemes",
+      badge: "Infra",
+    },
+    {
+      key: "govt-scheme-fpo-loan",
+      title: "FPO Loan",
+      description: "Loan assistance for Farmer Producer Organisations with guided process.",
+      applyHref: "/apply-now?product=govt-scheme-fpo-loan",
+      infoHref: "/services/government-schemes",
+      badge: "Agri",
+    },
+    {
+      key: "govt-scheme-rural-infrastructure-loan",
+      title: "Rural Infrastructure Loan",
+      description: "Infrastructure funding support for eligible rural development purposes.",
+      applyHref: "/apply-now?product=govt-scheme-rural-infrastructure-loan",
+      infoHref: "/services/government-schemes",
+      badge: "Infra",
     },
     {
       key: "govt-scheme-skill-development-scheme-loan",
