@@ -68,7 +68,7 @@ export async function POST(req) {
 
             const companyName = process.env.COMPANY_NAME || "Infinity Loan Services";
             const supportEmail = process.env.SUPPORT_EMAIL || "business@infinityloanservices.com";
-            const supportPhone = process.env.SUPPORT_PHONE || "+91-9579880841";
+                const supportPhone = process.env.SUPPORT_PHONE || "+91 9766616960";
             const website = process.env.COMPANY_WEBSITE || "www.infinityloanservices.com";
 
             // Email to customer
