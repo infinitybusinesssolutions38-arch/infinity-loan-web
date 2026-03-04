@@ -187,7 +187,7 @@ export const sendLoanApplicationConfirmationEmail = async (
             <p>For any queries, clarifications, or support related to your loan application, please feel free to contact us. Kindly mention your Application Number for prompt and efficient assistance.</p>
             <div class="contact-box">
               <ul>
-                <li><strong>Phone/WhatsApp:</strong> +91 95798 80841 | +91 97661 69660</li>
+                <li><strong>Phone/WhatsApp:</strong> +91 95798 80841 | +91 97666 16960</li>
                 <li><strong>Email:</strong> business@infinityloanservices.com | businessservicesinfinity@gmail.com</li>
                 <li><strong>Website:</strong> www.infinityloanservices.com</li>
               </ul>
@@ -213,7 +213,7 @@ export const sendLoanApplicationConfirmationEmail = async (
           <p>Warm Regards,<br><strong>Team Infinity Loans & Business Solutions</strong></p>
 
           <div class="footer">
-            <p><strong>📞 Customer Support:</strong> +91 95798 80841 | +91 97661 69660</p>
+            <p><strong>📞 Customer Support:</strong> +91 95798 80841 | +91 9766616960</p>
             <p><strong>📧 Email:</strong> business@infinityloanservices.com | businessservicesinfinity@gmail.com</p>
             <p><strong>🌐 Website:</strong> www.infinityloanservices.com</p>
           </div>
@@ -476,7 +476,7 @@ export const sendLoanApplicationConfirmationEmail = async (
 //             <p>For any queries, clarifications, or support related to your loan application, please feel free to contact us. Kindly mention your Application Number for prompt and efficient assistance.</p>
 //             <div class="contact-box">
 //               <ul>
-//                 <li><strong>Phone/WhatsApp:</strong> +91 95798 80841 | +91 97661 69660</li>
+//                 <li><strong>Phone/WhatsApp:</strong> +91 95798 80841 | +91 9766616960</li>
 //                 <li><strong>Email:</strong> business@infinityloanservices.com | businessservicesinfinity@gmail.com</li>
 //                 <li><strong>Website:</strong> www.infinityloanservices.com</li>
 //               </ul>
@@ -502,7 +502,7 @@ export const sendLoanApplicationConfirmationEmail = async (
 //           <p>Warm Regards,<br><strong>Team Infinity Loans & Business Solutions</strong></p>
 
 //           <div class="footer">
-//             <p><strong>📞 Customer Support:</strong> +91 95798 80841 | +91 97661 69660</p>
+//             <p><strong>📞 Customer Support:</strong> +91 95798 80841 | +91 9766616960</p>
 //             <p><strong>📧 Email:</strong> business@infinityloanservices.com | businessservicesinfinity@gmail.com</p>
 //             <p><strong>🌐 Website:</strong> www.infinityloanservices.com</p>
 //           </div>
