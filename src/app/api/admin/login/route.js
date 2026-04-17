@@ -31,7 +31,7 @@ export async function POST(req) {
     return NextResponse.json({ success: false, message: "Admin disabled" }, { status: 403 });
   }
 // await bcrypt.compare(password, admin.password);
-  const ok = pasword === "admin123";
+  const ok = password === "admin123";
   if (!ok) {
     return NextResponse.json({ success: false, message: "Wrong password" }, { status: 401 });
   }
