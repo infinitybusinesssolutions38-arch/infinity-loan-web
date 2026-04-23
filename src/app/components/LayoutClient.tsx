@@ -20,7 +20,9 @@ export default function LayoutClient({
             {!isAdminRoute && <Navbar />}
             {!isAdminRoute && <SuccessBadge />}
             {!isAdminRoute && <StickyContactButtons />}
-            {children}
+            <div className={!isAdminRoute ? "pt-20" : ""}>
+                {children}
+            </div>
             {!isAdminRoute && <Footer />}
         </LoanModalProvider>
     );

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 
-const fmt = (n) =>
+const fmt = (n: number) =>
   new Intl.NumberFormat("en-IN", { maximumFractionDigits: 0 }).format(n);
 
 const MONTH_LABELS = [
@@ -12,7 +12,7 @@ const MONTH_LABELS = [
 
 const DATE_SLOTS = [5, 15, 25, 30];
 
-const getRecentMonths = (count) => {
+const getRecentMonths = (count: number) => {
   // For 6 months: Jan–Jun. For 12 months: Jan–Dec of current year.
   const now = new Date();
   const year = now.getFullYear();
@@ -26,7 +26,7 @@ const getRecentMonths = (count) => {
   });
 };
 
-const toNum = (v) => {
+const toNum = (v: string | number) => {
   const n = Number(String(v).trim());
   return Number.isFinite(n) && n >= 0 ? n : 0;
 };
@@ -66,7 +66,7 @@ export default function ABBCalculatorClient() {
     return { monthABBs, abb, profile, filledCount: filledMonths.length };
   }, [data, numMonths]);
 
-  const updateSlot = (mIdx, sIdx, val) => {
+  const updateSlot = (mIdx: number, sIdx: number, val: string) => {
     const cleaned = val.replace(/[^0-9.]/g, "");
     setData((prev) => {
       const next = prev.map((m) => [...m]);
@@ -83,7 +83,7 @@ export default function ABBCalculatorClient() {
       : { text: "#f87171", bg: "rgba(248,113,113,0.1)", border: "rgba(248,113,113,0.2)" };
 
   return (
-    <div style={{
+    <div className="abb-calculator-wrapper" style={{
       minHeight: "100vh",
       background: "linear-gradient(135deg, #020810 0%, #040c18 50%, #0c1828 100%)",
       fontFamily: "'DM Sans', 'Segoe UI', sans-serif",
@@ -92,10 +92,10 @@ export default function ABBCalculatorClient() {
     }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap');
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        input[type=number]::-webkit-inner-spin-button,
-        input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-        input[type=number] { -moz-appearance: textfield; }
+        .abb-calculator-wrapper * { box-sizing: border-box; margin: 0; padding: 0; }
+        .abb-calculator-wrapper input[type=number]::-webkit-inner-spin-button,
+        .abb-calculator-wrapper input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        .abb-calculator-wrapper input[type=number] { -moz-appearance: textfield; }
         .slot-input {
           width: 100%;
           background: rgba(255,255,255,0.04);
