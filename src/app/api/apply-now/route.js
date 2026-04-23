@@ -358,8 +358,8 @@ export async function POST(req) {
         personalEmail: formData.get("personalEmail"),
         officialEmail: formData.get("officialEmail"),
 
-        panNumber: formData.get("panCardType"),
-        aadhaarNumber: formData.get("aadhaarCardType"),
+        panNumber,
+        aadhaarNumber,
 
         currentResidentialAddress: formData.get("currentResidentialAddress"),
         currentResidentialPincode: formData.get("residentialPincode"),
@@ -439,7 +439,7 @@ export async function POST(req) {
 
         // Identity Information
         aadhaarNumber,
-        panNumber: formData.get("panCardType"),
+        panNumber,
         voterIdNumber: formData.get("voterId"),
         drivingLicense: formData.get("drivingLicense"),
         passportNumber: formData.get("passport"),
