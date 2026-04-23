@@ -867,7 +867,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
               {/* A. APPLICANT BASIC DETAILS */}
               <fieldset className="space-y-4">
                 <legend className="text-lg font-bold text-foreground mb-4">A. Applicant Basic Details</legend>
-                <div className="grid gap-4 sm:grid-cols-3">
+                <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                   <div className="space-y-2">
                     <Label htmlFor="s_firstName" className="text-sm font-medium">First Name <span className="text-destructive">*</span></Label>
                     <Input id="s_firstName" name="firstName" placeholder="First Name (as per PAN)*" value={sForm.firstName} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
@@ -931,7 +931,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                     <Input id="s_personalEmail" name="personalEmail" type="email" placeholder="Personal Email ID*" value={sForm.personalEmail} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
                 </div>
-                <div className="grid gap-4 sm:grid-cols-3">
+                <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                   <div className="space-y-2">
                     <Label htmlFor="s_voterId" className="text-sm font-medium">Voter ID (optional)</Label>
                     <Input id="s_voterId" name="voterIdNumber" placeholder="Voter ID (optional)" value={sForm.voterIdNumber} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
@@ -950,7 +950,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
               {/* B. KYC DETAILS */}
               <fieldset className="space-y-4">
                 <legend className="text-lg font-bold text-foreground mb-4">B. KYC Details</legend>
-                <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="s_panNumber" className="text-sm font-medium">PAN Card Number <span className="text-destructive">*</span></Label>
                     <Input id="s_panNumber" name="panNumber" placeholder="PAN Card Number*" value={sForm.panNumber} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
@@ -960,7 +960,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                     <Input id="s_aadhaarNumber" name="aadhaarNumber" placeholder="Aadhaar Card Number*" value={sForm.aadhaarNumber} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
                 </div>
-                <div className="grid gap-4 sm:grid-cols-3">
+                <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">PAN Card Photo (Front)* <span className="text-xs text-muted-foreground">(Max 2MB)</span></Label>
                     <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed rounded cursor-pointer hover:border-primary">
@@ -1003,7 +1003,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                   <Label htmlFor="s_currentResidentialAddress" className="text-sm font-medium">Current Address <span className="text-destructive">*</span></Label>
                   <Input id="s_currentResidentialAddress" name="currentResidentialAddress" placeholder="Current Address*" value={sForm.currentResidentialAddress} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                 </div>
-                <div className="grid gap-4 sm:grid-cols-3">
+                <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                   <div className="space-y-2">
                     <Label htmlFor="s_state" className="text-sm font-medium">State <span className="text-destructive">*</span></Label>
                     <select id="s_state" name="state" value={sForm.state} onChange={handleSalariedChange} className="mt-2 block w-full rounded-md border border-blue-300 bg-transparent px-3 py-2 text-sm">
@@ -1047,7 +1047,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                     <Input id="s_currentResidentialPincode" name="currentResidentialPincode" placeholder="PIN" value={sForm.currentResidentialPincode} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
                 </div>
-                <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="s_residenceType" className="text-sm font-medium">Residence Type <span className="text-destructive">*</span></Label>
                     <select id="s_residenceType" name="residenceType" value={sForm.residenceType} onChange={handleSalariedChange} className="mt-2 block w-full rounded-md border border-blue-300 bg-transparent px-3 py-2 text-sm">
@@ -1140,7 +1140,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
               {/* D. EMPLOYMENT DETAILS */}
               <fieldset className="space-y-4">
                 <legend className="text-lg font-bold text-foreground mb-4">D. Employment Details</legend>
-                <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="s_companyName" className="text-sm font-medium">Company Name <span className="text-destructive">*</span></Label>
                     <Input id="s_companyName" name="companyName" placeholder="Company Name" value={sForm.companyName} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
@@ -1241,7 +1241,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
               {/* E. INCOME DETAILS */}
               <fieldset className="space-y-4">
                 <legend className="text-lg font-bold text-foreground mb-4">E. Income Details</legend>
-                <div className="grid gap-4 sm:grid-cols-3">
+                <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                   <div className="space-y-2">
                     <Label htmlFor="s_monthlyNetSalary" className="text-sm font-medium">Monthly Net Salary (₹) <span className="text-destructive">*</span></Label>
                     <Input id="s_monthlyNetSalary" name="monthlyNetSalary" type="number" placeholder="Monthly Net Salary (₹)" value={sForm.monthlyNetSalary} onChange={(e) => {
@@ -1266,7 +1266,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                     <Input id="s_salaryAccountBankName" name="salaryAccountBankName" placeholder="Salary Account Bank" value={sForm.salaryAccountBankName} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
                   </div>
                 </div>
-                <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Last 3 Months Salary Slips* <span className="text-xs text-muted-foreground">(PDF, Max 10MB)</span></Label>
                     <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed rounded cursor-pointer hover:border-primary">
@@ -1306,7 +1306,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                     {Array.from({ length: parseInt(sForm.numberOfExistingLoans) }).map((_, index) => (
                       <div key={index} className="border border-blue-300 rounded-lg p-4 space-y-4">
                         <h4 className="text-md font-semibold text-foreground">Loan {index + 1}</h4>
-                        <div className="grid gap-4 sm:grid-cols-2">
+                        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
                           <div className="space-y-2">
                             <Label htmlFor={`s_loanAmount_${index}`} className="text-sm font-medium">Total Loan Amount (₹)</Label>
                             <Input
@@ -1409,7 +1409,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                     </div>
                   </div>
                   {sForm.hasCibil === "Yes" && (
-                    <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
                       <div className="space-y-2">
                         <Label htmlFor="s_cibilScore" className="text-sm font-medium">CIBIL Score</Label>
                         <Input id="s_cibilScore" name="cibilScore" type="number" placeholder="CIBIL Score" value={sForm.cibilScore} onChange={(e) => {
@@ -1435,7 +1435,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
               {/* H. LOAN REQUIREMENT */}
               <fieldset className="space-y-4">
                 <legend className="text-lg font-bold text-foreground mb-4">H. Loan Requirement Details</legend>
-                <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="s_requiredLoanAmount" className="text-sm font-medium">Required Loan Amount (₹)</Label>
                     <Input id="s_requiredLoanAmount" name="requiredLoanAmount" type="number" placeholder="Required Loan Amount (₹)" value={sForm.requiredLoanAmount} onChange={(e) => {
@@ -1499,7 +1499,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
               </fieldset>
               <fieldset className="space-y-4">
                 <legend className="text-lg font-bold text-foreground mb-4">I. Co-Applicant Details (If Any)</legend>
-                <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="s_coApplicantName" className="text-sm font-medium">Co-Applicant Name (optional)</Label>
                     <Input id="s_coApplicantName" name="coApplicantName" placeholder="Co-Applicant Name" value={sForm.coApplicantName} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
@@ -1537,7 +1537,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 Personal Information
               </legend>
 
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="firstName" className="text-sm font-medium">
                     First Name <span className="text-destructive">*</span>
@@ -1688,7 +1688,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 Loan Details
               </legend>
 
-              <div className="grid gap-4 sm:grid-cols-3">
+              <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                 <div className="space-y-2">
                   <Label htmlFor="bankName" className="text-sm font-medium">
                     Bank Name (Credit Card) <span className="text-destructive">*</span>
@@ -1788,7 +1788,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 )}
               </div>
 
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="yearsAtCurrentResidentialAddress" className="text-sm font-medium">
                     Years at Current Residential Address <span className="text-destructive">*</span>
@@ -1850,7 +1850,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                   Office/Shop Address Details
                 </legend>
                 <div className="space-y-4">
-                  <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
                     <div className="space-y-2">
                       <Label htmlFor="currentOfficeAddress" className="text-sm font-medium">
                         Current Office / Shop Address <span className="text-destructive">*</span>
@@ -1918,7 +1918,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 Email Information
               </legend>
 
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="businessEmail" className="text-sm font-medium">
                     Business Email
@@ -1971,7 +1971,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
               </legend>
 
               <div className="space-y-4">
-                <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="currentResidentialAddress" className="text-sm font-medium">
                       Current Residential Address <span className="text-destructive">*</span>
@@ -2013,7 +2013,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                   </div>
                 </div>
 
-                <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="currentOfficeAddress" className="text-sm font-medium">
                       Current Office / Shop Address <span className="text-destructive">*</span>
@@ -2080,7 +2080,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 Identity Details
               </legend>
 
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="aadhaarNumber" className="text-sm font-medium">
                     Aadhaar Number <span className="text-destructive">*</span>
@@ -2179,7 +2179,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 Document Uploads
               </legend>
 
-              <div className="grid gap-4 sm:grid-cols-3">
+              <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                 <div className="space-y-2">
                   <Label className="text-sm font-medium">Aadhaar Front <span className="text-destructive">*</span></Label>
                   <label className="flex flex-col items-center justify-center h-24 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary/5 group">
@@ -2278,7 +2278,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
               {/* A. APPLICANT BASIC DETAILS */}
               <fieldset className="space-y-4">
                 <legend className="text-lg font-bold text-foreground mb-4">A. Applicant Basic Details</legend>
-                <div className="grid gap-4 sm:grid-cols-3">
+                <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                   <div className="space-y-2">
                     <Label htmlFor="u_firstName" className="text-sm font-medium">First Name <span className="text-destructive">*</span></Label>
                     <Input id="u_firstName" name="firstName" placeholder="First Name (as per PAN)*" value={uForm.firstName} onChange={handleUnifiedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
@@ -2344,7 +2344,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                   </div>
                 </div>
 
-                <div className="grid gap-4 sm:grid-cols-3">
+                <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                   <div className="space-y-2">
                     <Label htmlFor="u_voterId" className="text-sm font-medium">Voter ID (optional)</Label>
                     <Input id="u_voterId" name="voterId" placeholder="Voter ID (optional)" value={uForm.voterId} onChange={handleUnifiedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
@@ -2367,7 +2367,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                   <Label htmlFor="u_currentResidentialAddress" className="text-sm font-medium">Current Residential Address <span className="text-destructive">*</span></Label>
                   <Input id="u_currentResidentialAddress" name="currentResidentialAddress" placeholder="Current Residential Address*" value={uForm.currentResidentialAddress} onChange={handleUnifiedChange} className={`border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50 ${uForm.currentResidentialAddress ? 'border-gray-400 bg-gray-50' : ''}`} />
                 </div>
-                <div className="grid gap-4 sm:grid-cols-3">
+                <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                   <div className="space-y-2">
                     <Label htmlFor="u_residentialPincode" className="text-sm font-medium">Pincode <span className="text-destructive">*</span></Label>
                     <Input id="u_residentialPincode" name="residentialPincode" placeholder="Pincode*" value={uForm.residentialPincode} onChange={handleUnifiedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
@@ -2390,7 +2390,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                   <Label htmlFor="u_currentOfficeAddress" className="text-sm font-medium">Current Shop/Office Address <span className="text-destructive">*</span></Label>
                   <Input id="u_currentOfficeAddress" name="currentOfficeAddress" placeholder="Current Shop/Office Address*" value={uForm.currentOfficeAddress} onChange={handleUnifiedChange} className={`border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50 ${uForm.currentOfficeAddress ? 'border-gray-400 bg-gray-50' : ''}`} />
                 </div>
-                <div className="grid gap-4 sm:grid-cols-3">
+                <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                   <div className="space-y-2">
                     <Label htmlFor="u_officePincode" className="text-sm font-medium">Pincode <span className="text-destructive">*</span></Label>
                     <Input id="u_officePincode" name="officePincode" placeholder="Pincode*" value={uForm.officePincode} onChange={handleUnifiedChange} className={`border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50 ${uForm.officePincode ? 'border-gray-400 bg-gray-50' : ''}`} />
@@ -2409,7 +2409,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
               {/* D. LOAN REQUIREMENT DETAILS */}
               <fieldset className="space-y-4">
                 <legend className="text-lg font-bold text-foreground mb-4">D. Loan Requirement Details</legend>
-                <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="u_requiredLoanAmount" className="text-sm font-medium">Required Loan Amount <span className="text-destructive">*</span></Label>
                     <Input id="u_requiredLoanAmount" name="requiredLoanAmount" type="number" placeholder="Required Loan Amount*" value={uForm.requiredLoanAmount} onChange={(e) => {
@@ -2443,7 +2443,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
               <fieldset className="space-y-4">
                 <legend className="text-lg font-bold text-foreground mb-4">E. ID Proof Documents</legend>
 
-                <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Aadhaar Card Upload <span className="text-destructive">*</span></Label>
                     <label className="flex flex-col items-center justify-center h-24 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary/5 group">
@@ -2520,7 +2520,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
               {/* F. CO-APPLICANT DETAILS */}
               <fieldset className="space-y-4">
                 <legend className="text-lg font-bold text-foreground mb-4">F. Co-Applicant Details (If Any)</legend>
-                <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="u_coApplicantName" className="text-sm font-medium">Co-Applicant Name (optional)</Label>
                     <Input id="u_coApplicantName" name="coApplicantName" placeholder="Co-Applicant Name" value={uForm.coApplicantName} onChange={handleUnifiedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
@@ -2539,7 +2539,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
               {/* G. ADDRESS PROOF DOCUMENTS */}
               <fieldset className="space-y-4">
                 <legend className="text-lg font-bold text-foreground mb-4">G. Address Proof Documents</legend>
-                <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Latest Home Electricity Bill <span className="text-destructive">*</span></Label>
                     <label className="flex flex-col items-center justify-center h-24 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary/5 group">
@@ -2711,7 +2711,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                     {Array.from({ length: parseInt(uForm.existingLoansCount) }).map((_, index) => (
                       <div key={index} className="border border-blue-300 rounded-lg p-4 space-y-4">
                         <h4 className="text-md font-semibold text-foreground">Loan {index + 1}</h4>
-                        <div className="grid gap-4 sm:grid-cols-2">
+                        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
                           <div className="space-y-2">
                             <Label htmlFor={`u_loanAmount_${index}`} className="text-sm font-medium">Total Loan Amount (₹) <span className="text-destructive">*</span></Label>
                             <Input
@@ -2844,7 +2844,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
               {/* J. INCOME TAX RETURNS */}
               <fieldset className="space-y-4">
                 <legend className="text-lg font-bold text-foreground mb-4">J. Income Tax Returns</legend>
-                <div className="grid gap-4 sm:grid-cols-3">
+                <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Assessment Year 2023-24 (optional)</Label>
                     <label className="flex flex-col items-center justify-center h-24 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary/5 group">
@@ -3106,7 +3106,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                     {Array.from({ length: parseInt(uForm.otherSupportedDocsCount) }).map((_, index) => (
                       <div key={index} className="border border-gray-200 rounded-lg p-4 space-y-3">
                         <h4 className="text-md font-semibold text-foreground">Document {index + 1}</h4>
-                        <div className="grid gap-4 sm:grid-cols-2">
+                        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
                           <div className="space-y-2">
                             <Label htmlFor={`u_docName_${index}`} className="text-sm font-medium">Document Name</Label>
                             <Input

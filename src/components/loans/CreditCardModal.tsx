@@ -179,7 +179,7 @@ export default function CreditCardModal({ isOpen, onClose }: Props) {
 
         >
 
-            <div className="relative bg-white w-full max-w-4xl rounded-xl p-8 max-h-[90vh] overflow-y-auto">
+            <div className="relative bg-white w-full max-w-full sm:max-w-4xl rounded-none sm:rounded-xl p-4 sm:p-8 max-h-[100dvh] sm:max-h-[90vh] overflow-y-auto">
 
                 <button
 

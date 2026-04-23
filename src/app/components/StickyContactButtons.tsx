@@ -27,54 +27,96 @@ export default function StickyContactButtons() {
   const callbackHref = "/contact";
 
   return (
-    <div className="fixed right-3 top-1/2 z-[60] -translate-y-1/2">
-      <div className="flex flex-col rounded-2xl border border-white/10 bg-gray-950/90 shadow-2xl backdrop-blur">
-        <a
-          href={telHref}
-          aria-label="Call us"
-          className="group relative flex cursor-pointer h-12 w-12 items-center justify-center rounded-t-2xl text-white/90 transition-colors hover:bg-white/10 hover:text-[#f97415]"
-        >
-          <span className="pointer-events-none absolute right-full mr-3 whitespace-nowrap rounded-md bg-gray-950 px-3 py-1.5 text-xs font-medium text-white opacity-0 shadow-lg ring-1 ring-white/10 transition-opacity group-hover:opacity-100">
-            Talk to a Financial Expert
-          </span>
-          <Phone className="h-5 w-5" />
-        </a>
-        <div className="h-px w-full bg-white/10" />
-        <a
-          href={callbackHref}
-          aria-label="Request a call back"
-          className="group relative flex cursor-pointer h-12 w-12 items-center justify-center text-white/90 transition-colors hover:bg-white/10 hover:text-[#f97415]"
-        >
-          <span className="pointer-events-none absolute right-full mr-3 whitespace-nowrap rounded-md bg-gray-950 px-3 py-1.5 text-xs font-medium text-white opacity-0 shadow-lg ring-1 ring-white/10 transition-opacity group-hover:opacity-100">
-            Request a Call Back
-          </span>
-          <PhoneCall className="h-5 w-5" />
-        </a>
-        <div className="h-px w-full bg-white/10" />
-        <a
-          href={mailHref}
-          aria-label="Email us"
-          className="group relative flex cursor-pointer h-12 w-12 items-center justify-center text-white/90 transition-colors hover:bg-white/10 hover:text-[#f97415]"
-        >
-          <span className="pointer-events-none absolute right-full mr-3 whitespace-nowrap rounded-md bg-gray-950 px-3 py-1.5 text-xs font-medium text-white opacity-0 shadow-lg ring-1 ring-white/10 transition-opacity group-hover:opacity-100">
-            Email Us
-          </span>
-          <Mail className="h-5 w-5" />
-        </a>
-        <div className="h-px w-full bg-white/10" />
-        <a
-          href={whatsappHref}
-          target="_blank"
-          rel="noreferrer"
-          aria-label="Chat on WhatsApp"
-          className="group relative flex cursor-pointer h-12 w-12 items-center justify-center rounded-b-2xl text-white/90 transition-colors hover:bg-white/10 hover:text-[#f97415]"
-        >
-          <span className="pointer-events-none absolute right-full mr-3 whitespace-nowrap rounded-md bg-gray-950 px-3 py-1.5 text-xs font-medium text-white opacity-0 shadow-lg ring-1 ring-white/10 transition-opacity group-hover:opacity-100">
-            Chat with a Loan Expert on WhatsApp
-          </span>
-          <FaWhatsapp className="h-5 w-5" />
-        </a>
+    <>
+      {/* Desktop: vertical on right side */}
+      <div className="hidden md:flex fixed right-3 top-1/2 z-[60] -translate-y-1/2">
+        <div className="flex flex-col rounded-2xl border border-white/10 bg-gray-950/90 shadow-2xl backdrop-blur">
+          <a
+            href={telHref}
+            aria-label="Call us"
+            className="group relative flex cursor-pointer h-12 w-12 items-center justify-center rounded-t-2xl text-white/90 transition-colors hover:bg-white/10 hover:text-[#f97415]"
+          >
+            <span className="pointer-events-none absolute right-full mr-3 whitespace-nowrap rounded-md bg-gray-950 px-3 py-1.5 text-xs font-medium text-white opacity-0 shadow-lg ring-1 ring-white/10 transition-opacity group-hover:opacity-100">
+              Talk to a Financial Expert
+            </span>
+            <Phone className="h-5 w-5" />
+          </a>
+          <div className="h-px w-full bg-white/10" />
+          <a
+            href={callbackHref}
+            aria-label="Request a call back"
+            className="group relative flex cursor-pointer h-12 w-12 items-center justify-center text-white/90 transition-colors hover:bg-white/10 hover:text-[#f97415]"
+          >
+            <span className="pointer-events-none absolute right-full mr-3 whitespace-nowrap rounded-md bg-gray-950 px-3 py-1.5 text-xs font-medium text-white opacity-0 shadow-lg ring-1 ring-white/10 transition-opacity group-hover:opacity-100">
+              Request a Call Back
+            </span>
+            <PhoneCall className="h-5 w-5" />
+          </a>
+          <div className="h-px w-full bg-white/10" />
+          <a
+            href={mailHref}
+            aria-label="Email us"
+            className="group relative flex cursor-pointer h-12 w-12 items-center justify-center text-white/90 transition-colors hover:bg-white/10 hover:text-[#f97415]"
+          >
+            <span className="pointer-events-none absolute right-full mr-3 whitespace-nowrap rounded-md bg-gray-950 px-3 py-1.5 text-xs font-medium text-white opacity-0 shadow-lg ring-1 ring-white/10 transition-opacity group-hover:opacity-100">
+              Email Us
+            </span>
+            <Mail className="h-5 w-5" />
+          </a>
+          <div className="h-px w-full bg-white/10" />
+          <a
+            href={whatsappHref}
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Chat on WhatsApp"
+            className="group relative flex cursor-pointer h-12 w-12 items-center justify-center rounded-b-2xl text-white/90 transition-colors hover:bg-white/10 hover:text-[#f97415]"
+          >
+            <span className="pointer-events-none absolute right-full mr-3 whitespace-nowrap rounded-md bg-gray-950 px-3 py-1.5 text-xs font-medium text-white opacity-0 shadow-lg ring-1 ring-white/10 transition-opacity group-hover:opacity-100">
+              Chat with a Loan Expert on WhatsApp
+            </span>
+            <FaWhatsapp className="h-5 w-5" />
+          </a>
+        </div>
       </div>
-    </div>
+
+      {/* Mobile: horizontal at bottom */}
+      <div className="flex md:hidden fixed bottom-4 right-4 z-[60]">
+        <div className="flex rounded-2xl border border-white/10 bg-gray-950/90 shadow-2xl backdrop-blur overflow-hidden">
+          <a
+            href={telHref}
+            aria-label="Call us"
+            className="flex h-11 w-11 items-center justify-center text-white/90 transition-colors hover:bg-white/10 hover:text-[#f97415]"
+          >
+            <Phone className="h-5 w-5" />
+          </a>
+          <div className="w-px bg-white/10" />
+          <a
+            href={callbackHref}
+            aria-label="Request a call back"
+            className="flex h-11 w-11 items-center justify-center text-white/90 transition-colors hover:bg-white/10 hover:text-[#f97415]"
+          >
+            <PhoneCall className="h-5 w-5" />
+          </a>
+          <div className="w-px bg-white/10" />
+          <a
+            href={mailHref}
+            aria-label="Email us"
+            className="flex h-11 w-11 items-center justify-center text-white/90 transition-colors hover:bg-white/10 hover:text-[#f97415]"
+          >
+            <Mail className="h-5 w-5" />
+          </a>
+          <div className="w-px bg-white/10" />
+          <a
+            href={whatsappHref}
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Chat on WhatsApp"
+            className="flex h-11 w-11 items-center justify-center text-white/90 transition-colors hover:bg-white/10 hover:text-[#f97415]"
+          >
+            <FaWhatsapp className="h-5 w-5" />
+          </a>
+        </div>
+      </div>
+    </>
   );
 }

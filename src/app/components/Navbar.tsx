@@ -149,7 +149,7 @@ const Navbar = () => {
     }`;
 
   return (
-    <div className="sticky top-0 z-50 w-full py-2 px-3">
+    <div className="fixed top-0 left-0 right-0 z-50 w-full py-2 px-3">
       <div className="navbar mx-auto max-w-full rounded-xl bg-black/40 px-0 py-0 shadow-lg backdrop-blur-lg supports-[backdrop-filter]:bg-black/40">
         {/* LOGO */}
         <Link
