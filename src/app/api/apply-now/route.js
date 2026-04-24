@@ -44,7 +44,37 @@ const getLoanTypeName = (loanType) => {
 
 export async function POST(req) {
   try {
-    const formData = await req.formData();
+    let formData;
+    let requestData = {};
+    
+    // Check if request is JSON or FormData
+    const contentType = req.headers.get('content-type');
+    
+    if (contentType && contentType.includes('application/json')) {
+      // Handle JSON request
+      requestData = await req.json();
+      console.log('=== DEBUG: JSON Request Data ===');
+      console.log(JSON.stringify(requestData, null, 2));
+      console.log('=== END DEBUG ===');
+      
+      // Convert JSON data to FormData-like object for compatibility
+      formData = {
+        get: (key) => requestData[key] || null,
+        entries: function* () {
+          for (const [key, value] of Object.entries(requestData)) {
+            yield [key, value];
+          }
+        }
+      };
+    } else {
+      // Handle FormData request
+      formData = await req.formData();
+      console.log('=== DEBUG: Form Data Fields ===');
+      for (let [key, value] of formData.entries()) {
+        console.log(`${key}: ${value}`);
+      }
+      console.log('=== END DEBUG ===');
+    }
 
     await connectDB();
 
@@ -123,6 +153,35 @@ export async function POST(req) {
     const panNumber = formData.get("panNumber");
 
     const loanType = (formData.get("loanType") || "").trim().toLowerCase();
+    
+    // Handle simple form submissions that don't have loanType
+    let actualLoanType = loanType;
+    if (!loanType) {
+      const product = formData.get("product");
+      // Map product types to loan types for simple form
+      const productToLoanTypeMap = {
+        'personal-loan': 'personal',
+        'msme-sme-loan': 'business',
+        'working-capital': 'business',
+        'overdraft-cc': 'business',
+        'invoice-discounting': 'business',
+        'machinery-loan': 'business',
+        'instant-loan': 'personal',
+        'education-loan': 'education',
+        'medical-loan': 'personal',
+        'home-loan': 'home',
+        'loan-against-property': 'property',
+        'plot-construction-loan': 'property',
+        'car-loan': 'car',
+        'two-wheeler-loan': 'car',
+        'commercial-vehicle-loan': 'car',
+        'ev-loan': 'car',
+        'gold-loan': 'personal',
+        'loan-against-securities': 'personal'
+      };
+      actualLoanType = productToLoanTypeMap[product] || 'personal'; // Default to personal
+      console.log(`Mapped product '${product}' to loanType '${actualLoanType}'`);
+    }
 
     // Generate unique sequential application reference
     const totalPersonal = await PersonalLoanModel.countDocuments({});
@@ -148,7 +207,7 @@ export async function POST(req) {
     /* =====================================================
        ================= SALARIED =================
     ===================================================== */
-    if (loanType === "salaried") {
+    if (actualLoanType === "salaried") {
       // Handle existing loans data with sanction letters
       const existingLoansData = JSON.parse(formData.get("existingLoansData") || "[]");
       const updatedExistingLoansData = await Promise.all(
@@ -250,7 +309,7 @@ export async function POST(req) {
     /* =====================================================
        ================= BUSINESS =================
     ===================================================== */
-    else if (loanType === "business") {
+    else if (actualLoanType === "business") {
       newApplication = new BusinessLoanModel({
         applicationRef,
 
@@ -291,7 +350,7 @@ export async function POST(req) {
     /* =====================================================
        ================= PERSONAL =================
     ===================================================== */
-    else if (loanType === "personal") {
+    else if (actualLoanType === "personal") {
       newApplication = new PersonalLoanModel({
         applicationRef,
 
@@ -329,7 +388,7 @@ export async function POST(req) {
     }
 
     // Handle multiple file uploads for unified form
-    else if (loanType === "unified") {
+    else if (actualLoanType === "unified") {
       const businessCertificatesFiles = [];
       const existingLoanStatementFiles = [];
       
@@ -424,7 +483,7 @@ export async function POST(req) {
     /* =====================================================
        ================= CREDIT CARD =================
        ===================================================== */
-    else if (loanType === "credit-card") {
+    else if (actualLoanType === "credit-card") {
       newApplication = new CreditCardModel({
         applicationRef,
 
@@ -439,7 +498,7 @@ export async function POST(req) {
 
         // Identity Information
         aadhaarNumber,
-        panNumber: formData.get("panCardType"),
+        panNumber: panNumber, // Use the panNumber extracted from formData above
         voterIdNumber: formData.get("voterId"),
         drivingLicense: formData.get("drivingLicense"),
         passportNumber: formData.get("passport"),
@@ -487,7 +546,26 @@ export async function POST(req) {
       );
     }
 
-    const saved = await newApplication.save();
+    let saved;
+    try {
+      saved = await newApplication.save();
+    } catch (validationError) {
+      // Handle Mongoose validation errors
+      if (validationError.name === 'ValidationError') {
+        const errorMessages = Object.values(validationError.errors).map(err => err.message);
+        console.error('Validation Error:', errorMessages);
+        return NextResponse.json(
+          { 
+            success: false, 
+            message: 'Validation failed. Please check all required fields.',
+            details: errorMessages 
+          },
+          { status: 400 }
+        );
+      }
+      // Re-throw other errors
+      throw validationError;
+    }
 
     // Calculate display values for all email templates
     const loanAmount =
@@ -498,9 +576,9 @@ export async function POST(req) {
       "";
 
     // Use loanTypeText for unified forms, otherwise use getLoanTypeName
-    const displayLoanType = (loanType === "unified" && saved?.loanTypeText) 
+    const displayLoanType = (actualLoanType === "unified" && saved?.loanTypeText) 
       ? saved.loanTypeText 
-      : getLoanTypeName(loanType);
+      : getLoanTypeName(actualLoanType);
 
     // Email notifications (non-blocking)
     try {
@@ -543,7 +621,7 @@ export async function POST(req) {
         `Name: ${firstName || ""} ${middleName || ""} ${lastName || ""}\n` +
         `Email: ${personalEmail || ""}\n` +
         `Mobile: ${mobileNumber || ""}\n` +
-        `Loan Type: ${loanType || ""}\n\n` +
+        `Loan Type: ${actualLoanType || ""}\n\n` +
         `Full Details:\n` +
         `${JSON.stringify(savedObject, null, 2)}`;
 

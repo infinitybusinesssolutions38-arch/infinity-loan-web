@@ -9,8 +9,8 @@ export function Footer() {
         <div className="absolute -top-24 -right-24 h-72 w-72 rounded-full bg-[#F97415]/20 blur-3xl" />
         <div className="absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-white/10 blur-3xl" />
       </div>
-      <div className="container relative z-10 mx-auto px-4 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+      <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-12">
           {/* Brand Section */}
           <div className="space-y-4">
             <div className="flex items-center">
@@ -57,45 +57,6 @@ export function Footer() {
                 </li>
               </ul>
             </div>
-          </div>
-
-          {/* Quick Links */}
-          <div>
-            <h4 className="font-semibold mb-4 text-base">Quick Links</h4>
-            <ul className="space-y-3">
-              <li>
-                <Link 
-                  href="/" 
-                  className="text-sm text-white/70 hover:text-[#F97415] transition-colors"
-                >
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  href="/about-us" 
-                  className="text-sm text-white/70 hover:text-[#F97415] transition-colors"
-                >
-                  About Us
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  href="/contact" 
-                  className="text-sm text-white/70 hover:text-[#F97415] transition-colors"
-                >
-                  Contact Us
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  href="/services" 
-                  className="text-sm text-white/70 hover:text-[#F97415] transition-colors"
-                >
-                  Services
-                </Link>
-              </li>
-            </ul>
           </div>
 
           {/* Contact Information */}

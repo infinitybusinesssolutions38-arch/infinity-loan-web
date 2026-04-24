@@ -80,7 +80,7 @@ export default function StickyContactButtons() {
       </div>
 
       {/* Mobile: horizontal at bottom */}
-      <div className="flex md:hidden fixed bottom-4 right-4 z-[60]">
+      <div className="flex md:hidden fixed bottom-4 right-4 z-[60] left-4">
         <div className="flex rounded-2xl border border-white/10 bg-gray-950/90 shadow-2xl backdrop-blur overflow-hidden">
           <a
             href={telHref}

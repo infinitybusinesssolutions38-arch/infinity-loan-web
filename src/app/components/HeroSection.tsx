@@ -192,18 +192,18 @@ const HeroSection: React.FC = () => {
 
                 <div className="relative">
                     <div className="mx-auto max-w-7xl px-4 sm:px-6">
-                        <div className="flex min-h-[520px] items-center py-14 sm:min-h-[620px] sm:py-20 lg:min-h-[720px]">
+                        <div className="flex min-h-[400px] items-center py-14 sm:min-h-[520px] sm:py-20 lg:min-h-[720px]">
                             <div className="mx-auto w-full max-w-3xl text-center">
                                 <div className="inline-flex items-center rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-semibold text-white shadow-sm backdrop-blur">
                                     Trusted by 5L+ customers
                                 </div>
 
-                                <h1 className="mt-5 text-4xl font-bold leading-tight tracking-tight text-white sm:text-5xl lg:text-6xl">
+                                <h1 className="mt-5 text-2xl font-bold leading-tight tracking-tight text-white sm:text-3xl lg:text-6xl">
                                     Get Your Loan Approved in
                                     <span className="text-yellow-200"> 24 Hours</span>
                                 </h1>
 
-                                <p className="mt-5 text-base leading-relaxed text-white/85 sm:text-lg">
+                                <p className="mt-5 text-sm leading-relaxed text-white/85 sm:text-base">
                                     Quick approvals, competitive interest rates, and hassle-free documentation. Your financial goals are just one application away.
                                 </p>
 
@@ -259,7 +259,7 @@ const HeroSection: React.FC = () => {
                                 <button
                                     type="button"
                                     onClick={prevSlide}
-                                    className="absolute left-4 top-1/2 -translate-y-1/2 inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 px-3 py-2 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/15 focus:outline-none focus:ring-4 focus:ring-white/20"
+                                    className="absolute left-2 top-1/2 -translate-y-1/2 inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 px-3 py-2 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/15 focus:outline-none focus:ring-4 focus:ring-white/20 sm:left-4"
                                     aria-label="Previous slide"
                                 >
                                     <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" aria-hidden="true">
@@ -282,7 +282,7 @@ const HeroSection: React.FC = () => {
                                 <button
                                     type="button"
                                     onClick={nextSlide}
-                                    className="absolute right-4 top-1/2 -translate-y-1/2 inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 px-3 py-2 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/15 focus:outline-none focus:ring-4 focus:ring-white/20"
+                                    className="absolute right-2 top-1/2 -translate-y-1/2 inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 px-3 py-2 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/15 focus:outline-none focus:ring-4 focus:ring-white/20 sm:right-4"
                                     aria-label="Next slide"
                                 >
                                     <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" aria-hidden="true">

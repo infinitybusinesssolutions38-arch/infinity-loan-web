@@ -57,7 +57,7 @@ const ApplyNowPage = () => {
                     product: data.product,
                     mobile: data.mobile,
                     email: data.email,
-                    pan: data.pan,
+                    panNumber: data.pan, // Map pan to panNumber for backend compatibility
                 },
                 { withCredentials: true }
             );
