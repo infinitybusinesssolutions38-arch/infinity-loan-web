@@ -347,7 +347,8 @@ export default function PrivacyPolicyPage() {
                     <div>
                       <p className="font-semibold text-white mb-1">Email:</p>
                       <p className="text-gray-300">business@infinityloanservices.com</p>
-                      <p className="text-gray-300">businessservicesinfinity@gmail.com</p>
+                      <p className="text-gray-300">personal.infinityloans@gmail.com</p>
+                      <p className="text-gray-300">business.infinityloans@gmail.com</p>
                     </div>
                   </div>
 
