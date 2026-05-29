@@ -251,10 +251,16 @@ const ContactPage = () => {
                                         business@infinityloanservices.com
                                     </a>
                                     <a
-                                        href="mailto:businessservicesinfinity@gmail.com"
+                                        href="mailto:personal.infinityloans@gmail.com"
                                         className="mt-1 block text-white font-medium hover:text-[#F97415] transition-colors break-all"
                                     >
-                                        businessservicesinfinity@gmail.com
+                                        personal.infinityloans@gmail.com
+                                    </a>
+                                    <a
+                                        href="mailto:business.infinityloans@gmail.com"
+                                        className="mt-1 block text-white font-medium hover:text-[#F97415] transition-colors break-all"
+                                    >
+                                        business.infinityloans@gmail.com
                                     </a>
                                 </div>
                             </div>

@@ -367,19 +367,6 @@ export default function PrivacyPolicyPage() {
                     </div>
                   </div>
                 </div>
-
-                <div className="mt-6 pt-6 border-t border-gray-700">
-                  <div className="grid gap-4 md:grid-cols-2">
-                    <div>
-                      <p className="font-semibold text-white mb-2">New Delhi Office</p>
-                      <p className="text-gray-300 text-sm">505, Surya Kiran Building, 15, Kasturba Gandhi Marg, New Delhi – 110001, India</p>
-                    </div>
-                    <div>
-                      <p className="font-semibold text-white mb-2">Hyderabad Office</p>
-                      <p className="text-gray-300 text-sm">6-3-247/22/8, Dwarakapuri Colony, Punjagutta, Hyderabad, Telangana – 500082, India</p>
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
           </div>

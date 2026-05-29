@@ -200,14 +200,6 @@ export const sendLoanApplicationConfirmationEmail = async (
               <h4>Corporate & Registered Office</h4>
               <p>8th Floor, Magnum Tower – 1,<br>Golf Course Extension Road, Sector 58,<br>Gurugram, Haryana – 122098, India</p>
             </div>
-            <div class="office-box">
-              <h4>New Delhi Office</h4>
-              <p>505, Surya Kiran Building,<br>15, Kasturba Gandhi Marg,<br>New Delhi – 110001, India</p>
-            </div>
-            <div class="office-box">
-              <h4>Hyderabad Office</h4>
-              <p>6-3-247/22/8,<br>Dwarakapuri Colony, Punjagutta,<br>Hyderabad, Telangana – 500082, India</p>
-            </div>
           </div>
 
           <p>Warm Regards,<br><strong>Team Infinity Loans & Business Solutions</strong></p>
