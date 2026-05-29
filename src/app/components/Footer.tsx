@@ -95,10 +95,18 @@ export function Footer() {
                   </Link>
                   <div className="mt-1">
                     <Link 
-                      href="mailto:businessservicesinfinity@gmail.com" 
+                      href="mailto:personal.infinityloans@gmail.com" 
                       className="font-medium hover:text-[#F97415] transition-colors break-all"
                     >
-                      businessservicesinfinity@gmail.com
+                      personal.infinityloans@gmail.com
+                    </Link>
+                  </div>
+                  <div className="mt-1">
+                    <Link 
+                      href="mailto:business.infinityloans@gmail.com" 
+                      className="font-medium hover:text-[#F97415] transition-colors break-all"
+                    >
+                      business.infinityloans@gmail.com
                     </Link>
                   </div>
                 </div>
@@ -120,32 +128,6 @@ export function Footer() {
                     Golf Course Extension Road, Sector 58,
                     <br />
                     Gurugram, Haryana – 122098, India
-                  </p>
-                </div>
-              </li>
-              <li className="flex items-start gap-3">
-                <MapPin className="w-6 h-6 mt-0.5 text-[#F97415] flex-shrink-0" />
-                <div className="text-sm">
-                  <p className="font-medium">New Delhi Office</p>
-                  <p className="text-white/70">
-                    505, Surya Kiran Building,
-                    <br />
-                    15, Kasturba Gandhi Marg,
-                    <br />
-                    New Delhi – 110001, India
-                  </p>
-                </div>
-              </li>
-              <li className="flex items-start gap-3">
-                <MapPin className="w-6 h-6 mt-0.5 text-[#F97415] flex-shrink-0" />
-                <div className="text-sm">
-                  <p className="font-medium">Hyderabad Office</p>
-                  <p className="text-white/70">
-                    6-3-247/22/8,
-                    <br />
-                    Dwarakapuri Colony, Punjagutta,
-                    <br />
-                    Hyderabad, Telangana – 500082, India
                   </p>
                 </div>
               </li>
