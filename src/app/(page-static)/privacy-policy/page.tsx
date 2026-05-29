@@ -337,8 +337,8 @@ export default function PrivacyPolicyPage() {
                     <Phone className="h-5 w-5 text-[#F97415] mt-1 flex-shrink-0" />
                     <div>
                       <p className="font-semibold text-white mb-1">Customer Support:</p>
-                      <p className="text-gray-300">+91 95798 80841</p>
-                      <p className="text-gray-300">+91 97661 69660</p>
+                      <p className="text-gray-300">+91 9579880841</p>
+                      <p className="text-gray-300">+91 9766616960</p>
                     </div>
                   </div>
 
