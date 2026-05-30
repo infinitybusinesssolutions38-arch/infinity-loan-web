@@ -85,10 +85,10 @@ export default function ABBCalculatorClient() {
   return (
     <div className="abb-calculator-wrapper" style={{
       minHeight: "100vh",
-      background: "linear-gradient(135deg, #020810 0%, #040c18 50%, #0c1828 100%)",
+      background: "linear-gradient(to bottom right, #f8fafc, #ffffff, #eff6ff)",
       fontFamily: "'DM Sans', 'Segoe UI', sans-serif",
       padding: "40px 16px",
-      color: "#fff"
+      color: "#111827"
     }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap');
@@ -98,29 +98,30 @@ export default function ABBCalculatorClient() {
         .abb-calculator-wrapper input[type=number] { -moz-appearance: textfield; }
         .slot-input {
           width: 100%;
-          background: rgba(255,255,255,0.04);
-          border: 1px solid rgba(255,255,255,0.1);
+          background: #ffffff;
+          border: 1px solid #d1d5db;
           border-radius: 12px;
           padding: 10px 12px 10px 28px;
-          color: #fff;
+          color: #111827;
           font-size: 14px;
           font-family: 'DM Mono', monospace;
           outline: none;
           transition: border-color 0.2s, background 0.2s;
         }
         .slot-input:focus {
-          border-color: rgba(99,179,237,0.5);
-          background: rgba(99,179,237,0.05);
+          border-color: rgba(0,153,216,0.5);
+          background: #ffffff;
         }
-        .slot-input::placeholder { color: rgba(255,255,255,0.25); }
+        .slot-input::placeholder { color: #9ca3af; }
         .month-card {
           border-radius: 20px;
-          border: 1px solid rgba(255,255,255,0.08);
-          background: rgba(255,255,255,0.04);
+          border: 1px solid #e5e7eb;
+          background: #ffffff;
           overflow: hidden;
-          transition: border-color 0.2s;
+          transition: border-color 0.2s, box-shadow 0.2s;
+          box-shadow: 0 1px 3px rgba(0,0,0,0.04);
         }
-        .month-card:hover { border-color: rgba(99,179,237,0.2); }
+        .month-card:hover { border-color: rgba(0,153,216,0.3); box-shadow: 0 4px 12px rgba(0,153,216,0.08); }
         .month-header {
           display: flex;
           align-items: center;
@@ -129,9 +130,9 @@ export default function ABBCalculatorClient() {
           cursor: pointer;
           user-select: none;
         }
-        .month-header:hover { background: rgba(255,255,255,0.03); }
+        .month-header:hover { background: #f9fafb; }
         .month-body {
-          border-top: 1px solid rgba(255,255,255,0.06);
+          border-top: 1px solid #f3f4f6;
           padding: 16px;
         }
         .tab-btn {
@@ -157,21 +158,21 @@ export default function ABBCalculatorClient() {
         <div style={{ textAlign: "center", marginBottom: 36 }}>
           <div style={{
             display: "inline-block",
-            background: "rgba(99,179,237,0.1)",
-            border: "1px solid rgba(99,179,237,0.2)",
+            background: "rgba(0,153,216,0.1)",
+            border: "1px solid rgba(0,153,216,0.2)",
             borderRadius: 100,
             padding: "4px 16px",
             fontSize: 11,
             fontWeight: 700,
             letterSpacing: "0.15em",
-            color: "#63b3ed",
+            color: "#0099D8",
             textTransform: "uppercase",
             marginBottom: 14
           }}>Bank Statement Tool</div>
-          <h1 style={{ fontSize: "clamp(24px,5vw,44px)", fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.1 }}>
+          <h1 style={{ fontSize: "clamp(24px,5vw,44px)", fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.1, color: "#111827" }}>
             Average Bank Balance
           </h1>
-          <p style={{ marginTop: 10, color: "rgba(255,255,255,0.5)", fontSize: 15 }}>
+          <p style={{ marginTop: 10, color: "#6b7280", fontSize: 15 }}>
             Enter balances on the 5th, 15th, 25th &amp; 30th of each month
           </p>
         </div>
@@ -186,14 +187,14 @@ export default function ABBCalculatorClient() {
             flexWrap: "wrap",
             gap: 12
           }}>
-            <div style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", fontWeight: 500 }}>
+            <div style={{ fontSize: 13, color: "#6b7280", fontWeight: 500 }}>
               Select statement period
             </div>
             <div style={{
               display: "flex",
               gap: 4,
-              background: "rgba(255,255,255,0.05)",
-              border: "1px solid rgba(255,255,255,0.08)",
+              background: "#f3f4f6",
+              border: "1px solid #e5e7eb",
               borderRadius: 16,
               padding: 4
             }}>
@@ -203,8 +204,8 @@ export default function ABBCalculatorClient() {
                   className="tab-btn"
                   onClick={() => setNumMonths(m)}
                   style={{
-                    background: numMonths === m ? "rgba(99,179,237,0.2)" : "transparent",
-                    color: numMonths === m ? "#63b3ed" : "rgba(255,255,255,0.5)",
+                    background: numMonths === m ? "rgba(0,153,216,0.15)" : "transparent",
+                    color: numMonths === m ? "#0099D8" : "#6b7280",
                   }}
                 >
                   {m} Months
@@ -227,13 +228,13 @@ export default function ABBCalculatorClient() {
                     onClick={() => setExpanded(isOpen ? "" : m.fullKey)}
                   >
                     <div>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: "#fff" }}>{m.label}</div>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: "#111827" }}>{m.label}</div>
                       {monthABB !== null ? (
-                        <div style={{ fontSize: 12, color: "#63b3ed", marginTop: 2, fontFamily: "'DM Mono', monospace" }}>
+                        <div style={{ fontSize: 12, color: "#0099D8", marginTop: 2, fontFamily: "'DM Mono', monospace" }}>
                           ABB: ₹{fmt(Math.round(monthABB))}
                         </div>
                       ) : (
-                        <div style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", marginTop: 2 }}>
+                        <div style={{ fontSize: 12, color: "#9ca3af", marginTop: 2 }}>
                           {hasData ? "Partial" : "Not filled"}
                         </div>
                       )}
@@ -245,7 +246,7 @@ export default function ABBCalculatorClient() {
                           background: monthABB !== null ? "#34d399" : "#fbbf24"
                         }} />
                       )}
-                      <span className={`chevron ${isOpen ? "open" : ""}`} style={{ color: "rgba(255,255,255,0.4)", fontSize: 18 }}>⌄</span>
+                      <span className={`chevron ${isOpen ? "open" : ""}`} style={{ color: "#9ca3af", fontSize: 18 }}>⌄</span>
                     </div>
                   </div>
 
@@ -258,7 +259,7 @@ export default function ABBCalculatorClient() {
                               fontSize: 10,
                               fontWeight: 700,
                               letterSpacing: "0.1em",
-                              color: "rgba(255,255,255,0.35)",
+                              color: "#6b7280",
                               textTransform: "uppercase",
                               marginBottom: 5
                             }}>{m.label.slice(0, 3)} {day}th</div>
@@ -268,7 +269,7 @@ export default function ABBCalculatorClient() {
                                 left: 10,
                                 top: "50%",
                                 transform: "translateY(-50%)",
-                                color: "rgba(255,255,255,0.35)",
+                                color: "#9ca3af",
                                 fontSize: 13,
                                 fontWeight: 600,
                                 pointerEvents: "none"
@@ -290,15 +291,15 @@ export default function ABBCalculatorClient() {
                         <div style={{
                           marginTop: 12,
                           borderRadius: 12,
-                          background: "rgba(99,179,237,0.08)",
-                          border: "1px solid rgba(99,179,237,0.15)",
+                          background: "rgba(0,153,216,0.08)",
+                          border: "1px solid rgba(0,153,216,0.15)",
                           padding: "10px 14px",
                           display: "flex",
                           justifyContent: "space-between",
                           alignItems: "center"
                         }}>
-                          <span style={{ fontSize: 12, color: "rgba(255,255,255,0.5)" }}>Monthly Average</span>
-                          <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 14, fontWeight: 600, color: "#63b3ed" }}>
+                          <span style={{ fontSize: 12, color: "#6b7280" }}>Monthly Average</span>
+                          <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 14, fontWeight: 600, color: "#0099D8" }}>
                             ₹{fmt(Math.round(monthABB))}
                           </span>
                         </div>
@@ -313,35 +314,36 @@ export default function ABBCalculatorClient() {
           {/* Summary panel */}
           <div style={{
             borderRadius: 24,
-            border: "1px solid rgba(255,255,255,0.1)",
-            background: "rgba(255,255,255,0.04)",
+            border: "1px solid #e5e7eb",
+            background: "#ffffff",
             padding: 24,
             display: "grid",
             gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
             gap: 20,
-            alignItems: "center"
+            alignItems: "center",
+            boxShadow: "0 4px 24px rgba(0,0,0,0.06)"
           }}>
             <div>
-              <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", color: "rgba(255,255,255,0.4)", textTransform: "uppercase", marginBottom: 6 }}>
+              <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", color: "#9ca3af", textTransform: "uppercase", marginBottom: 6 }}>
                 Months Filled
               </div>
-              <div style={{ fontSize: 28, fontWeight: 800, color: "#fff" }}>{calc.filledCount}<span style={{ fontSize: 16, color: "rgba(255,255,255,0.4)", fontWeight: 500 }}>/{numMonths}</span></div>
+              <div style={{ fontSize: 28, fontWeight: 800, color: "#111827" }}>{calc.filledCount}<span style={{ fontSize: 16, color: "#9ca3af", fontWeight: 500 }}>/{numMonths}</span></div>
             </div>
 
             <div style={{ textAlign: "center" }}>
-              <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", color: "rgba(255,255,255,0.4)", textTransform: "uppercase", marginBottom: 6 }}>
+              <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", color: "#9ca3af", textTransform: "uppercase", marginBottom: 6 }}>
                 Formula
               </div>
-              <div style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", fontFamily: "'DM Mono', monospace" }}>
+              <div style={{ fontSize: 12, color: "#6b7280", fontFamily: "'DM Mono', monospace" }}>
                 Avg(5th,15th,25th,30th) per month<br />then ÷ {numMonths} months
               </div>
             </div>
 
             <div style={{ textAlign: "right" }}>
-              <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", color: "rgba(255,255,255,0.4)", textTransform: "uppercase", marginBottom: 6 }}>
+              <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", color: "#9ca3af", textTransform: "uppercase", marginBottom: 6 }}>
                 Your ABB
               </div>
-              <div style={{ fontSize: 32, fontWeight: 800, color: "#fff", fontFamily: "'DM Mono', monospace" }}>
+              <div style={{ fontSize: 32, fontWeight: 800, color: "#111827", fontFamily: "'DM Mono', monospace" }}>
                 ₹{fmt(Math.round(calc.abb))}
               </div>
               <div style={{
@@ -368,9 +370,9 @@ export default function ABBCalculatorClient() {
               onClick={() => { setData(Array(numMonths).fill(null).map(emptyMonth)); setExpanded(""); }}
               style={{
                 borderRadius: 12,
-                border: "1px solid rgba(248,113,113,0.2)",
+                border: "1px solid rgba(248,113,113,0.3)",
                 background: "rgba(248,113,113,0.08)",
-                color: "#fca5a5",
+                color: "#ef4444",
                 padding: "10px 20px",
                 fontSize: 13,
                 fontWeight: 700,
