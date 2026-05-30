@@ -827,7 +827,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= PERSONAL DETAILS ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-blue-500">1. Applicant Basic Details</h3>
+                        <h3 className="mb-4 text-base font-semibold text-[#0099D8]">1. Applicant Basic Details</h3>
                         <div className="grid md:grid-cols-3 gap-4">
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">First Name <span className="text-destructive">*</span></label>
@@ -937,7 +937,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= ID DETAILS ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-blue-500">2. Applicant KYC Details</h3>
+                        <h3 className="mb-4 text-base font-semibold text-[#0099D8]">2. Applicant KYC Details</h3>
                         <div className="grid md:grid-cols-3 gap-4">
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">PAN Number <span className="text-destructive">*</span></label>
@@ -1006,7 +1006,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= ADDRESS ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-blue-500">3. Applicant Current Residential Address Details</h3>
+                        <h3 className="mb-4 text-base font-semibold text-[#0099D8]">3. Applicant Current Residential Address Details</h3>
                         <div className="grid md:grid-cols-3 gap-4">
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Current Address <span className="text-destructive">*</span></label>
@@ -1129,7 +1129,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= EMPLOYMENT ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-blue-500">4. Applicant Employment Details</h3>
+                        <h3 className="mb-4 text-base font-semibold text-[#0099D8]">4. Applicant Employment Details</h3>
                         <div className="grid md:grid-cols-3 gap-4">
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Current working company name <span className="text-destructive">*</span></label>
@@ -1251,7 +1251,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= Income Details ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-blue-500">5. Applicant Income Details</h3>
+                        <h3 className="mb-4 text-base font-semibold text-[#0099D8]">5. Applicant Income Details</h3>
                         <div className="grid md:grid-cols-2 gap-4">
                             <div className="space-y-1">
                                 <div>
@@ -1306,7 +1306,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= EXISTING LOANS ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-blue-500">6. Applicant Existing Loans Details</h3>
+                        <h3 className="mb-4 text-base font-semibold text-[#0099D8]">6. Applicant Existing Loans Details</h3>
                         <div className="flex flex-col mb-2">
                             <label className="text-sm font-medium">Number Of Existing Loans<span className="text-red-400 text-xs">(optional)</span></label>
                             <select {...register("NumberOfExistingLoans")} className="input bg-gray-200" >
@@ -1423,7 +1423,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                                     },
                                 ])
                             }
-                            className="mt-2 inline-flex w-fit items-center justify-center rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-sm font-medium text-blue-700 transition hover:bg-blue-100"
+                            className="mt-2 inline-flex w-fit items-center justify-center rounded-lg border border-[#0099D8]/20 bg-[#0099D8]/5 px-3 py-2 text-sm font-medium text-[#007BB0] transition hover:bg-[#0099D8]/10"
                         >
                             + Add More
                         </button>
@@ -1431,7 +1431,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= Income Tax Return ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-blue-500">7. Form 16</h3>
+                        <h3 className="mb-4 text-base font-semibold text-[#0099D8]">7. Form 16</h3>
                         <div className="grid grid-col-2 gap-3">
                             <div className="space-y-1">
                                 <div>
@@ -1480,7 +1480,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= Bank Statement Details ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-1 text-base font-semibold text-blue-500">8. Applicant Bank Statement Details</h3>
+                        <h3 className="mb-1 text-base font-semibold text-[#0099D8]">8. Applicant Bank Statement Details</h3>
                         <span className="text-sm">(pdf should not be protected with password else write down the password)</span>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
                             <div className="space-y-1">
@@ -1593,7 +1593,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                     </div>
                     {/* ================= G.Credit Score ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-blue-500">9. Applicant CIBIL  Score Details</h3>
+                        <h3 className="mb-4 text-base font-semibold text-[#0099D8]">9. Applicant CIBIL  Score Details</h3>
                         <div className="space-y-1">
                             <div>
                                 <label className="text-sm font-medium">CIBIL Available <span className="text-destructive">*</span></label>
@@ -1644,7 +1644,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= Q. Applicant Assets details ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-blue-500">10. Applicant Assets Details Digital or physical</h3>
+                        <h3 className="mb-4 text-base font-semibold text-[#0099D8]">10. Applicant Assets Details Digital or physical</h3>
                         {Array.from({ length: applicantAssetsCount }).map((_, idx) => (
                             <div key={idx} className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-1">
@@ -1681,7 +1681,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                         ))}
                         <button
                             type="button"
-                            className="mt-3 inline-flex w-fit items-center justify-center rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-sm font-medium text-blue-700 transition hover:bg-blue-100"
+                            className="mt-3 inline-flex w-fit items-center justify-center rounded-lg border border-[#0099D8]/20 bg-[#0099D8]/5 px-3 py-2 text-sm font-medium text-[#007BB0] transition hover:bg-[#0099D8]/10"
                             onClick={() => setApplicantAssetsCount((c) => Math.max(1, (c || 1) + 1))}
                         >
                             Add More
@@ -1690,7 +1690,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= Medical History ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-blue-500">11. Applicant Medical History</h3>
+                        <h3 className="mb-4 text-base font-semibold text-[#0099D8]">11. Applicant Medical History</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1">
                                 <div>
@@ -1750,7 +1750,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= Habbit ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-blue-500">12. Applicant Addictive Habits</h3>
+                        <h3 className="mb-4 text-base font-semibold text-[#0099D8]">12. Applicant Addictive Habits</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1">
                                 <div>
@@ -1794,7 +1794,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= Civil or Criminal Case history ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-blue-500">13. Applicant Civil or Criminal Case history</h3>
+                        <h3 className="mb-4 text-base font-semibold text-[#0099D8]">13. Applicant Civil or Criminal Case history</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1">
                                 <div>
@@ -1838,7 +1838,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= LOAN DETAILS ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-blue-500">14. Loan Requirement Details</h3>
+                        <h3 className="mb-4 text-base font-semibold text-[#0099D8]">14. Loan Requirement Details</h3>
                         <div className="grid md:grid-cols-2 gap-4">
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Required Loan Amount <span className="text-destructive">*</span></label>
@@ -1943,7 +1943,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= DOCUMENTS ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-blue-500">15. Co-Applicant Details (If Any)</h3>
+                        <h3 className="mb-4 text-base font-semibold text-[#0099D8]">15. Co-Applicant Details (If Any)</h3>
                         <div className="grid md:grid-cols-2 gap-4">
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Co-Applicant Name <span className="text-red-400 text-xs">(optional)</span></label>
@@ -2015,7 +2015,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= J. Upload Other Supported Document================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-blue-500">16. Upload Other Supported Document</h3>
+                        <h3 className="mb-4 text-base font-semibold text-[#0099D8]">16. Upload Other Supported Document</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Number of Other Documents</label>
@@ -2071,7 +2071,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= reference name details ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-blue-500">17. Reference name details</h3>
+                        <h3 className="mb-4 text-base font-semibold text-[#0099D8]">17. Reference name details</h3>
 
                         {Array.from({ length: Math.max(1, referenceCount || 1) }).map((_, idx) => {
                             const suffix = idx === 0 ? "" : `_${idx}`;
@@ -2123,7 +2123,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= CONSENT ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-blue-500">18. Declaration & Consent</h3>
+                        <h3 className="mb-4 text-base font-semibold text-[#0099D8]">18. Declaration & Consent</h3>
                         <div className="space-y-3">
                             <div className="flex items-start gap-3">
                                 <input type="checkbox" {...register("consent", { required: true })} className="mt-1 h-4 w-4" />
@@ -2146,7 +2146,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                         <button type="button" onClick={onClose} className="w-full rounded-xl border border-gray-300 bg-white px-6 py-2.5 text-sm font-semibold text-gray-700 shadow-sm transition hover:bg-gray-50 sm:w-auto">
                             Cancel
                         </button>
-                        <button type="submit" form="salariedLoanForm" disabled={loading} className="w-full rounded-xl bg-[#F97415] px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-orange-500/20 transition hover:brightness-110 disabled:opacity-60 sm:w-auto">
+                        <button type="submit" form="salariedLoanForm" disabled={loading} className="w-full rounded-xl bg-[#0099D8] px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-sky-500/20 transition hover:brightness-110 disabled:opacity-60 sm:w-auto">
                             {loading ? "Submitting..." : "Submit"}
                         </button>
                     </div>

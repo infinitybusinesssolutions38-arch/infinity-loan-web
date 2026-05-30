@@ -90,7 +90,7 @@ export default function PartnerApplicationsPage() {
                     <td className="px-4 py-3">{app.preferredLoan}</td>
                     <td className="px-4 py-3">
                       <span className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${
-                        app.status === "New" ? "bg-blue-50 text-blue-700" :
+                        app.status === "New" ? "bg-[#0099D8]/5 text-[#007BB0]" :
                         app.status === "Contacted" ? "bg-yellow-50 text-yellow-700" :
                         app.status === "Approved" ? "bg-green-50 text-green-700" :
                         app.status === "Rejected" ? "bg-red-50 text-red-700" :

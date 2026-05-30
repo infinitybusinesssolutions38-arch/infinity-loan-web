@@ -192,7 +192,7 @@ const LoanTestimonials: React.FC = () => {
 
 
 
-          <div className="w-20 h-1 bg-[#F97415] mx-auto mt-4 rounded-full" />
+          <div className="w-20 h-1 bg-[#0099D8] mx-auto mt-4 rounded-full" />
 
 
 
@@ -215,9 +215,9 @@ const LoanTestimonials: React.FC = () => {
                 className="bg-gradient-to-br from-gray-900 via-gray-800 to-black p-6 rounded-2xl shadow-md hover:shadow-xl transition duration-300 border border-gray-700 flex flex-col shrink-0 w-80"
               >
                 {/* Stars */}
-                <div className="flex mb-4 text-[#F97415]">
+                <div className="flex mb-4 text-[#0099D8]">
                   {[...Array(5)].map((_, i) => (
-                    <Star key={i} size={16} fill="#F97415" />
+                    <Star key={i} size={16} fill="#0099D8" />
                   ))}
                 </div>
 
@@ -228,12 +228,12 @@ const LoanTestimonials: React.FC = () => {
 
                 {/* User Info */}
                 <div className="flex items-center gap-3 border-t border-gray-700 pt-4">
-                  <div className="w-10 h-10 bg-[#F97415]/20 rounded-full flex items-center justify-center">
-                    <User size={20} className="text-[#F97415]" />
+                  <div className="w-10 h-10 bg-[#0099D8]/20 rounded-full flex items-center justify-center">
+                    <User size={20} className="text-[#0099D8]" />
                   </div>
                   <div>
                     <h4 className="font-semibold text-white text-sm">{t.name}</h4>
-                    <span className="text-xs text-[#F97415] font-medium">
+                    <span className="text-xs text-[#0099D8] font-medium">
                       {t.role}
                     </span>
                   </div>
@@ -245,38 +245,6 @@ const LoanTestimonials: React.FC = () => {
         </div>
 
       </div>
-
-
-
-      <style jsx global>{`
-        @keyframes loanTestimonialsSlide {
-          from {
-            opacity: 0;
-            transform: translateX(48px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-
-        @keyframes loanTestimonialsMarquee {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(-50%);
-          }
-        }
-
-        .loan-testimonials-marquee {
-          animation: loanTestimonialsMarquee 30s linear infinite;
-        }
-
-        .loan-testimonials-marquee:hover {
-          animation-play-state: paused;
-        }
-      `}</style>
 
     </section>
 

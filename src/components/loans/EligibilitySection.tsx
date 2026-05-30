@@ -71,14 +71,14 @@ export default function EligibilitySection({ criteria, variant = "default", anch
                 ${
                   variant === "personal"
                     ? item.highlight
-                      ? "border-[#F97415]/60 bg-white/5"
+                      ? "border-[#0099D8]/60 bg-white/5"
                       : "border-white/10 bg-white/5"
                     : item.highlight
                       ? "border-primary/30 bg-primary/5"
                       : "border-border bg-card"
                 }
                 ${visibleItems.has(idx) ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}
-                ${variant === "personal" ? "hover:border-[#F97415]/70 hover:shadow-[0_0_0_1px_rgba(249,116,21,0.25),0_20px_60px_-20px_rgba(249,116,21,0.35)]" : "hover:border-primary/50 hover:shadow-lg"}
+                ${variant === "personal" ? "hover:border-[#0099D8]/70 hover:shadow-[0_0_0_1px_rgba(0,153,216,0.25),0_20px_60px_-20px_rgba(0,153,216,0.35)]" : "hover:border-primary/50 hover:shadow-lg"}
                 hover:-translate-y-1
               `}
               style={{ transitionDelay: `${idx * 100}ms` }}
@@ -88,7 +88,7 @@ export default function EligibilitySection({ criteria, variant = "default", anch
                   <span
                     className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${
                       variant === "personal"
-                        ? "bg-[#F97415]/15 text-[#F97415]"
+                        ? "bg-[#0099D8]/15 text-[#0099D8]"
                         : "bg-primary/10 text-primary"
                     }`}
                   >
@@ -104,8 +104,8 @@ export default function EligibilitySection({ criteria, variant = "default", anch
                   ${
                     variant === "personal"
                       ? item.highlight
-                        ? "bg-[#F97415] text-black"
-                        : "bg-white/10 text-white group-hover:bg-[#F97415]/20 group-hover:text-[#F97415]"
+                        ? "bg-[#0099D8] text-black"
+                        : "bg-white/10 text-white group-hover:bg-[#0099D8]/20 group-hover:text-[#0099D8]"
                       : item.highlight
                         ? "bg-primary text-primary-foreground"
                         : "bg-accent/10 text-accent group-hover:bg-accent group-hover:text-accent-foreground"

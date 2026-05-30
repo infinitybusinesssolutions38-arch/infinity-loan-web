@@ -59,8 +59,8 @@ export async function POST(request) {
 
                   <tr>
                     <td style="padding:10px 20px">
-                      <div style="background:#fff7ed;border:1px solid rgba(249,116,21,0.35);border-radius:14px;padding:16px;text-align:center">
-                        <div style="font-family:Arial,sans-serif;font-size:12px;color:#9a3412;text-transform:uppercase;letter-spacing:0.8px;font-weight:700">Your OTP</div>
+                      <div style="background:#e6f7fc;border:1px solid rgba(0,153,216,0.35);border-radius:14px;padding:16px;text-align:center">
+                        <div style="font-family:Arial,sans-serif;font-size:12px;color:#007BB0;text-transform:uppercase;letter-spacing:0.8px;font-weight:700">Your OTP</div>
                         <div style="font-family:Arial,sans-serif;font-size:34px;line-height:1.2;color:#111827;font-weight:800;letter-spacing:6px;margin-top:10px">${otp}</div>
                         <div style="font-family:Arial,sans-serif;font-size:12px;color:#6b7280;margin-top:10px">Do not share this code with anyone.</div>
                       </div>

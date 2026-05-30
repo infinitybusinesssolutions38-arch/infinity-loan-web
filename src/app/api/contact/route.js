@@ -75,12 +75,12 @@ export async function POST(req) {
             const customerSubject = "We Received Your Message";
             const customerHtml = `
                 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                    <h2 style="color: #F97415;">Thank You for Reaching Out!</h2>
+                    <h2 style="color: #0099D8;">Thank You for Reaching Out!</h2>
                     <p>Dear ${firstname},</p>
                     <p>Thank you for contacting <strong>${companyName}</strong>. We have received your message and appreciate you taking the time to reach out to us.</p>
                     
                     <h3>Your Message Details:</h3>
-                    <ul style="background-color: #f9f9f9; padding: 15px; border-left: 4px solid #F97415;">
+                    <ul style="background-color: #f9f9f9; padding: 15px; border-left: 4px solid #0099D8;">
                         <li><strong>Subject:</strong> ${subject}</li>
                         <li><strong>Name:</strong> ${firstname} ${lastname}</li>
                         <li><strong>Email:</strong> ${email}</li>
@@ -116,7 +116,7 @@ export async function POST(req) {
             const adminSubject = `New Contact Form Submission from ${firstname} ${lastname}`;
             const adminHtml = `
                 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                    <h2 style="color: #F97415; border-bottom: 2px solid #F97415; padding-bottom: 10px;">New Contact Form Submission</h2>
+                    <h2 style="color: #0099D8; border-bottom: 2px solid #0099D8; padding-bottom: 10px;">New Contact Form Submission</h2>
                     
                     <h3>Contact Details:</h3>
                     <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
@@ -139,7 +139,7 @@ export async function POST(req) {
                     </table>
 
                     <h3>Message:</h3>
-                    <div style="background-color: #f9f9f9; padding: 15px; border-left: 4px solid #F97415; margin-bottom: 20px;">
+                    <div style="background-color: #f9f9f9; padding: 15px; border-left: 4px solid #0099D8; margin-bottom: 20px;">
                         <p style="white-space: pre-wrap; word-wrap: break-word;">${message}</p>
                     </div>
 

@@ -870,17 +870,17 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                   <div className="space-y-2">
                     <Label htmlFor="s_firstName" className="text-sm font-medium">First Name <span className="text-destructive">*</span></Label>
-                    <Input id="s_firstName" name="firstName" placeholder="First Name (as per PAN)*" value={sForm.firstName} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                    <Input id="s_firstName" name="firstName" placeholder="First Name (as per PAN)*" value={sForm.firstName} onChange={handleSalariedChange} className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50" />
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="s_middleName" className="text-sm font-medium">Middle Name (optional)</Label>
-                    <Input id="s_middleName" name="middleName" placeholder="Middle Name" value={sForm.middleName} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                    <Input id="s_middleName" name="middleName" placeholder="Middle Name" value={sForm.middleName} onChange={handleSalariedChange} className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50" />
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="s_lastName" className="text-sm font-medium">Last Name <span className="text-destructive">*</span></Label>
-                    <Input id="s_lastName" name="lastName" placeholder="Last Name (as per PAN)*" value={sForm.lastName} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                    <Input id="s_lastName" name="lastName" placeholder="Last Name (as per PAN)*" value={sForm.lastName} onChange={handleSalariedChange} className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50" />
                   </div>
 
                   <DateInput
@@ -894,7 +894,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
 
                   <div className="space-y-2">
                     <Label htmlFor="s_gender" className="text-sm font-medium">Gender <span className="text-destructive">*</span></Label>
-                    <select id="s_gender" name="gender" value={sForm.gender} onChange={handleSalariedChange} required className="mt-2 block w-full rounded-md border border-blue-300 bg-transparent px-3 py-2 text-sm">
+                    <select id="s_gender" name="gender" value={sForm.gender} onChange={handleSalariedChange} required className="mt-2 block w-full rounded-md border border-[#0099D8]/30 bg-transparent px-3 py-2 text-sm">
                       <option value="">Select Gender</option>
                       <option value="Male">Male</option>
                       <option value="Female">Female</option>
@@ -904,7 +904,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
 
                   <div className="space-y-2">
                     <Label htmlFor="s_maritalStatus" className="text-sm font-medium">Marital Status <span className="text-destructive">*</span></Label>
-                    <select id="s_maritalStatus" name="maritalStatus" value={sForm.maritalStatus} onChange={handleSalariedChange} required className="mt-2 block w-full rounded-md border border-blue-300 bg-transparent px-3 py-2 text-sm">
+                    <select id="s_maritalStatus" name="maritalStatus" value={sForm.maritalStatus} onChange={handleSalariedChange} required className="mt-2 block w-full rounded-md border border-[#0099D8]/30 bg-transparent px-3 py-2 text-sm">
                       <option value="">Marital Status</option>
                       <option value="Yes">Yes</option>
                       <option value="No">No</option>
@@ -913,36 +913,36 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
 
                   <div className="space-y-2">
                     <Label htmlFor="s_mobileNumber" className="text-sm font-medium">Adhaar Linked Primary Mobile Number <span className="text-destructive">*</span></Label>
-                    <Input id="s_mobileNumber" name="mobileNumber" placeholder="Mobile Number*" value={sForm.mobileNumber} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                    <Input id="s_mobileNumber" name="mobileNumber" placeholder="Mobile Number*" value={sForm.mobileNumber} onChange={handleSalariedChange} className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50" />
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="s_whatsappNumber" className="text-sm font-medium">WhatsApp Number (optional)</Label>
-                    <Input id="s_whatsappNumber" name="whatsappNumber" placeholder="WhatsApp Number" value={sForm.whatsappNumber} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                    <Input id="s_whatsappNumber" name="whatsappNumber" placeholder="WhatsApp Number" value={sForm.whatsappNumber} onChange={handleSalariedChange} className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50" />
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="s_alternateMobile" className="text-sm font-medium">Alternate Mobile Number (optional)</Label>
-                    <Input id="s_alternateMobile" name="alternateMobile" placeholder="Alternate Mobile Number" value={sForm.alternateMobile} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                    <Input id="s_alternateMobile" name="alternateMobile" placeholder="Alternate Mobile Number" value={sForm.alternateMobile} onChange={handleSalariedChange} className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50" />
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="s_personalEmail" className="text-sm font-medium">Personal Email ID <span className="text-destructive">*</span></Label>
-                    <Input id="s_personalEmail" name="personalEmail" type="email" placeholder="Personal Email ID*" value={sForm.personalEmail} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                    <Input id="s_personalEmail" name="personalEmail" type="email" placeholder="Personal Email ID*" value={sForm.personalEmail} onChange={handleSalariedChange} className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50" />
                   </div>
                 </div>
                 <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                   <div className="space-y-2">
                     <Label htmlFor="s_voterId" className="text-sm font-medium">Voter ID (optional)</Label>
-                    <Input id="s_voterId" name="voterIdNumber" placeholder="Voter ID (optional)" value={sForm.voterIdNumber} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                    <Input id="s_voterId" name="voterIdNumber" placeholder="Voter ID (optional)" value={sForm.voterIdNumber} onChange={handleSalariedChange} className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="s_drivingLicense" className="text-sm font-medium">Driving License (optional)</Label>
-                    <Input id="s_drivingLicense" name="drivingLicense" placeholder="Driving License (optional)" value={sForm.drivingLicense} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                    <Input id="s_drivingLicense" name="drivingLicense" placeholder="Driving License (optional)" value={sForm.drivingLicense} onChange={handleSalariedChange} className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="s_passportNumber" className="text-sm font-medium">Passport No. (optional)</Label>
-                    <Input id="s_passportNumber" name="passportNumber" placeholder="Passport No. (optional)" value={sForm.passportNumber} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                    <Input id="s_passportNumber" name="passportNumber" placeholder="Passport No. (optional)" value={sForm.passportNumber} onChange={handleSalariedChange} className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50" />
                   </div>
                 </div>
               </fieldset>
@@ -953,11 +953,11 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="s_panNumber" className="text-sm font-medium">PAN Card Number <span className="text-destructive">*</span></Label>
-                    <Input id="s_panNumber" name="panNumber" placeholder="PAN Card Number*" value={sForm.panNumber} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                    <Input id="s_panNumber" name="panNumber" placeholder="PAN Card Number*" value={sForm.panNumber} onChange={handleSalariedChange} className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="s_aadhaarNumber" className="text-sm font-medium">Aadhaar Card Number <span className="text-destructive">*</span></Label>
-                    <Input id="s_aadhaarNumber" name="aadhaarNumber" placeholder="Aadhaar Card Number*" value={sForm.aadhaarNumber} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                    <Input id="s_aadhaarNumber" name="aadhaarNumber" placeholder="Aadhaar Card Number*" value={sForm.aadhaarNumber} onChange={handleSalariedChange} className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50" />
                   </div>
                 </div>
                 <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
@@ -1001,12 +1001,12 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 <legend className="text-lg font-bold text-foreground mb-4">C. Residential Details</legend>
                 <div className="space-y-2">
                   <Label htmlFor="s_currentResidentialAddress" className="text-sm font-medium">Current Address <span className="text-destructive">*</span></Label>
-                  <Input id="s_currentResidentialAddress" name="currentResidentialAddress" placeholder="Current Address*" value={sForm.currentResidentialAddress} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                  <Input id="s_currentResidentialAddress" name="currentResidentialAddress" placeholder="Current Address*" value={sForm.currentResidentialAddress} onChange={handleSalariedChange} className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50" />
                 </div>
                 <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                   <div className="space-y-2">
                     <Label htmlFor="s_state" className="text-sm font-medium">State <span className="text-destructive">*</span></Label>
-                    <select id="s_state" name="state" value={sForm.state} onChange={handleSalariedChange} className="mt-2 block w-full rounded-md border border-blue-300 bg-transparent px-3 py-2 text-sm">
+                    <select id="s_state" name="state" value={sForm.state} onChange={handleSalariedChange} className="mt-2 block w-full rounded-md border border-[#0099D8]/30 bg-transparent px-3 py-2 text-sm">
                       <option value="">Select State</option>
                       <option value="Andhra Pradesh">Andhra Pradesh</option>
                       <option value="Arunachal Pradesh">Arunachal Pradesh</option>
@@ -1040,17 +1040,17 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="s_city" className="text-sm font-medium">City <span className="text-destructive">*</span></Label>
-                    <Input id="s_city" name="city" placeholder="City" value={sForm.city} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                    <Input id="s_city" name="city" placeholder="City" value={sForm.city} onChange={handleSalariedChange} className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="s_currentResidentialPincode" className="text-sm font-medium">PIN <span className="text-destructive">*</span></Label>
-                    <Input id="s_currentResidentialPincode" name="currentResidentialPincode" placeholder="PIN" value={sForm.currentResidentialPincode} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                    <Input id="s_currentResidentialPincode" name="currentResidentialPincode" placeholder="PIN" value={sForm.currentResidentialPincode} onChange={handleSalariedChange} className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50" />
                   </div>
                 </div>
                 <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="s_residenceType" className="text-sm font-medium">Residence Type <span className="text-destructive">*</span></Label>
-                    <select id="s_residenceType" name="residenceType" value={sForm.residenceType} onChange={handleSalariedChange} className="mt-2 block w-full rounded-md border border-blue-300 bg-transparent px-3 py-2 text-sm">
+                    <select id="s_residenceType" name="residenceType" value={sForm.residenceType} onChange={handleSalariedChange} className="mt-2 block w-full rounded-md border border-[#0099D8]/30 bg-transparent px-3 py-2 text-sm">
                       <option value="">Select Residence Type</option>
                       <option value="Owned">Owned</option>
                       <option value="Rented">Rented</option>
@@ -1088,7 +1088,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                   <div className="space-y-4">
                     <div className="space-y-2">
                       <Label htmlFor="s_permanentAddress" className="text-sm font-medium">Permanent Address (optional)</Label>
-                      <Input id="s_permanentAddress" name="permanentAddress" placeholder="Permanent Address" value={sForm.permanentAddress} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                      <Input id="s_permanentAddress" name="permanentAddress" placeholder="Permanent Address" value={sForm.permanentAddress} onChange={handleSalariedChange} className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50" />
                     </div>
 
                     <div className="space-y-2">
@@ -1115,7 +1115,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                   <div className="space-y-4">
                     <div className="space-y-2">
                       <Label htmlFor="s_permanentAddress" className="text-sm font-medium">Permanent Address (optional)</Label>
-                      <Input id="s_permanentAddress" name="permanentAddress" placeholder="Permanent Address" value={sForm.permanentAddress} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                      <Input id="s_permanentAddress" name="permanentAddress" placeholder="Permanent Address" value={sForm.permanentAddress} onChange={handleSalariedChange} className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50" />
                     </div>
                     <div className="space-y-2">
                       <Label className="text-sm font-medium">Permanent Address Electricity Bill (optional) <span className="text-xs text-muted-foreground">(Max 2MB)</span></Label>
@@ -1143,11 +1143,11 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="s_companyName" className="text-sm font-medium">Company Name <span className="text-destructive">*</span></Label>
-                    <Input id="s_companyName" name="companyName" placeholder="Company Name" value={sForm.companyName} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                    <Input id="s_companyName" name="companyName" placeholder="Company Name" value={sForm.companyName} onChange={handleSalariedChange} className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="s_organizationType" className="text-sm font-medium">Organization Type <span className="text-destructive">*</span></Label>
-                    <select id="s_organizationType" name="organizationType" value={sForm.organizationType} onChange={handleSalariedChange} className="mt-2 block w-full rounded-md border border-blue-300 bg-transparent px-3 py-2 text-sm">
+                    <select id="s_organizationType" name="organizationType" value={sForm.organizationType} onChange={handleSalariedChange} className="mt-2 block w-full rounded-md border border-[#0099D8]/30 bg-transparent px-3 py-2 text-sm">
                       <option value="">Organization Type</option>
                       <option value="Proprietorship">Proprietorship</option>
                       <option value="Partnership">Partnership</option>
@@ -1171,7 +1171,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="s_industry" className="text-sm font-medium">Industry / Sector <span className="text-destructive">*</span></Label>
-                    <select id="s_industry" name="industry" value={sForm.industry} onChange={handleSalariedChange} className="mt-2 block w-full rounded-md border border-blue-300 bg-transparent px-3 py-2 text-sm">
+                    <select id="s_industry" name="industry" value={sForm.industry} onChange={handleSalariedChange} className="mt-2 block w-full rounded-md border border-[#0099D8]/30 bg-transparent px-3 py-2 text-sm">
                       <option value="">Industry / Sector</option>
                       {sector.map((sector)=>(
                           <option key={sector.id} value={sector.name}>{sector.name}</option>
@@ -1182,16 +1182,16 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                   {sForm.industry === "Other" && (
                     <div className="space-y-2">
                       <Label htmlFor="s_industryCustom" className="text-sm font-medium">Please specify your Industry / Sector <span className="text-destructive">*</span></Label>
-                      <Input id="s_industryCustom" name="industryOther" placeholder="Enter your industry sector" value={sForm.industryOther} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                      <Input id="s_industryCustom" name="industryOther" placeholder="Enter your industry sector" value={sForm.industryOther} onChange={handleSalariedChange} className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50" />
                     </div>
                   )}
                   <div className="space-y-2">
                     <Label htmlFor="s_designation" className="text-sm font-medium">Designation <span className="text-destructive">*</span></Label>
-                    <Input id="s_designation" name="designation" placeholder="Designation" value={sForm.designation} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                    <Input id="s_designation" name="designation" placeholder="Designation" value={sForm.designation} onChange={handleSalariedChange} className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="s_employmentType" className="text-sm font-medium">Employment Type <span className="text-destructive">*</span></Label>
-                    <select id="s_employmentType" name="employmentType" value={sForm.employmentType} onChange={handleSalariedChange} className="mt-2 block w-full rounded-md border border-blue-300 bg-transparent px-3 py-2 text-sm">
+                    <select id="s_employmentType" name="employmentType" value={sForm.employmentType} onChange={handleSalariedChange} className="mt-2 block w-full rounded-md border border-[#0099D8]/30 bg-transparent px-3 py-2 text-sm">
                       <option value="">Employment Type</option>
                       <option value="Permanent">Permanent</option>
                       <option value="Contract">Contract</option>
@@ -1213,19 +1213,19 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                       if (value === '' || parseFloat(value) >= 0) {
                         handleSalariedChange(e);
                       }
-                    }} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                    }} className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="s_officeLocation" className="text-sm font-medium">Current Office full address <span className="text-destructive">*</span></Label>
-                    <Input id="s_officeLocation" name="officeLocation" placeholder="Office Location / City" value={sForm.officeLocation} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                    <Input id="s_officeLocation" name="officeLocation" placeholder="Office Location / City" value={sForm.officeLocation} onChange={handleSalariedChange} className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="s_officePincode" className="text-sm font-medium">Office PIN <span className="text-destructive">*</span></Label>
-                    <Input id="s_officePincode" name="officePincode" placeholder="Office PIN" value={sForm.officePincode} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                    <Input id="s_officePincode" name="officePincode" placeholder="Office PIN" value={sForm.officePincode} onChange={handleSalariedChange} className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="s_officialEmail" className="text-sm font-medium">Official Email ID (optional)</Label>
-                    <Input id="s_officialEmail" name="officialEmail" type="email" placeholder="Official Email ID" value={sForm.officialEmail} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                    <Input id="s_officialEmail" name="officialEmail" type="email" placeholder="Official Email ID" value={sForm.officialEmail} onChange={handleSalariedChange} className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50" />
                   </div>
                 </div>
                 <div className="space-y-2">
@@ -1249,11 +1249,11 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                       if (value === '' || parseFloat(value) >= 0) {
                         handleSalariedChange(e);
                       }
-                    }} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                    }} className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="s_salaryCreditMode" className="text-sm font-medium">Salary Credit Mode <span className="text-destructive">*</span></Label>
-                    <select id="s_salaryCreditMode" name="salaryCreditMode" value={sForm.salaryCreditMode} onChange={handleSalariedChange} className="mt-2 block w-full rounded-md border border-blue-300 bg-transparent px-3 py-2 text-sm">
+                    <select id="s_salaryCreditMode" name="salaryCreditMode" value={sForm.salaryCreditMode} onChange={handleSalariedChange} className="mt-2 block w-full rounded-md border border-[#0099D8]/30 bg-transparent px-3 py-2 text-sm">
                       <option value="">Salary Credit Mode</option>
                       <option value="BankTransfer">Bank Transfer</option>
                       <option value="NEFT_IMPS">NEFT / IMPS</option>
@@ -1263,7 +1263,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="s_salaryAccountBankName" className="text-sm font-medium">Salary Credit Account Bank Name <span className="text-destructive">*</span></Label>
-                    <Input id="s_salaryAccountBankName" name="salaryAccountBankName" placeholder="Salary Account Bank" value={sForm.salaryAccountBankName} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                    <Input id="s_salaryAccountBankName" name="salaryAccountBankName" placeholder="Salary Account Bank" value={sForm.salaryAccountBankName} onChange={handleSalariedChange} className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50" />
                   </div>
                 </div>
                 <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
@@ -1291,7 +1291,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 <legend className="text-lg font-bold text-foreground mb-4">F. Existing Loan & Credit Details</legend>
                 <div className="space-y-2">
                   <Label htmlFor="s_numberOfExistingLoans" className="text-sm font-medium">Number of Existing Loans</Label>
-                  <select id="s_numberOfExistingLoans" value={sForm.numberOfExistingLoans} onChange={handleNumberOfLoansChange} className="mt-2 block w-full rounded-md border border-blue-300 bg-transparent px-3 py-2 text-sm">
+                  <select id="s_numberOfExistingLoans" value={sForm.numberOfExistingLoans} onChange={handleNumberOfLoansChange} className="mt-2 block w-full rounded-md border border-[#0099D8]/30 bg-transparent px-3 py-2 text-sm">
                     <option value="">Select Number of Loans</option>
                     <option value="0">0</option>
                     <option value="1">1</option>
@@ -1304,7 +1304,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 {sForm.numberOfExistingLoans && parseInt(sForm.numberOfExistingLoans) > 0 && (
                   <div className="space-y-6">
                     {Array.from({ length: parseInt(sForm.numberOfExistingLoans) }).map((_, index) => (
-                      <div key={index} className="border border-blue-300 rounded-lg p-4 space-y-4">
+                      <div key={index} className="border border-[#0099D8]/30 rounded-lg p-4 space-y-4">
                         <h4 className="text-md font-semibold text-foreground">Loan {index + 1}</h4>
                         <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
                           <div className="space-y-2">
@@ -1320,7 +1320,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                                   handleExistingLoanChange(index, "totalLoanAmount", value);
                                 }
                               }}
-                              className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50"
+                              className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50"
                             />
                           </div>
                           <div className="space-y-2">
@@ -1336,7 +1336,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                                   handleExistingLoanChange(index, "totalMonthlyEmi", value);
                                 }
                               }}
-                              className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50"
+                              className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50"
                             />
                           </div>
                           <div className="space-y-2">
@@ -1346,7 +1346,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                               placeholder="e.g., Home Loan, Car Loan"
                               value={sForm.existingLoansData[index]?.loanType || ""}
                               onChange={(e) => handleExistingLoanChange(index, "loanType", e.target.value)}
-                              className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50"
+                              className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50"
                             />
                           </div>
                           <div className="space-y-2">
@@ -1356,7 +1356,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                               placeholder="Bank Name"
                               value={sForm.existingLoansData[index]?.bankName || ""}
                               onChange={(e) => handleExistingLoanChange(index, "bankName", e.target.value)}
-                              className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50"
+                              className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50"
                             />
                           </div>
                           <div className="space-y-2 sm:col-span-2">
@@ -1366,7 +1366,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                               placeholder="No / Yes (specify details)"
                               value={sForm.existingLoansData[index]?.emiDelayPast3Months || ""}
                               onChange={(e) => handleExistingLoanChange(index, "emiDelayPast3Months", e.target.value)}
-                              className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50"
+                              className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50"
                             />
                           </div>
                           <div className="space-y-2 sm:col-span-2">
@@ -1417,7 +1417,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                       if (value === '' || parseFloat(value) >= 0) {
                         handleSalariedChange(e);
                       }
-                    }} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                    }} className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50" />
                       </div>
                       <div className="space-y-2">
                         <Label className="text-sm font-medium">CIBIL Report (PDF) (optional)</Label>
@@ -1443,15 +1443,15 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                       if (value === '' || parseFloat(value) >= 0) {
                         handleSalariedChange(e);
                       }
-                    }} className={`border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50 ${sForm.requiredLoanAmount ? 'border-gray-400 bg-gray-50' : ''}`} />
+                    }} className={`border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50 ${sForm.requiredLoanAmount ? 'border-gray-400 bg-gray-50' : ''}`} />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="s_preferredTenure" className="text-sm font-medium">Preferred Loan Tenure <span className="text-destructive">*</span></Label>
-                    <Input id="s_preferredTenure" name="preferredTenure" placeholder="Preferred Loan Tenure" value={sForm.preferredTenure} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                    <Input id="s_preferredTenure" name="preferredTenure" placeholder="Preferred Loan Tenure" value={sForm.preferredTenure} onChange={handleSalariedChange} className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="s_purpose" className="text-sm font-medium">Purpose of Loan <span className="text-destructive">*</span></Label>
-                    <Input id="s_purpose" name="purpose" placeholder="Purpose of Loan" value={sForm.purpose} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                    <Input id="s_purpose" name="purpose" placeholder="Purpose of Loan" value={sForm.purpose} onChange={handleSalariedChange} className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50" />
                   </div>
                   <div className="space-y-2 col-span-2">
                     <Label htmlFor="s_cibilIssues" className="text-sm font-medium">Please mention if you have any CIBIL issues or problems in your credit profile. Kindly specify details, if applicable. (optional)</Label>
@@ -1462,13 +1462,13 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                       maxLength={1000}
                       value={sForm.cibilIssues || ''} 
                       onChange={handleSalariedChange} 
-                      className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50 min-h-[100px]" 
+                      className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50 min-h-[100px]" 
                     />
                     <p className="text-xs text-gray-500">Maximum 1000 characters</p>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="s_isBuyingGoods" className="text-sm font-medium">Are you buying any goods?</Label>
-                    <select id="s_isBuyingGoods" name="isBuyingGoods" value={sForm.isBuyingGoods} onChange={handleSalariedChange} className="mt-2 block w-full rounded-md border border-blue-300 bg-transparent px-3 py-2 text-sm">
+                    <select id="s_isBuyingGoods" name="isBuyingGoods" value={sForm.isBuyingGoods} onChange={handleSalariedChange} className="mt-2 block w-full rounded-md border border-[#0099D8]/30 bg-transparent px-3 py-2 text-sm">
                       <option value="">Select Option</option>
                       <option value="Yes">Yes</option>
                       <option value="No">No</option>
@@ -1482,7 +1482,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                       if (value === '' || parseFloat(value) >= 0) {
                         handleSalariedChange(e);
                       }
-                    }} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                    }} className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50" />
                     </div>
                   )}
                   {sForm.isBuyingGoods === "Yes" && (
@@ -1502,15 +1502,15 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="s_coApplicantName" className="text-sm font-medium">Co-Applicant Name (optional)</Label>
-                    <Input id="s_coApplicantName" name="coApplicantName" placeholder="Co-Applicant Name" value={sForm.coApplicantName} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                    <Input id="s_coApplicantName" name="coApplicantName" placeholder="Co-Applicant Name" value={sForm.coApplicantName} onChange={handleSalariedChange} className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="s_coApplicantRelation" className="text-sm font-medium">Relationship with Applicant (optional)</Label>
-                    <Input id="s_coApplicantRelation" name="coApplicantRelation" placeholder="Relationship with Applicant" value={sForm.coApplicantRelation} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                    <Input id="s_coApplicantRelation" name="coApplicantRelation" placeholder="Relationship with Applicant" value={sForm.coApplicantRelation} onChange={handleSalariedChange} className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="s_coApplicantEmploymentType" className="text-sm font-medium">Co-Applicant Employment Type (optional)</Label>
-                    <Input id="s_coApplicantEmploymentType" name="coApplicantEmploymentType" placeholder="Co-Applicant Employment Type" value={sForm.coApplicantEmploymentType} onChange={handleSalariedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                    <Input id="s_coApplicantEmploymentType" name="coApplicantEmploymentType" placeholder="Co-Applicant Employment Type" value={sForm.coApplicantEmploymentType} onChange={handleSalariedChange} className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50" />
                   </div>
                 </div>
               </fieldset>
@@ -1671,7 +1671,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 </legend>
                 <div className="space-y-2">
                   <Label htmlFor="jobBusiness" className="text-sm font-medium">Current Employment Status</Label>
-                  <select id="jobBusiness" {...register("jobBusiness")} className="mt-2 block w-full rounded-md border border-blue-300 bg-transparent px-3 py-2 text-sm">
+                  <select id="jobBusiness" {...register("jobBusiness")} className="mt-2 block w-full rounded-md border border-[#0099D8]/30 bg-transparent px-3 py-2 text-sm">
                     <option value="">Select Employment Status</option>
                     <option value="Salaried Employee">Salaried Employee</option>
                     <option value="Self Employed Business">Self Employed Business</option>
@@ -2281,37 +2281,37 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                   <div className="space-y-2">
                     <Label htmlFor="u_firstName" className="text-sm font-medium">First Name <span className="text-destructive">*</span></Label>
-                    <Input id="u_firstName" name="firstName" placeholder="First Name (as per PAN)*" value={uForm.firstName} onChange={handleUnifiedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                    <Input id="u_firstName" name="firstName" placeholder="First Name (as per PAN)*" value={uForm.firstName} onChange={handleUnifiedChange} className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50" />
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="u_middleName" className="text-sm font-medium">Middle Name</Label>
-                    <Input id="u_middleName" name="middleName" placeholder="Middle Name" value={uForm.middleName} onChange={handleUnifiedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                    <Input id="u_middleName" name="middleName" placeholder="Middle Name" value={uForm.middleName} onChange={handleUnifiedChange} className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50" />
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="u_lastName" className="text-sm font-medium">Last Name <span className="text-destructive">*</span></Label>
-                    <Input id="u_lastName" name="lastName" placeholder="Last Name (as per PAN)*" value={uForm.lastName} onChange={handleUnifiedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                    <Input id="u_lastName" name="lastName" placeholder="Last Name (as per PAN)*" value={uForm.lastName} onChange={handleUnifiedChange} className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50" />
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="u_aadhaarLinkedMobile" className="text-sm font-medium">Aadhaar Linked Primary Mobile Number <span className="text-destructive">*</span></Label>
-                    <Input id="u_aadhaarLinkedMobile" name="aadhaarLinkedMobile" placeholder="Mobile Number*" value={uForm.aadhaarLinkedMobile} onChange={handleUnifiedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                    <Input id="u_aadhaarLinkedMobile" name="aadhaarLinkedMobile" placeholder="Mobile Number*" value={uForm.aadhaarLinkedMobile} onChange={handleUnifiedChange} className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50" />
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="u_alternateMobile" className="text-sm font-medium">Alternate Mobile Number (optional)</Label>
-                    <Input id="u_alternateMobile" name="alternateMobile" placeholder="Alternate Mobile Number" value={uForm.alternateMobile} onChange={handleUnifiedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                    <Input id="u_alternateMobile" name="alternateMobile" placeholder="Alternate Mobile Number" value={uForm.alternateMobile} onChange={handleUnifiedChange} className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50" />
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="u_whatsappNumber" className="text-sm font-medium">WhatsApp Number (optional)</Label>
-                    <Input id="u_whatsappNumber" name="whatsappNumber" placeholder="WhatsApp Number" value={uForm.whatsappNumber} onChange={handleUnifiedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                    <Input id="u_whatsappNumber" name="whatsappNumber" placeholder="WhatsApp Number" value={uForm.whatsappNumber} onChange={handleUnifiedChange} className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50" />
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="u_gender" className="text-sm font-medium">Gender <span className="text-destructive">*</span></Label>
-                    <select id="u_gender" name="gender" value={uForm.gender} onChange={handleUnifiedChange} required className="mt-2 block w-full rounded-md border border-blue-300 bg-transparent px-3 py-2 text-sm">
+                    <select id="u_gender" name="gender" value={uForm.gender} onChange={handleUnifiedChange} required className="mt-2 block w-full rounded-md border border-[#0099D8]/30 bg-transparent px-3 py-2 text-sm">
                       <option value="">Select Gender</option>
                       <option value="Male">Male</option>
                       <option value="Female">Female</option>
@@ -2321,7 +2321,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
 
                   <div className="space-y-2">
                     <Label htmlFor="u_maritalStatus" className="text-sm font-medium">Marital Status <span className="text-destructive">*</span></Label>
-                    <select id="u_maritalStatus" name="maritalStatus" value={uForm.maritalStatus} onChange={handleUnifiedChange} required className="mt-2 block w-full rounded-md border border-blue-300 bg-transparent px-3 py-2 text-sm">
+                    <select id="u_maritalStatus" name="maritalStatus" value={uForm.maritalStatus} onChange={handleUnifiedChange} required className="mt-2 block w-full rounded-md border border-[#0099D8]/30 bg-transparent px-3 py-2 text-sm">
                       <option value="">Marital Status</option>
                       <option value="Yes">Yes</option>
                       <option value="No">No</option>
@@ -2330,32 +2330,32 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
 
                   <div className="space-y-2">
                     <Label htmlFor="u_dob" className="text-sm font-medium">Date of Birth <span className="text-destructive">*</span></Label>
-                    <Input id="u_dob" name="dob" type="date" value={uForm.dob} onChange={handleUnifiedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                    <Input id="u_dob" name="dob" type="date" value={uForm.dob} onChange={handleUnifiedChange} className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50" />
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="u_personalEmail" className="text-sm font-medium">Personal Email ID <span className="text-destructive">*</span></Label>
-                    <Input id="u_personalEmail" name="personalEmail" type="email" placeholder="Personal Email ID*" value={uForm.personalEmail} onChange={handleUnifiedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                    <Input id="u_personalEmail" name="personalEmail" type="email" placeholder="Personal Email ID*" value={uForm.personalEmail} onChange={handleUnifiedChange} className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50" />
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="u_officialEmail" className="text-sm font-medium">Official Email ID (optional)</Label>
-                    <Input id="u_officialEmail" name="officialEmail" type="email" placeholder="Official Email ID" value={uForm.officialEmail} onChange={handleUnifiedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                    <Input id="u_officialEmail" name="officialEmail" type="email" placeholder="Official Email ID" value={uForm.officialEmail} onChange={handleUnifiedChange} className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50" />
                   </div>
                 </div>
 
                 <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                   <div className="space-y-2">
                     <Label htmlFor="u_voterId" className="text-sm font-medium">Voter ID (optional)</Label>
-                    <Input id="u_voterId" name="voterId" placeholder="Voter ID (optional)" value={uForm.voterId} onChange={handleUnifiedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                    <Input id="u_voterId" name="voterId" placeholder="Voter ID (optional)" value={uForm.voterId} onChange={handleUnifiedChange} className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="u_passport" className="text-sm font-medium">Passport (optional)</Label>
-                    <Input id="u_passport" name="passport" placeholder="Passport (optional)" value={uForm.passport} onChange={handleUnifiedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                    <Input id="u_passport" name="passport" placeholder="Passport (optional)" value={uForm.passport} onChange={handleUnifiedChange} className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="u_drivingLicense" className="text-sm font-medium">Driving License (optional)</Label>
-                    <Input id="u_drivingLicense" name="drivingLicense" placeholder="Driving License (optional)" value={uForm.drivingLicense} onChange={handleUnifiedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                    <Input id="u_drivingLicense" name="drivingLicense" placeholder="Driving License (optional)" value={uForm.drivingLicense} onChange={handleUnifiedChange} className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50" />
                   </div>
                 </div>
               </fieldset>
@@ -2365,20 +2365,20 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 <legend className="text-lg font-bold text-foreground mb-4">B. Residential Address Details</legend>
                 <div className="space-y-2">
                   <Label htmlFor="u_currentResidentialAddress" className="text-sm font-medium">Current Residential Address <span className="text-destructive">*</span></Label>
-                  <Input id="u_currentResidentialAddress" name="currentResidentialAddress" placeholder="Current Residential Address*" value={uForm.currentResidentialAddress} onChange={handleUnifiedChange} className={`border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50 ${uForm.currentResidentialAddress ? 'border-gray-400 bg-gray-50' : ''}`} />
+                  <Input id="u_currentResidentialAddress" name="currentResidentialAddress" placeholder="Current Residential Address*" value={uForm.currentResidentialAddress} onChange={handleUnifiedChange} className={`border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50 ${uForm.currentResidentialAddress ? 'border-gray-400 bg-gray-50' : ''}`} />
                 </div>
                 <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                   <div className="space-y-2">
                     <Label htmlFor="u_residentialPincode" className="text-sm font-medium">Pincode <span className="text-destructive">*</span></Label>
-                    <Input id="u_residentialPincode" name="residentialPincode" placeholder="Pincode*" value={uForm.residentialPincode} onChange={handleUnifiedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                    <Input id="u_residentialPincode" name="residentialPincode" placeholder="Pincode*" value={uForm.residentialPincode} onChange={handleUnifiedChange} className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="u_residentialState" className="text-sm font-medium">State <span className="text-destructive">*</span></Label>
-                    <Input id="u_residentialState" name="residentialState" placeholder="State*" value={uForm.residentialState} onChange={handleUnifiedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                    <Input id="u_residentialState" name="residentialState" placeholder="State*" value={uForm.residentialState} onChange={handleUnifiedChange} className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="u_residentialCity" className="text-sm font-medium">City <span className="text-destructive">*</span></Label>
-                    <Input id="u_residentialCity" name="residentialCity" placeholder="City*" value={uForm.residentialCity} onChange={handleUnifiedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                    <Input id="u_residentialCity" name="residentialCity" placeholder="City*" value={uForm.residentialCity} onChange={handleUnifiedChange} className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50" />
                   </div>
                 </div>
               </fieldset>
@@ -2388,20 +2388,20 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 <legend className="text-lg font-bold text-foreground mb-4">C. Office/Shop Address Details</legend>
                 <div className="space-y-2">
                   <Label htmlFor="u_currentOfficeAddress" className="text-sm font-medium">Current Shop/Office Address <span className="text-destructive">*</span></Label>
-                  <Input id="u_currentOfficeAddress" name="currentOfficeAddress" placeholder="Current Shop/Office Address*" value={uForm.currentOfficeAddress} onChange={handleUnifiedChange} className={`border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50 ${uForm.currentOfficeAddress ? 'border-gray-400 bg-gray-50' : ''}`} />
+                  <Input id="u_currentOfficeAddress" name="currentOfficeAddress" placeholder="Current Shop/Office Address*" value={uForm.currentOfficeAddress} onChange={handleUnifiedChange} className={`border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50 ${uForm.currentOfficeAddress ? 'border-gray-400 bg-gray-50' : ''}`} />
                 </div>
                 <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                   <div className="space-y-2">
                     <Label htmlFor="u_officePincode" className="text-sm font-medium">Pincode <span className="text-destructive">*</span></Label>
-                    <Input id="u_officePincode" name="officePincode" placeholder="Pincode*" value={uForm.officePincode} onChange={handleUnifiedChange} className={`border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50 ${uForm.officePincode ? 'border-gray-400 bg-gray-50' : ''}`} />
+                    <Input id="u_officePincode" name="officePincode" placeholder="Pincode*" value={uForm.officePincode} onChange={handleUnifiedChange} className={`border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50 ${uForm.officePincode ? 'border-gray-400 bg-gray-50' : ''}`} />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="u_officeState" className="text-sm font-medium">State <span className="text-destructive">*</span></Label>
-                    <Input id="u_officeState" name="officeState" placeholder="State*" value={uForm.officeState} onChange={handleUnifiedChange} className={`border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50 ${uForm.officeState ? 'border-gray-400 bg-gray-50' : ''}`} />
+                    <Input id="u_officeState" name="officeState" placeholder="State*" value={uForm.officeState} onChange={handleUnifiedChange} className={`border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50 ${uForm.officeState ? 'border-gray-400 bg-gray-50' : ''}`} />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="u_officeCity" className="text-sm font-medium">City <span className="text-destructive">*</span></Label>
-                    <Input id="u_officeCity" name="officeCity" placeholder="City*" value={uForm.officeCity} onChange={handleUnifiedChange} className={`border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50 ${uForm.officeCity ? 'border-gray-400 bg-gray-50' : ''}`} />
+                    <Input id="u_officeCity" name="officeCity" placeholder="City*" value={uForm.officeCity} onChange={handleUnifiedChange} className={`border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50 ${uForm.officeCity ? 'border-gray-400 bg-gray-50' : ''}`} />
                   </div>
                 </div>
               </fieldset>
@@ -2417,11 +2417,11 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                       if (value === '' || parseFloat(value) >= 0) {
                         handleUnifiedChange(e);
                       }
-                    }} className={`border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50 ${uForm.requiredLoanAmount ? 'border-gray-400 bg-gray-50' : ''}`} />
+                    }} className={`border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50 ${uForm.requiredLoanAmount ? 'border-gray-400 bg-gray-50' : ''}`} />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="u_loanType" className="text-sm font-medium">Type of Loan <span className="text-destructive">*</span></Label>
-                    <Input id="u_loanType" name="loanType" placeholder="Type of Loan*" value={uForm.loanType} onChange={handleUnifiedChange} className={`border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50 ${uForm.loanType ? 'border-gray-400 bg-gray-50' : ''}`} />
+                    <Input id="u_loanType" name="loanType" placeholder="Type of Loan*" value={uForm.loanType} onChange={handleUnifiedChange} className={`border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50 ${uForm.loanType ? 'border-gray-400 bg-gray-50' : ''}`} />
                   </div>
                 </div>
                 <div className="space-y-2">
@@ -2433,7 +2433,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                     maxLength={1000}
                     value={uForm.cibilIssues || ''} 
                     onChange={handleUnifiedChange} 
-                    className={`border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50 min-h-[100px] ${uForm.cibilIssues ? 'border-gray-400 bg-gray-50' : ''}`} 
+                    className={`border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50 min-h-[100px] ${uForm.cibilIssues ? 'border-gray-400 bg-gray-50' : ''}`} 
                   />
                   <p className="text-xs text-gray-500">Maximum 1000 characters</p>
                 </div>
@@ -2523,15 +2523,15 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="u_coApplicantName" className="text-sm font-medium">Co-Applicant Name (optional)</Label>
-                    <Input id="u_coApplicantName" name="coApplicantName" placeholder="Co-Applicant Name" value={uForm.coApplicantName} onChange={handleUnifiedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                    <Input id="u_coApplicantName" name="coApplicantName" placeholder="Co-Applicant Name" value={uForm.coApplicantName} onChange={handleUnifiedChange} className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="u_coApplicantRelation" className="text-sm font-medium">Relationship with Applicant (optional)</Label>
-                    <Input id="u_coApplicantRelation" name="coApplicantRelation" placeholder="Relationship with Applicant" value={uForm.coApplicantRelation} onChange={handleUnifiedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                    <Input id="u_coApplicantRelation" name="coApplicantRelation" placeholder="Relationship with Applicant" value={uForm.coApplicantRelation} onChange={handleUnifiedChange} className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="u_coApplicantEmploymentType" className="text-sm font-medium">Co-Applicant Employment Type (optional)</Label>
-                    <Input id="u_coApplicantEmploymentType" name="coApplicantEmploymentType" placeholder="Co-Applicant Employment Type" value={uForm.coApplicantEmploymentType} onChange={handleUnifiedChange} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                    <Input id="u_coApplicantEmploymentType" name="coApplicantEmploymentType" placeholder="Co-Applicant Employment Type" value={uForm.coApplicantEmploymentType} onChange={handleUnifiedChange} className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50" />
                   </div>
                 </div>
               </fieldset>
@@ -2626,7 +2626,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                                     )
                                   }));
                                 }}
-                                className="border-blue-300 text-sm"
+                                className="border-[#0099D8]/30 text-sm"
                               />
                             </div>
                             <div className="space-y-1">
@@ -2694,7 +2694,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                         )
                       }));
                     }} 
-                    className="mt-2 block w-full rounded-md border border-blue-300 bg-transparent px-3 py-2 text-sm"
+                    className="mt-2 block w-full rounded-md border border-[#0099D8]/30 bg-transparent px-3 py-2 text-sm"
                   >
                     <option value="">Select Number of Loans</option>
                     <option value="0">0</option>
@@ -2709,7 +2709,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 {uForm.existingLoansCount && parseInt(uForm.existingLoansCount) > 0 && (
                   <div className="space-y-6">
                     {Array.from({ length: parseInt(uForm.existingLoansCount) }).map((_, index) => (
-                      <div key={index} className="border border-blue-300 rounded-lg p-4 space-y-4">
+                      <div key={index} className="border border-[#0099D8]/30 rounded-lg p-4 space-y-4">
                         <h4 className="text-md font-semibold text-foreground">Loan {index + 1}</h4>
                         <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
                           <div className="space-y-2">
@@ -2729,7 +2729,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                                   });
                                 }
                               }}
-                              className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50"
+                              className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50"
                             />
                           </div>
                           <div className="space-y-2">
@@ -2749,7 +2749,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                                   });
                                 }
                               }}
-                              className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50"
+                              className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50"
                             />
                           </div>
                           <div className="space-y-2">
@@ -2765,7 +2765,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                                   return { ...p, existingLoanDetails: updated };
                                 });
                               }}
-                              className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50"
+                              className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50"
                             />
                           </div>
                           <div className="space-y-2">
@@ -2781,7 +2781,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                                   return { ...p, existingLoanDetails: updated };
                                 });
                               }}
-                              className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50"
+                              className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50"
                             />
                           </div>
                           <div className="space-y-2 sm:col-span-2">
@@ -2796,7 +2796,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                                   return { ...p, existingLoanDetails: updated };
                                 });
                               }}
-                              className="mt-2 block w-full rounded-md border border-blue-300 bg-transparent px-3 py-2 text-sm"
+                              className="mt-2 block w-full rounded-md border border-[#0099D8]/30 bg-transparent px-3 py-2 text-sm"
                             >
                               <option value="">Select Option</option>
                               <option value="Yes">Yes</option>
@@ -2984,7 +2984,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 <legend className="text-lg font-bold text-foreground mb-4">L. Buying Goods</legend>
                 <div className="space-y-2">
                   <Label htmlFor="u_isBuyingGoods" className="text-sm font-medium">If Buying Goods</Label>
-                  <select id="u_isBuyingGoods" name="isBuyingGoods" value={uForm.isBuyingGoods} onChange={handleUnifiedChange} className="mt-2 block w-full rounded-md border border-blue-300 bg-transparent px-3 py-2 text-sm">
+                  <select id="u_isBuyingGoods" name="isBuyingGoods" value={uForm.isBuyingGoods} onChange={handleUnifiedChange} className="mt-2 block w-full rounded-md border border-[#0099D8]/30 bg-transparent px-3 py-2 text-sm">
                     <option value="">Select Option</option>
                     <option value="Yes">Yes</option>
                     <option value="No">No</option>
@@ -3001,7 +3001,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                         placeholder="Please describe the goods you intend to purchase" 
                         value={uForm.goodsDescription} 
                         onChange={handleUnifiedChange} 
-                        className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" 
+                        className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50" 
                       />
                     </div>
                     
@@ -3030,7 +3030,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                 <legend className="text-lg font-bold text-foreground mb-4">M. CIBIL Score</legend>
                 <div className="space-y-2">
                   <Label htmlFor="u_cibilScoreKnown" className="text-sm font-medium">CIBIL Score Known</Label>
-                  <select id="u_cibilScoreKnown" name="cibilScoreKnown" value={uForm.cibilScoreKnown} onChange={handleUnifiedChange} className="mt-2 block w-full rounded-md border border-blue-300 bg-transparent px-3 py-2 text-sm">
+                  <select id="u_cibilScoreKnown" name="cibilScoreKnown" value={uForm.cibilScoreKnown} onChange={handleUnifiedChange} className="mt-2 block w-full rounded-md border border-[#0099D8]/30 bg-transparent px-3 py-2 text-sm">
                     <option value="">Select Option</option>
                     <option value="Yes">Yes</option>
                     <option value="No">No</option>
@@ -3046,7 +3046,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                       if (value === '' || parseFloat(value) >= 0) {
                         handleUnifiedChange(e);
                       }
-                    }} className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50" />
+                    }} className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50" />
                     </div>
 
                     <div className="space-y-2">
@@ -3088,7 +3088,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                         )
                       }));
                     }} 
-                    className="mt-2 block w-full rounded-md border border-blue-300 bg-transparent px-3 py-2 text-sm"
+                    className="mt-2 block w-full rounded-md border border-[#0099D8]/30 bg-transparent px-3 py-2 text-sm"
                   >
                     <option value="">Select Number of Documents</option>
                     <option value="0">0</option>
@@ -3120,7 +3120,7 @@ export default function ApplyNowModal({ isOpen, onClose, loanType, loanTypeKey, 
                                   return { ...p, otherSupportedDocuments: updated };
                                 });
                               }}
-                              className="border-blue-300 focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-50"
+                              className="border-[#0099D8]/30 focus:border-[#0099D8]/30 focus:ring-[#0099D8]/30 focus:ring-opacity-50"
                             />
                           </div>
                           <div className="space-y-2">

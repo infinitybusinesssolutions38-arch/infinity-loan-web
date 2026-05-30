@@ -79,7 +79,7 @@ export default function DocumentsSection({ documents, variant = "default", ancho
         <div className="max-w-4xl mx-auto space-y-8">
           <div>
             <div className="flex items-center gap-2 mb-4">
-              <AlertCircle className={`h-5 w-5 ${variant === "personal" ? "text-[#F97415]" : "text-destructive"}`} />
+              <AlertCircle className={`h-5 w-5 ${variant === "personal" ? "text-[#0099D8]" : "text-destructive"}`} />
               <h3 className={`text-xl font-bold ${variant === "personal" ? "text-white" : "text-foreground"}`}>
                 Mandatory Documents
               </h3>
@@ -98,8 +98,8 @@ export default function DocumentsSection({ documents, variant = "default", ancho
                     ${
                       variant === "personal"
                         ? checkedItems.has(idx)
-                          ? "border-[#F97415]/70 bg-[#F97415]/10"
-                          : "border-white/10 bg-white/5 hover:border-[#F97415]/40"
+                          ? "border-[#0099D8]/70 bg-[#0099D8]/10"
+                          : "border-white/10 bg-white/5 hover:border-[#0099D8]/40"
                         : checkedItems.has(idx)
                           ? "border-accent bg-accent/5"
                           : "border-border bg-card hover:border-primary/30"
@@ -114,8 +114,8 @@ export default function DocumentsSection({ documents, variant = "default", ancho
                     ${
                       variant === "personal"
                         ? checkedItems.has(idx)
-                          ? "border-[#F97415] bg-[#F97415] text-black scale-110"
-                          : "border-white/20 text-white group-hover:border-[#F97415]"
+                          ? "border-[#0099D8] bg-[#0099D8] text-black scale-110"
+                          : "border-white/20 text-white group-hover:border-[#0099D8]"
                         : checkedItems.has(idx)
                           ? "border-accent bg-accent text-accent-foreground scale-110"
                           : "border-muted-foreground/30 group-hover:border-primary"
@@ -127,12 +127,12 @@ export default function DocumentsSection({ documents, variant = "default", ancho
 
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
-                      <FileText className={`h-4 w-4 ${variant === "personal" ? "text-[#F97415]" : "text-primary"}`} />
+                      <FileText className={`h-4 w-4 ${variant === "personal" ? "text-[#0099D8]" : "text-primary"}`} />
                       <span
                         className={`font-semibold transition-colors ${
                           variant === "personal"
                             ? checkedItems.has(idx)
-                              ? "text-[#F97415]"
+                              ? "text-[#0099D8]"
                               : "text-white"
                             : checkedItems.has(idx)
                               ? "text-accent"
@@ -143,7 +143,7 @@ export default function DocumentsSection({ documents, variant = "default", ancho
                       </span>
                       <Badge
                         variant="destructive"
-                        className={`text-xs ${variant === "personal" ? "bg-[#F97415] text-black hover:bg-[#F97415]" : ""}`}
+                        className={`text-xs ${variant === "personal" ? "bg-[#0099D8] text-black hover:bg-[#0099D8]" : ""}`}
                       >
                         Required
                       </Badge>
@@ -186,8 +186,8 @@ export default function DocumentsSection({ documents, variant = "default", ancho
                         ${
                           variant === "personal"
                             ? checkedItems.has(actualIdx)
-                              ? "border-[#F97415]/70 bg-[#F97415]/10"
-                              : "border-white/10 bg-white/5 hover:border-[#F97415]/40"
+                              ? "border-[#0099D8]/70 bg-[#0099D8]/10"
+                              : "border-white/10 bg-white/5 hover:border-[#0099D8]/40"
                             : checkedItems.has(actualIdx)
                               ? "border-accent bg-accent/5"
                               : "border-border bg-card/50 hover:border-primary/30"
@@ -202,8 +202,8 @@ export default function DocumentsSection({ documents, variant = "default", ancho
                         ${
                           variant === "personal"
                             ? checkedItems.has(actualIdx)
-                              ? "border-[#F97415] bg-[#F97415] text-black scale-110"
-                              : "border-white/20 text-white group-hover:border-[#F97415]"
+                              ? "border-[#0099D8] bg-[#0099D8] text-black scale-110"
+                              : "border-white/20 text-white group-hover:border-[#0099D8]"
                             : checkedItems.has(actualIdx)
                               ? "border-accent bg-accent text-accent-foreground scale-110"
                               : "border-muted-foreground/20 group-hover:border-primary"
@@ -222,7 +222,7 @@ export default function DocumentsSection({ documents, variant = "default", ancho
                             className={`font-medium transition-colors ${
                               variant === "personal"
                                 ? checkedItems.has(actualIdx)
-                                  ? "text-[#F97415]"
+                                  ? "text-[#0099D8]"
                                   : "text-white"
                                 : checkedItems.has(actualIdx)
                                   ? "text-accent"

@@ -49,7 +49,7 @@ export default function LoanDetailPage({ loanType }: LoanDetailPageProps) {
     <div className="min-h-screen bg-background">
       <section className="relative overflow-hidden bg-gradient-to-br from-black via-gray-900 to-black py-20 lg:py-32">
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-[#F97415]/10 blur-3xl animate-blob" />
+          <div className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-[#0099D8]/10 blur-3xl animate-blob" />
           <div className="absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-gray-700/20 blur-3xl animate-blob animation-delay-2000" />
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[600px] rounded-full bg-gray-800/10 blur-3xl animate-blob animation-delay-4000" />
         </div>
@@ -111,7 +111,7 @@ export default function LoanDetailPage({ loanType }: LoanDetailPageProps) {
               <div className="flex flex-col gap-4">
                 {data.interestRate && (
                   <div className="flex items-center gap-4 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 p-5 text-white">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#F97415]/15">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#0099D8]/15">
                       <Percent className="h-6 w-6" />
                     </div>
                     <div>

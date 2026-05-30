@@ -911,7 +911,7 @@ export async function POST(req) {
         if (adminRecipients.length > 0) {
           const adminHtmlContent = `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-              <div style="background: linear-gradient(135deg, #F97415 0%, #E06410 100%); padding: 30px; border-radius: 10px; color: white; margin-bottom: 30px;">
+              <div style="background: linear-gradient(135deg, #0099D8 0%, #007BB0 100%); padding: 30px; border-radius: 10px; color: white; margin-bottom: 30px;">
                 <h1 style="margin: 0;">New Loan Application</h1>
                 <p style="margin: 10px 0 0 0;">Action Required - Review & Process</p>
               </div>
@@ -920,7 +920,7 @@ export async function POST(req) {
                 <p>A new loan application has been submitted on the Infinity Loans platform. Please review the details below and take appropriate action.</p>
 
                 <div style="background: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
-                  <h3 style="margin-top: 0; color: #F97415;">Application Details:</h3>
+                  <h3 style="margin-top: 0; color: #0099D8;">Application Details:</h3>
                   <table style="width: 100%; border-collapse: collapse;">
                     <tr style="border-bottom: 1px solid #ddd;">
                       <td style="padding: 10px 0; font-weight: bold; width: 30%;">Application ID:</td>

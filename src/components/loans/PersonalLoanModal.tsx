@@ -314,7 +314,7 @@ export default function PersonalLoanModal({ isOpen, onClose }: Props) {
                                     { bankName: "", amount: "", emi: "" },
                                 ])
                             }
-                            className="text-blue-600"
+                            className="text-[#0099D8]"
                         >
                             + Add More
                         </button>
@@ -352,7 +352,7 @@ export default function PersonalLoanModal({ isOpen, onClose }: Props) {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="px-6 py-2 bg-blue-600 text-white rounded-lg"
+                            className="px-6 py-2 bg-[#0099D8] text-white rounded-lg"
                         >
                             {loading ? "Submitting..." : "Submit"}
                         </button>

@@ -128,7 +128,7 @@ export default function EMICalculator() {
                     </div>
 
                     {/* RIGHT */}
-                    <div className="rounded-2xl bg-gradient-to-br from-white to-blue-50 p-6 shadow-xl border border-blue-100/60 flex flex-col justify-between">
+                    <div className="rounded-2xl bg-gradient-to-br from-white to-blue-50 p-6 shadow-xl border border-[#0099D8]/15/60 flex flex-col justify-between">
 
                         <div>
                             <h3 className="text-lg font-semibold mb-4 text-gray-900">

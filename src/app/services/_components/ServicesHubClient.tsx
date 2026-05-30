@@ -273,6 +273,15 @@ const makeItems = (params: {
   });
 };
 
+const dedupeServiceItems = <T extends ServiceCardItem>(items: T[]): T[] => {
+  const seen = new Set<string>();
+  return items.filter((item) => {
+    if (seen.has(item.key)) return false;
+    seen.add(item.key);
+    return true;
+  });
+};
+
 const CATEGORY_META: Array<{
   key: HubCategoryKey;
   title: string;
@@ -940,7 +949,7 @@ const LOAN_GROUP_BY_TITLE = Object.fromEntries(
 
 const SALARIED_EMPLOYEE_LOAN_OFFERS: ServiceGroup = {
   title: "Loan Offers for Salaried Employees",
-  items: [
+  items: dedupeServiceItems([
     ...makeItems({
       prefix: "salaried",
       infoHref: "/services/loans",
@@ -1020,12 +1029,12 @@ const SALARIED_EMPLOYEE_LOAN_OFFERS: ServiceGroup = {
         "Student Overdraft Loan",
       ],
     }).map((item) => ({ ...item, imageSrc: getSalariedCardImageSrc(item.title) })),
-  ],
+  ]),
 };
 
 const BUSINESS_LOAN_SERVICES: ServiceGroup = {
   title: "Smart Loan & Funding Solutions for All Businesses — Proprietorships, Mid-Sized SMEs, Industrial Enterprises, and Corporates",
-  items: [
+  items: dedupeServiceItems([
     {
       key: "business-audience",
       title: "Proprietorships, SMEs, Industrial Enterprises & Corporates",
@@ -1286,7 +1295,6 @@ const BUSINESS_LOAN_SERVICES: ServiceGroup = {
         "Stockist / Super Stockist Loan",
         "Retailer / Kirana / Supermarket Loan",
         "Seasonal Business Funding",
-        "Manufacturing Unit Loan",
         "Factory Setup / Expansion Loan",
         "Greenfield / Brownfield Project Loan",
         "Industrial Shed / Plot Loan",
@@ -1321,12 +1329,12 @@ const BUSINESS_LOAN_SERVICES: ServiceGroup = {
         "Educational Institution Loan",
       ],
     }),
-  ].map((item) => ({ ...item, imageSrc: getBusinessCardImageSrc({ key: item.key, title: item.title }) })),
+  ]).map((item) => ({ ...item, imageSrc: getBusinessCardImageSrc({ key: item.key, title: item.title }) })),
 };
 
 const PROFESSIONAL_LOAN_SERVICES: ServiceGroup = {
   title: "Smart Loan & Funding Solutions for All Professionals — Doctors, Chartered Accountants, Architects, Engineers, Lawyers, Consultants, and Self-Employed Professionals",
-  items: [
+  items: dedupeServiceItems([
     {
       key: "professional-audience",
       title: "Doctors, CAs, Architects, Engineers, Lawyers, Consultants, Self-Employed",
@@ -1496,7 +1504,7 @@ const PROFESSIONAL_LOAN_SERVICES: ServiceGroup = {
         "Staffing Company Loan",
       ],
     }),
-  ].map((item) => ({ ...item, imageSrc: getProfessionalCardImageSrc(item.title) })),
+  ]).map((item) => ({ ...item, imageSrc: getProfessionalCardImageSrc(item.title) })),
 };
 
 const GOVT_EMPLOYEE_LOAN_SERVICES: ServiceGroup = {
@@ -1636,7 +1644,7 @@ const GOVT_EMPLOYEE_LOAN_SERVICES: ServiceGroup = {
 
 const GOVT_SCHEME_SERVICES: ServiceGroup = {
   title: "End-to-End Financing Support for Central & State Government Schemes",
-  items: [
+  items: dedupeServiceItems([
     {
       key: "govt-scheme-pmegp-loan",
       title: "PMEGP Loan",
@@ -1875,12 +1883,12 @@ const GOVT_SCHEME_SERVICES: ServiceGroup = {
       highlight: true,
       badge: "Govt Support",
     },
-  ].map((item) => ({ ...item, imageSrc: getGovtSchemeCardImageSrc(item.title) })),
+  ]).map((item) => ({ ...item, imageSrc: getGovtSchemeCardImageSrc(item.title) })),
 };
 
 const BUILDER_DEVELOPER_SERVICES: ServiceGroup = {
   title: "Smart Loan & Project Funding Solutions for Builders & Developers",
-  items: [
+  items: dedupeServiceItems([
     {
       key: "builder-builder-project-loan",
       title: "Builder Project Loan",
@@ -2023,11 +2031,10 @@ const BUILDER_DEVELOPER_SERVICES: ServiceGroup = {
         "Land Purchase & Development Finance",
         "Affordable Housing Project Loan",
         "Warehouse & SEZ Project Finance",
-        "Lease Rental Discounting (LRD)",
         "Rental Income Based Loan",
       ],
     }),
-  ].map((item) => ({ ...item, imageSrc: getBuilderDeveloperCardImageSrc(item.title) })),
+  ]).map((item) => ({ ...item, imageSrc: getBuilderDeveloperCardImageSrc(item.title) })),
 };
 
 const GROUPED_SERVICES: Partial<Record<HubCategoryKey, ServiceGroup[]>> = {
@@ -2076,18 +2083,18 @@ export default function ServicesHubClient() {
 
   return (
     <div className="min-h-screen bg-background">
-      <section className="relative overflow-hidden bg-gradient-to-br from-black via-gray-900 to-black py-20 lg:py-32">
+      <section className="relative overflow-hidden bg-gradient-to-br from-gray-50 via-white to-gray-100 py-20 lg:py-32 border-b border-gray-200">
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-[#F97415]/10 blur-3xl animate-blob" />
-          <div className="absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-gray-700/20 blur-3xl animate-blob animation-delay-2000" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[600px] rounded-full bg-gray-800/10 blur-3xl animate-blob animation-delay-4000" />
+          <div className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-[#0099D8]/10 blur-3xl animate-blob" />
+          <div className="absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-[#0099D8]/5 blur-3xl animate-blob animation-delay-2000" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[600px] rounded-full bg-[#0099D8]/5 blur-3xl animate-blob animation-delay-4000" />
         </div>
 
-        <div className="absolute inset-0 opacity-10">
+        <div className="absolute inset-0 opacity-40">
           <div
             className="absolute inset-0"
             style={{
-              backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
+              backgroundImage: `radial-gradient(circle at 1px 1px, #0099D8 1px, transparent 0)`,
               backgroundSize: "40px 40px",
             }}
           />
@@ -2095,15 +2102,15 @@ export default function ServicesHubClient() {
 
         <div className="container relative z-10 mx-auto px-4">
           <div className="max-w-3xl">
-            <Badge className="mb-4 bg-white/10 text-white border-white/20 backdrop-blur">
+            <Badge className="mb-4 border-[#0099D8]/20 bg-[#0099D8]/10 text-[#0099D8]">
               <Sparkles className="mr-1 h-3 w-3" />
               Trusted Financial Partner
             </Badge>
-            <h1 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl">
+            <h1 className="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
               Your Financial Goals,{" "}
-              <span className="text-[#F97415]">Simplified</span>
+              <span className="text-[#0099D8]">Simplified</span>
             </h1>
-            <p className="mt-6 text-lg text-gray-300 sm:text-xl max-w-2xl">
+            <p className="mt-6 max-w-2xl text-lg text-gray-600 sm:text-xl">
               From personal loans to business funding, insurance to credit cards — we help you access the right
               financial products with complete transparency.
             </p>
@@ -2133,7 +2140,7 @@ export default function ServicesHubClient() {
             {TRUST_INDICATORS.map((item, idx) => (
               <div
                 key={idx}
-                className="flex items-center gap-4 rounded-2xl bg-card p-6 shadow-xl animate-fade-in border border-2 border-blue-200"
+                className="flex items-center gap-4 rounded-2xl bg-card p-6 shadow-xl animate-fade-in border border-[#0099D8]/20"
                 style={{ animationDelay: `${idx * 100}ms` }}
               >
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
@@ -2152,11 +2159,11 @@ export default function ServicesHubClient() {
       <section className="py-16 lg:py-24">
         <div className="container mx-auto px-4">
           <div className="container mx-auto px-4">
-            <div className="relative text-center mb-12 rounded-2xl p-6 shadow-xl border border-2  border-blue-200 bg-background overflow-hidden transition-colors duration-300">
+            <div className="relative text-center mb-12 rounded-2xl p-6 shadow-xl border border-[#0099D8]/20 bg-background overflow-hidden transition-colors duration-300">
 
               <div className="relative z-10 py-10">
                 <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-6xl">
-                  Explore Our <span className="text-[#f97415] text-7xl">Loan</span> Services
+                  Explore Our <span className="text-[#0099D8] text-7xl">Loan</span> Services
                 </h2>
 
                 <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -2182,33 +2189,33 @@ export default function ServicesHubClient() {
                   size="lg"
                   variant="tab-inactive"
                   onClick={handleCategoryClick}
-                  className={`group h-auto w-full justify-start gap-4 rounded-2xl border-2 px-5 py-5 transition-all duration-300 whitespace-normal text-left leading-snug text-base sm:text-lg hover:-translate-y-0.5 hover:shadow-lg focus-visible:ring-2 focus-visible:ring-[#F97415]/40 ${isActive
-                    ? "scale-[1.02] border-[#F97415] bg-gradient-to-br from-black via-neutral-900 to-black text-white"
-                    : "border-white/10 bg-gradient-to-br from-black via-neutral-900 to-black text-white hover:border-[#F97415]/40"
+                  className={`group h-auto w-full justify-start gap-4 rounded-2xl border px-5 py-5 transition-all duration-300 whitespace-normal text-left leading-snug text-base sm:text-lg hover:-translate-y-0.5 hover:shadow-lg focus-visible:ring-2 focus-visible:ring-[#0099D8]/40 ${isActive
+                    ? "scale-[1.02] border-[#0099D8] bg-white text-gray-900 shadow-md"
+                    : "border-gray-200 bg-white text-gray-900 hover:border-[#0099D8]/40 hover:shadow-md"
                     }`}
                 >
                   <span
                     className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border transition-all duration-300 ${isActive
-                      ? "border-[#F97415]/30 bg-[#F97415] text-white"
-                      : "border-[#F97415]/15 bg-[#F97415]/10 text-[#F97415] group-hover:bg-[#F97415] group-hover:text-white"
+                      ? "border-[#0099D8]/30 bg-[#0099D8] text-white"
+                      : "border-[#0099D8]/15 bg-[#0099D8]/10 text-[#0099D8] group-hover:bg-[#0099D8] group-hover:text-white"
                       }`}
                   >
                     <Icon className="h-6 w-6" />
                   </span>
 
                   <span className="min-w-0 flex-1">
-                    <span className="block font-bold text-white group-hover:text-[#F97415] transition-colors duration-300">
+                    <span className="block font-bold text-gray-900 transition-colors duration-300 group-hover:text-[#0099D8]">
                       {cat.title}
                     </span>
-                    <span className="mt-1 block text-xs font-medium text-white/60">
+                    <span className="mt-1 block text-xs font-medium text-gray-500">
                       Click to view services
                     </span>
                   </span>
 
                   <span
                     className={`inline-flex shrink-0 items-center rounded-full px-3 py-1 text-xs font-semibold transition-all duration-300 ${isActive
-                      ? "bg-[#F97415] text-white"
-                      : "bg-[#F97415]/10 text-[#F97415] group-hover:bg-[#F97415] group-hover:text-white"
+                      ? "bg-[#0099D8] text-white"
+                      : "bg-[#0099D8]/10 text-[#0099D8] group-hover:bg-[#0099D8] group-hover:text-white"
                       }`}
                   >
                     View
@@ -2224,7 +2231,7 @@ export default function ServicesHubClient() {
                 <div key={group.title} className="space-y-6">
                   <div className="flex items-center justify-between">
 
-                    <div className="w-full py-8 px-6 lg:mx-4 rounded-2xl bg-gray-100 shadow-md border-t-4 border-[#F97415]">
+                    <div className="w-full py-8 px-6 lg:mx-4 rounded-2xl bg-gray-100 shadow-md border-t-2 border-[#0099D8]">
                       <h3 className="text-2xl lg:text-4xl text-center font-bold text-gray-900">
                         {group.title}
                       </h3>
@@ -2259,7 +2266,7 @@ export default function ServicesHubClient() {
                         return (
                       <Card
                         key={service.key}
-                        className={`group relative overflow-hidden border-2 bg-gradient-to-br from-black via-neutral-900 to-neutral-700 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${service.highlight ? "border-primary/30" : "border-transparent"
+                        className={`group relative overflow-hidden border border-gray-200 bg-white transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${service.highlight ? "border-[#0099D8]/30" : "border-gray-200"
                           }`}
                         style={{ animationDelay: `${groupIndex * 120 + idx * 50}ms` }}
                         onClick={
@@ -2287,7 +2294,7 @@ export default function ServicesHubClient() {
                             className="object-cover object-[50%_5%]  opacity-80 transition-transform duration-500 group-hover:scale-105"
                           />
 
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
+                          <div className="absolute inset-0 bg-gradient-to-t from-white/90 via-white/20 to-transparent" />
                         </div>
                         {service.badge && (
                           <Badge
@@ -2300,10 +2307,10 @@ export default function ServicesHubClient() {
                           </Badge>
                         )}
                         <CardHeader className="pb-3 pt-5">
-                          <CardTitle className="text-lg font-bold text-white pr-16">
+                          <CardTitle className="text-lg font-bold text-gray-900 pr-16">
                             {service.title}
                           </CardTitle>
-                          <CardDescription className="text-gray-300 mt-2 line-clamp-2">
+                          <CardDescription className="mt-2 line-clamp-2 text-gray-600">
                             {service.description}
                           </CardDescription>
                         </CardHeader>
@@ -2342,21 +2349,21 @@ export default function ServicesHubClient() {
                                 <Button
                                   asChild
                                   variant="outline"
-                                  className="w-full text-black border-white/30 hover:bg-white/10 hover:text-white"
+                                  className="w-full border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-[#0099D8]"
                                 >
                                   <Link href="/personal-loan#eligibility">Check Eligibility</Link>
                                 </Button>
                                 <Button
                                   asChild
                                   variant="outline"
-                                  className="w-full text-black border-white/30 hover:bg-white/10 hover:text-white"
+                                  className="w-full border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-[#0099D8]"
                                 >
                                   <Link href="/personal-loan#benefits">Key Benefits</Link>
                                 </Button>
                                 <Button
                                   asChild
                                   variant="outline"
-                                  className="w-full text-black border-white/30 hover:bg-white/10 hover:text-white"
+                                  className="w-full border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-[#0099D8]"
                                 >
                                   <Link href="/personal-loan#documents">Required Documents</Link>
                                 </Button>
@@ -2366,21 +2373,21 @@ export default function ServicesHubClient() {
                                 <Button
                                   asChild
                                   variant="outline"
-                                  className="w-full text-black border-white/30 hover:bg-white/10 hover:text-white"
+                                  className="w-full border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-[#0099D8]"
                                 >
                                   <Link href="/business-loan#eligibility">Check Eligibility</Link>
                                 </Button>
                                 <Button
                                   asChild
                                   variant="outline"
-                                  className="w-full text-black border-white/30 hover:bg-white/10 hover:text-white"
+                                  className="w-full border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-[#0099D8]"
                                 >
                                   <Link href="/business-loan#benefits">Key Benefits</Link>
                                 </Button>
                                 <Button
                                   asChild
                                   variant="outline"
-                                  className="w-full text-black border-white/30 hover:bg-white/10 hover:text-white"
+                                  className="w-full border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-[#0099D8]"
                                 >
                                   <Link href="/business-loan#documents">Required Documents</Link>
                                 </Button>
@@ -2389,7 +2396,7 @@ export default function ServicesHubClient() {
                               <Button
                                 asChild
                                 variant="outline"
-                                className="w-full text-black border-white/30 hover:bg-white/10 hover:text-white"
+                                className="w-full border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-[#0099D8]"
                               >
                                 <Link href={service.infoHref}>Learn More</Link>
                               </Button>
@@ -2407,7 +2414,7 @@ export default function ServicesHubClient() {
           ) : (
             <div>
 
-              <div className="w-full py-8 px-6 lg:mx-4 rounded-2xl bg-gray-100 shadow-md border-t-4 border-[#F97415]">
+              <div className="w-full py-8 px-6 lg:mx-4 rounded-2xl bg-gray-100 shadow-md border-t-2 border-[#0099D8]">
                 <h3 className="text-2xl lg:text-4xl text-center font-bold text-gray-900">
                   Credits & Cards
                 </h3>
@@ -2417,7 +2424,7 @@ export default function ServicesHubClient() {
                 {activeCards.map((service, idx) => (
                   <Card
                     key={service.key}
-                    className={`group relative overflow-hidden border-2 bg-gradient-to-br from-black via-neutral-900 to-neutral-700 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${service.highlight ? "border-primary/30" : "border-transparent"
+                    className={`group relative overflow-hidden border border-gray-200 bg-white transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${service.highlight ? "border-[#0099D8]/30" : "border-gray-200"
                       }`}
                     style={{ animationDelay: `${idx * 60}ms` }}
                     onClick={
@@ -2440,7 +2447,7 @@ export default function ServicesHubClient() {
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                         className="object-cover object-[50%_10%] opacity-80 transition-transform duration-500 group-hover:scale-105"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-white/90 via-white/20 to-transparent" />
                     </div>
                     {service.badge && (
                       <Badge
@@ -2453,8 +2460,8 @@ export default function ServicesHubClient() {
                       </Badge>
                     )}
                     <CardHeader className="pb-3 pt-5">
-                      <CardTitle className="text-lg font-bold text-white pr-16">{service.title}</CardTitle>
-                      <CardDescription className="text-gray-300 mt-2 line-clamp-2">
+                      <CardTitle className="text-lg font-bold text-gray-900 pr-16">{service.title}</CardTitle>
+                      <CardDescription className="mt-2 line-clamp-2 text-gray-600">
                         {service.description}
                       </CardDescription>
                     </CardHeader>
@@ -2474,21 +2481,21 @@ export default function ServicesHubClient() {
                           <Button
                             asChild
                             variant="outline"
-                            className="w-full text-gray-700 border-white/30 hover:bg-white/10 hover:text-white"
+                            className="w-full border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-[#0099D8]"
                           >
                             <Link href="/services/credit-cards#eligibility">Check Eligibility</Link>
                           </Button>
                           <Button
                             asChild
                             variant="outline"
-                            className="w-full text-gray-700 border-white/30 hover:bg-white/10 hover:text-white"
+                            className="w-full border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-[#0099D8]"
                           >
                             <Link href="/services/credit-cards#benefits">Key Benefits</Link>
                           </Button>
                           <Button
                             asChild
                             variant="outline"
-                            className="w-full text-gray-700 border-white/30 hover:bg-white/10 hover:text-white"
+                            className="w-full border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-[#0099D8]"
                           >
                             <Link href="/services/credit-cards#documents">Required Documents</Link>
                           </Button>
@@ -2565,7 +2572,7 @@ export default function ServicesHubClient() {
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </ApplyNowCTAButton> */}
                
-                <Button asChild variant="hero-outline" className="bg-[#F97415] text-white" size="xl">
+                <Button asChild variant="hero-outline" className="bg-[#0099D8] text-white" size="xl">
                   <Link href="#services">Get Started Now</Link>
                 </Button>
                 <Button asChild variant="hero-outline" size="xl">

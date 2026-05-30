@@ -488,7 +488,7 @@ export async function POST(req) {
     const asLink = (url) => {
       const u = safe(url).trim();
       if (!u) return "-";
-      return `<a href="${u}" target="_blank" rel="noreferrer" style="color:#2563eb;text-decoration:underline">View Document</a>`;
+      return `<a href="${u}" target="_blank" rel="noreferrer" style="color:#0099D8;text-decoration:underline">View Document</a>`;
     };
 
     const existingLoansHtml = Array.isArray(saved?.existingLoansData)
@@ -725,16 +725,16 @@ export async function POST(req) {
         <style>
           body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333; line-height: 1.6; margin: 0; padding: 0; background-color: #f8f9fa; }
           .container { max-width: 820px; margin: 0 auto; padding: 20px; background-color: #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 12px; }
-          .header { background: linear-gradient(135deg, #F97415 0%, #ff8c42 100%); padding: 28px 24px; border-radius: 12px 12px 0 0; color: white; text-align: center; }
+          .header { background: linear-gradient(135deg, #0099D8 0%, #33B5E5 100%); padding: 28px 24px; border-radius: 12px 12px 0 0; color: white; text-align: center; }
           .header h1 { margin: 0; color: white; font-size: 24px; font-weight: 700; }
           .header p { margin: 10px 0 0 0; color: rgba(255,255,255,0.9); font-size: 14px; }
           .content { padding: 22px; }
-          .details-box { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 18px; border-radius: 10px; margin: 16px 0; border-left: 4px solid #F97415; }
+          .details-box { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 18px; border-radius: 10px; margin: 16px 0; border-left: 4px solid #0099D8; }
           .details-box p { margin: 10px 0; font-size: 14px; }
-          .application-number { background: #F97415; color: white; padding: 6px 12px; border-radius: 999px; font-weight: 700; display: inline-block; }
+          .application-number { background: #0099D8; color: white; padding: 6px 12px; border-radius: 999px; font-weight: 700; display: inline-block; }
           .loan-type-badge { background: #111827; color: white; padding: 6px 12px; border-radius: 999px; font-size: 12px; font-weight: 700; display: inline-block; }
           .footer { border-top: 1px solid #e9ecef; margin-top: 20px; padding-top: 16px; text-align: center; color: #6c757d; font-size: 12px; }
-          a { color:#2563eb; text-decoration: underline; }
+          a { color:#0099D8; text-decoration: underline; }
         </style>
       </head>
       <body>

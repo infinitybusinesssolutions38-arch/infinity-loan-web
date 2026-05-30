@@ -174,7 +174,7 @@ export default function HeroSection({
                   {hasPrimary ? (
                     <Link
                       href={primaryCta.href}
-                      className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-white px-6 text-sm font-semibold text-blue-700 shadow-lg transition hover:bg-white/90 focus:outline-none focus:ring-4 focus:ring-white/30 sm:w-auto"
+                      className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-white px-6 text-sm font-semibold text-[#007BB0] shadow-lg transition hover:bg-white/90 focus:outline-none focus:ring-4 focus:ring-white/30 sm:w-auto"
                       aria-label={primaryCta.ariaLabel || primaryCta.label}
                     >
                       {primaryCta.label}

@@ -134,20 +134,20 @@ export default function JoinUsClient() {
   return (
     <main className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-black via-gray-900 to-black py-20 lg:py-32">
+      <section className="relative overflow-hidden bg-gradient-to-br from-slate-50 via-white to-blue-50/40 py-20 lg:py-32">
         {/* Animated Background Elements */}
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-[#F97415]/10 blur-3xl animate-blob" />
-          <div className="absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-gray-700/20 blur-3xl animate-blob animation-delay-2000" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[600px] rounded-full bg-gray-800/10 blur-3xl animate-blob animation-delay-4000" />
+          <div className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-[#0099D8]/10 blur-3xl animate-blob" />
+          <div className="absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-[#0099D8]/5 blur-3xl animate-blob animation-delay-2000" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[600px] rounded-full bg-[#0099D8]/5 blur-3xl animate-blob animation-delay-4000" />
         </div>
 
         {/* Dot Pattern Overlay */}
-        <div className="absolute inset-0 opacity-10">
+        <div className="absolute inset-0 opacity-[0.04]">
           <div
             className="absolute inset-0"
             style={{
-              backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
+              backgroundImage: `radial-gradient(circle at 1px 1px, black 1px, transparent 0)`,
               backgroundSize: "40px 40px",
             }}
           />
@@ -156,65 +156,65 @@ export default function JoinUsClient() {
         <div className="container relative z-10 mx-auto px-4">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 text-gray-300 hover:text-[#F97415] transition-all mb-8 group"
+            className="inline-flex items-center gap-2 text-gray-600 hover:text-[#0099D8] transition-all mb-8 group"
           >
-            <ArrowLeft className="h-4 w-4 text-[#F97415] transition-transform group-hover:-translate-x-1" />
+            <ArrowLeft className="h-4 w-4 text-[#0099D8] transition-transform group-hover:-translate-x-1" />
             <span className="font-medium">Back to Home</span>
           </Link>
 
           <div className="grid gap-12 lg:grid-cols-2 lg:items-start">
             {/* Left Content */}
             <div className="space-y-6">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 backdrop-blur-sm">
-                <div className="w-2 h-2 bg-[#F97415] rounded-full animate-pulse" />
-                <span className="text-sm font-medium text-white">Become a Loan Partner</span>
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#0099D8]/10 border border-[#0099D8]/20">
+                <div className="w-2 h-2 bg-[#0099D8] rounded-full animate-pulse" />
+                <span className="text-sm font-medium text-gray-900">Become a Loan Partner</span>
               </div>
 
-              <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-white leading-tight">
+              <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-gray-900 leading-tight">
                 <span className="relative inline-block">
-                  <span className="relative z-10 text-[#F97415]">Become a Loan Partner</span>
-                  <span className="absolute bottom-3 left-0 w-full h-4 bg-[#F97415]/20 -rotate-2" />
+                  <span className="relative z-10 text-[#0099D8]">Become a Loan Partner</span>
+                  <span className="absolute bottom-3 left-0 w-full h-4 bg-[#0099D8]/20 -rotate-2" />
                 </span>
               </h1>
 
-              <p className="text-lg md:text-xl text-gray-300 leading-relaxed">Start Your Loan Business and Earn Extra Income</p>
+              <p className="text-lg md:text-xl text-gray-700 leading-relaxed">Start Your Loan Business and Earn Extra Income</p>
 
-              <p className="text-base text-gray-400 leading-relaxed">
+              <p className="text-base text-gray-600 leading-relaxed">
                 Join India's trusted loan distribution network and grow your loan business with confidence and efficiency.
                 We empower our partners to earn higher commissions with instant payouts on every successful loan disbursement.
               </p>
 
               <div className="grid gap-4 pt-4">
                 <div className="flex gap-3 items-start">
-                  <CheckCircle2 className="h-5 w-5 text-[#F97415] flex-shrink-0 mt-1" />
+                  <CheckCircle2 className="h-5 w-5 text-[#0099D8] flex-shrink-0 mt-1" />
                   <div>
-                    <p className="font-semibold text-white">No Investment or Joining Fees</p>
-                    <p className="text-sm text-gray-400">Start your loan business without any upfront cost.</p>
+                    <p className="font-semibold text-gray-900">No Investment or Joining Fees</p>
+                    <p className="text-sm text-gray-600">Start your loan business without any upfront cost.</p>
                   </div>
                 </div>
                 <div className="flex gap-3 items-start">
-                  <CheckCircle2 className="h-5 w-5 text-[#F97415] flex-shrink-0 mt-1" />
+                  <CheckCircle2 className="h-5 w-5 text-[#0099D8] flex-shrink-0 mt-1" />
                   <div>
-                    <p className="font-semibold text-white">Instant Payouts & Support</p>
-                    <p className="text-sm text-gray-400">Fast, reliable payouts after every successful disbursement.</p>
+                    <p className="font-semibold text-gray-900">Instant Payouts & Support</p>
+                    <p className="text-sm text-gray-600">Fast, reliable payouts after every successful disbursement.</p>
                   </div>
                 </div>
                 <div className="flex gap-3 items-start">
-                  <CheckCircle2 className="h-5 w-5 text-[#F97415] flex-shrink-0 mt-1" />
+                  <CheckCircle2 className="h-5 w-5 text-[#0099D8] flex-shrink-0 mt-1" />
                   <div>
-                    <p className="font-semibold text-white">Comprehensive Partnership Network</p>
-                    <p className="text-sm text-gray-400">Access to 100+ banks and NBFC partnerships.</p>
+                    <p className="font-semibold text-gray-900">Comprehensive Partnership Network</p>
+                    <p className="text-sm text-gray-600">Access to 100+ banks and NBFC partnerships.</p>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Right Registration Form */}
-            <div className="rounded-3xl bg-white/5 backdrop-blur-xl p-8 border border-white/10 shadow-2xl h-fit sticky top-32">
+            <div className="rounded-3xl bg-white p-8 border border-gray-200 shadow-xl h-fit sticky top-32">
               <div className="mb-6">
-                <h2 className="text-2xl font-bold text-white mb-2">📝 Partner Registration</h2>
-                <p className="text-sm text-gray-300 font-semibold mb-3">Register to Become a Loan Partner</p>
-                <p className="text-sm text-gray-400">
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">📝 Partner Registration</h2>
+                <p className="text-sm text-gray-700 font-semibold mb-3">Register to Become a Loan Partner</p>
+                <p className="text-sm text-gray-600">
                   Complete the form below to join our loan partner network and start earning through successful loan disbursements.
                 </p>
               </div>
@@ -222,8 +222,8 @@ export default function JoinUsClient() {
               <form onSubmit={handleSubmit} className="space-y-4">
                 {/* Full Name */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Full Name <span className="text-[#F97415]">*</span>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Full Name <span className="text-[#0099D8]">*</span>
                   </label>
                   <input
                     type="text"
@@ -232,14 +232,14 @@ export default function JoinUsClient() {
                     onChange={handleChange}
                     placeholder="Enter your full name"
                     required
-                    className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-500 focus:border-[#F97415] focus:outline-none transition-colors"
+                    className="w-full px-4 py-2 rounded-lg bg-white border border-gray-300 text-gray-900 placeholder-gray-400 focus:border-[#0099D8] focus:ring-1 focus:ring-[#0099D8]/30 focus:outline-none transition-colors"
                   />
                 </div>
 
                 {/* Mobile Number */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Mobile Number <span className="text-[#F97415]">*</span>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Mobile Number <span className="text-[#0099D8]">*</span>
                   </label>
                   <input
                     type="tel"
@@ -249,13 +249,13 @@ export default function JoinUsClient() {
                     placeholder="10-digit mobile number"
                     pattern="[0-9]{10}"
                     required
-                    className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-500 focus:border-[#F97415] focus:outline-none transition-colors"
+                    className="w-full px-4 py-2 rounded-lg bg-white border border-gray-300 text-gray-900 placeholder-gray-400 focus:border-[#0099D8] focus:ring-1 focus:ring-[#0099D8]/30 focus:outline-none transition-colors"
                   />
                 </div>
 
                 {/* Alt Mobile Number */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
                     Alternate Mobile Number <span className="text-gray-500">(Optional)</span>
                   </label>
                   <input
@@ -265,13 +265,13 @@ export default function JoinUsClient() {
                     onChange={handleChange}
                     placeholder="10-digit alternate mobile number"
                     pattern="[0-9]{10}"
-                    className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-500 focus:border-[#F97415] focus:outline-none transition-colors"
+                    className="w-full px-4 py-2 rounded-lg bg-white border border-gray-300 text-gray-900 placeholder-gray-400 focus:border-[#0099D8] focus:ring-1 focus:ring-[#0099D8]/30 focus:outline-none transition-colors"
                   />
                 </div>
 
                 {/* WhatsApp Number */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
                     WhatsApp Number <span className="text-gray-500">(Optional)</span>
                   </label>
                   <input
@@ -281,14 +281,14 @@ export default function JoinUsClient() {
                     onChange={handleChange}
                     placeholder="10-digit WhatsApp number"
                     pattern="[0-9]{10}"
-                    className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-500 focus:border-[#F97415] focus:outline-none transition-colors"
+                    className="w-full px-4 py-2 rounded-lg bg-white border border-gray-300 text-gray-900 placeholder-gray-400 focus:border-[#0099D8] focus:ring-1 focus:ring-[#0099D8]/30 focus:outline-none transition-colors"
                   />
                 </div>
 
                 {/* Email */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Email Address <span className="text-[#F97415]">*</span>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Email Address <span className="text-[#0099D8]">*</span>
                   </label>
                   <input
                     type="email"
@@ -297,25 +297,25 @@ export default function JoinUsClient() {
                     onChange={handleChange}
                     placeholder="your@email.com"
                     required
-                    className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-500 focus:border-[#F97415] focus:outline-none transition-colors"
+                    className="w-full px-4 py-2 rounded-lg bg-white border border-gray-300 text-gray-900 placeholder-gray-400 focus:border-[#0099D8] focus:ring-1 focus:ring-[#0099D8]/30 focus:outline-none transition-colors"
                   />
                 </div>
 
                 {/* State */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    State <span className="text-[#F97415]">*</span>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    State <span className="text-[#0099D8]">*</span>
                   </label>
                   <select
                     name="state"
                     value={formData.state}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-500 focus:border-[#F97415] focus:outline-none transition-colors"
+                    className="w-full px-4 py-2 rounded-lg bg-white border border-gray-300 text-gray-900 placeholder-gray-400 focus:border-[#0099D8] focus:ring-1 focus:ring-[#0099D8]/30 focus:outline-none transition-colors"
                   >
-                    <option value="" className="bg-gray-900">Select your state</option>
+                    <option value="">Select your state</option>
                     {INDIAN_STATES.map((state) => (
-                      <option key={state} value={state} className="bg-gray-900">
+                      <option key={state} value={state}>
                         {state}
                       </option>
                     ))}
@@ -324,8 +324,8 @@ export default function JoinUsClient() {
 
                 {/* City */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    City <span className="text-[#F97415]">*</span>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    City <span className="text-[#0099D8]">*</span>
                   </label>
                   <input
                     type="text"
@@ -334,14 +334,14 @@ export default function JoinUsClient() {
                     onChange={handleChange}
                     placeholder="Enter your city"
                     required
-                    className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-500 focus:border-[#F97415] focus:outline-none transition-colors"
+                    className="w-full px-4 py-2 rounded-lg bg-white border border-gray-300 text-gray-900 placeholder-gray-400 focus:border-[#0099D8] focus:ring-1 focus:ring-[#0099D8]/30 focus:outline-none transition-colors"
                   />
                 </div>
 
                 {/* Pincode */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Pincode <span className="text-[#F97415]">*</span>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Pincode <span className="text-[#0099D8]">*</span>
                   </label>
                   <input
                     type="text"
@@ -351,14 +351,14 @@ export default function JoinUsClient() {
                     placeholder="6-digit pincode"
                     pattern="[0-9]{6}"
                     required
-                    className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-500 focus:border-[#F97415] focus:outline-none transition-colors"
+                    className="w-full px-4 py-2 rounded-lg bg-white border border-gray-300 text-gray-900 placeholder-gray-400 focus:border-[#0099D8] focus:ring-1 focus:ring-[#0099D8]/30 focus:outline-none transition-colors"
                   />
                 </div>
 
                 {/* Preferred Loan */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Preferred Loan <span className="text-[#F97415]">*</span>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Preferred Loan <span className="text-[#0099D8]">*</span>
                   </label>
                   <input
                     type="text"
@@ -367,13 +367,13 @@ export default function JoinUsClient() {
                     onChange={handleChange}
                     placeholder="e.g., Personal Loan, Business Loan, Home Loan"
                     required
-                    className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-500 focus:border-[#F97415] focus:outline-none transition-colors"
+                    className="w-full px-4 py-2 rounded-lg bg-white border border-gray-300 text-gray-900 placeholder-gray-400 focus:border-[#0099D8] focus:ring-1 focus:ring-[#0099D8]/30 focus:outline-none transition-colors"
                   />
                 </div>
 
                 {/* Professional Experience */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
                     Professional Experience <span className="text-gray-500">(Optional)</span>
                   </label>
                   <input
@@ -382,18 +382,18 @@ export default function JoinUsClient() {
                     value={formData.experience}
                     onChange={handleChange}
                     placeholder="e.g., DSA, Financial Consultant"
-                    className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-500 focus:border-[#F97415] focus:outline-none transition-colors"
+                    className="w-full px-4 py-2 rounded-lg bg-white border border-gray-300 text-gray-900 placeholder-gray-400 focus:border-[#0099D8] focus:ring-1 focus:ring-[#0099D8]/30 focus:outline-none transition-colors"
                   />
                 </div>
 
                 {/* Document Uploads */}
-                <div className="space-y-4 pt-4 border-t border-white/20">
-                  <h3 className="text-lg font-semibold text-white mb-4">📎 Required Documents</h3>
+                <div className="space-y-4 pt-4 border-t border-gray-200">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">📎 Required Documents</h3>
                   
                   {/* Aadhaar Front */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Aadhaar Card (Front) <span className="text-[#F97415]">*</span>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Aadhaar Card (Front) <span className="text-[#0099D8]">*</span>
                     </label>
                     <div className="relative">
                       <input
@@ -402,10 +402,10 @@ export default function JoinUsClient() {
                         onChange={handleFileChange}
                         accept="image/*,.pdf"
                         required
-                        className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-[#F97415] file:text-white hover:file:bg-[#E06410] placeholder-gray-500 focus:border-[#F97415] focus:outline-none transition-colors"
+                        className="w-full px-4 py-2 rounded-lg bg-white border border-gray-300 text-gray-900 file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-[#0099D8] file:text-white hover:file:bg-[#007BB0] placeholder-gray-400 focus:border-[#0099D8] focus:ring-1 focus:ring-[#0099D8]/30 focus:outline-none transition-colors"
                       />
                       {files.aadhaarFront && (
-                        <div className="mt-2 text-sm text-gray-400 flex items-center gap-2">
+                        <div className="mt-2 text-sm text-gray-600 flex items-center gap-2">
                           <FileText className="h-4 w-4" />
                           {files.aadhaarFront.name}
                         </div>
@@ -415,8 +415,8 @@ export default function JoinUsClient() {
 
                   {/* Aadhaar Back */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Aadhaar Card (Back) <span className="text-[#F97415]">*</span>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Aadhaar Card (Back) <span className="text-[#0099D8]">*</span>
                     </label>
                     <div className="relative">
                       <input
@@ -425,10 +425,10 @@ export default function JoinUsClient() {
                         onChange={handleFileChange}
                         accept="image/*,.pdf"
                         required
-                        className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-[#F97415] file:text-white hover:file:bg-[#E06410] placeholder-gray-500 focus:border-[#F97415] focus:outline-none transition-colors"
+                        className="w-full px-4 py-2 rounded-lg bg-white border border-gray-300 text-gray-900 file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-[#0099D8] file:text-white hover:file:bg-[#007BB0] placeholder-gray-400 focus:border-[#0099D8] focus:ring-1 focus:ring-[#0099D8]/30 focus:outline-none transition-colors"
                       />
                       {files.aadhaarBack && (
-                        <div className="mt-2 text-sm text-gray-400 flex items-center gap-2">
+                        <div className="mt-2 text-sm text-gray-600 flex items-center gap-2">
                           <FileText className="h-4 w-4" />
                           {files.aadhaarBack.name}
                         </div>
@@ -438,8 +438,8 @@ export default function JoinUsClient() {
 
                   {/* PAN Front */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      PAN Card <span className="text-[#F97415]">*</span>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      PAN Card <span className="text-[#0099D8]">*</span>
                     </label>
                     <div className="relative">
                       <input
@@ -448,10 +448,10 @@ export default function JoinUsClient() {
                         onChange={handleFileChange}
                         accept="image/*,.pdf"
                         required
-                        className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-[#F97415] file:text-white hover:file:bg-[#E06410] placeholder-gray-500 focus:border-[#F97415] focus:outline-none transition-colors"
+                        className="w-full px-4 py-2 rounded-lg bg-white border border-gray-300 text-gray-900 file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-[#0099D8] file:text-white hover:file:bg-[#007BB0] placeholder-gray-400 focus:border-[#0099D8] focus:ring-1 focus:ring-[#0099D8]/30 focus:outline-none transition-colors"
                       />
                       {files.panFront && (
-                        <div className="mt-2 text-sm text-gray-400 flex items-center gap-2">
+                        <div className="mt-2 text-sm text-gray-600 flex items-center gap-2">
                           <FileText className="h-4 w-4" />
                           {files.panFront.name}
                         </div>
@@ -461,8 +461,8 @@ export default function JoinUsClient() {
 
                   {/* Bank Passbook */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Bank Passbook / Cancelled Cheque <span className="text-[#F97415]">*</span>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Bank Passbook / Cancelled Cheque <span className="text-[#0099D8]">*</span>
                     </label>
                     <div className="relative">
                       <input
@@ -471,10 +471,10 @@ export default function JoinUsClient() {
                         onChange={handleFileChange}
                         accept="image/*,.pdf"
                         required
-                        className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-[#F97415] file:text-white hover:file:bg-[#E06410] placeholder-gray-500 focus:border-[#F97415] focus:outline-none transition-colors"
+                        className="w-full px-4 py-2 rounded-lg bg-white border border-gray-300 text-gray-900 file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-[#0099D8] file:text-white hover:file:bg-[#007BB0] placeholder-gray-400 focus:border-[#0099D8] focus:ring-1 focus:ring-[#0099D8]/30 focus:outline-none transition-colors"
                       />
                       {files.bankPassbook && (
-                        <div className="mt-2 text-sm text-gray-400 flex items-center gap-2">
+                        <div className="mt-2 text-sm text-gray-600 flex items-center gap-2">
                           <FileText className="h-4 w-4" />
                           {files.bankPassbook.name}
                         </div>
@@ -484,8 +484,8 @@ export default function JoinUsClient() {
 
                   {/* Passport Photo */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Passport Size Photo <span className="text-[#F97415]">*</span>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Passport Size Photo <span className="text-[#0099D8]">*</span>
                     </label>
                     <div className="relative">
                       <input
@@ -494,10 +494,10 @@ export default function JoinUsClient() {
                         onChange={handleFileChange}
                         accept="image/*"
                         required
-                        className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-[#F97415] file:text-white hover:file:bg-[#E06410] placeholder-gray-500 focus:border-[#F97415] focus:outline-none transition-colors"
+                        className="w-full px-4 py-2 rounded-lg bg-white border border-gray-300 text-gray-900 file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-[#0099D8] file:text-white hover:file:bg-[#007BB0] placeholder-gray-400 focus:border-[#0099D8] focus:ring-1 focus:ring-[#0099D8]/30 focus:outline-none transition-colors"
                       />
                       {files.passportPhoto && (
-                        <div className="mt-2 text-sm text-gray-400 flex items-center gap-2">
+                        <div className="mt-2 text-sm text-gray-600 flex items-center gap-2">
                           <FileText className="h-4 w-4" />
                           {files.passportPhoto.name}
                         </div>
@@ -511,8 +511,8 @@ export default function JoinUsClient() {
                   <div
                     className={`p-4 rounded-lg text-sm ${
                       message.type === "success"
-                        ? "bg-green-500/20 border border-green-500/50 text-green-300"
-                        : "bg-red-500/20 border border-red-500/50 text-red-300"
+                        ? "bg-green-50 border border-green-200 text-green-800"
+                        : "bg-red-50 border border-red-200 text-red-700"
                     }`}
                   >
                     {message.text}
@@ -523,12 +523,12 @@ export default function JoinUsClient() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-[#F97415] hover:bg-[#E06410] disabled:opacity-50 text-white font-semibold py-3 rounded-lg transition-all duration-300 flex items-center justify-center gap-2"
+                  className="w-full bg-[#0099D8] hover:bg-[#007BB0] disabled:opacity-50 text-white font-semibold py-3 rounded-lg transition-all duration-300 flex items-center justify-center gap-2"
                 >
                   {loading ? "Submitting..." : "Become a Loan Partner"}
                 </button>
 
-                <p className="text-xs text-gray-400 text-center pt-2">
+                <p className="text-xs text-gray-500 text-center pt-2">
                   🔒 Your information is secure and will be used only for partner onboarding and communication.
                 </p>
               </form>
@@ -543,11 +543,11 @@ export default function JoinUsClient() {
           {/* Why Partner With Us */}
           <div className="max-w-6xl mx-auto mb-20">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-black/5 border border-black/10 mb-4">
-              <Users className="w-4 h-4 text-[#F97415]" />
+              <Users className="w-4 h-4 text-[#0099D8]" />
               <span className="text-sm font-medium text-gray-700">Partner Benefits</span>
             </div>
             <h2 className="text-4xl md:text-5xl font-bold text-black mb-4">
-              💼 Why Partner <span className="text-[#F97415]">With Us?</span>
+              💼 Why Partner <span className="text-[#0099D8]">With Us?</span>
             </h2>
             <p className="text-lg text-gray-600 mb-12">
               We provide a reliable and transparent platform designed to help our partners grow and succeed in the loan distribution business.
@@ -586,10 +586,10 @@ export default function JoinUsClient() {
               ].map((benefit, idx) => (
                 <div
                   key={idx}
-                  className="group rounded-2xl bg-gradient-to-br from-black via-neutral-900 to-neutral-700 border border-[#F97415]/20 p-6 hover:shadow-lg transition-all duration-300 hover:shadow-xl hover:border-[#F97415]/50"
+                  className="group rounded-2xl bg-white border border-gray-200 p-6 shadow-md hover:shadow-lg transition-all duration-300 hover:border-[#0099D8]/50"
                 >
-                  <h3 className="text-lg font-bold text-white mb-2">{benefit.title}</h3>
-                  <p className="text-sm text-gray-200">{benefit.desc}</p>
+                  <h3 className="text-lg font-bold text-gray-900 mb-2">{benefit.title}</h3>
+                  <p className="text-sm text-gray-600">{benefit.desc}</p>
                 </div>
               ))}
             </div>
@@ -602,11 +602,11 @@ export default function JoinUsClient() {
           {/* How It Works */}
           <div className="max-w-6xl mx-auto mb-20">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-black/5 border border-black/10 mb-4">
-              <Zap className="w-4 h-4 text-[#F97415]" />
+              <Zap className="w-4 h-4 text-[#0099D8]" />
               <span className="text-sm font-medium text-gray-700">Process</span>
             </div>
             <h2 className="text-4xl md:text-5xl font-bold text-black mb-4">
-              💰 How It <span className="text-[#F97415]">Works</span>
+              💰 How It <span className="text-[#0099D8]">Works</span>
             </h2>
             <p className="text-lg text-gray-600 mb-12">
               Our simple and streamlined process helps you earn commissions with ease and transparency.
@@ -637,11 +637,11 @@ export default function JoinUsClient() {
               ].map((item, idx) => (
                 <div
                   key={idx}
-                  className="group rounded-2xl bg-gradient-to-br from-black via-neutral-900 to-neutral-700 border border-[#F97415]/20 p-6 hover:shadow-lg transition-all duration-300 hover:shadow-xl hover:border-[#F97415]/50"
+                  className="group rounded-2xl bg-white border border-gray-200 p-6 shadow-md hover:shadow-lg transition-all duration-300 hover:border-[#0099D8]/50"
                 >
-                  <p className="text-3xl mb-3 text-[#F97415]">{item.step}</p>
-                  <h3 className="text-lg font-bold text-white mb-2">{item.title}</h3>
-                  <p className="text-sm text-gray-200">{item.desc}</p>
+                  <p className="text-3xl mb-3 text-[#0099D8]">{item.step}</p>
+                  <h3 className="text-lg font-bold text-gray-900 mb-2">{item.title}</h3>
+                  <p className="text-sm text-gray-600">{item.desc}</p>
                 </div>
               ))}
             </div>

@@ -42,7 +42,7 @@ export const sendPartnerConfirmationEmail = async (partnerData) => {
 
     const htmlContent = `
       <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 700px; margin: 0 auto; padding: 0;">
-        <div style="background: #ffffff; padding: 28px 20px; text-align: center; border-bottom: 4px solid #F97415;">
+        <div style="background: #ffffff; padding: 28px 20px; text-align: center; border-bottom: 4px solid #0099D8;">
           <h1 style="margin: 0; font-size: 22px; font-weight: 800; color: #1a1a1a;">Infinity Loans & Business Solutions</h1>
           <p style="margin: 8px 0 0 0; font-size: 13px; color: #6b7280;">Channel Partner Application</p>
         </div>
@@ -59,8 +59,8 @@ export const sendPartnerConfirmationEmail = async (partnerData) => {
             <p style="margin: 0; font-size: 13px; color: #0c4a6e;"><strong>Privacy Note:</strong> The information and documents you submitted will be used only for reviewing your application and contacting you about the onboarding process. We handle your data securely and do not share it with unauthorized parties.</p>
           </div>
 
-          <div style="margin-top: 18px; padding: 14px 16px; background: #fff7ed; border: 1px solid #fed7aa; border-radius: 10px;">
-            <p style="margin: 0; font-size: 13px; color: #9a3412;">This is an automated confirmation. Please do not share sensitive passwords over email.</p>
+          <div style="margin-top: 18px; padding: 14px 16px; background: #e6f7fc; border: 1px solid #99d9f0; border-radius: 10px;">
+            <p style="margin: 0; font-size: 13px; color: #007BB0;">This is an automated confirmation. Please do not share sensitive passwords over email.</p>
           </div>
         </div>
 
@@ -103,7 +103,7 @@ export const sendPartnerNotificationToAdminEmails = async (partnerData) => {
       const htmlContent = `
       <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 700px; margin: 0 auto; padding: 0;">
         <!-- Header -->
-        <div style="background: linear-gradient(135deg, #F97415 0%, #ff8c42 100%); padding: 40px 20px; text-align: center; color: white;">
+        <div style="background: linear-gradient(135deg, #0099D8 0%, #33B5E5 100%); padding: 40px 20px; text-align: center; color: white;">
           <h1 style="margin: 0; font-size: 28px; font-weight: bold;">📋 New Partner Application</h1>
           <p style="margin: 10px 0 0 0; font-size: 16px;">Channel Partner Registration</p>
         </div>
@@ -112,7 +112,7 @@ export const sendPartnerNotificationToAdminEmails = async (partnerData) => {
         <div style="padding: 30px 20px; background: white; color: #333; line-height: 1.8;">
           <p><strong>New partner application received:</strong></p>
           
-          <div style="background: #f8f8f8; padding: 20px; border-radius: 8px; margin: 25px 0; border-left: 4px solid #F97415;">
+          <div style="background: #f8f8f8; padding: 20px; border-radius: 8px; margin: 25px 0; border-left: 4px solid #0099D8;">
             <table style="width: 100%; border-collapse: collapse;">
               <tr>
                 <td style="padding: 8px; font-weight: bold; color: #666;">Full Name:</td>
@@ -162,19 +162,19 @@ export const sendPartnerNotificationToAdminEmails = async (partnerData) => {
 
           <!-- Document Links -->
           <div style="background: #f0f8ff; padding: 20px; border-radius: 8px; margin: 25px 0;">
-            <h3 style="margin-top: 0; color: #F97415;">📎 Uploaded Documents</h3>
+            <h3 style="margin-top: 0; color: #0099D8;">📎 Uploaded Documents</h3>
             <ul style="margin: 10px 0; padding-left: 25px;">
-              ${partnerData.aadhaarFrontUrl ? `<li><a href="${partnerData.aadhaarFrontUrl}" target="_blank" style="color: #F97415; text-decoration: none;">📄 Aadhaar Front</a></li>` : ''}
-              ${partnerData.aadhaarBackUrl ? `<li><a href="${partnerData.aadhaarBackUrl}" target="_blank" style="color: #F97415; text-decoration: none;">📄 Aadhaar Back</a></li>` : ''}
-              ${partnerData.panFrontUrl ? `<li><a href="${partnerData.panFrontUrl}" target="_blank" style="color: #F97415; text-decoration: none;">📄 PAN Card</a></li>` : ''}
-              ${partnerData.bankPassbookUrl ? `<li><a href="${partnerData.bankPassbookUrl}" target="_blank" style="color: #F97415; text-decoration: none;">📄 Bank Passbook / Cancelled Cheque</a></li>` : ''}
-              ${partnerData.passportPhotoUrl ? `<li><a href="${partnerData.passportPhotoUrl}" target="_blank" style="color: #F97415; text-decoration: none;">📄 Passport Photo</a></li>` : ''}
+              ${partnerData.aadhaarFrontUrl ? `<li><a href="${partnerData.aadhaarFrontUrl}" target="_blank" style="color: #0099D8; text-decoration: none;">📄 Aadhaar Front</a></li>` : ''}
+              ${partnerData.aadhaarBackUrl ? `<li><a href="${partnerData.aadhaarBackUrl}" target="_blank" style="color: #0099D8; text-decoration: none;">📄 Aadhaar Back</a></li>` : ''}
+              ${partnerData.panFrontUrl ? `<li><a href="${partnerData.panFrontUrl}" target="_blank" style="color: #0099D8; text-decoration: none;">📄 PAN Card</a></li>` : ''}
+              ${partnerData.bankPassbookUrl ? `<li><a href="${partnerData.bankPassbookUrl}" target="_blank" style="color: #0099D8; text-decoration: none;">📄 Bank Passbook / Cancelled Cheque</a></li>` : ''}
+              ${partnerData.passportPhotoUrl ? `<li><a href="${partnerData.passportPhotoUrl}" target="_blank" style="color: #0099D8; text-decoration: none;">📄 Passport Photo</a></li>` : ''}
             </ul>
           </div>
 
           <!-- Action Required -->
           <div style="background: #fff3cd; padding: 20px; border-radius: 8px; margin: 25px 0; border: 1px solid #ffeaa7;">
-            <h3 style="margin-top: 0; color: #F97415;">⚡ Action Required</h3>
+            <h3 style="margin-top: 0; color: #0099D8;">⚡ Action Required</h3>
             <p>Please review the application and uploaded documents. Contact the partner within 24-48 hours for further discussion and onboarding process.</p>
           </div>
 
@@ -246,7 +246,7 @@ export const sendPartnerNotificationToAdminEmails = async (partnerData) => {
 //       <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 700px; margin: 0 auto; padding: 0;">
 //         <!-- Header -->
 //         <div style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); padding: 40px 20px; text-align: center; color: white;">
-//           <h1 style="margin: 0; color: #F97415; font-size: 28px; font-weight: bold;">🤝 Channel Partner Program</h1>
+//           <h1 style="margin: 0; color: #0099D8; font-size: 28px; font-weight: bold;">🤝 Channel Partner Program</h1>
 //           <p style="margin: 10px 0 0 0; color: #000000; font-size: 16px;">Welcome to Infinity Loans & Business Solutions</p>
 //         </div>
 
@@ -259,8 +259,8 @@ export const sendPartnerNotificationToAdminEmails = async (partnerData) => {
 //           <p>We are pleased to inform you that we have successfully received your application for the <strong>Loan Channel Partner Program</strong>. We sincerely appreciate your interest in associating with us and are confident that this collaboration will result in a strong, transparent, and successful business relationship.</p>
 
 //           <!-- Application Details -->
-//           <div style="background: #f8f8f8; padding: 20px; border-radius: 8px; margin: 25px 0; border-left: 4px solid #F97415;">
-//             <h3 style="margin-top: 0; color: #F97415;">📋 Your Application Details</h3>
+//           <div style="background: #f8f8f8; padding: 20px; border-radius: 8px; margin: 25px 0; border-left: 4px solid #0099D8;">
+//             <h3 style="margin-top: 0; color: #0099D8;">📋 Your Application Details</h3>
 //             <table style="width: 100%; border-collapse: collapse;">
 //               <tr>
 //                 <td style="padding: 8px; font-weight: bold; color: #666;">Full Name:</td>
@@ -309,15 +309,15 @@ export const sendPartnerNotificationToAdminEmails = async (partnerData) => {
 //           </div>
 
 //           <!-- Support & Working Assistance -->
-//           <div style="background: #f8f8f8; padding: 20px; border-radius: 8px; margin: 25px 0; border-left: 4px solid #F97415;">
-//             <h3 style="margin-top: 0; color: #F97415;">📞 Support & Working Assistance</h3>
+//           <div style="background: #f8f8f8; padding: 20px; border-radius: 8px; margin: 25px 0; border-left: 4px solid #0099D8;">
+//             <h3 style="margin-top: 0; color: #0099D8;">📞 Support & Working Assistance</h3>
 //             <p style="margin: 10px 0;">Please be assured that our team and directors are available from <strong>9:00 AM to 9:00 PM</strong> to assist you with any queries, guidance, or operational support you may require.</p>
 //             <p style="margin: 10px 0;"><strong>⚡ Important Note:</strong> You are requested to focus exclusively on <strong>file sourcing and client referrals</strong>. All other activities, including processing, coordination, verification, approvals, and disbursement support, will be handled entirely by our internal team.</p>
 //           </div>
 
 //           <!-- Next Steps -->
 //           <div style="background: #fff3cd; padding: 20px; border-radius: 8px; margin: 25px 0; border: 1px solid #ffeaa7;">
-//             <h3 style="margin-top: 0; color: #F97415;">🔄 Next Steps</h3>
+//             <h3 style="margin-top: 0; color: #0099D8;">🔄 Next Steps</h3>
 //             <p>Our team will review your application and documents. You will be contacted within <strong>24-48 hours</strong> for further discussion and onboarding process.</p>
 //           </div>
 //         </div>
@@ -355,7 +355,7 @@ export const sendPartnerNotificationToAdminEmails = async (partnerData) => {
 //     const htmlContent = `
 //       <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 700px; margin: 0 auto; padding: 0;">
 //         <!-- Header -->
-//         <div style="background: linear-gradient(135deg, #F97415 0%, #ff8c42 100%); padding: 40px 20px; text-align: center; color: white;">
+//         <div style="background: linear-gradient(135deg, #0099D8 0%, #33B5E5 100%); padding: 40px 20px; text-align: center; color: white;">
 //           <h1 style="margin: 0; font-size: 28px; font-weight: bold;">📋 New Partner Application</h1>
 //           <p style="margin: 10px 0 0 0; font-size: 16px;">Channel Partner Registration</p>
 //         </div>
@@ -364,7 +364,7 @@ export const sendPartnerNotificationToAdminEmails = async (partnerData) => {
 //         <div style="padding: 30px 20px; background: white; color: #333; line-height: 1.8;">
 //           <p><strong>New partner application received:</strong></p>
           
-//           <div style="background: #f8f8f8; padding: 20px; border-radius: 8px; margin: 25px 0; border-left: 4px solid #F97415;">
+//           <div style="background: #f8f8f8; padding: 20px; border-radius: 8px; margin: 25px 0; border-left: 4px solid #0099D8;">
 //             <table style="width: 100%; border-collapse: collapse;">
 //               <tr>
 //                 <td style="padding: 8px; font-weight: bold; color: #666;">Full Name:</td>
@@ -395,7 +395,7 @@ export const sendPartnerNotificationToAdminEmails = async (partnerData) => {
 
 //           <!-- Document Links -->
 //           <div style="background: #f0f8ff; padding: 20px; border-radius: 8px; margin: 25px 0;">
-//             <h3 style="margin-top: 0; color: #F97415;">📎 Uploaded Documents</h3>
+//             <h3 style="margin-top: 0; color: #0099D8;">📎 Uploaded Documents</h3>
 //             <ul style="margin: 10px 0; padding-left: 25px;">
 //               ${partnerData.aadhaarFrontUrl ? `<li><a href="${partnerData.aadhaarFrontUrl}" target="_blank">Aadhaar Front</a></li>` : ''}
 //               ${partnerData.aadhaarBackUrl ? `<li><a href="${partnerData.aadhaarBackUrl}" target="_blank">Aadhaar Back</a></li>` : ''}
@@ -446,7 +446,7 @@ export const sendPartnerNotificationToAdminEmails = async (partnerData) => {
 //     const htmlContent = `
 //       <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 700px; margin: 0 auto; padding: 0;">
 //         <!-- Header -->
-//         <div style="background: linear-gradient(135deg, #F97415 0%, #ff8c42 100%); padding: 40px 20px; text-align: center; color: white;">
+//         <div style="background: linear-gradient(135deg, #0099D8 0%, #33B5E5 100%); padding: 40px 20px; text-align: center; color: white;">
 //           <h1 style="margin: 0; font-size: 28px; font-weight: bold;">📋 New Partner Application</h1>
 //           <p style="margin: 10px 0 0 0; font-size: 16px;">Channel Partner Registration</p>
 //         </div>
@@ -455,7 +455,7 @@ export const sendPartnerNotificationToAdminEmails = async (partnerData) => {
 //         <div style="padding: 30px 20px; background: white; color: #333; line-height: 1.8;">
 //           <p><strong>New partner application received:</strong></p>
           
-//           <div style="background: #f8f8f8; padding: 20px; border-radius: 8px; margin: 25px 0; border-left: 4px solid #F97415;">
+//           <div style="background: #f8f8f8; padding: 20px; border-radius: 8px; margin: 25px 0; border-left: 4px solid #0099D8;">
 //             <table style="width: 100%; border-collapse: collapse;">
 //               <tr>
 //                 <td style="padding: 8px; font-weight: bold; color: #666;">Full Name:</td>
@@ -505,19 +505,19 @@ export const sendPartnerNotificationToAdminEmails = async (partnerData) => {
 
 //           <!-- Document Links -->
 //           <div style="background: #f0f8ff; padding: 20px; border-radius: 8px; margin: 25px 0;">
-//             <h3 style="margin-top: 0; color: #F97415;">📎 Uploaded Documents</h3>
+//             <h3 style="margin-top: 0; color: #0099D8;">📎 Uploaded Documents</h3>
 //             <ul style="margin: 10px 0; padding-left: 25px;">
-//               ${partnerData.aadhaarFrontUrl ? `<li><a href="${partnerData.aadhaarFrontUrl}" target="_blank" style="color: #F97415; text-decoration: none;">📄 Aadhaar Front</a></li>` : ''}
-//               ${partnerData.aadhaarBackUrl ? `<li><a href="${partnerData.aadhaarBackUrl}" target="_blank" style="color: #F97415; text-decoration: none;">📄 Aadhaar Back</a></li>` : ''}
-//               ${partnerData.panFrontUrl ? `<li><a href="${partnerData.panFrontUrl}" target="_blank" style="color: #F97415; text-decoration: none;">📄 PAN Card</a></li>` : ''}
-//               ${partnerData.bankPassbookUrl ? `<li><a href="${partnerData.bankPassbookUrl}" target="_blank" style="color: #F97415; text-decoration: none;">📄 Bank Passbook</a></li>` : ''}
-//               ${partnerData.passportPhotoUrl ? `<li><a href="${partnerData.passportPhotoUrl}" target="_blank" style="color: #F97415; text-decoration: none;">📄 Passport Photo</a></li>` : ''}
+//               ${partnerData.aadhaarFrontUrl ? `<li><a href="${partnerData.aadhaarFrontUrl}" target="_blank" style="color: #0099D8; text-decoration: none;">📄 Aadhaar Front</a></li>` : ''}
+//               ${partnerData.aadhaarBackUrl ? `<li><a href="${partnerData.aadhaarBackUrl}" target="_blank" style="color: #0099D8; text-decoration: none;">📄 Aadhaar Back</a></li>` : ''}
+//               ${partnerData.panFrontUrl ? `<li><a href="${partnerData.panFrontUrl}" target="_blank" style="color: #0099D8; text-decoration: none;">📄 PAN Card</a></li>` : ''}
+//               ${partnerData.bankPassbookUrl ? `<li><a href="${partnerData.bankPassbookUrl}" target="_blank" style="color: #0099D8; text-decoration: none;">📄 Bank Passbook</a></li>` : ''}
+//               ${partnerData.passportPhotoUrl ? `<li><a href="${partnerData.passportPhotoUrl}" target="_blank" style="color: #0099D8; text-decoration: none;">📄 Passport Photo</a></li>` : ''}
 //             </ul>
 //           </div>
 
 //           <!-- Action Required -->
 //           <div style="background: #fff3cd; padding: 20px; border-radius: 8px; margin: 25px 0; border: 1px solid #ffeaa7;">
-//             <h3 style="margin-top: 0; color: #F97415;">⚡ Action Required</h3>
+//             <h3 style="margin-top: 0; color: #0099D8;">⚡ Action Required</h3>
 //             <p>Please review the application and uploaded documents. Contact the partner within 24-48 hours for further discussion and onboarding process.</p>
 //           </div>
 //         </div>

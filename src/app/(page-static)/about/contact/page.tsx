@@ -155,7 +155,7 @@ const ContactPage = () => {
                         animate={{ opacity: 1, y: 0 }}
                         className="text-4xl md:text-5xl font-bold text-black mb-4"
                     >
-                        Get in <span className="text-[#F97415]">Touch</span>
+                        Get in <span className="text-[#0099D8]">Touch</span>
                     </motion.h1>
                     <motion.p 
                         initial={{ opacity: 0, y: -20 }}
@@ -181,14 +181,14 @@ const ContactPage = () => {
                         className="bg-black rounded-2xl p-8 shadow-2xl"
                     >
                         <h2 className="text-3xl font-bold text-white mb-8">
-                            Frequently Asked <span className="text-[#F97415]">Questions</span>
+                            Frequently Asked <span className="text-[#0099D8]">Questions</span>
                         </h2>
 
                         <div className="space-y-4">
                             {faqs.map((faq, index) => (
                                 <div
                                     key={index}
-                                    className="border border-gray-800 rounded-lg overflow-hidden transition-all duration-300 hover:border-[#F97415]"
+                                    className="border border-gray-800 rounded-lg overflow-hidden transition-all duration-300 hover:border-[#0099D8]"
                                 >
                                     <div
                                         className="flex items-center justify-between p-5 cursor-pointer bg-gray-900 hover:bg-gray-800 transition-colors"
@@ -197,7 +197,7 @@ const ContactPage = () => {
                                         <h3 className="text-lg font-semibold text-white">
                                             {faq.question}
                                         </h3>
-                                        <div className="flex-shrink-0 text-[#F97415]">
+                                        <div className="flex-shrink-0 text-[#0099D8]">
                                             {openIndex === index ? (
                                                 <Minus size={20} className="transition-transform" />
                                             ) : (
@@ -221,7 +221,7 @@ const ContactPage = () => {
                                                             key={i}
                                                             className={cn(
                                                                 "text-gray-300 leading-relaxed",
-                                                                i === 0 ? "font-medium text-[#F97415] mb-3" : "mb-1",
+                                                                i === 0 ? "font-medium text-[#0099D8] mb-3" : "mb-1",
                                                                 line.startsWith("•") && "ml-2"
                                                             )}
                                                         >
@@ -239,26 +239,26 @@ const ContactPage = () => {
                         {/* Contact Info Cards */}
                         <div className="mt-8 space-y-4">
                             <div className="flex items-center gap-4 p-4 bg-gray-900 rounded-lg border border-gray-800">
-                                <div className="w-12 h-12 bg-[#F97415] rounded-full flex items-center justify-center flex-shrink-0">
+                                <div className="w-12 h-12 bg-[#0099D8] rounded-full flex items-center justify-center flex-shrink-0">
                                     <Mail className="text-white" size={20} />
                                 </div>
                                 <div>
                                     <p className="text-gray-400 text-sm">Email Us</p>
                                     <a
                                         href="mailto:business@infinityloanservices.com"
-                                        className="text-white font-medium hover:text-[#F97415] transition-colors break-all"
+                                        className="text-white font-medium hover:text-[#0099D8] transition-colors break-all"
                                     >
                                         business@infinityloanservices.com
                                     </a>
                                     <a
                                         href="mailto:personal.infinityloans@gmail.com"
-                                        className="mt-1 block text-white font-medium hover:text-[#F97415] transition-colors break-all"
+                                        className="mt-1 block text-white font-medium hover:text-[#0099D8] transition-colors break-all"
                                     >
                                         personal.infinityloans@gmail.com
                                     </a>
                                     <a
                                         href="mailto:business.infinityloans@gmail.com"
-                                        className="mt-1 block text-white font-medium hover:text-[#F97415] transition-colors break-all"
+                                        className="mt-1 block text-white font-medium hover:text-[#0099D8] transition-colors break-all"
                                     >
                                         business.infinityloans@gmail.com
                                     </a>
@@ -266,20 +266,20 @@ const ContactPage = () => {
                             </div>
 
                             <div className="flex items-center gap-4 p-4 bg-gray-900 rounded-lg border border-gray-800">
-                                <div className="w-12 h-12 bg-[#F97415] rounded-full flex items-center justify-center flex-shrink-0">
+                                <div className="w-12 h-12 bg-[#0099D8] rounded-full flex items-center justify-center flex-shrink-0">
                                     <Phone className="text-white" size={20} />
                                 </div>
                                 <div>
                                     <p className="text-gray-400 text-sm">Call Us</p>
                                     <a
                                         href="tel:+919579880841"
-                                        className="text-white font-medium hover:text-[#F97415] transition-colors"
+                                        className="text-white font-medium hover:text-[#0099D8] transition-colors"
                                     >
                                         +91 9579880841
                                     </a>
                                     <a
                                         href="tel:+919766169660"
-                                        className="mt-1 block text-white font-medium hover:text-[#F97415] transition-colors"
+                                        className="mt-1 block text-white font-medium hover:text-[#0099D8] transition-colors"
                                     >
                                         +91 9766616960
                                     </a>
@@ -297,7 +297,7 @@ const ContactPage = () => {
                         id="contact-form"
                     >
                         <h2 className="text-3xl font-bold text-black mb-2">
-                            Send us a <span className="text-[#F97415]">Message</span>
+                            Send us a <span className="text-[#0099D8]">Message</span>
                         </h2>
                         <p className="text-gray-600 mb-8">
                             Fill out the form below and our team will get back to you within 24 hours.
@@ -342,14 +342,14 @@ const ContactPage = () => {
                             <div className="grid md:grid-cols-2 gap-4">
                                 <LabelInputContainer>
                                     <Label htmlFor="firstname" className="text-black font-medium">
-                                        First Name <span className="text-[#F97415]">*</span>
+                                        First Name <span className="text-[#0099D8]">*</span>
                                     </Label>
                                     <Input
                                         id="firstname"
                                         type="text"
                                         placeholder="John"
                                         className={cn(
-                                            "border-2 border-gray-200 focus:border-[#F97415] focus:ring-2 focus:ring-[#F97415]/20 transition-all",
+                                            "border-2 border-gray-200 focus:border-[#0099D8] focus:ring-2 focus:ring-[#0099D8]/20 transition-all",
                                             errors.firstname && "border-red-500"
                                         )}
                                         {...register("firstname", { required: "First name is required" })}
@@ -363,14 +363,14 @@ const ContactPage = () => {
 
                                 <LabelInputContainer>
                                     <Label htmlFor="lastname" className="text-black font-medium">
-                                        Last Name <span className="text-[#F97415]">*</span>
+                                        Last Name <span className="text-[#0099D8]">*</span>
                                     </Label>
                                     <Input
                                         id="lastname"
                                         type="text"
                                         placeholder="Doe"
                                         className={cn(
-                                            "border-2 border-gray-200 focus:border-[#F97415] focus:ring-2 focus:ring-[#F97415]/20 transition-all",
+                                            "border-2 border-gray-200 focus:border-[#0099D8] focus:ring-2 focus:ring-[#0099D8]/20 transition-all",
                                             errors.lastname && "border-red-500"
                                         )}
                                         {...register("lastname", { required: "Last name is required" })}
@@ -386,14 +386,14 @@ const ContactPage = () => {
                             {/* Email */}
                             <LabelInputContainer>
                                 <Label htmlFor="email" className="text-black font-medium">
-                                    Email Address <span className="text-[#F97415]">*</span>
+                                    Email Address <span className="text-[#0099D8]">*</span>
                                 </Label>
                                 <Input
                                     id="email"
                                     type="email"
                                     placeholder="you@example.com"
                                     className={cn(
-                                        "border-2 border-gray-200 focus:border-[#F97415] focus:ring-2 focus:ring-[#F97415]/20 transition-all",
+                                        "border-2 border-gray-200 focus:border-[#0099D8] focus:ring-2 focus:ring-[#0099D8]/20 transition-all",
                                         errors.email && "border-red-500"
                                     )}
                                     {...register("email", {
@@ -412,14 +412,14 @@ const ContactPage = () => {
                             {/* Mobile */}
                             <LabelInputContainer>
                                 <Label htmlFor="mobile" className="text-black font-medium">
-                                    Mobile Number <span className="text-[#F97415]">*</span>
+                                    Mobile Number <span className="text-[#0099D8]">*</span>
                                 </Label>
                                 <Input
                                     id="mobile"
                                     type="tel"
                                     placeholder="9876543210"
                                     className={cn(
-                                        "border-2 border-gray-200 focus:border-[#F97415] focus:ring-2 focus:ring-[#F97415]/20 transition-all",
+                                        "border-2 border-gray-200 focus:border-[#0099D8] focus:ring-2 focus:ring-[#0099D8]/20 transition-all",
                                         errors.mobile && "border-red-500"
                                     )}
                                     {...register("mobile", {
@@ -438,14 +438,14 @@ const ContactPage = () => {
                             {/* Subject */}
                             <LabelInputContainer>
                                 <Label htmlFor="subject" className="text-black font-medium">
-                                    Subject <span className="text-[#F97415]">*</span>
+                                    Subject <span className="text-[#0099D8]">*</span>
                                 </Label>
                                 <Input
                                     id="subject"
                                     type="text"
                                     placeholder="How can we help you?"
                                     className={cn(
-                                        "border-2 border-gray-200 focus:border-[#F97415] focus:ring-2 focus:ring-[#F97415]/20 transition-all",
+                                        "border-2 border-gray-200 focus:border-[#0099D8] focus:ring-2 focus:ring-[#0099D8]/20 transition-all",
                                         errors.subject && "border-red-500"
                                     )}
                                     {...register("subject", { required: "Subject is required" })}
@@ -458,14 +458,14 @@ const ContactPage = () => {
                             {/* Message */}
                             <LabelInputContainer>
                                 <Label htmlFor="message" className="text-black font-medium">
-                                    Message <span className="text-[#F97415]">*</span>
+                                    Message <span className="text-[#0099D8]">*</span>
                                 </Label>
                                 <textarea
                                     id="message"
                                     rows={5}
                                     placeholder="Tell us more about your inquiry..."
                                     className={cn(
-                                        "w-full p-3 border-2 border-gray-200 rounded-md focus:border-[#F97415] focus:ring-2 focus:ring-[#F97415]/20 outline-none transition-all resize-none",
+                                        "w-full p-3 border-2 border-gray-200 rounded-md focus:border-[#0099D8] focus:ring-2 focus:ring-[#0099D8]/20 outline-none transition-all resize-none",
                                         errors.message && "border-red-500"
                                     )}
                                     {...register("message", { required: "Message is required" })}
@@ -479,7 +479,7 @@ const ContactPage = () => {
                             <button
                                 type="submit"
                                 disabled={isSubmitting}
-                                className="group relative w-full h-12 bg-[#F97415] hover:bg-[#E06410] text-white font-semibold rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 overflow-hidden"
+                                className="group relative w-full h-12 bg-[#0099D8] hover:bg-[#007BB0] text-white font-semibold rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 overflow-hidden"
                             >
                                 <span className="relative z-10 flex items-center gap-2">
                                     {isSubmitting ? (
@@ -494,7 +494,7 @@ const ContactPage = () => {
                                         </>
                                     )}
                                 </span>
-                                <div className="absolute inset-0 bg-gradient-to-r from-[#F97415] via-[#FF8C42] to-[#F97415] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                                <div className="absolute inset-0 bg-gradient-to-r from-[#0099D8] via-[#33B5E5] to-[#0099D8] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                             </button>
 
                             <p className="text-center text-sm text-gray-500 mt-4">
