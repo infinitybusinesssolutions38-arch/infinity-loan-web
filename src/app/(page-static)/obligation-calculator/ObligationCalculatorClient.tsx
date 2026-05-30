@@ -88,7 +88,7 @@ function ParticleBackground() {
         p.y = (p.y + p.vy + H) % H;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(99,179,237,${p.alpha})`;
+        ctx.fillStyle = `rgba(0,153,216,${p.alpha * 0.6})`;
         ctx.fill();
       });
       for (let i = 0; i < particles.length; i++) {
@@ -100,7 +100,7 @@ function ParticleBackground() {
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `rgba(99,179,237,${0.055 * (1 - d / 95)})`;
+            ctx.strokeStyle = `rgba(0,153,216,${0.04 * (1 - d / 95)})`;
             ctx.lineWidth = 0.6;
             ctx.stroke();
           }
@@ -170,7 +170,7 @@ function GlowInput({
           letterSpacing: "0.12em",
           textTransform: "uppercase",
           marginBottom: "6px",
-          color: focused ? "#63b3ed" : hasVal ? "#5a7fa0" : "#3d5570",
+          color: focused ? "#0099D8" : hasVal ? "#374151" : "#6b7280",
           transition: "color 0.25s",
         }}
       >
@@ -183,11 +183,11 @@ function GlowInput({
             inset: "-1px",
             borderRadius: "14px",
             background: focused
-              ? "linear-gradient(135deg, #63b3ed33, #9f7aea22)"
+              ? "linear-gradient(135deg, rgba(0,153,216,0.12), rgba(0,153,216,0.06))"
               : "transparent",
             transition: "background 0.3s ease",
             zIndex: 0,
-            boxShadow: focused ? "0 0 20px rgba(99,179,237,0.15)" : "none",
+            boxShadow: focused ? "0 0 20px rgba(0,153,216,0.12)" : "none",
           }}
         />
         <span
@@ -199,7 +199,7 @@ function GlowInput({
             fontSize: "13px",
             fontWeight: 700,
             zIndex: 2,
-            color: focused ? "#63b3ed" : hasVal ? "#4a7090" : "#2d4560",
+            color: focused ? "#0099D8" : hasVal ? "#374151" : "#9ca3af",
             transition: "color 0.25s",
             pointerEvents: "none",
           }}
@@ -224,19 +224,15 @@ function GlowInput({
             paddingTop: "13px",
             paddingBottom: "13px",
             borderRadius: "13px",
-            background: focused
-              ? "rgba(99,179,237,0.06)"
-              : hasVal
-                ? "rgba(255,255,255,0.04)"
-                : "rgba(255,255,255,0.02)",
+            background: focused ? "#ffffff" : "#ffffff",
             border: `1px solid ${
               focused
-                ? "rgba(99,179,237,0.4)"
+                ? "rgba(0,153,216,0.5)"
                 : hasVal
-                  ? "rgba(99,179,237,0.15)"
-                  : "rgba(255,255,255,0.06)"
+                  ? "rgba(0,153,216,0.25)"
+                  : "#d1d5db"
             }`,
-            color: "#ddeeff",
+            color: "#111827",
             fontSize: "14px",
             fontWeight: 500,
             outline: "none",
@@ -269,7 +265,7 @@ function ArcGauge({ foir }: { foir: number }) {
   const [nx, ny] = polar(angle, 52);
   const gaugeColor =
     foir === 0
-      ? "#2d4560"
+      ? "#9ca3af"
       : foir <= 40
         ? "#48bb78"
         : foir <= 60
@@ -353,7 +349,7 @@ function ArcGauge({ foir }: { foir: number }) {
             y1={y1}
             x2={x2}
             y2={y2}
-            stroke="rgba(255,255,255,0.12)"
+            stroke="rgba(0,0,0,0.08)"
             strokeWidth="1.5"
           />
         );
@@ -378,13 +374,13 @@ function ArcGauge({ foir }: { foir: number }) {
         filter="url(#glow2)"
         style={{ transition: "fill 0.5s ease" }}
       />
-      <circle cx="90" cy="90" r="2.8" fill="#080e1a" />
+      <circle cx="90" cy="90" r="2.8" fill="#ffffff" stroke="#e5e7eb" strokeWidth="1" />
 
       <text
         x="8"
         y="102"
         fontSize="7.5"
-        fill="#2d4560"
+        fill="#9ca3af"
         textAnchor="middle"
         fontFamily="Sora"
       >
@@ -394,7 +390,7 @@ function ArcGauge({ foir }: { foir: number }) {
         x="90"
         y="18"
         fontSize="7.5"
-        fill="#2d4560"
+        fill="#9ca3af"
         textAnchor="middle"
         fontFamily="Sora"
       >
@@ -404,7 +400,7 @@ function ArcGauge({ foir }: { foir: number }) {
         x="172"
         y="102"
         fontSize="7.5"
-        fill="#2d4560"
+        fill="#9ca3af"
         textAnchor="middle"
         fontFamily="Sora"
       >
@@ -444,7 +440,7 @@ function ObligationBar({
         <span
           style={{
             fontSize: "11px",
-            color: "#3d5570",
+            color: "#6b7280",
             display: "flex",
             alignItems: "center",
             gap: "5px",
@@ -457,17 +453,17 @@ function ObligationBar({
           style={{
             fontSize: "11px",
             fontWeight: 600,
-            color: "#7a9ab8",
+            color: "#374151",
             fontFamily: "'Space Mono', monospace",
           }}
         >
-          ₹{fmt(value)} <span style={{ color: "#2d4560" }}>({pct.toFixed(1)}%)</span>
+          ₹{fmt(value)} <span style={{ color: "#9ca3af" }}>({pct.toFixed(1)}%)</span>
         </span>
       </div>
       <div
         style={{
           height: "6px",
-          background: "rgba(255,255,255,0.04)",
+          background: "#e5e7eb",
           borderRadius: "10px",
           overflow: "hidden",
         }}
@@ -517,21 +513,21 @@ function OtherRow({
           flex: 1,
           padding: "10px 12px",
           borderRadius: "12px",
-          background: "rgba(255,255,255,0.03)",
-          border: "1px solid rgba(255,255,255,0.07)",
-          color: "#c8daf0",
+          background: "#ffffff",
+          border: "1px solid #d1d5db",
+          color: "#111827",
           fontSize: "13px",
           outline: "none",
           fontFamily: "'Sora',sans-serif",
           transition: "border-color 0.2s, background 0.2s",
         }}
         onFocus={(e) => {
-          e.currentTarget.style.borderColor = "rgba(99,179,237,0.35)";
-          e.currentTarget.style.background = "rgba(99,179,237,0.05)";
+          e.currentTarget.style.borderColor = "rgba(0,153,216,0.5)";
+          e.currentTarget.style.background = "#ffffff";
         }}
         onBlur={(e) => {
-          e.currentTarget.style.borderColor = "rgba(255,255,255,0.07)";
-          e.currentTarget.style.background = "rgba(255,255,255,0.03)";
+          e.currentTarget.style.borderColor = "#d1d5db";
+          e.currentTarget.style.background = "#ffffff";
         }}
       />
       <div style={{ flex: 1, position: "relative" }}>
@@ -541,7 +537,7 @@ function OtherRow({
             left: "11px",
             top: "50%",
             transform: "translateY(-50%)",
-            color: "#2d4560",
+            color: "#9ca3af",
             fontSize: "13px",
             fontWeight: 700,
             pointerEvents: "none",
@@ -562,21 +558,21 @@ function OtherRow({
             paddingTop: "10px",
             paddingBottom: "10px",
             borderRadius: "12px",
-            background: "rgba(255,255,255,0.03)",
-            border: "1px solid rgba(255,255,255,0.07)",
-            color: "#c8daf0",
+            background: "#ffffff",
+            border: "1px solid #d1d5db",
+            color: "#111827",
             fontSize: "13px",
             outline: "none",
             fontFamily: "'Sora',sans-serif",
             transition: "border-color 0.2s, background 0.2s",
           }}
           onFocus={(e) => {
-            e.currentTarget.style.borderColor = "rgba(99,179,237,0.35)";
-            e.currentTarget.style.background = "rgba(99,179,237,0.05)";
+            e.currentTarget.style.borderColor = "rgba(0,153,216,0.5)";
+            e.currentTarget.style.background = "#ffffff";
           }}
           onBlur={(e) => {
-            e.currentTarget.style.borderColor = "rgba(255,255,255,0.07)";
-            e.currentTarget.style.background = "rgba(255,255,255,0.03)";
+            e.currentTarget.style.borderColor = "#d1d5db";
+            e.currentTarget.style.background = "#ffffff";
           }}
         />
       </div>
@@ -658,7 +654,7 @@ export default function FOIRCalculator() {
 
   const animFoir = useAnimatedValue(calc.foir, 900);
 
-  const statusColor = !calc.hasData ? "#3d5570" : calc.eligible ? "#48bb78" : "#fc5c5c";
+  const statusColor = !calc.hasData ? "#6b7280" : calc.eligible ? "#48bb78" : "#fc5c5c";
   const statusBg =
     !calc.hasData
       ? "rgba(61,85,112,0.08)"
@@ -673,7 +669,7 @@ export default function FOIRCalculator() {
         : "rgba(252,92,92,0.22)";
 
   const emiColors: Record<string, string> = {
-    "Home Loan": "#63b3ed",
+    "Home Loan": "#0099D8",
     "Car Loan": "#9f7aea",
     "Personal Loan": "#f6ad55",
     "Credit Card": "#fc5c5c",
@@ -689,8 +685,7 @@ export default function FOIRCalculator() {
     <div
       style={{
         minHeight: "100vh",
-        background:
-          "radial-gradient(ellipse at 25% 15%, #0c1828 0%, #040c18 45%, #020810 100%)",
+        background: "linear-gradient(to bottom right, #f8fafc, #ffffff, #eff6ff)",
         fontFamily: "'Sora', 'Segoe UI', sans-serif",
         position: "relative",
         overflowX: "hidden",
@@ -729,8 +724,8 @@ export default function FOIRCalculator() {
           100% { background-position: 200% center; }
         }
         @keyframes borderBreath {
-          0%, 100% { box-shadow: 0 0 24px rgba(99,179,237,0.06), inset 0 1px 0 rgba(255,255,255,0.04); }
-          50%       { box-shadow: 0 0 48px rgba(99,179,237,0.12), inset 0 1px 0 rgba(255,255,255,0.06); }
+          0%, 100% { box-shadow: 0 4px 24px rgba(0,153,216,0.06); }
+          50%       { box-shadow: 0 8px 32px rgba(0,153,216,0.12); }
         }
         @keyframes dotPulse {
           0%, 100% { transform: scale(1); opacity: 1; }
@@ -739,23 +734,24 @@ export default function FOIRCalculator() {
 
         .card { animation: fadeUp 0.65s cubic-bezier(0.4,0,0.2,1) both; }
         .glass {
-          background: rgba(255,255,255,0.022);
+          background: rgba(255,255,255,0.95);
           backdrop-filter: blur(28px);
           -webkit-backdrop-filter: blur(28px);
-          border: 1px solid rgba(255,255,255,0.065);
+          border: 1px solid #e5e7eb;
+          box-shadow: 0 4px 24px rgba(0,0,0,0.06);
           animation: borderBreath 5s ease-in-out infinite;
         }
         .shimmer-txt {
-          background: linear-gradient(90deg, #63b3ed 0%, #e2eeff 35%, #9f7aea 65%, #63b3ed 100%);
+          background: linear-gradient(90deg, #0099D8 0%, #007BB0 35%, #38bdf8 65%, #0099D8 100%);
           background-size: 200% auto;
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           animation: shimmer 5s linear infinite;
         }
         .add-btn:hover {
-          background: rgba(99,179,237,0.12) !important;
+          background: rgba(0,153,216,0.08) !important;
           border-style: solid !important;
-          box-shadow: 0 0 20px rgba(99,179,237,0.2);
+          box-shadow: 0 0 20px rgba(0,153,216,0.15);
           transform: translateY(-1px);
         }
         .add-btn { transition: all 0.22s ease !important; }
@@ -763,8 +759,8 @@ export default function FOIRCalculator() {
         .grid-bg {
           position: fixed; inset: 0; pointer-events: none; z-index: 0;
           background-image:
-            linear-gradient(rgba(99,179,237,0.025) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(99,179,237,0.025) 1px, transparent 1px);
+            linear-gradient(rgba(0,153,216,0.04) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0,153,216,0.04) 1px, transparent 1px);
           background-size: 44px 44px;
         }
         .orb { position: fixed; border-radius: 50%; filter: blur(90px); pointer-events: none; z-index: 0; }
@@ -783,7 +779,7 @@ export default function FOIRCalculator() {
           height: 450,
           top: "-12%",
           left: "-8%",
-          background: "radial-gradient(circle, rgba(99,179,237,0.07) 0%, transparent 70%)",
+          background: "radial-gradient(circle, rgba(0,153,216,0.08) 0%, transparent 70%)",
         }}
       />
       <div
@@ -793,7 +789,7 @@ export default function FOIRCalculator() {
           height: 500,
           bottom: "-15%",
           right: "-8%",
-          background: "radial-gradient(circle, rgba(159,122,234,0.065) 0%, transparent 70%)",
+          background: "radial-gradient(circle, rgba(0,153,216,0.06) 0%, transparent 70%)",
         }}
       />
       <div
@@ -840,8 +836,8 @@ export default function FOIRCalculator() {
                 gap: "9px",
                 padding: "7px 18px",
                 borderRadius: "100px",
-                background: "rgba(99,179,237,0.07)",
-                border: "1px solid rgba(99,179,237,0.18)",
+                background: "rgba(0,153,216,0.08)",
+                border: "1px solid rgba(0,153,216,0.2)",
               }}
             >
               <span
@@ -849,9 +845,9 @@ export default function FOIRCalculator() {
                   width: "7px",
                   height: "7px",
                   borderRadius: "50%",
-                  background: "#63b3ed",
+                  background: "#0099D8",
                   display: "inline-block",
-                  boxShadow: "0 0 10px #63b3ed",
+                  boxShadow: "0 0 10px #0099D8",
                   animation: "dotPulse 2s ease-in-out infinite",
                 }}
               />
@@ -860,7 +856,7 @@ export default function FOIRCalculator() {
                   fontSize: "11px",
                   fontWeight: 700,
                   letterSpacing: "0.12em",
-                  color: "#63b3ed",
+                  color: "#0099D8",
                   textTransform: "uppercase",
                 }}
               >
@@ -878,13 +874,13 @@ export default function FOIRCalculator() {
               letterSpacing: "-0.03em",
             }}
           >
-            <span style={{ color: "#ddeeff" }}>Obligation &amp; </span>
+            <span style={{ color: "#111827" }}>Obligation &amp; </span>
             <span className="shimmer-txt">FOIR Calculator</span>
           </h1>
           <p
             style={{
               fontSize: "14px",
-              color: "#2d4560",
+              color: "#9ca3af",
               maxWidth: "460px",
               margin: "0 auto",
               lineHeight: 1.7,
@@ -924,8 +920,8 @@ export default function FOIRCalculator() {
                     height: "34px",
                     borderRadius: "11px",
                     background:
-                      "linear-gradient(135deg, rgba(99,179,237,0.15), rgba(99,179,237,0.05))",
-                    border: "1px solid rgba(99,179,237,0.18)",
+                      "linear-gradient(135deg, rgba(0,153,216,0.12), rgba(0,153,216,0.04))",
+                    border: "1px solid rgba(0,153,216,0.2)",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -940,7 +936,7 @@ export default function FOIRCalculator() {
                     fontWeight: 700,
                     letterSpacing: "0.12em",
                     textTransform: "uppercase",
-                    color: "#3d5570",
+                    color: "#6b7280",
                   }}
                 >
                   Monthly Income
@@ -961,7 +957,7 @@ export default function FOIRCalculator() {
                 style={{
                   flex: 1,
                   height: "1px",
-                  background: "linear-gradient(90deg, transparent, rgba(99,179,237,0.12))",
+                  background: "linear-gradient(90deg, transparent, rgba(0,153,216,0.15))",
                 }}
               />
               <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
@@ -987,7 +983,7 @@ export default function FOIRCalculator() {
                     fontWeight: 700,
                     letterSpacing: "0.12em",
                     textTransform: "uppercase",
-                    color: "#3d5570",
+                    color: "#6b7280",
                     whiteSpace: "nowrap",
                   }}
                 >
@@ -998,7 +994,7 @@ export default function FOIRCalculator() {
                 style={{
                   flex: 1,
                   height: "1px",
-                  background: "linear-gradient(90deg, rgba(99,179,237,0.12), transparent)",
+                  background: "linear-gradient(90deg, rgba(0,153,216,0.15), transparent)",
                 }}
               />
             </div>
@@ -1052,9 +1048,9 @@ export default function FOIRCalculator() {
                 width: "100%",
                 padding: "12px",
                 borderRadius: "14px",
-                background: "rgba(99,179,237,0.04)",
-                border: "1px dashed rgba(99,179,237,0.22)",
-                color: "#4a8aaa",
+                background: "rgba(0,153,216,0.06)",
+                border: "1px dashed rgba(0,153,216,0.3)",
+                color: "#0099D8",
                 fontSize: "13px",
                 fontWeight: 600,
                 cursor: "pointer",
@@ -1091,7 +1087,7 @@ export default function FOIRCalculator() {
                   width: "140px",
                   height: "140px",
                   borderRadius: "50%",
-                  border: "1px solid rgba(99,179,237,0.05)",
+                  border: "1px solid rgba(0,153,216,0.08)",
                   animation: "rotateSlow 25s linear infinite",
                 }}
               >
@@ -1103,7 +1099,7 @@ export default function FOIRCalculator() {
                     width: "5px",
                     height: "5px",
                     borderRadius: "50%",
-                    background: "rgba(99,179,237,0.3)",
+                    background: "rgba(0,153,216,0.25)",
                     transform: "translateX(-50%)",
                   }}
                 />
@@ -1116,7 +1112,7 @@ export default function FOIRCalculator() {
                   width: "100px",
                   height: "100px",
                   borderRadius: "50%",
-                  border: "1px solid rgba(159,122,234,0.05)",
+                  border: "1px solid rgba(0,153,216,0.06)",
                   animation: "rotateSlow 18s linear infinite reverse",
                 }}
               />
@@ -1127,7 +1123,7 @@ export default function FOIRCalculator() {
                   fontWeight: 700,
                   letterSpacing: "0.14em",
                   textTransform: "uppercase",
-                  color: "#2d4560",
+                  color: "#9ca3af",
                   marginBottom: "14px",
                 }}
               >
@@ -1147,7 +1143,7 @@ export default function FOIRCalculator() {
                     fontFamily: "'Space Mono', monospace",
                     letterSpacing: "-0.02em",
                     color: !calc.hasData
-                      ? "#1e3048"
+                      ? "#9ca3af"
                       : calc.foir <= 40
                         ? "#48bb78"
                         : calc.foir <= 60
@@ -1157,7 +1153,7 @@ export default function FOIRCalculator() {
                     textShadow: calc.hasData
                       ? `0 0 30px ${
                           !calc.hasData
-                            ? "#1e3048"
+                            ? "#9ca3af"
                             : calc.foir <= 40
                               ? "rgba(72,187,120,0.4)"
                               : calc.foir <= 60
@@ -1173,7 +1169,7 @@ export default function FOIRCalculator() {
                 <div
                   style={{
                     fontSize: "10px",
-                    color: "#1e3048",
+                    color: "#9ca3af",
                     marginTop: "6px",
                     letterSpacing: "0.1em",
                   }}
@@ -1243,7 +1239,7 @@ export default function FOIRCalculator() {
                   fontWeight: 700,
                   letterSpacing: "0.14em",
                   textTransform: "uppercase",
-                  color: "#2d4560",
+                  color: "#9ca3af",
                   marginBottom: "16px",
                 }}
               >
@@ -1253,7 +1249,7 @@ export default function FOIRCalculator() {
                 {
                   label: "Monthly Income",
                   val: income ? `₹${fmt(calc.inc)}` : "—",
-                  color: "#63b3ed",
+                  color: "#0099D8",
                 },
                 {
                   label: "Total Obligation",
@@ -1264,7 +1260,7 @@ export default function FOIRCalculator() {
                   label: "FOIR Ratio",
                   val: calc.hasData ? `${calc.foir.toFixed(2)}%` : "—",
                   color: !calc.hasData
-                    ? "#2d4560"
+                    ? "#9ca3af"
                     : calc.foir <= 40
                       ? "#48bb78"
                       : calc.foir <= 60
@@ -1275,7 +1271,7 @@ export default function FOIRCalculator() {
                 {
                   label: "Disposable Income",
                   val: income ? `₹${fmt(Math.max(0, calc.inc - calc.total))}` : "—",
-                  color: !income ? "#2d4560" : calc.inc > calc.total ? "#48bb78" : "#fc5c5c",
+                  color: !income ? "#9ca3af" : calc.inc > calc.total ? "#48bb78" : "#fc5c5c",
                 },
               ].map(({ label, val, color, mono }, i) => (
                 <div
@@ -1285,10 +1281,10 @@ export default function FOIRCalculator() {
                     justifyContent: "space-between",
                     alignItems: "center",
                     padding: "10px 0",
-                    borderBottom: i < 3 ? "1px solid rgba(255,255,255,0.035)" : "none",
+                    borderBottom: i < 3 ? "1px solid #f3f4f6" : "none",
                   }}
                 >
-                  <span style={{ fontSize: "12px", color: "#2d4560" }}>{label}</span>
+                  <span style={{ fontSize: "12px", color: "#6b7280" }}>{label}</span>
                   <span
                     style={{
                       fontSize: "13px",
@@ -1312,7 +1308,7 @@ export default function FOIRCalculator() {
                     fontWeight: 700,
                     letterSpacing: "0.14em",
                     textTransform: "uppercase",
-                    color: "#2d4560",
+                    color: "#9ca3af",
                     marginBottom: "16px",
                   }}
                 >
@@ -1338,7 +1334,7 @@ export default function FOIRCalculator() {
                   fontWeight: 700,
                   letterSpacing: "0.14em",
                   textTransform: "uppercase",
-                  color: "#2d4560",
+                  color: "#9ca3af",
                   marginBottom: "14px",
                 }}
               >
@@ -1371,7 +1367,7 @@ export default function FOIRCalculator() {
                   <span
                     style={{
                       fontSize: "11px",
-                      color: "#2d4560",
+                      color: "#9ca3af",
                       flex: 1,
                       fontFamily: "'Space Mono',monospace",
                     }}
@@ -1379,7 +1375,7 @@ export default function FOIRCalculator() {
                     {range}
                   </span>
                   <span style={{ fontSize: "11px", fontWeight: 700, color }}>{label}</span>
-                  <span style={{ fontSize: "10px", color: "#1e3048" }}>{note}</span>
+                  <span style={{ fontSize: "10px", color: "#9ca3af" }}>{note}</span>
                 </div>
               ))}
             </div>
@@ -1397,7 +1393,7 @@ export default function FOIRCalculator() {
           <span
             style={{
               fontSize: "11px",
-              color: "#1e3048",
+              color: "#9ca3af",
               fontFamily: "'Space Mono',monospace",
               letterSpacing: "0.05em",
             }}

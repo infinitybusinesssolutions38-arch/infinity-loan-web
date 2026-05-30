@@ -10,18 +10,18 @@ export default function TermsOfServicesPage() {
   return (
     <main className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-black via-gray-900 to-black py-20 lg:py-32">
+      <section className="relative overflow-hidden bg-gradient-to-br from-slate-50 via-white to-blue-50/40 py-20 lg:py-32">
         {/* Animated Background Elements */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-[#0099D8]/10 blur-3xl animate-blob" />
-          <div className="absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-gray-700/20 blur-3xl animate-blob animation-delay-2000" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[600px] rounded-full bg-gray-800/10 blur-3xl animate-blob animation-delay-4000" />
+          <div className="absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-[#0099D8]/5 blur-3xl animate-blob animation-delay-2000" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[600px] rounded-full bg-[#0099D8]/5 blur-3xl animate-blob animation-delay-4000" />
         </div>
 
         {/* Dot Pattern Overlay */}
-        <div className="absolute inset-0 opacity-10">
+        <div className="absolute inset-0 opacity-[0.04]">
           <div className="absolute inset-0" style={{
-            backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
+            backgroundImage: `radial-gradient(circle at 1px 1px, black 1px, transparent 0)`,
             backgroundSize: '40px 40px'
           }} />
         </div>
@@ -29,27 +29,27 @@ export default function TermsOfServicesPage() {
         <div className="container relative z-10 mx-auto px-4">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 text-gray-300 hover:text-white transition-all mb-8 group"
+            className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-all mb-8 group"
           >
             <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
             <span className="font-medium">Back to Home</span>
           </Link>
 
           <div className="text-center max-w-4xl mx-auto">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 backdrop-blur-sm mb-8">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#0099D8]/10 border border-[#0099D8]/20 mb-8">
               <FileText className="h-4 w-4 text-[#0099D8]" />
-              <span className="text-sm font-medium text-white">Terms of Services</span>
+              <span className="text-sm font-medium text-gray-900">Terms of Services</span>
             </div>
 
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-white leading-tight mb-6">
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-gray-900 leading-tight mb-6">
               Terms of <span className="text-[#0099D8]">Services</span>
             </h1>
 
-            <p className="text-xl text-gray-300 leading-relaxed mb-8">
+            <p className="text-xl text-gray-700 leading-relaxed mb-8">
               Infinity Loans & Business Solutions
             </p>
 
-            <p className="text-gray-400 leading-relaxed max-w-3xl mx-auto">
+            <p className="text-gray-600 leading-relaxed max-w-3xl mx-auto">
               These Terms of Services ("Terms") govern your access to and use of the website and services provided by Infinity Loans & Business Solutions ("Company", "we", "our", "us"). By accessing our website or using any of our loan and financial advisory services, you agree to be bound by these Terms. If you do not agree, please do not use our services.
             </p>
           </div>
