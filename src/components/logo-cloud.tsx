@@ -62,6 +62,11 @@ import { useEffect, useMemo, useState } from "react";
 
 export default function LogoCloud() {
     const [imageFiles, setImageFiles] = useState<string[]>([]);
+    const [hasMounted, setHasMounted] = useState(false);
+
+    useEffect(() => {
+        setHasMounted(true);
+    }, []);
 
     useEffect(() => {
         let cancelled = false;
@@ -93,6 +98,7 @@ export default function LogoCloud() {
 
     const sliderOneLogos = useMemo(() => logos.filter((_, idx) => idx % 2 === 0), [logos]);
     const sliderTwoLogos = useMemo(() => logos.filter((_, idx) => idx % 2 === 1), [logos]);
+    const showSliders = hasMounted && logos.length > 0;
 
     const stats = [
         { icon: Handshake, label: "Bank Partners", value: "100+" },
@@ -101,7 +107,7 @@ export default function LogoCloud() {
     ];
 
     return (
-        <section className="relative bg-gradient-to-b from-white via-orange-50/30 to-white overflow-hidden py-16 lg:py-20">
+        <section className="relative bg-gradient-to-b from-white via-sky-50/30 to-white overflow-hidden py-16 lg:py-20">
             {/* Background Pattern */}
             <div className="absolute inset-0 opacity-5">
                 <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNGOTc0MTUiPjxwYXRoIGQ9Ik0zNiAzNHYyaDh2LTJoLTh6TTIwIDM0djJoOHYtMmgtOHoiLz48L2c+PC9nPjwvc3ZnPg==')] animate-slide" />
@@ -111,9 +117,9 @@ export default function LogoCloud() {
                 {/* Header Section */}
                 <div className="text-center mb-12">
                     {/* Badge */}
-                    <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-white border-2 border-[#F97415]/30 rounded-full mb-6 shadow-md animate-fade-in">
-                        <Award className="h-4 w-4 text-[#F97415]" />
-                        <span className="text-sm font-bold text-[#F97415] uppercase tracking-wide">
+                    <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-white border-2 border-[#0099D8]/30 rounded-full mb-6 shadow-md animate-fade-in">
+                        <Award className="h-4 w-4 text-[#0099D8]" />
+                        <span className="text-sm font-bold text-[#0099D8] uppercase tracking-wide">
                             Our Partners
                         </span>
                     </div>
@@ -121,7 +127,7 @@ export default function LogoCloud() {
                     {/* Title */}
                     <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-gray-900 mb-4 animate-fade-in-up">
                         Trusted by Leading
-                        <span className="block mt-2 bg-gradient-to-r from-[#F97415] via-orange-600 to-amber-600 bg-clip-text text-transparent">
+                        <span className="block mt-2 bg-gradient-to-r from-[#0099D8] via-[#0099D8] to-[#2E3192] bg-clip-text text-transparent">
                             Banks & Financial Institutions
                         </span>
                     </h2>
@@ -136,13 +142,13 @@ export default function LogoCloud() {
                     {stats.map((stat, index) => (
                         <div
                             key={stat.label}
-                            className="bg-white rounded-2xl p-4 sm:p-6 shadow-lg border-2 border-gray-100 hover:border-[#F97415]/30 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+                            className="bg-white rounded-2xl p-4 sm:p-6 shadow-lg border-2 border-gray-100 hover:border-[#0099D8]/30 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
                         >
                             <div className="flex flex-col items-center text-center">
-                                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-orange-100 to-orange-50 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                                    <stat.icon className="w-5 h-5 sm:w-6 sm:h-6 text-[#F97415]" strokeWidth={2.5} />
+                                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-sky-100 to-sky-50 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                                    <stat.icon className="w-5 h-5 sm:w-6 sm:h-6 text-[#0099D8]" strokeWidth={2.5} />
                                 </div>
-                                <p className="text-2xl sm:text-3xl font-black text-[#F97415] mb-1">
+                                <p className="text-2xl sm:text-3xl font-black text-[#0099D8] mb-1">
                                     {stat.value}
                                 </p>
                                 <p className="text-xs sm:text-sm font-bold text-gray-600">
@@ -156,103 +162,113 @@ export default function LogoCloud() {
                 {/* Logo Slider Container */}
                 <div className="relative py-8 animate-fade-in-up animation-delay-300">
                     {/* Decorative Border Top */}
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-1 bg-gradient-to-r from-transparent via-[#F97415] to-transparent rounded-full" />
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-1 bg-gradient-to-r from-transparent via-[#0099D8] to-transparent rounded-full" />
 
                     {/* Main Slider */}
-                    <div className="bg-white rounded-3xl border-2 border-gray-100 shadow-xl overflow-hidden py-8 relative">
-                        <InfiniteSlider speed={40} speedOnHover={20} gap={96}>
-                            {sliderOneLogos.map((logo, index) => (
+                    <div className="bg-white rounded-3xl border-2 border-gray-100 shadow-xl overflow-hidden py-8 relative min-h-[7.5rem]">
+                        {showSliders ? (
+                          <>
+                            <InfiniteSlider speed={40} speedOnHover={20} gap={96}>
+                              {sliderOneLogos.map((logo) => (
                                 <div
-                                    key={index}
-                                    className="flex items-center group/logo"
+                                  key={logo.src}
+                                  className="flex items-center group/logo"
                                 >
-                                    <div className="relative h-20 w-40 px-4 py-2 rounded-xl transition-all duration-300 group-hover/logo:bg-orange-50 group-hover/logo:scale-110">
-                                        <Image
-                                            src={logo.src}
-                                            alt={logo.alt}
-                                            fill
-                                            sizes="350px"
-                                            className="object-contain filter transition-all duration-300"
-                                            priority={index < 3}
-                                        />
-                                    </div>
+                                  <div className="relative h-20 w-40 px-4 py-2 rounded-xl transition-all duration-300 group-hover/logo:bg-[#0099D8]/5 group-hover/logo:scale-110">
+                                    <Image
+                                      src={logo.src}
+                                      alt={logo.alt}
+                                      fill
+                                      sizes="350px"
+                                      className="object-contain filter transition-all duration-300"
+                                    />
+                                  </div>
                                 </div>
-                            ))}
-                        </InfiniteSlider>
+                              ))}
+                            </InfiniteSlider>
 
-                        {/* Progressive Blur Overlays */}
-                        <ProgressiveBlur
-                            className="pointer-events-none absolute left-0 top-0 h-full w-24"
-                            direction="left"
-                            blurIntensity={1}
-                        />
-                        <ProgressiveBlur
-                            className="pointer-events-none absolute right-0 top-0 h-full w-24"
-                            direction="right"
-                            blurIntensity={1}
-                        />
+                            <ProgressiveBlur
+                              className="pointer-events-none absolute left-0 top-0 h-full w-24"
+                              direction="left"
+                              blurIntensity={1}
+                            />
+                            <ProgressiveBlur
+                              className="pointer-events-none absolute right-0 top-0 h-full w-24"
+                              direction="right"
+                              blurIntensity={1}
+                            />
 
-                        {/* Gradient Overlays for smooth fade */}
-                        <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-white to-transparent pointer-events-none" />
-                        <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-white to-transparent pointer-events-none" />
+                            <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-white to-transparent pointer-events-none" />
+                            <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-white to-transparent pointer-events-none" />
+                          </>
+                        ) : (
+                          <div className="flex h-20 items-center justify-center text-sm text-gray-400">
+                            Loading partner logos...
+                          </div>
+                        )}
                     </div>
 
-                    <div className="bg-white mt-5 rounded-3xl border-2 border-gray-100 shadow-xl overflow-hidden py-8 relative">
-                        <InfiniteSlider speed={40} speedOnHover={20} gap={96} reverse>
-                            {sliderTwoLogos.map((logo, index) => (
+                    <div className="bg-white mt-5 rounded-3xl border-2 border-gray-100 shadow-xl overflow-hidden py-8 relative min-h-[7.5rem]">
+                        {showSliders ? (
+                          <>
+                            <InfiniteSlider speed={40} speedOnHover={20} gap={96} reverse>
+                              {sliderTwoLogos.map((logo) => (
                                 <div
-                                    key={index}
-                                    className="flex items-center group/logo"
+                                  key={logo.src}
+                                  className="flex items-center group/logo"
                                 >
-                                    <div className="relative h-20 w-40 px-4 py-2 rounded-xl transition-all duration-300 group-hover/logo:bg-orange-50 group-hover/logo:scale-110">
-                                        <Image
-                                            src={logo.src}
-                                            alt={logo.alt}
-                                            fill
-                                            sizes="350px"
-                                            className="object-contain filter transition-all duration-300"
-                                            priority={index < 3}
-                                        />
-                                    </div>
+                                  <div className="relative h-20 w-40 px-4 py-2 rounded-xl transition-all duration-300 group-hover/logo:bg-[#0099D8]/5 group-hover/logo:scale-110">
+                                    <Image
+                                      src={logo.src}
+                                      alt={logo.alt}
+                                      fill
+                                      sizes="350px"
+                                      className="object-contain filter transition-all duration-300"
+                                    />
+                                  </div>
                                 </div>
-                            ))}
-                        </InfiniteSlider>
+                              ))}
+                            </InfiniteSlider>
 
-                        {/* Progressive Blur Overlays */}
-                        <ProgressiveBlur
-                            className="pointer-events-none absolute left-0 top-0 h-full w-24"
-                            direction="left"
-                            blurIntensity={1}
-                        />
-                        <ProgressiveBlur
-                            className="pointer-events-none absolute right-0 top-0 h-full w-24"
-                            direction="right"
-                            blurIntensity={1}
-                        />
+                            <ProgressiveBlur
+                              className="pointer-events-none absolute left-0 top-0 h-full w-24"
+                              direction="left"
+                              blurIntensity={1}
+                            />
+                            <ProgressiveBlur
+                              className="pointer-events-none absolute right-0 top-0 h-full w-24"
+                              direction="right"
+                              blurIntensity={1}
+                            />
 
-                        {/* Gradient Overlays for smooth fade */}
-                        <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-white to-transparent pointer-events-none" />
-                        <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-white to-transparent pointer-events-none" />
+                            <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-white to-transparent pointer-events-none" />
+                            <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-white to-transparent pointer-events-none" />
+                          </>
+                        ) : (
+                          <div className="flex h-20 items-center justify-center text-sm text-gray-400">
+                            Loading partner logos...
+                          </div>
+                        )}
                     </div>
 
                     {/* Decorative Border Bottom */}
-                    <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-32 h-1 bg-gradient-to-r from-transparent via-[#F97415] to-transparent rounded-full" />
+                    <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-32 h-1 bg-gradient-to-r from-transparent via-[#0099D8] to-transparent rounded-full" />
                 </div>
 
                 {/* Trust Indicators */}
                 <div className="mt-10 flex flex-wrap items-center justify-center gap-6 text-sm text-gray-600 font-semibold animate-fade-in-up animation-delay-400">
                     <div className="flex items-center gap-2">
-                        <CheckCircle2 className="w-5 h-5 text-[#F97415]" />
+                        <CheckCircle2 className="w-5 h-5 text-[#0099D8]" />
                         <span>RBI Approved Partners</span>
                     </div>
                     <div className="hidden sm:block w-1 h-1 rounded-full bg-gray-400" />
                     <div className="flex items-center gap-2">
-                        <CheckCircle2 className="w-5 h-5 text-[#F97415]" />
+                        <CheckCircle2 className="w-5 h-5 text-[#0099D8]" />
                         <span>Secure & Transparent</span>
                     </div>
                     <div className="hidden sm:block w-1 h-1 rounded-full bg-gray-400" />
                     <div className="flex items-center gap-2">
-                        <CheckCircle2 className="w-5 h-5 text-[#F97415]" />
+                        <CheckCircle2 className="w-5 h-5 text-[#0099D8]" />
                         <span>Best Interest Rates</span>
                     </div>
                 </div>
@@ -264,70 +280,6 @@ export default function LogoCloud() {
                     </p>
                 </div>
             </div>
-
-            {/* CSS Animations */}
-            <style jsx>{`
-                @keyframes fade-in {
-                    from {
-                        opacity: 0;
-                    }
-                    to {
-                        opacity: 1;
-                    }
-                }
-
-                @keyframes fade-in-up {
-                    from {
-                        opacity: 0;
-                        transform: translateY(20px);
-                    }
-                    to {
-                        opacity: 1;
-                        transform: translateY(0);
-                    }
-                }
-
-                @keyframes slide {
-                    0% {
-                        transform: translateX(0) translateY(0);
-                    }
-                    100% {
-                        transform: translateX(60px) translateY(60px);
-                    }
-                }
-
-                .animate-fade-in {
-                    animation: fade-in 0.6s ease-out forwards;
-                }
-
-                .animate-fade-in-up {
-                    animation: fade-in-up 0.6s ease-out forwards;
-                }
-
-                .animate-slide {
-                    animation: slide 20s linear infinite;
-                }
-
-                .animation-delay-100 {
-                    animation-delay: 100ms;
-                }
-
-                .animation-delay-200 {
-                    animation-delay: 200ms;
-                }
-
-                .animation-delay-300 {
-                    animation-delay: 300ms;
-                }
-
-                .animation-delay-400 {
-                    animation-delay: 400ms;
-                }
-
-                .animation-delay-500 {
-                    animation-delay: 500ms;
-                }
-            `}</style>
         </section>
     )
 }

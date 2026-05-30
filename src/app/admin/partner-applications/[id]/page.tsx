@@ -238,7 +238,7 @@ export default function AdminPartnerApplicationDetailPage({ params }: { params: 
               <div className="text-xs text-muted-foreground">Current Status</div>
               <div className="mt-1 text-sm font-semibold">
                 <span className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${
-                  item.status === "New" ? "bg-blue-50 text-blue-700" :
+                  item.status === "New" ? "bg-[#0099D8]/5 text-[#007BB0]" :
                   item.status === "Contacted" ? "bg-yellow-50 text-yellow-700" :
                   item.status === "Approved" ? "bg-green-50 text-green-700" :
                   item.status === "Rejected" ? "bg-red-50 text-red-700" :

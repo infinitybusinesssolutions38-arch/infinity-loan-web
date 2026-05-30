@@ -210,7 +210,7 @@ const HeroSection: React.FC = () => {
                                 <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
                                     <Link
                                         href={personalHref}
-                                        className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-white px-6 text-sm font-semibold text-blue-700 shadow-lg transition hover:bg-white/90 focus:outline-none focus:ring-4 focus:ring-white/30 sm:w-auto"
+                                        className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-white px-6 text-sm font-semibold text-[#007BB0] shadow-lg transition hover:bg-white/90 focus:outline-none focus:ring-4 focus:ring-white/30 sm:w-auto"
                                     >
                                         Personal Loan
                                         <ArrowIcon className="h-5 w-5" />
@@ -327,7 +327,7 @@ const HeroSection: React.FC = () => {
                 <div className="container mx-auto px-4 lg:px-8">
                     <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
                         <div className="animate-fade-in-up">
-                            <p className="text-sm font-semibold text-blue-600">Company Overview</p>
+                            <p className="text-sm font-semibold text-[#0099D8]">Company Overview</p>
                             <h2 className="mt-3 text-3xl lg:text-4xl font-bold text-gray-900">
                                 Experience, expertise, and end-to-end support
                             </h2>
@@ -349,8 +349,8 @@ const HeroSection: React.FC = () => {
                                         style={{ animationDelay: `${index * 100}ms` }}
                                     >
                                         <div className="flex items-start gap-3">
-                                            <div className="mt-0.5 flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 group-hover:scale-110 transition-transform">
-                                                <item.icon className="h-5 w-5 text-blue-600" />
+                                            <div className="mt-0.5 flex h-10 w-10 items-center justify-center rounded-xl bg-[#0099D8]/5 group-hover:scale-110 transition-transform">
+                                                <item.icon className="h-5 w-5 text-[#0099D8]" />
                                             </div>
                                             <div>
                                                 <p className="font-semibold text-gray-900">{item.title}</p>
@@ -368,7 +368,7 @@ const HeroSection: React.FC = () => {
                                 {["Retail", "Manufacturing", "Services", "Trading", "Transport", "Healthcare", "Education"].map((t, index) => (
                                     <span 
                                         key={t} 
-                                        className="rounded-full border border-gray-200 bg-white px-3 py-1 text-xs font-medium text-gray-700 hover:border-blue-300 hover:bg-blue-50 hover:scale-105 transition-all duration-300 cursor-default animate-fade-in"
+                                        className="rounded-full border border-gray-200 bg-white px-3 py-1 text-xs font-medium text-gray-700 hover:border-[#0099D8]/30 hover:bg-[#0099D8]/5 hover:scale-105 transition-all duration-300 cursor-default animate-fade-in"
                                         style={{ animationDelay: `${index * 50}ms` }}
                                     >
                                         {t}
@@ -415,12 +415,12 @@ const HeroSection: React.FC = () => {
                                 className="group rounded-2xl border border-gray-200/70 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-xl animate-fade-in-up"
                                 style={{ animationDelay: `${index * 100}ms` }}
                             >
-                                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 group-hover:bg-blue-100 group-hover:scale-110 transition-all duration-300">
-                                    <item.icon className="h-6 w-6 text-blue-600" />
+                                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#0099D8]/5 group-hover:bg-[#0099D8]/10 group-hover:scale-110 transition-all duration-300">
+                                    <item.icon className="h-6 w-6 text-[#0099D8]" />
                                 </div>
-                                <h3 className="mt-4 text-base font-semibold text-gray-900 group-hover:text-blue-700 transition-colors">{item.title}</h3>
+                                <h3 className="mt-4 text-base font-semibold text-gray-900 group-hover:text-[#007BB0] transition-colors">{item.title}</h3>
                                 <p className="mt-2 text-sm text-gray-600">{item.desc}</p>
-                                <span className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-blue-600 group-hover:gap-3 transition-all">
+                                <span className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-[#0099D8] group-hover:gap-3 transition-all">
                                     View details <ChevronRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
                                 </span>
                             </Link>
@@ -434,7 +434,7 @@ const HeroSection: React.FC = () => {
                 <div className="container mx-auto px-4 lg:px-8">
                     <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
                         <div className="animate-fade-in-up">
-                            <p className="text-sm font-semibold text-blue-600">Government Scheme Highlights</p>
+                            <p className="text-sm font-semibold text-[#0099D8]">Government Scheme Highlights</p>
                             <h2 className="mt-3 text-3xl lg:text-4xl font-bold text-gray-900">Subsidy & scheme-backed support</h2>
                             <p className="mt-4 text-gray-600">
                                 Explore popular government-backed programs and understand eligibility before applying. We help you with documentation and submission.
@@ -459,7 +459,7 @@ const HeroSection: React.FC = () => {
                             </ul>
 
                             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-start">
-                                <Button asChild className="w-full sm:w-auto h-11 px-7 text-base bg-blue-600 text-white hover:bg-blue-700 hover:scale-105 transition-all duration-300 shadow-lg">
+                                <Button asChild className="w-full sm:w-auto h-11 px-7 text-base bg-[#0099D8] text-white hover:bg-[#007BB0] hover:scale-105 transition-all duration-300 shadow-lg">
                                     <Link href="/services/government-schemes">Explore schemes</Link>
                                 </Button>
                                 <ApplyNowCTAButton
@@ -519,12 +519,12 @@ const HeroSection: React.FC = () => {
                                 className="group rounded-2xl border border-gray-200/70 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-xl animate-fade-in-up"
                                 style={{ animationDelay: `${index * 100}ms` }}
                             >
-                                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 group-hover:bg-blue-100 group-hover:scale-110 transition-all duration-300">
-                                    <c.icon className="h-6 w-6 text-blue-600" />
+                                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#0099D8]/5 group-hover:bg-[#0099D8]/10 group-hover:scale-110 transition-all duration-300">
+                                    <c.icon className="h-6 w-6 text-[#0099D8]" />
                                 </div>
-                                <h3 className="mt-4 text-base font-semibold text-gray-900 group-hover:text-blue-700 transition-colors">{c.title}</h3>
+                                <h3 className="mt-4 text-base font-semibold text-gray-900 group-hover:text-[#007BB0] transition-colors">{c.title}</h3>
                                 <p className="mt-2 text-sm text-gray-600">{c.desc}</p>
-                                <span className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-blue-600 group-hover:gap-3 transition-all">
+                                <span className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-[#0099D8] group-hover:gap-3 transition-all">
                                     Explore <ChevronRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
                                 </span>
                             </Link>
@@ -558,7 +558,7 @@ const HeroSection: React.FC = () => {
                             >
                                 <p className="font-semibold text-gray-900">{item.title}</p>
                                 <p className="mt-1 text-sm text-gray-600">{item.desc}</p>
-                                <span className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-blue-600">
+                                <span className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-[#0099D8]">
                                     {item.title.includes("Eligibility") ? "Check eligibility" : "View schemes"} <ChevronRight className="h-4 w-4" />
                                 </span>
                             </Link>
@@ -628,7 +628,7 @@ const HeroSection: React.FC = () => {
                                     className="rounded-2xl border border-gray-200/70 bg-white p-6 text-center shadow-sm hover:shadow-lg hover:scale-105 transition-all duration-300 animate-fade-in-up"
                                     style={{ animationDelay: `${index * 100}ms` }}
                                 >
-                                    <p className="text-3xl font-extrabold text-blue-700 animate-counter">{s.value}</p>
+                                    <p className="text-3xl font-extrabold text-[#007BB0] animate-counter">{s.value}</p>
                                     <p className="mt-2 text-sm font-medium text-gray-700">{s.title}</p>
                                 </div>
                             ))}
@@ -659,7 +659,7 @@ const HeroSection: React.FC = () => {
                                 <p className="text-sm text-gray-700 italic">"{t.quote}"</p>
                                 <div className="mt-4 flex items-center justify-between">
                                     <p className="font-semibold text-gray-900">{t.name}</p>
-                                    <p className="text-xs font-medium text-blue-600">{t.role}</p>
+                                    <p className="text-xs font-medium text-[#0099D8]">{t.role}</p>
                                 </div>
                             </div>
                         ))}
@@ -680,10 +680,10 @@ const HeroSection: React.FC = () => {
                             {["Banks", "NBFCs", "Fintech partners", "Scheme partners"].map((p, index) => (
                                 <span 
                                     key={p} 
-                                    className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-gray-50 px-4 py-2 text-sm font-semibold text-gray-800 hover:border-blue-300 hover:bg-blue-50 hover:scale-105 transition-all duration-300 animate-fade-in"
+                                    className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-gray-50 px-4 py-2 text-sm font-semibold text-gray-800 hover:border-[#0099D8]/30 hover:bg-[#0099D8]/5 hover:scale-105 transition-all duration-300 animate-fade-in"
                                     style={{ animationDelay: `${index * 100}ms` }}
                                 >
-                                    <Handshake className="h-4 w-4 text-blue-600" />
+                                    <Handshake className="h-4 w-4 text-[#0099D8]" />
                                     {p}
                                 </span>
                             ))}
@@ -720,8 +720,8 @@ const HeroSection: React.FC = () => {
                                     className="group rounded-2xl border border-gray-200/70 bg-gray-50 p-6 hover:shadow-md hover:-translate-y-1 transition-all duration-300 animate-fade-in-up"
                                     style={{ animationDelay: `${index * 100}ms` }}
                                 >
-                                    <p className="font-semibold text-gray-900 group-hover:text-blue-700 transition-colors">{u.title}</p>
-                                    <span className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-blue-600 group-hover:gap-3 transition-all">
+                                    <p className="font-semibold text-gray-900 group-hover:text-[#007BB0] transition-colors">{u.title}</p>
+                                    <span className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-[#0099D8] group-hover:gap-3 transition-all">
                                         Read more <ChevronRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
                                     </span>
                                 </Link>
@@ -741,7 +741,7 @@ const HeroSection: React.FC = () => {
 
                             <div className="mt-6 rounded-2xl border border-gray-200/70 bg-white p-6 shadow-sm hover:shadow-md transition-shadow duration-300">
                                 <div className="flex items-start gap-3">
-                                    <Globe className="mt-1 h-5 w-5 text-blue-600" />
+                                    <Globe className="mt-1 h-5 w-5 text-[#0099D8]" />
                                     <div>
                                         <p className="font-semibold text-gray-900">Pan-India assistance</p>
                                         <p className="mt-1 text-sm text-gray-600">Share your city/state and we'll guide the next steps remotely.</p>
@@ -807,10 +807,10 @@ const HeroSection: React.FC = () => {
                                 {index < 3 && (
                                     <div className="hidden md:block absolute top-12 left-1/2 w-full h-0.5 bg-gradient-to-r from-blue-200 to-blue-300" />
                                 )}
-                                <div className="relative z-10 w-24 h-24 bg-white rounded-full shadow-lg mx-auto mb-4 flex items-center justify-center border-4 border-blue-100 hover:scale-110 hover:shadow-xl transition-all duration-300 group">
-                                    <item.icon className="w-10 h-10 text-blue-600 group-hover:scale-110 transition-transform" />
+                                <div className="relative z-10 w-24 h-24 bg-white rounded-full shadow-lg mx-auto mb-4 flex items-center justify-center border-4 border-[#0099D8]/15 hover:scale-110 hover:shadow-xl transition-all duration-300 group">
+                                    <item.icon className="w-10 h-10 text-[#0099D8] group-hover:scale-110 transition-transform" />
                                 </div>
-                                <div className="inline-flex items-center justify-center w-8 h-8 bg-blue-600 text-white rounded-full text-sm font-bold mb-3 animate-bounce-subtle">
+                                <div className="inline-flex items-center justify-center w-8 h-8 bg-[#0099D8] text-white rounded-full text-sm font-bold mb-3 animate-bounce-subtle">
                                     {item.step}
                                 </div>
                                 <h3 className="font-semibold text-gray-900 mb-2">{item.title}</h3>
@@ -843,8 +843,8 @@ const HeroSection: React.FC = () => {
                                 className="bg-white rounded-xl p-6 shadow-md border border-gray-200/70 hover:shadow-xl hover:-translate-y-2 transition-all duration-300 animate-fade-in-up"
                                 style={{ animationDelay: `${index * 100}ms` }}
                             >
-                                <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                                    <feature.icon className="w-6 h-6 text-blue-600" />
+                                <div className="w-12 h-12 rounded-xl bg-[#0099D8]/5 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                    <feature.icon className="w-6 h-6 text-[#0099D8]" />
                                 </div>
                                 <h3 className="font-semibold text-gray-900 mb-2">{feature.title}</h3>
                                 <p className="text-sm text-gray-600">{feature.desc}</p>
@@ -873,7 +873,7 @@ const HeroSection: React.FC = () => {
                                 Our team is ready to help you every step of the way.
                             </p>
                             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                                <Button asChild className="h-11 px-7 text-base bg-white text-blue-700 hover:bg-white/90 hover:scale-105 transition-all duration-300 shadow-lg">
+                                <Button asChild className="h-11 px-7 text-base bg-white text-[#007BB0] hover:bg-white/90 hover:scale-105 transition-all duration-300 shadow-lg">
                                     <Link href={personalHref}>Apply for Personal Loan</Link>
                                 </Button>
                                 <Button

@@ -13,7 +13,7 @@ export default function PrivacyPolicyPage() {
       <section className="relative overflow-hidden bg-gradient-to-br from-black via-gray-900 to-black py-20 lg:py-32">
         {/* Animated Background Elements */}
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-[#F97415]/10 blur-3xl animate-blob" />
+          <div className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-[#0099D8]/10 blur-3xl animate-blob" />
           <div className="absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-gray-700/20 blur-3xl animate-blob animation-delay-2000" />
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[600px] rounded-full bg-gray-800/10 blur-3xl animate-blob animation-delay-4000" />
         </div>
@@ -37,12 +37,12 @@ export default function PrivacyPolicyPage() {
 
           <div className="text-center max-w-4xl mx-auto">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 backdrop-blur-sm mb-8">
-              <Shield className="h-4 w-4 text-[#F97415]" />
+              <Shield className="h-4 w-4 text-[#0099D8]" />
               <span className="text-sm font-medium text-white">Privacy Policy</span>
             </div>
 
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-white leading-tight mb-6">
-              Privacy <span className="text-[#F97415]">Policy</span>
+              Privacy <span className="text-[#0099D8]">Policy</span>
             </h1>
 
             <p className="text-xl text-gray-300 leading-relaxed mb-8">
@@ -78,7 +78,7 @@ export default function PrivacyPolicyPage() {
             <div className="mb-12">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-gray-800 to-gray-700 border border-gray-600 flex items-center justify-center">
-                  <Eye className="h-6 w-6 text-[#F97415]" />
+                  <Eye className="h-6 w-6 text-[#0099D8]" />
                 </div>
                 <h2 className="text-3xl font-bold text-black">1. Information We Collect</h2>
               </div>
@@ -91,27 +91,27 @@ export default function PrivacyPolicyPage() {
                 <h3 className="text-xl font-semibold text-black mb-4">1.1 Personal Information</h3>
                 <ul className="space-y-2 text-gray-600">
                   <li className="flex items-start gap-2">
-                    <span className="text-[#F97415] mt-1">•</span>
+                    <span className="text-[#0099D8] mt-1">•</span>
                     <span>Full name, mobile number, and email address</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="text-[#F97415] mt-1">•</span>
+                    <span className="text-[#0099D8] mt-1">•</span>
                     <span>Date of birth and residential address</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="text-[#F97415] mt-1">•</span>
+                    <span className="text-[#0099D8] mt-1">•</span>
                     <span>Identity documents such as PAN, Aadhaar, or other government-issued IDs (where applicable)</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="text-[#F97415] mt-1">•</span>
+                    <span className="text-[#0099D8] mt-1">•</span>
                     <span>Employment, business, and income details</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="text-[#F97415] mt-1">•</span>
+                    <span className="text-[#0099D8] mt-1">•</span>
                     <span>Banking and financial information required for loan processing</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="text-[#F97415] mt-1">•</span>
+                    <span className="text-[#0099D8] mt-1">•</span>
                     <span>Credit information, including credit score and repayment history, subject to your consent</span>
                   </li>
                 </ul>
@@ -121,15 +121,15 @@ export default function PrivacyPolicyPage() {
                 <h3 className="text-xl font-semibold text-black mb-4">1.2 Non-Personal Information</h3>
                 <ul className="space-y-2 text-gray-600">
                   <li className="flex items-start gap-2">
-                    <span className="text-[#F97415] mt-1">•</span>
+                    <span className="text-[#0099D8] mt-1">•</span>
                     <span>IP address, browser type, and device details</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="text-[#F97415] mt-1">•</span>
+                    <span className="text-[#0099D8] mt-1">•</span>
                     <span>Website usage data, including pages visited and duration</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="text-[#F97415] mt-1">•</span>
+                    <span className="text-[#0099D8] mt-1">•</span>
                     <span>Cookies and similar tracking technologies</span>
                   </li>
                 </ul>
@@ -140,7 +140,7 @@ export default function PrivacyPolicyPage() {
             <div className="mb-12">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-gray-800 to-gray-700 border border-gray-600 flex items-center justify-center">
-                  <FileText className="h-6 w-6 text-[#F97415]" />
+                  <FileText className="h-6 w-6 text-[#0099D8]" />
                 </div>
                 <h2 className="text-3xl font-bold text-black">2. Purpose of Data Collection</h2>
               </div>
@@ -151,27 +151,27 @@ export default function PrivacyPolicyPage() {
 
               <ul className="space-y-3 text-gray-600">
                 <li className="flex items-start gap-2">
-                  <span className="text-[#F97415] mt-1">•</span>
+                  <span className="text-[#0099D8] mt-1">•</span>
                   <span>Evaluating and processing loan and financial service applications</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#F97415] mt-1">•</span>
+                  <span className="text-[#0099D8] mt-1">•</span>
                   <span>Connecting you with banks, NBFCs, and lending partners</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#F97415] mt-1">•</span>
+                  <span className="text-[#0099D8] mt-1">•</span>
                   <span>Identity verification, credit assessment, and fraud prevention</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#F97415] mt-1">•</span>
+                  <span className="text-[#0099D8] mt-1">•</span>
                   <span>Communication related to services, applications, and updates</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#F97415] mt-1">•</span>
+                  <span className="text-[#0099D8] mt-1">•</span>
                   <span>Improving our website functionality and customer experience</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#F97415] mt-1">•</span>
+                  <span className="text-[#0099D8] mt-1">•</span>
                   <span>Compliance with legal, regulatory, and statutory obligations</span>
                 </li>
               </ul>
@@ -181,7 +181,7 @@ export default function PrivacyPolicyPage() {
             <div className="mb-12">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-gray-800 to-gray-700 border border-gray-600 flex items-center justify-center">
-                  <Users className="h-6 w-6 text-[#F97415]" />
+                  <Users className="h-6 w-6 text-[#0099D8]" />
                 </div>
                 <h2 className="text-3xl font-bold text-black">3. Disclosure of Information</h2>
               </div>
@@ -192,19 +192,19 @@ export default function PrivacyPolicyPage() {
 
               <ul className="space-y-3 text-gray-600">
                 <li className="flex items-start gap-2">
-                  <span className="text-[#F97415] mt-1">•</span>
+                  <span className="text-[#0099D8] mt-1">•</span>
                   <span>Banks, NBFCs, and authorized lending institutions</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#F97415] mt-1">•</span>
+                  <span className="text-[#0099D8] mt-1">•</span>
                   <span>Credit bureaus such as CIBIL, Experian, Equifax, and CRIF High Mark</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#F97415] mt-1">•</span>
+                  <span className="text-[#0099D8] mt-1">•</span>
                   <span>Third-party service providers assisting with verification or processing</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#F97415] mt-1">•</span>
+                  <span className="text-[#0099D8] mt-1">•</span>
                   <span>Regulatory, legal, or governmental authorities as required by law</span>
                 </li>
               </ul>
@@ -218,7 +218,7 @@ export default function PrivacyPolicyPage() {
             <div className="mb-12">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-gray-800 to-gray-700 border border-gray-600 flex items-center justify-center">
-                  <Lock className="h-6 w-6 text-[#F97415]" />
+                  <Lock className="h-6 w-6 text-[#0099D8]" />
                 </div>
                 <h2 className="text-3xl font-bold text-black">4. Data Security</h2>
               </div>
@@ -232,7 +232,7 @@ export default function PrivacyPolicyPage() {
             <div className="mb-12">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-gray-800 to-gray-700 border border-gray-600 flex items-center justify-center">
-                  <Globe className="h-6 w-6 text-[#F97415]" />
+                  <Globe className="h-6 w-6 text-[#0099D8]" />
                 </div>
                 <h2 className="text-3xl font-bold text-black">5. Cookies Policy</h2>
               </div>
@@ -252,15 +252,15 @@ export default function PrivacyPolicyPage() {
 
               <ul className="space-y-3 text-gray-600">
                 <li className="flex items-start gap-2">
-                  <span className="text-[#F97415] mt-1">•</span>
+                  <span className="text-[#0099D8] mt-1">•</span>
                   <span>Collection, storage, and processing of your personal data</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#F97415] mt-1">•</span>
+                  <span className="text-[#0099D8] mt-1">•</span>
                   <span>Contact via phone calls, SMS, WhatsApp, or email for service-related communication</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#F97415] mt-1">•</span>
+                  <span className="text-[#0099D8] mt-1">•</span>
                   <span>Credit checks and verification required for loan eligibility assessment</span>
                 </li>
               </ul>
@@ -294,19 +294,19 @@ export default function PrivacyPolicyPage() {
 
               <ul className="space-y-3 text-gray-600">
                 <li className="flex items-start gap-2">
-                  <span className="text-[#F97415] mt-1">•</span>
+                  <span className="text-[#0099D8] mt-1">•</span>
                   <span>Access and review your personal information</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#F97415] mt-1">•</span>
+                  <span className="text-[#0099D8] mt-1">•</span>
                   <span>Request correction of inaccurate or incomplete data</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#F97415] mt-1">•</span>
+                  <span className="text-[#0099D8] mt-1">•</span>
                   <span>Withdraw consent, where legally permissible</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#F97415] mt-1">•</span>
+                  <span className="text-[#0099D8] mt-1">•</span>
                   <span>Request deletion of personal data, subject to statutory obligations</span>
                 </li>
               </ul>
@@ -334,7 +334,7 @@ export default function PrivacyPolicyPage() {
                 
                 <div className="grid gap-4 md:grid-cols-2">
                   <div className="flex items-start gap-3">
-                    <Phone className="h-5 w-5 text-[#F97415] mt-1 flex-shrink-0" />
+                    <Phone className="h-5 w-5 text-[#0099D8] mt-1 flex-shrink-0" />
                     <div>
                       <p className="font-semibold text-white mb-1">Customer Support:</p>
                       <p className="text-gray-300">+91 9579880841</p>
@@ -343,7 +343,7 @@ export default function PrivacyPolicyPage() {
                   </div>
 
                   <div className="flex items-start gap-3">
-                    <Mail className="h-5 w-5 text-[#F97415] mt-1 flex-shrink-0" />
+                    <Mail className="h-5 w-5 text-[#0099D8] mt-1 flex-shrink-0" />
                     <div>
                       <p className="font-semibold text-white mb-1">Email:</p>
                       <p className="text-gray-300">business@infinityloanservices.com</p>
@@ -353,7 +353,7 @@ export default function PrivacyPolicyPage() {
                   </div>
 
                   <div className="flex items-start gap-3">
-                    <Globe className="h-5 w-5 text-[#F97415] mt-1 flex-shrink-0" />
+                    <Globe className="h-5 w-5 text-[#0099D8] mt-1 flex-shrink-0" />
                     <div>
                       <p className="font-semibold text-white mb-1">Website:</p>
                       <p className="text-gray-300">www.infinityloanservices.com</p>
@@ -361,7 +361,7 @@ export default function PrivacyPolicyPage() {
                   </div>
 
                   <div className="flex items-start gap-3">
-                    <Building2 className="h-5 w-5 text-[#F97415] mt-1 flex-shrink-0" />
+                    <Building2 className="h-5 w-5 text-[#0099D8] mt-1 flex-shrink-0" />
                     <div>
                       <p className="font-semibold text-white mb-1">Office Locations</p>
                       <p className="text-gray-300 text-sm">Corporate & Registered Office: 8th Floor, Magnum Tower – 1, Golf Course Extension Road, Sector 58, Gurugram, Haryana – 122098, India</p>

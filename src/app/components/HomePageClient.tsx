@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState, type ComponentType } from "react";
 import Image from "next/image";
@@ -21,6 +21,11 @@ import {
   TrendingUp,
   User,
   Users,
+  Car,
+  ChevronLeft,
+  ChevronRight,
+  Calculator,
+  MessageCircle,
 } from "lucide-react";
 
 
@@ -36,6 +41,7 @@ import LoanTestimonials from "./LoanTestimonials";
 import EmiRestructuringHighlight from "./Emirestructuringhighlight";
 import PropertyLoanHighlight from "./Propertyloanhighlight";
 import LogoCloud2 from "@/components/logocloud2";
+import { ScrollReveal } from "@/components/ui/scroll-reveal";
 
 
 type HubCategoryKey = "loans" | "insurance" | "credit-cards" | "government-schemes";
@@ -81,11 +87,45 @@ const CATEGORY_META: Array<{
     { key: "government-schemes", title: "Government Schemes", icon: Building2, gradient: "bg-gradient-government" },
   ];
 
+const QUICK_LINKS = [
+  { icon: FileCheck, label: "Apply Now", href: "/services" },
+  { icon: Clock, label: "Check Status", href: "/login" },
+  { icon: Calculator, label: "EMI Calculator", href: "/emi-calculator" },
+  { icon: MessageCircle, label: "Contact Us", href: "/contact" },
+];
+
 const TRUST_INDICATORS = [
   { icon: Users, value: "60,000+", label: "Happy Customers" },
-  { icon: TrendingUp, value: "₹600 Cr+", label: "Loans Disbursed" },
+  { icon: TrendingUp, value: "â‚¹600 Cr+", label: "Loans Disbursed" },
   { icon: Clock, value: "48 Hours", label: "Average Approval" },
   { icon: FileCheck, value: "96%", label: "Success Rate" },
+];
+
+const FEATURED_LOAN_CARDS = [
+  {
+    icon: User,
+    title: "Personal Loan",
+    description: "Flexible personal financing for education, medical, travel and more.",
+    href: "/personal-loan",
+  },
+  {
+    icon: Landmark,
+    title: "Home Loan",
+    description: "Competitive rates for home purchase, construction and balance transfer.",
+    href: "/services/loans",
+  },
+  {
+    icon: Briefcase,
+    title: "Business Loan",
+    description: "Working capital, MSME, machinery and expansion funding solutions.",
+    href: "/business-loan",
+  },
+  {
+    icon: Car,
+    title: "Vehicle Loan",
+    description: "Car, two-wheeler, commercial vehicle and EV financing options.",
+    href: "/services/loans",
+  },
 ];
 
 const LOAN_SERVICES: ServiceGroup[] = [
@@ -109,7 +149,7 @@ const LOAN_SERVICES: ServiceGroup[] = [
       {
         key: "overdraft-cash-credit",
         title: "Overdraft / Cash Credit (OD / CC)",
-        description: "A flexible limit for withdrawals as needed — interest is charged only on utilisation.",
+        description: "A flexible limit for withdrawals as needed â€” interest is charged only on utilisation.",
         infoHref: "/business-loan",
       },
       {
@@ -330,18 +370,18 @@ export default function HomePageClient() {
       {
         badge: "Quick & Transparent",
         icon: Banknote,
-        title: "Smart Loan & Funding Solutions for All Businesses — Proprietorships, Mid-Sized SMEs, Industrial Enterprises, and Corporates,",
+        title: "Smart Loan & Funding Solutions for All Businesses â€” Proprietorships, Mid-Sized SMEs, Industrial Enterprises, and Corporates,",
 
       },
       {
         badge: "Eligibility-led Guidance",
         icon: Briefcase,
-        title: "Smart Loan & Funding Solutions for All Professionals — Doctors, Chartered Accountants, Architects, Engineers, Lawyers, Consultants, and Self-Employed Professionals",
+        title: "Smart Loan & Funding Solutions for All Professionals â€” Doctors, Chartered Accountants, Architects, Engineers, Lawyers, Consultants, and Self-Employed Professionals",
       },
       {
         badge: "Eligibility-led Guidance",
         icon: Landmark,
-        title: "Smart Loan & Funding Solutions for Central & State Government Employees — Civil Services, Public Sector Staff, Defence Personnel, and Other Government Employees",
+        title: "Smart Loan & Funding Solutions for Central & State Government Employees â€” Civil Services, Public Sector Staff, Defence Personnel, and Other Government Employees",
       },
       {
         badge: "Eligibility-led Guidance",
@@ -360,7 +400,6 @@ export default function HomePageClient() {
   );
 
   const activeHeroContent = heroContentGroups[activeIndex % heroContentGroups.length];
-  const ActiveHeroIcon = activeHeroContent.icon;
   const isPausedRef = useRef(false);
   const intervalRef = useRef<number | null>(null);
 
@@ -444,7 +483,7 @@ export default function HomePageClient() {
         {
           key: "insurance-life",
           title: "Life Insurance",
-          description: "Protect your family’s future with the right life cover and plan benefits",
+          description: "Protect your familyâ€™s future with the right life cover and plan benefits",
           infoHref: "/services/insurance",
           highlight: true,
           badge: "Trusted",
@@ -553,13 +592,13 @@ export default function HomePageClient() {
           id: "loans-approval-time",
           question: "How long does approval and disbursal take?",
           answer:
-            "Most cases get an eligibility response quickly. Final approval and disbursal timelines depend on verification and documents, and can be as fast as 24–48 hours for eligible profiles.",
+            "Most cases get an eligibility response quickly. Final approval and disbursal timelines depend on verification and documents, and can be as fast as 24â€“48 hours for eligible profiles.",
         },
         {
           id: "loans-prepayment",
           question: "Can I prepay or foreclose my loan?",
           answer:
-            "Many lenders allow part-prepayment/foreclosure. Charges (if any) depend on lender and product. We’ll help you understand the exact terms before you proceed.",
+            "Many lenders allow part-prepayment/foreclosure. Charges (if any) depend on lender and product. Weâ€™ll help you understand the exact terms before you proceed.",
         },
       ];
     }
@@ -621,7 +660,7 @@ export default function HomePageClient() {
         id: "govt-docs",
         question: "What documents are generally required?",
         answer:
-          "Commonly KYC, business registration (Udyam/GST where applicable), bank details, and scheme-specific declarations. We’ll share a checklist for your selected scheme.",
+          "Commonly KYC, business registration (Udyam/GST where applicable), bank details, and scheme-specific declarations. Weâ€™ll share a checklist for your selected scheme.",
       },
       {
         id: "govt-timeline",
@@ -722,62 +761,29 @@ export default function HomePageClient() {
         </div>
 
         <div className="relative">
+          <button
+            type="button"
+            onClick={prevSlide}
+            aria-label="Previous slide"
+            className="absolute left-4 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-black/30 text-white backdrop-blur-sm transition hover:bg-black/50 sm:left-6 sm:h-12 sm:w-12"
+          >
+            <ChevronLeft className="h-6 w-6" />
+          </button>
+          <button
+            type="button"
+            onClick={nextSlide}
+            aria-label="Next slide"
+            className="absolute right-4 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-black/30 text-white backdrop-blur-sm transition hover:bg-black/50 sm:right-6 sm:h-12 sm:w-12"
+          >
+            <ChevronRight className="h-6 w-6" />
+          </button>
+
           <div className="container relative z-10 mx-auto px-4">
-            <div className="flex min-h-[560px] items-end py-14 sm:min-h-[640px] sm:py-20 lg:min-h-[740px]">
-              <div className="mx-auto w-full max-w-6xl text-center lg:max-w-7xl">
-                {/* <Badge className="mb-4 bg-accent/20 text-accent-foreground border-accent/30 backdrop-blur">
-                  <Sparkles className="mr-1 h-3 w-3" />
-                  {activeHeroContent.badge}
-                </Badge> */}
-
-                <h1 className="text-4xl font-extrabold tracking-tight text-primary-foreground sm:text-5xl lg:text-3xl">
-                  <span className="flex w-full items-center justify-center gap-3">
-                    <span className="flex items-center justify-center rounded-2xl border border-white/15 bg-white/10 sm:h-16 sm:w-16">
-                      <ActiveHeroIcon className="h-7 w-7 text-[#F97415] sm:h-9 sm:w-9" strokeWidth={2.5} />
-                    </span>
-                    <span>{activeHeroContent.title}</span>
-                  </span>{" "}
-                  {/* <span className="text-accent">{activeHeroContent.emphasis}</span> */}
+            <div className="flex min-h-[520px] items-center py-14 sm:min-h-[600px] sm:py-16 lg:min-h-[680px]">
+              <div className="max-w-2xl text-left lg:max-w-3xl">
+                <h1 className="text-2xl font-extrabold leading-snug tracking-tight text-white drop-shadow-lg sm:text-3xl lg:text-4xl">
+                  {activeHeroContent.title}
                 </h1>
-
-                {/* <p className="mt-6 text-lg text-primary-foreground/80 sm:text-xl max-w-3xl mx-auto">
-                  {activeHeroContent.description}
-                </p> */}
-
-                {/* <div className="mt-8 flex flex-wrap justify-center gap-4">
-                  
-                  <Button
-                    asChild
-                    variant="hero-outline"
-                    size="xl"
-                    className="text-white bg-[#F97415]"
-                  >
-                    <Link href="/contact#contact-form">Talk to an Expert</Link>
-                  </Button>
-                </div> */}
-
-                {/* <div className="mt-10 flex items-center justify-center gap-2" aria-label="Slide pagination">
-                  {slides.map((_, i) => {
-                    const isActive = i === activeIndex;
-                    return (
-                      <button
-                        key={i}
-                        type="button"
-                        className={cx(
-                          "h-2.5 w-2.5 rounded-full transition",
-                          isActive
-                            ? "bg-white shadow-[0_0_0_4px_rgba(255,255,255,0.18)]"
-                            : "bg-white/40 hover:bg-white/70"
-                        )}
-                        onClick={() => goToSlide(i)}
-                        aria-label={`Go to slide ${i + 1}`}
-                        aria-current={isActive ? "true" : "false"}
-                      />
-                    );
-                  })}
-                </div> */}
-
-
               </div>
             </div>
           </div>
@@ -786,13 +792,17 @@ export default function HomePageClient() {
 
 
       <div className="container mx-auto px-4">
-        <h2 className="mt-10 text-center text-3xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl">
-          <span className="inline-block rounded-2xl bg-gradient-to-r from-black via-zinc-900 to-zinc-700 px-5 py-3 text-white shadow-[0_12px_30px_rgba(0,0,0,0.35)] sm:px-7 sm:py-4">
-            <span className="text-[#F97415]">Our Key Strengths</span>
-            <span className="mx-2 text-white/70">-</span>
-            <span className="text-white">Our Key Business Verticals</span>
-          </span>
-        </h2>
+        <div className="mt-10 flex justify-center">
+          <div className="inline-flex max-w-full flex-wrap items-center justify-center gap-x-3 gap-y-2 rounded-3xl border-2 border-[#0099D8]/20 bg-white px-8 py-5 text-center shadow-lg sm:gap-x-4 sm:px-10 sm:py-6 lg:px-14 lg:py-7">
+            <span className="text-lg font-bold text-[#0099D8] sm:text-xl lg:text-2xl xl:text-3xl">
+              Our Key Strengths
+            </span>
+            <span className="text-base font-medium text-gray-400 sm:text-lg lg:text-xl xl:text-2xl">-</span>
+            <span className="text-lg font-bold text-gray-900 sm:text-xl lg:text-2xl xl:text-3xl">
+              Our Key Business Verticals
+            </span>
+          </div>
+        </div>
       </div>
 
       <PrivateInstitutionalHighlight />
@@ -800,445 +810,202 @@ export default function HomePageClient() {
       <EmiRestructuringHighlight />
       <PropertyLoanHighlight />
 
-      <section className="relative -mt-8 z-20">
+      {/* Quick Links */}
+      <section className="py-8 lg:py-10 bg-white">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-            {TRUST_INDICATORS.map((item, idx) => (
-              <div
-                key={idx}
-                className="flex items-center gap-4 rounded-2xl bg-card p-6 shadow-xl animate-fade-in border border-2 border-blue-200"
-                style={{ animationDelay: `${idx * 100}ms` }}
-              >
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
-                  <item.icon className="h-6 w-6 text-primary" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-foreground">{item.value}</p>
-                  <p className="text-sm text-muted-foreground">{item.label}</p>
-                </div>
-              </div>
+            {QUICK_LINKS.map((item, idx) => (
+              <ScrollReveal key={item.label} delay={idx * 80} animation="scale-in">
+                <Link
+                  href={item.href}
+                  className="group flex flex-col items-center rounded-2xl border border-gray-200 bg-white p-6 text-center shadow-sm transition-all duration-300 hover:border-[#0099D8]/40 hover:shadow-md"
+                >
+                  <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-[#0099D8]/10 transition-transform duration-300 group-hover:scale-110">
+                    <item.icon className="h-7 w-7 text-[#0099D8]" />
+                  </div>
+                  <span className="text-sm font-semibold text-gray-900 group-hover:text-[#0099D8]">
+                    {item.label}
+                  </span>
+                </Link>
+              </ScrollReveal>
             ))}
           </div>
         </div>
       </section>
 
+      {/* Explore Our Loan Services Banner */}
+      <section className="bg-[#0099D8]/5 py-12 lg:py-16">
+        <div className="container mx-auto px-4 text-center">
+          <ScrollReveal animation="fade-in-up">
+            <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+              Explore Our{" "}
+              <span className="text-[#0099D8]">Loan Services</span>
+            </h2>
+            <p className="mx-auto mt-4 max-w-2xl text-lg text-gray-600">
+              Explore a comprehensive range of financial solutions tailored to your specific needs.
+            </p>
+            <div className="mt-8">
+              <Link href="/services">
+                <button className="cursor-pointer rounded-xl bg-[#0099D8] px-8 py-3.5 font-semibold text-white shadow-lg shadow-[#0099D8]/25 transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#007BB0] hover:shadow-xl hover:shadow-[#0099D8]/30">
+                  View All Loan Services
+                </button>
+              </Link>
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
 
-
-      <section className="py-16 lg:py-24">
+      {/* Featured Loan Cards */}
+      <section className="py-12 lg:py-16 bg-white">
         <div className="container mx-auto px-4">
-          <div className="relative text-center mb-12 rounded-2xl p-6 shadow-xl border border-2 border-blue-200 bg-background overflow-hidden transition-colors duration-300">
-
-            <div className="relative z-10">
-              <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-6xl">
-                Explore Our <span className="text-[#f97415] text-7xl">Loan</span> Services
-              </h2>
-
-              <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-                Explore a comprehensive range of financial solutions tailored to your specific needs.
-              </p>
-
-              <div className="mt-8">
-                <Link href="/services">
-                  <button className="cursor-pointer px-8 py-3 bg-[#f97415] text-white font-semibold rounded-lg shadow-md hover:bg-[#e8630f] transition duration-300">
-                    View All Loan Services
-                  </button>
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {FEATURED_LOAN_CARDS.map((card, idx) => (
+              <ScrollReveal key={card.title} delay={idx * 100} animation="scale-in">
+                <Link href={card.href} className="group block h-full">
+                  <div className="modern-dark-card modern-card-shine h-full p-6">
+                    <div className="pointer-events-none absolute -right-8 -top-8 h-24 w-24 rounded-full bg-[#0099D8]/10 blur-2xl transition-opacity duration-500 group-hover:opacity-100" />
+                    <div className="relative">
+                      <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[#0099D8]/20 to-[#2E3192]/10 transition-all duration-500 group-hover:scale-110 group-hover:rotate-3">
+                        <card.icon className="h-7 w-7 text-[#0099D8]" strokeWidth={2} />
+                      </div>
+                      <h3 className="text-lg font-bold text-gray-900 transition-colors duration-300 group-hover:text-[#0099D8]">
+                        {card.title}
+                      </h3>
+                      <p className="mt-2 text-sm leading-relaxed text-gray-600 transition-colors duration-300 group-hover:text-gray-700">
+                        {card.description}
+                      </p>
+                      <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[#0099D8]">
+                        Learn More
+                        <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                      </span>
+                    </div>
+                  </div>
                 </Link>
-              </div>
-            </div>
+              </ScrollReveal>
+            ))}
           </div>
+        </div>
+      </section>
 
-          {/* <div className="flex flex-wrap justify-center gap-3 mb-10">
-            {CATEGORY_META.map((cat) => {
-              const Icon = cat.icon;
-              const isActive = cat.key === activeCategory;
+      <ModernSections />
 
-              return (
-                <Button
-                  key={cat.key}
-                  type="button"
-                  size="lg"
-                  variant={isActive ? (cat.key as any) : "tab-inactive"}
-                  onClick={() => setActiveCategory(cat.key)}
-                  className={`gap-2 transition-all duration-300 border ${
-                    isActive
-                      ? "scale-105 bg-[#F97415] text-white border-[#F97415] hover:bg-[#F97415]/90"
-                      : ""
-                  }`}
-                >
-                  <Icon className="h-5 w-5" />
-                  {cat.title}
-                </Button>
-              );
-            })}
+      {/* Trust Stats */}
+      <section className="relative z-20 bg-gray-50 py-10 lg:py-12">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+            {TRUST_INDICATORS.map((item, idx) => (
+              <ScrollReveal key={idx} delay={idx * 100} animation="scale-in">
+                <div className="modern-stat-card modern-card-shine group flex items-center gap-4 p-6">
+                  <div className="relative flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#0099D8]/15 to-[#2E3192]/10 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3">
+                    <item.icon className="h-7 w-7 text-[#0099D8]" />
+                    <div className="absolute -inset-1 rounded-xl border border-[#0099D8]/20 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                  </div>
+                  <div className="relative min-w-0">
+                    <p className="text-2xl font-bold tracking-tight text-foreground transition-colors duration-300 group-hover:text-[#0099D8]">
+                      {item.value}
+                    </p>
+                    <p className="text-sm text-muted-foreground">{item.label}</p>
+                  </div>
+                </div>
+              </ScrollReveal>
+            ))}
           </div>
-
-          {activeCategory === "loans" ? (
-            <div className="space-y-10">
-              <div className="flex items-center justify-between gap-4 rounded-2xl border border-[#F97415]/25 bg-[#F97415]/10 px-5 py-4">
-                <div className="text-sm font-semibold text-[#F97415]">
-                  Explore all services in one place
-                </div>
-                <Button
-                  asChild
-                  size="lg"
-                  className="bg-[#F97415] text-white hover:bg-[#F97415]/90 shadow-md"
-                >
-                  <Link href="/services">View All Services</Link>
-                </Button>
-              </div>
-
-              {LOAN_SERVICES.map((group, groupIndex) => (
-                <div key={group.title} className="space-y-6">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-2xl font-bold tracking-tight text-foreground">{group.title}</h3>
-                  </div>
-
-                  <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                    {group.items.slice(0, 4).map((service, idx) => (
-                      <Card
-                        key={service.key}
-                        className={`group relative overflow-hidden border-2 bg-gradient-to-br from-black via-neutral-900 to-neutral-700 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${
-                          service.highlight ? "border-primary/30" : "border-transparent"
-                        }`}
-                        style={{ animationDelay: `${(groupIndex * 4 + idx) * 50}ms` }}
-                      >
-                        {service.badge && (
-                          <Badge
-                            className={`absolute top-4 right-4 ${
-                              service.highlight
-                                ? "bg-primary text-primary-foreground"
-                                : "bg-secondary text-secondary-foreground"
-                            }`}
-                          >
-                            {service.badge}
-                          </Badge>
-                        )}
-                        <CardHeader className="pb-3">
-                          <CardTitle className="text-xl font-bold text-white pr-16">{service.title}</CardTitle>
-                          <CardDescription className="text-white/70 mt-2 line-clamp-2">
-                      </Card>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="space-y-10">
-              <div className="flex items-center justify-between gap-4 rounded-2xl border border-[#F97415]/25 bg-[#F97415]/10 px-5 py-4">
-                <div className="text-sm font-semibold text-[#F97415]">
-                  Explore all services in one place
-                </div>
-                <Button
-                  asChild
-                  size="lg"
-                  className="bg-[#F97415] text-white hover:bg-[#F97415]/90 shadow-md"
-                >
-                  <Link
-                    href={
-                      activeCategory === "insurance"
-                        ? "/services/insurance"
-                        : activeCategory === "credit-cards"
-                        ? "/services/credit-cards"
-                        : "/services/government-schemes"
-                    }
-                  >
-                    View All
-                  </Link>
-                </Button>
-              </div>
-
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {activeCards.slice(0, 4).map((service, idx) => (
-                  <Card
-                    key={service.key}
-                    className={`group relative overflow-hidden border-2 bg-gradient-to-br from-black via-neutral-900 to-neutral-700 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${
-                      service.highlight ? "border-primary/30" : "border-transparent"
-                    }`}
-                    style={{ animationDelay: `${idx * 50}ms` }}
-                  >
-                    {service.badge && (
-                      <Badge
-                        className={`absolute top-4 right-4 ${
-                          service.highlight
-                            ? "bg-primary text-primary-foreground"
-                            : "bg-secondary text-secondary-foreground"
-                        }`}
-                      >
-                        {service.badge}
-                      </Badge>
-                    )}
-                    <CardHeader className="pb-3">
-                      <CardTitle className="text-xl font-bold text-white pr-16">{service.title}</CardTitle>
-                      <CardDescription className="text-white/70 mt-2 line-clamp-2">
-                        {service.description}
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="flex flex-col gap-3">
-                        <ApplyNowCTAButton 
-                          loanType={service.title} 
-                          redirectToUnifiedForm={true}
-                          className="w-full group-hover:shadow-glow-cta"
-                          size="lg"
-                        >
-                          Apply Now
-                          <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                        </ApplyNowCTAButton>
-                        <Button asChild variant="outline" className="w-full">
-                          <Link href={service.infoHref}>Learn More</Link>
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </div>
-          )} */}
-
-          <ModernSections />
-          {/* <div className="mt-14 space-y-12">
-            <section className="rounded-3xl bg-secondary/40 p-6 sm:p-10">
-              <div className="text-center mb-10 animate-fade-in-up">
-                <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">How It Works</h2>
-                <p className="mt-3 text-lg text-muted-foreground">A simple, guided process tailored to your selected service</p>
-              </div>
-
-              <div className="grid gap-6 md:grid-cols-4">
-                {activeHowItWorks.map((step, idx) => (
-                  <div
-                    key={step.id}
-                    className="relative rounded-2xl bg-card p-6 shadow-lg border border-border/60 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 animate-fade-in-up"
-                    style={{ animationDelay: `${idx * 80}ms` }}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10">
-                        <step.icon className="h-6 w-6 text-primary" />
-                      </div>
-                      <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-primary-foreground text-sm font-bold">
-                        {idx + 1}
-                      </div>
-                    </div>
-                    <h3 className="mt-5 text-lg font-bold text-foreground">{step.title}</h3>
-                    <p className="mt-2 text-sm text-muted-foreground">{step.description}</p>
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            <section className="rounded-3xl bg-card p-6 sm:p-10 border border-border/60">
-              <div className="text-center mb-10 animate-fade-in-up">
-                <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">FAQs</h2>
-                <p className="mt-3 text-lg text-muted-foreground">Quick answers based on the service you’re viewing</p>
-              </div>
-
-              <div className="mx-auto max-w-3xl space-y-3">
-                {activeFaqItems.map((item, idx) => {
-                  const isOpen = openFaqId === item.id;
-
-                  return (
-                    <div
-                      key={item.id}
-                      className="overflow-hidden rounded-2xl border border-border/70 bg-secondary/20 shadow-sm animate-fade-in-up"
-                      style={{ animationDelay: `${idx * 60}ms` }}
-                    >
-                      <button
-                        type="button"
-                        aria-expanded={isOpen}
-                        aria-controls={`panel-${item.id}`}
-                        id={`tab-${item.id}`}
-                        onClick={() => setOpenFaqId((prev) => (prev === item.id ? null : item.id))}
-                        className="w-full px-5 py-4 text-left flex items-center justify-between gap-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-                      >
-                        <span className="text-base sm:text-lg font-semibold text-foreground">{item.question}</span>
-                        <svg
-                          className={cx(
-                            "h-5 w-5 shrink-0 text-muted-foreground transition-transform duration-200",
-                            isOpen && "rotate-180"
-                          )}
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                          aria-hidden="true"
-                        >
-                          <path
-                            d="M6 9l6 6 6-6"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      </button>
-
-                      <div
-                        id={`panel-${item.id}`}
-                        role="region"
-                        aria-labelledby={`tab-${item.id}`}
-                        className={cx(
-                          "px-5 pb-5 transition-[max-height,opacity] duration-300 ease-in-out overflow-hidden",
-                          isOpen ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0"
-                        )}
-                      >
-                        <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">{item.answer}</p>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </section>
-          </div> */}
         </div>
       </section>
 
       <LogoCloud />
 
       <section className="relative py-20 lg:py-32 overflow-hidden bg-gradient-to-b from-gray-50 via-white to-gray-50">
-        {/* Subtle Background Pattern */}
         <div className="absolute inset-0 opacity-[0.03]">
-          <div className="absolute inset-0" style={{
-            backgroundImage: `radial-gradient(circle at 1px 1px, black 1px, transparent 0)`,
-            backgroundSize: '40px 40px'
-          }} />
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage: `radial-gradient(circle at 1px 1px, black 1px, transparent 0)`,
+              backgroundSize: "40px 40px",
+            }}
+          />
         </div>
 
-        {/* Animated Gradient Orbs */}
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-gray-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob" />
-        <div className="absolute top-0 right-1/4 w-96 h-96 bg-gray-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000" />
-        <div className="absolute -bottom-8 left-1/2 w-96 h-96 bg-gray-100 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000" />
+        <div className="absolute top-0 left-1/4 h-96 w-96 animate-blob rounded-full bg-gray-200 opacity-20 mix-blend-multiply blur-3xl filter" />
+        <div className="animation-delay-2000 absolute top-0 right-1/4 h-96 w-96 animate-blob rounded-full bg-gray-300 opacity-20 mix-blend-multiply blur-3xl filter" />
 
-        <div className="container mx-auto px-4 relative z-10">
-          {/* Header */}
-          <div className="text-center mb-16 space-y-4">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-black/5 border border-black/10 backdrop-blur-sm mb-4">
-              <div className="w-2 h-2 bg-[#F97415] rounded-full animate-pulse" />
-              <span className="text-sm font-medium text-gray-700">Why Choose Us</span>
+        <div className="container relative z-10 mx-auto px-4">
+          <ScrollReveal animation="fade-in-up">
+            <div className="mb-16 space-y-4 text-center">
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-black/10 bg-black/5 px-4 py-2 backdrop-blur-sm">
+                <div className="h-2 w-2 animate-pulse rounded-full bg-[#0099D8]" />
+                <span className="text-sm font-medium text-gray-700">Why Choose Us</span>
+              </div>
+
+              <h2 className="text-4xl font-bold tracking-tight text-black md:text-5xl lg:text-6xl">
+                Built for Your{" "}
+                <span className="relative inline-block">
+                  <span className="relative z-10">Success</span>
+                  <span className="absolute bottom-2 left-0 h-3 w-full -rotate-1 bg-[#0099D8]/20" />
+                </span>
+              </h2>
+
+              <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-gray-600 md:text-xl">
+                We make financial products accessible, transparent, and hassle-free with cutting-edge technology
+              </p>
             </div>
-
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-black">
-              Built for Your{" "}
-              <span className="relative inline-block">
-                <span className="relative z-10">Success</span>
-                <span className="absolute bottom-2 left-0 w-full h-3 bg-[#F97415]/20 -rotate-1" />
-              </span>
-            </h2>
-
-            <p className="mt-6 text-lg md:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
-              We make financial products accessible, transparent, and hassle-free with cutting-edge technology
-            </p>
-          </div>
+          </ScrollReveal>
 
           {/* Benefits Grid */}
-          <div className="grid gap-6 md:gap-8 sm:grid-cols-2 lg:grid-cols-3 max-w-7xl mx-auto">
+          <div className="mx-auto grid max-w-7xl gap-6 sm:grid-cols-2 md:gap-8 lg:grid-cols-3">
             {benefits.map((benefit, idx) => (
-              <div
-                key={idx}
-                className="group relative"
-                style={{
-                  animation: `fadeInUp 0.6s ease-out ${idx * 0.15}s both`
-                }}
-              >
-                {/* Glass Card */}
-                <div className="relative h-full rounded-2xl bg-gradient-to-br from-black via-gray-900 to-gray-800 border border-gray-700 shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden">
-                  {/* Hover Gradient Effect */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-60 transition-opacity duration-500" />
+              <ScrollReveal key={idx} delay={idx * 120} animation="scale-in">
+                <div className="group relative h-full">
+                  <div className="modern-dark-card modern-card-shine relative h-full overflow-hidden rounded-2xl border border-gray-200 shadow-lg transition-all duration-500 hover:shadow-2xl">
+                    <div className="absolute inset-0 bg-gradient-to-br from-[#0099D8]/10 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                    <div className="absolute left-0 top-0 h-1 w-full bg-gradient-to-r from-transparent via-[#0099D8] to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
 
-                  {/* Orange Accent Line */}
-                  <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#F97415] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-                  <div className="relative p-8">
-                    {/* Icon Container with Stat Badge */}
-                    <div className="flex items-start justify-between mb-6">
-                      <div className="relative">
-                        {/* Icon Background */}
-                        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#F97415]/10 to-[#F97415]/5 border border-gray-700/40 shadow-inner group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
-                          <benefit.icon className="h-8 w-8 text-[#F97415] transition-colors duration-500" strokeWidth={1.5} />
+                    <div className="relative p-8">
+                      <div className="mb-6 flex items-start justify-between">
+                        <div className="relative">
+                          <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-gray-200 bg-gradient-to-br from-[#0099D8]/10 to-[#0099D8]/5 shadow-inner transition-all duration-500 group-hover:scale-110 group-hover:rotate-3">
+                            <benefit.icon className="h-8 w-8 text-[#0099D8]" strokeWidth={1.5} />
+                          </div>
+                          <div className="absolute -inset-2 rounded-2xl border-2 border-[#0099D8]/20 opacity-0 transition-all duration-500 group-hover:scale-110 group-hover:opacity-100" />
                         </div>
 
-                        {/* Animated Ring */}
-                        <div className="absolute -inset-2 rounded-2xl border-2 border-[#F97415]/20 opacity-0 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500" />
-                      </div>
-
-                      {/* Stat Badge */}
-                      <div className="text-right">
-                        <div className="text-2xl font-bold text-[#F97415] transition-colors duration-300">
-                          {benefit.stat}
-                        </div>
-                        <div className="text-xs text-[#F97415] font-medium mt-1">
-                          {benefit.label}
+                        <div className="text-right">
+                          <div className="text-2xl font-bold text-[#0099D8]">{benefit.stat}</div>
+                          <div className="mt-1 text-xs font-medium text-[#0099D8]/80">{benefit.label}</div>
                         </div>
                       </div>
+
+                      <div className="space-y-3">
+                        <h3 className="text-xl font-bold text-gray-900 transition-colors duration-300 group-hover:text-[#0099D8]">
+                          {benefit.title}
+                        </h3>
+                        <p className="leading-relaxed text-gray-600 transition-colors duration-300 group-hover:text-gray-700">
+                          {benefit.description}
+                        </p>
+                      </div>
+
+                      <div className="absolute bottom-0 left-0 h-px w-full bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
                     </div>
 
-                    {/* Content */}
-                    <div className="space-y-3">
-                      <h3 className="text-xl font-bold text-[#F97415] transition-colors duration-300">
-                        {benefit.title}
-                      </h3>
-                      <p className="text-gray-300 leading-relaxed group-hover:text-gray-200 transition-colors duration-300">
-                        {benefit.description}
-                      </p>
-                    </div>
-
-                    {/* Bottom Shine Effect */}
-                    <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
+                    <div className="absolute right-0 top-0 h-20 w-20 rounded-bl-full bg-gradient-to-br from-[#0099D8]/10 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
                   </div>
 
-                  {/* Corner Accent */}
-                  <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-[#F97415]/5 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="absolute -inset-0.5 -z-10 rounded-2xl bg-gradient-to-r from-[#0099D8]/20 via-[#2E3192]/10 to-[#0099D8]/20 opacity-0 blur transition-opacity duration-500 group-hover:opacity-60" />
                 </div>
-
-                {/* Floating Shadow */}
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 rounded-2xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-500 -z-10" />
-              </div>
+              </ScrollReveal>
             ))}
           </div>
 
           {/* Bottom CTA (Optional) */}
-          <div className="mt-16 text-center">
-            <div className="inline-flex items-center gap-2 text-sm text-gray-600">
-              <Shield className="w-4 h-4 text-[#F97415]" />
-              <span>Trusted by over 60,000+ customers nationwide</span>
+          <ScrollReveal animation="fade-in" delay={400}>
+            <div className="mt-16 text-center">
+              <div className="inline-flex items-center gap-2 text-sm text-gray-600">
+                <Shield className="h-4 w-4 text-[#0099D8]" />
+                <span>Trusted by over 60,000+ customers nationwide</span>
+              </div>
             </div>
-          </div>
+          </ScrollReveal>
         </div>
-
-        {/* CSS Animations */}
-        <style jsx>{`
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        @keyframes blob {
-          0%, 100% {
-            transform: translate(0, 0) scale(1);
-          }
-          33% {
-            transform: translate(30px, -50px) scale(1.1);
-          }
-          66% {
-            transform: translate(-20px, 20px) scale(0.9);
-          }
-        }
-
-        .animate-blob {
-          animation: blob 7s infinite;
-        }
-
-        .animation-delay-2000 {
-          animation-delay: 2s;
-        }
-
-        .animation-delay-4000 {
-          animation-delay: 4s;
-        }
-      `}</style>
       </section>
 
       {/* Testimonials Section */}
@@ -1258,7 +1025,7 @@ export default function HomePageClient() {
                   Apply Now
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </ApplyNowCTAButton> */}
-                <Button asChild variant="hero-outline" className="bg-[#F97415] text-white" size="xl">
+                <Button asChild variant="hero-outline" className="bg-[#0099D8] text-white" size="xl">
                   <Link href="/services">Get Started Now</Link>
                 </Button>
                 <Button asChild variant="hero-outline" size="xl">

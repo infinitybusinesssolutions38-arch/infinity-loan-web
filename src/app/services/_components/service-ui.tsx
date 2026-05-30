@@ -55,7 +55,7 @@ export function ServiceCtaButton({
 
 export function PopularBadge() {
   return (
-    <span className="inline-flex items-center rounded-full bg-blue-50 px-2 py-0.5 text-xs font-semibold text-blue-700">
+    <span className="inline-flex items-center rounded-full bg-[#0099D8]/5 px-2 py-0.5 text-xs font-semibold text-[#007BB0]">
       Popular
     </span>
   );
@@ -86,7 +86,7 @@ export function ServiceGroupCard({ group }: { group: ServiceGroup }) {
     <Card className="border-gray-100 shadow-sm">
       <CardHeader className="pb-0">
         <div className="flex items-center gap-2">
-          <Icon className="h-5 w-5 text-blue-600" />
+          <Icon className="h-5 w-5 text-[#0099D8]" />
           <CardTitle className="text-base">{group.title}</CardTitle>
         </div>
         <CardDescription>
@@ -120,18 +120,18 @@ export function ServicesPageShell({
 }) {
   return (
     <main className="bg-gray-50">
-      <header className="relative overflow-hidden bg-gradient-to-br from-black via-gray-900 to-black">
+      <header className="relative overflow-hidden border-b border-gray-200 bg-gradient-to-br from-gray-50 via-white to-gray-100">
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-[#F97415]/10 blur-3xl animate-blob" />
-          <div className="absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-gray-700/20 blur-3xl animate-blob animation-delay-2000" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[600px] rounded-full bg-gray-800/10 blur-3xl animate-blob animation-delay-4000" />
+          <div className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-[#0099D8]/10 blur-3xl animate-blob" />
+          <div className="absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-[#0099D8]/5 blur-3xl animate-blob animation-delay-2000" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[600px] rounded-full bg-[#0099D8]/5 blur-3xl animate-blob animation-delay-4000" />
         </div>
 
-        <div className="absolute inset-0 opacity-10">
+        <div className="absolute inset-0 opacity-40">
           <div
             className="absolute inset-0"
             style={{
-              backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
+              backgroundImage: `radial-gradient(circle at 1px 1px, #0099D8 1px, transparent 0)`,
               backgroundSize: "40px 40px",
             }}
           />
@@ -139,11 +139,11 @@ export function ServicesPageShell({
 
         <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20 relative z-10">
           <div className="space-y-3">
-            <p className="text-sm font-semibold text-[#F97415]">{eyebrow}</p>
-            <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+            <p className="text-sm font-semibold text-[#0099D8]">{eyebrow}</p>
+            <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
               {title}
             </h1>
-            <p className="max-w-3xl text-sm text-gray-300 sm:text-base">
+            <p className="max-w-3xl text-sm text-gray-600 sm:text-base">
               {description}
             </p>
           </div>
@@ -152,11 +152,11 @@ export function ServicesPageShell({
             <Button
               asChild
               variant="outline"
-              className="w-full sm:w-auto border-white/20 bg-white/10 text-white hover:bg-white/20"
+              className="w-full sm:w-auto border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
             >
               <Link href="/services">View all categories</Link>
             </Button>
-            <Button asChild className="w-full sm:w-auto bg-[#F97415] text-white hover:bg-[#F97415]/90">
+            <Button asChild className="w-full sm:w-auto bg-[#0099D8] text-white hover:bg-[#0099D8]/90">
               <Link href="/contact">Talk to an expert</Link>
             </Button>
           </div>

@@ -155,7 +155,7 @@ export default function VehicleLoanEmiCalculator() {
     <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-black via-gray-900 to-black px-4 py-12 lg:py-20">
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-[#F97415]/10 blur-3xl animate-blob" />
+        <div className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-[#0099D8]/10 blur-3xl animate-blob" />
         <div className="absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-gray-700/20 blur-3xl animate-blob animation-delay-2000" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[600px] rounded-full bg-gray-800/10 blur-3xl animate-blob animation-delay-4000" />
       </div>
@@ -175,15 +175,15 @@ export default function VehicleLoanEmiCalculator() {
         {/* Header */}
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 backdrop-blur-sm mb-6">
-            <div className="w-2 h-2 bg-[#F97415] rounded-full animate-pulse" />
+            <div className="w-2 h-2 bg-[#0099D8] rounded-full animate-pulse" />
             <span className="text-sm font-medium text-white">Loan Calculator</span>
           </div>
 
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-tight mb-4">
             EMI{" "}
             <span className="relative inline-block">
-              <span className="relative z-10 text-[#F97415]">Calculator</span>
-              <span className="absolute bottom-2 left-0 w-full h-3 bg-[#F97415]/20 -rotate-2" />
+              <span className="relative z-10 text-[#0099D8]">Calculator</span>
+              <span className="absolute bottom-2 left-0 w-full h-3 bg-[#0099D8]/20 -rotate-2" />
             </span>
           </h1>
 
@@ -194,8 +194,8 @@ export default function VehicleLoanEmiCalculator() {
           {/* Input Card */}
           <div className="rounded-3xl bg-white/5 backdrop-blur-xl p-6 sm:p-8 border border-white/10 shadow-2xl">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-full bg-[#F97415]/20 flex items-center justify-center">
-                <IndianRupee className="w-5 h-5 text-[#F97415]" />
+              <div className="w-10 h-10 rounded-full bg-[#0099D8]/20 flex items-center justify-center">
+                <IndianRupee className="w-5 h-5 text-[#0099D8]" />
               </div>
               <h2 className="text-xl font-semibold text-white">Loan Details</h2>
             </div>
@@ -208,7 +208,7 @@ export default function VehicleLoanEmiCalculator() {
                 min={0}
                 value={inputs.loanAmount}
                 onChange={(e) => handleInputChange("loanAmount", e.target.value)}
-                className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:ring-2 focus:ring-[#F97415] focus:border-transparent transition-all backdrop-blur-sm"
+                className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:ring-2 focus:ring-[#0099D8] focus:border-transparent transition-all backdrop-blur-sm"
               />
               <input
                 type="range"
@@ -217,7 +217,7 @@ export default function VehicleLoanEmiCalculator() {
                 step={10000}
                 value={inputs.loanAmount}
                 onChange={(e) => handleInputChange("loanAmount", e.target.value)}
-                className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#F97415] [&::-webkit-slider-thumb]:cursor-pointer"
+                className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#0099D8] [&::-webkit-slider-thumb]:cursor-pointer"
               />
               {amountInWords && <p className="text-xs text-gray-400 italic leading-tight">{amountInWords}</p>}
             </div>
@@ -230,7 +230,7 @@ export default function VehicleLoanEmiCalculator() {
                 step="0.1"
                 value={inputs.interestRate}
                 onChange={(e) => handleInputChange("interestRate", e.target.value)}
-                className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:ring-2 focus:ring-[#F97415] focus:border-transparent transition-all backdrop-blur-sm"
+                className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:ring-2 focus:ring-[#0099D8] focus:border-transparent transition-all backdrop-blur-sm"
               />
             </div>
 
@@ -241,7 +241,7 @@ export default function VehicleLoanEmiCalculator() {
                 type="number"
                 value={inputs.tenureYears}
                 onChange={(e) => handleInputChange("tenureYears", e.target.value)}
-                className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:ring-2 focus:ring-[#F97415] focus:border-transparent transition-all backdrop-blur-sm"
+                className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:ring-2 focus:ring-[#0099D8] focus:border-transparent transition-all backdrop-blur-sm"
               />
             </div>
           </div>
@@ -249,7 +249,7 @@ export default function VehicleLoanEmiCalculator() {
           {/* Results Section */}
           <div className="lg:col-span-2 space-y-6">
             {/* Main EMI Card */}
-            <div className="rounded-3xl bg-gradient-to-br from-[#F97415] to-[#E06410] p-8 sm:p-10 shadow-2xl border border-[#F97415]/20">
+            <div className="rounded-3xl bg-gradient-to-br from-[#0099D8] to-[#007BB0] p-8 sm:p-10 shadow-2xl border border-[#0099D8]/20">
               <div className="flex items-start justify-between mb-4">
                 <div>
                   <p className="text-sm uppercase tracking-wide text-white/80 font-semibold mb-2">Monthly EMI</p>
@@ -294,7 +294,7 @@ export default function VehicleLoanEmiCalculator() {
               ].map((stat, idx) => (
                 <div
                   key={stat.label}
-                  className={`rounded-2xl bg-white/5 backdrop-blur-xl p-6 border border-white/10 hover:border-[#F97415]/50 transition-all duration-300 hover:scale-105 ${
+                  className={`rounded-2xl bg-white/5 backdrop-blur-xl p-6 border border-white/10 hover:border-[#0099D8]/50 transition-all duration-300 hover:scale-105 ${
                     stat.highlight ? "sm:col-span-2" : ""
                   }`}
                   style={{ animation: `fadeInUp 0.6s ease-out ${idx * 0.1}s both` }}

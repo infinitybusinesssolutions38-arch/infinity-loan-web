@@ -20,7 +20,7 @@ export default function LayoutClient({
             {!isAdminRoute && <Navbar />}
             {!isAdminRoute && <SuccessBadge />}
             {!isAdminRoute && <StickyContactButtons />}
-            <div className={!isAdminRoute ? "pt-20" : ""}>
+            <div>
                 {children}
             </div>
             {!isAdminRoute && <Footer />}

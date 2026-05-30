@@ -13,7 +13,7 @@ export default function DisclaimerPage() {
       <section className="relative overflow-hidden bg-gradient-to-br from-black via-gray-900 to-black py-20 lg:py-32">
         {/* Animated Background Elements */}
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-[#F97415]/10 blur-3xl animate-blob" />
+          <div className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-[#0099D8]/10 blur-3xl animate-blob" />
           <div className="absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-gray-700/20 blur-3xl animate-blob animation-delay-2000" />
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[600px] rounded-full bg-gray-800/10 blur-3xl animate-blob animation-delay-4000" />
         </div>
@@ -37,12 +37,12 @@ export default function DisclaimerPage() {
 
           <div className="text-center max-w-4xl mx-auto">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 backdrop-blur-sm mb-8">
-              <AlertTriangle className="h-4 w-4 text-[#F97415]" />
+              <AlertTriangle className="h-4 w-4 text-[#0099D8]" />
               <span className="text-sm font-medium text-white">Disclaimer</span>
             </div>
 
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-white leading-tight mb-6">
-              <span className="text-[#F97415]">Disclaimer</span>
+              <span className="text-[#0099D8]">Disclaimer</span>
             </h1>
 
             <p className="text-xl text-gray-300 leading-relaxed mb-8">
@@ -74,7 +74,7 @@ export default function DisclaimerPage() {
             <div className="mb-12">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-gray-800 to-gray-700 border border-gray-600 flex items-center justify-center">
-                  <XCircle className="h-6 w-6 text-[#F97415]" />
+                  <XCircle className="h-6 w-6 text-[#0099D8]" />
                 </div>
                 <h2 className="text-3xl font-bold text-black">1. No Direct Lending</h2>
               </div>
@@ -88,7 +88,7 @@ export default function DisclaimerPage() {
             <div className="mb-12">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-gray-800 to-gray-700 border border-gray-600 flex items-center justify-center">
-                  <AlertTriangle className="h-6 w-6 text-[#F97415]" />
+                  <AlertTriangle className="h-6 w-6 text-[#0099D8]" />
                 </div>
                 <h2 className="text-3xl font-bold text-black">2. No Guarantee of Loan Approval</h2>
               </div>
@@ -99,15 +99,15 @@ export default function DisclaimerPage() {
 
               <ul className="space-y-3 text-gray-600">
                 <li className="flex items-start gap-2">
-                  <span className="text-[#F97415] mt-1">•</span>
+                  <span className="text-[#0099D8] mt-1">•</span>
                   <span>Lender eligibility criteria</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#F97415] mt-1">•</span>
+                  <span className="text-[#0099D8] mt-1">•</span>
                   <span>Credit assessment and verification</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#F97415] mt-1">•</span>
+                  <span className="text-[#0099D8] mt-1">•</span>
                   <span>Documentation and compliance requirements</span>
                 </li>
               </ul>
@@ -121,7 +121,7 @@ export default function DisclaimerPage() {
             <div className="mb-12">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-gray-800 to-gray-700 border border-gray-600 flex items-center justify-center">
-                  <Info className="h-6 w-6 text-[#F97415]" />
+                  <Info className="h-6 w-6 text-[#0099D8]" />
                 </div>
                 <h2 className="text-3xl font-bold text-black">3. Accuracy of Information</h2>
               </div>
@@ -139,7 +139,7 @@ export default function DisclaimerPage() {
             <div className="mb-12">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-gray-800 to-gray-700 border border-gray-600 flex items-center justify-center">
-                  <Shield className="h-6 w-6 text-[#F97415]" />
+                  <Shield className="h-6 w-6 text-[#0099D8]" />
                 </div>
                 <h2 className="text-3xl font-bold text-black">4. Financial & Legal Advice</h2>
               </div>
@@ -153,7 +153,7 @@ export default function DisclaimerPage() {
             <div className="mb-12">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-gray-800 to-gray-700 border border-gray-600 flex items-center justify-center">
-                  <Globe className="h-6 w-6 text-[#F97415]" />
+                  <Globe className="h-6 w-6 text-[#0099D8]" />
                 </div>
                 <h2 className="text-3xl font-bold text-black">5. Third-Party Links & Services</h2>
               </div>
@@ -171,7 +171,7 @@ export default function DisclaimerPage() {
             <div className="mb-12">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-gray-800 to-gray-700 border border-gray-600 flex items-center justify-center">
-                  <AlertTriangle className="h-6 w-6 text-[#F97415]" />
+                  <AlertTriangle className="h-6 w-6 text-[#0099D8]" />
                 </div>
                 <h2 className="text-3xl font-bold text-black">6. Limitation of Liability</h2>
               </div>
@@ -182,19 +182,19 @@ export default function DisclaimerPage() {
 
               <ul className="space-y-3 text-gray-600">
                 <li className="flex items-start gap-2">
-                  <span className="text-[#F97415] mt-1">•</span>
+                  <span className="text-[#0099D8] mt-1">•</span>
                   <span>Loan rejection, delay, or modification by lenders</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#F97415] mt-1">•</span>
+                  <span className="text-[#0099D8] mt-1">•</span>
                   <span>Financial losses or business decisions made by users</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#F97415] mt-1">•</span>
+                  <span className="text-[#0099D8] mt-1">•</span>
                   <span>Website downtime, technical errors, or data transmission issues</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#F97415] mt-1">•</span>
+                  <span className="text-[#0099D8] mt-1">•</span>
                   <span>Actions or omissions of third-party institutions</span>
                 </li>
               </ul>
@@ -204,7 +204,7 @@ export default function DisclaimerPage() {
             <div className="mb-12">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-gray-800 to-gray-700 border border-gray-600 flex items-center justify-center">
-                  <XCircle className="h-6 w-6 text-[#F97415]" />
+                  <XCircle className="h-6 w-6 text-[#0099D8]" />
                 </div>
                 <h2 className="text-3xl font-bold text-black">7. No Warranties</h2>
               </div>
@@ -236,24 +236,26 @@ export default function DisclaimerPage() {
                 
                 <div className="grid gap-4 md:grid-cols-2">
                   <div className="flex items-start gap-3">
-                    <Phone className="h-5 w-5 text-[#F97415] mt-1 flex-shrink-0" />
+                    <Phone className="h-5 w-5 text-[#0099D8] mt-1 flex-shrink-0" />
                     <div>
                       <p className="font-semibold text-white mb-1">Customer Support:</p>
-                      <p className="text-gray-300">+91 95798 80841 | +91 97661 69660</p>
+                      <p className="text-gray-300">+91 9579880841</p>
+                      <p className="text-gray-300">+91 9766616960</p>
                     </div>
                   </div>
 
                   <div className="flex items-start gap-3">
-                    <Mail className="h-5 w-5 text-[#F97415] mt-1 flex-shrink-0" />
+                    <Mail className="h-5 w-5 text-[#0099D8] mt-1 flex-shrink-0" />
                     <div>
                       <p className="font-semibold text-white mb-1">Email:</p>
                       <p className="text-gray-300">business@infinityloanservices.com</p>
-                      <p className="text-gray-300">businessservicesinfinity@gmail.com</p>
+                      <p className="text-gray-300">personal.infinityloans@gmail.com</p>
+                      <p className="text-gray-300">business.infinityloans@gmail.com</p>
                     </div>
                   </div>
 
                   <div className="flex items-start gap-3">
-                    <Globe className="h-5 w-5 text-[#F97415] mt-1 flex-shrink-0" />
+                    <Globe className="h-5 w-5 text-[#0099D8] mt-1 flex-shrink-0" />
                     <div>
                       <p className="font-semibold text-white mb-1">Website:</p>
                       <p className="text-gray-300">www.infinityloanservices.com</p>

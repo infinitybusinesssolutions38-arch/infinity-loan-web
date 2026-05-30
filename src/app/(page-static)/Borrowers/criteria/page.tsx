@@ -63,7 +63,7 @@ const page = () => {
                             {documents.map((docs, idx) => (
                                 <tr
                                     key={idx}
-                                    className={`${idx % 2 === 0 ? "bg-white" : "bg-blue-50"} border hover:bg-gray-50 transition-colors`}
+                                    className={`${idx % 2 === 0 ? "bg-white" : "bg-[#0099D8]/5"} border hover:bg-gray-50 transition-colors`}
                                 >
                                     <td className="px-3 py-2 md:px-4 md:py-2 border">{docs.id}</td>
                                     <td className="px-3 py-2 md:px-4 md:py-2 border">{docs.document}</td>

@@ -77,10 +77,10 @@ const styles = `
     border-bottom: 1px solid #222;
   }
   .breadcrumb .active {
-    color: #f97415;
+    color: #0099D8;
   }
   .breadcrumb-sep {
-    color: #f97415;
+    color: #0099D8;
     font-size: 14px;
     line-height: 1;
   }
@@ -110,7 +110,7 @@ const styles = `
     color: #0a0a0a;
   }
   .profile-header-left h1 span {
-    color: #f97415;
+    color: #0099D8;
   }
   .profile-header-left p {
     margin-top: 8px;
@@ -143,7 +143,7 @@ const styles = `
     content: '';
     position: absolute;
     inset: 0;
-    background: #f97415;
+    background: #0099D8;
     transform: scaleX(0);
     transform-origin: left;
     transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
@@ -169,7 +169,7 @@ const styles = `
     position: absolute;
     top: 0; left: 0; right: 0;
     height: 3px;
-    background: #f97415;
+    background: #0099D8;
     transform: scaleX(0);
     transform-origin: left;
     transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
@@ -192,7 +192,7 @@ const styles = `
   .section-title-dot {
     width: 8px;
     height: 8px;
-    background: #f97415;
+    background: #0099D8;
     border-radius: 50%;
     flex-shrink: 0;
   }
@@ -228,7 +228,7 @@ const styles = `
     transition: border-color 0.2s;
   }
   .account-field:hover .account-field-value {
-    border-color: #f97415;
+    border-color: #0099D8;
   }
 
   /* Loans header row */
@@ -239,7 +239,7 @@ const styles = `
     margin-bottom: 24px;
   }
   .loans-count-badge {
-    background: #f97415;
+    background: #0099D8;
     color: #fff;
     font-family: 'Syne', sans-serif;
     font-size: 12px;
@@ -266,13 +266,13 @@ const styles = `
     position: absolute;
     left: 0; top: 0; bottom: 0;
     width: 3px;
-    background: #f97415;
+    background: #0099D8;
     opacity: 0;
     transition: opacity 0.25s;
   }
   .loan-card:hover {
-    border-color: #f97415;
-    box-shadow: 0 8px 32px rgba(249,116,21,0.1);
+    border-color: #0099D8;
+    box-shadow: 0 8px 32px rgba(0,153,216,0.1);
     transform: translateX(4px);
   }
   .loan-card:hover::after { opacity: 1; }
@@ -296,7 +296,7 @@ const styles = `
   .loan-type-tag-dot {
     width: 6px;
     height: 6px;
-    background: #f97415;
+    background: #0099D8;
     border-radius: 50%;
     display: inline-block;
   }
@@ -325,9 +325,9 @@ const styles = `
     flex-shrink: 0;
   }
   .status-badge.pending {
-    background: #fff7ed;
-    color: #f97415;
-    border: 1px solid rgba(249,116,21,0.3);
+    background: #e6f7fc;
+    color: #0099D8;
+    border: 1px solid rgba(0,153,216,0.3);
   }
   .status-badge.approved {
     background: #f0fdf4;
@@ -399,7 +399,7 @@ const styles = `
     width: 36px;
     height: 36px;
     border: 3px solid #f0f0f0;
-    border-top-color: #f97415;
+    border-top-color: #0099D8;
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
   }
@@ -408,9 +408,9 @@ const styles = `
   .error-card {
     padding: 32px;
     background: #fff5f0;
-    border: 1.5px solid rgba(249,116,21,0.3);
+    border: 1.5px solid rgba(0,153,216,0.3);
     border-radius: 20px;
-    color: #c44a00;
+    color: #007BB0;
     font-size: 14px;
     font-weight: 500;
     display: flex;
@@ -902,7 +902,7 @@ export default function ProfileClient() {
                                         borderRadius: 12,
                                         padding: "12px 18px",
                                         border: "none",
-                                        background: uploading ? "#aaa" : "#f97415",
+                                        background: uploading ? "#aaa" : "#0099D8",
                                         color: "#fff",
                                         fontWeight: 900,
                                         cursor: uploading ? "not-allowed" : "pointer",
@@ -920,12 +920,12 @@ export default function ProfileClient() {
                                         borderRadius: 14,
                                         fontSize: 13,
                                         fontWeight: 600,
-                                        background: uploadMessage.type === "success" ? "#f0fdf4" : "#fff7ed",
-                                        color: uploadMessage.type === "success" ? "#16a34a" : "#c44a00",
+                                        background: uploadMessage.type === "success" ? "#f0fdf4" : "#e6f7fc",
+                                        color: uploadMessage.type === "success" ? "#16a34a" : "#007BB0",
                                         border:
                                             uploadMessage.type === "success"
                                                 ? "1px solid rgba(22,163,74,0.3)"
-                                                : "1px solid rgba(249,116,21,0.3)",
+                                                : "1px solid rgba(0,153,216,0.3)",
                                     }}
                                 >
                                     {uploadMessage.text}
@@ -1089,7 +1089,7 @@ export default function ProfileClient() {
                                         borderRadius: 12,
                                         padding: "12px 18px",
                                         border: "none",
-                                        background: receiptUploading ? "#aaa" : "#f97415",
+                                        background: receiptUploading ? "#aaa" : "#0099D8",
                                         color: "#fff",
                                         fontWeight: 900,
                                         cursor: receiptUploading ? "not-allowed" : "pointer",
@@ -1107,12 +1107,12 @@ export default function ProfileClient() {
                                         borderRadius: 14,
                                         fontSize: 13,
                                         fontWeight: 600,
-                                        background: receiptMessage.type === "success" ? "#f0fdf4" : "#fff7ed",
-                                        color: receiptMessage.type === "success" ? "#16a34a" : "#c44a00",
+                                        background: receiptMessage.type === "success" ? "#f0fdf4" : "#e6f7fc",
+                                        color: receiptMessage.type === "success" ? "#16a34a" : "#007BB0",
                                         border:
                                             receiptMessage.type === "success"
                                                 ? "1px solid rgba(22,163,74,0.3)"
-                                                : "1px solid rgba(249,116,21,0.3)",
+                                                : "1px solid rgba(0,153,216,0.3)",
                                     }}
                                 >
                                     {receiptMessage.text}

@@ -71,7 +71,7 @@ export default function PropertyLoanCalculator() {
             min={0}
             value={inputs.loanAmount}
             onChange={(e) => setInputs((prev) => ({ ...prev, loanAmount: e.target.value }))}
-            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 shadow-sm outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 shadow-sm outline-none transition focus:border-[#0099D8] focus:ring-4 focus:ring-[#0099D8]/20"
             placeholder="e.g. 5000000"
           />
         </label>
@@ -85,7 +85,7 @@ export default function PropertyLoanCalculator() {
             step="0.01"
             value={inputs.interestRate}
             onChange={(e) => setInputs((prev) => ({ ...prev, interestRate: e.target.value }))}
-            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 shadow-sm outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 shadow-sm outline-none transition focus:border-[#0099D8] focus:ring-4 focus:ring-[#0099D8]/20"
             placeholder="e.g. 10.5"
           />
         </label>
@@ -98,7 +98,7 @@ export default function PropertyLoanCalculator() {
             min={0}
             value={inputs.tenureYears}
             onChange={(e) => setInputs((prev) => ({ ...prev, tenureYears: e.target.value }))}
-            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 shadow-sm outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 shadow-sm outline-none transition focus:border-[#0099D8] focus:ring-4 focus:ring-[#0099D8]/20"
             placeholder="e.g. 15"
           />
         </label>
@@ -119,8 +119,8 @@ export default function PropertyLoanCalculator() {
         </div>
       </div>
 
-      <div className="mt-4 rounded-xl border border-blue-100 bg-blue-50 px-4 py-3">
-        <p className="text-xs text-blue-900">
+      <div className="mt-4 rounded-xl border border-[#0099D8]/15 bg-[#0099D8]/5 px-4 py-3">
+        <p className="text-xs text-[#004D2C]">
           Indicative calculation. Actual EMI may vary based on processing fees, insurance, and sanctioned rate.
         </p>
       </div>

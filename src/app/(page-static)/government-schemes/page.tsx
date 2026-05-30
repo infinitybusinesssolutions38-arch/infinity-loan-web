@@ -85,8 +85,8 @@ export default function GovernmentSchemesServicesPage() {
         <div className="space-y-4">
           <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
             <div className="flex items-start gap-3">
-              <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50">
-                <Sparkles className="h-5 w-5 text-blue-600" />
+              <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-[#0099D8]/5">
+                <Sparkles className="h-5 w-5 text-[#0099D8]" />
               </span>
               <div className="space-y-1">
                 <h2 className="text-base font-semibold text-gray-900">
@@ -128,7 +128,7 @@ export default function GovernmentSchemesServicesPage() {
                 >
                   <div className="flex items-start gap-3">
                     <span className="mt-0.5 inline-flex h-9 w-9 items-center justify-center rounded-lg bg-white">
-                      <item.icon className="h-5 w-5 text-blue-700" />
+                      <item.icon className="h-5 w-5 text-[#007BB0]" />
                     </span>
                     <div>
                       <p className="text-sm font-semibold text-gray-900">
@@ -142,7 +142,7 @@ export default function GovernmentSchemesServicesPage() {
             </div>
           </div>
 
-          <div className="rounded-2xl border border-blue-100 bg-gradient-to-br from-blue-50 to-white p-6 shadow-sm">
+          <div className="rounded-2xl border border-[#0099D8]/15 bg-gradient-to-br from-blue-50 to-white p-6 shadow-sm">
             <div className="flex items-start justify-between gap-4">
               <div className="space-y-1">
                 <h3 className="text-base font-semibold text-gray-900">
@@ -153,12 +153,12 @@ export default function GovernmentSchemesServicesPage() {
                   option.
                 </p>
               </div>
-              <Landmark className="h-6 w-6 text-blue-700" />
+              <Landmark className="h-6 w-6 text-[#007BB0]" />
             </div>
             <div className="mt-5 flex flex-col gap-3 sm:flex-row">
               <Link
                 href="/contact"
-                className="inline-flex h-11 w-full items-center justify-center rounded-xl bg-blue-600 px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 sm:w-auto"
+                className="inline-flex h-11 w-full items-center justify-center rounded-xl bg-[#0099D8] px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#007BB0] sm:w-auto"
               >
                 Talk to an expert
               </Link>
@@ -182,7 +182,7 @@ export default function GovernmentSchemesServicesPage() {
       <section className="mt-10 grid gap-6 lg:grid-cols-3">
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           <div className="flex items-center gap-2">
-            <ListChecks className="h-5 w-5 text-blue-700" />
+            <ListChecks className="h-5 w-5 text-[#007BB0]" />
             <h2 className="text-base font-semibold text-gray-900">
               Criteria & Eligibility
             </h2>
@@ -209,7 +209,7 @@ export default function GovernmentSchemesServicesPage() {
 
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           <div className="flex items-center gap-2">
-            <FileText className="h-5 w-5 text-blue-700" />
+            <FileText className="h-5 w-5 text-[#007BB0]" />
             <h2 className="text-base font-semibold text-gray-900">
               Documentation
             </h2>
@@ -235,7 +235,7 @@ export default function GovernmentSchemesServicesPage() {
 
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           <div className="flex items-center gap-2">
-            <BadgeCheck className="h-5 w-5 text-blue-700" />
+            <BadgeCheck className="h-5 w-5 text-[#007BB0]" />
             <h2 className="text-base font-semibold text-gray-900">Final CTA</h2>
           </div>
           <p className="mt-2 text-sm text-gray-600">
@@ -245,7 +245,7 @@ export default function GovernmentSchemesServicesPage() {
           <div className="mt-5 space-y-3">
             <Link
               href="/register"
-              className="inline-flex h-11 w-full items-center justify-center rounded-xl bg-blue-600 px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700"
+              className="inline-flex h-11 w-full items-center justify-center rounded-xl bg-[#0099D8] px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#007BB0]"
             >
               Apply now
             </Link>
@@ -265,8 +265,8 @@ export default function GovernmentSchemesServicesPage() {
 
       <section className="mt-10 rounded-3xl border border-gray-200 bg-white p-6 shadow-sm sm:p-8">
         <div className="flex items-start gap-3">
-          <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50">
-            <HelpCircle className="h-5 w-5 text-blue-700" />
+          <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-[#0099D8]/5">
+            <HelpCircle className="h-5 w-5 text-[#007BB0]" />
           </span>
           <div>
             <h2 className="text-lg font-semibold text-gray-900">FAQs</h2>

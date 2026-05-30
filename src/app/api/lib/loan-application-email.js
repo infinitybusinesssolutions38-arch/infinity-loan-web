@@ -58,19 +58,19 @@ export const sendLoanApplicationConfirmationEmail = async (
         <style>
           body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333; line-height: 1.6; margin: 0; padding: 0; background-color: #f8f9fa; }
           .container { max-width: 650px; margin: 0 auto; padding: 20px; background-color: #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 12px; }
-          .header { background: linear-gradient(135deg, #F97415 0%, #ff8c42 100%); padding: 40px 30px; border-radius: 12px 12px 0 0; color: white; text-align: center; }
+          .header { background: linear-gradient(135deg, #0099D8 0%, #33B5E5 100%); padding: 40px 30px; border-radius: 12px 12px 0 0; color: white; text-align: center; }
           .header h1 { margin: 0; color: white; font-size: 28px; font-weight: 600; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
           .header p { margin: 10px 0 0 0; color: rgba(255,255,255,0.9); font-size: 16px; }
           .content { padding: 30px; }
           .greeting { font-size: 18px; color: #2c3e50; margin-bottom: 20px; font-weight: 500; }
           .section { margin: 30px 0; }
-          .section-title { color: #F97415; font-weight: 600; margin-bottom: 15px; font-size: 18px; display: flex; align-items: center; }
+          .section-title { color: #0099D8; font-weight: 600; margin-bottom: 15px; font-size: 18px; display: flex; align-items: center; }
           .section-title::before { content: ''; margin-right: 10px; }
-          .details-box { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 25px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #F97415; }
+          .details-box { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 25px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #0099D8; }
           .details-box p { margin: 12px 0; font-size: 15px; }
           .details-box strong { color: #2c3e50; }
-          .highlight { background: linear-gradient(135deg, #fff4e6 0%, #ffe8cc 100%); padding: 25px; border-left: 4px solid #F97415; border-radius: 8px; margin: 25px 0; }
-          .highlight h3 { margin-top: 0; color: #F97415; font-size: 18px; }
+          .highlight { background: linear-gradient(135deg, #e6f7fc 0%, #cceeff 100%); padding: 25px; border-left: 4px solid #0099D8; border-radius: 8px; margin: 25px 0; }
+          .highlight h3 { margin-top: 0; color: #0099D8; font-size: 18px; }
           .highlight ul { margin: 15px 0; padding-left: 25px; }
           .highlight li { margin: 10px 0; font-size: 15px; }
           .contact-box { background: #f8f9fa; padding: 25px; border-radius: 10px; margin: 25px 0; border: 1px solid #e9ecef; }
@@ -79,11 +79,11 @@ export const sendLoanApplicationConfirmationEmail = async (
           .contact-box li { margin: 10px 0; font-size: 15px; display: flex; align-items: center; }
           .contact-box li::before { content: '📞'; margin-right: 10px; font-size: 16px; }
           .footer { border-top: 1px solid #e9ecef; margin-top: 30px; padding-top: 25px; text-align: center; color: #6c757d; font-size: 13px; }
-          .office-box { margin: 20px 0; padding: 20px; background: #f8f9fa; border-left: 4px solid #F97415; border-radius: 8px; }
+          .office-box { margin: 20px 0; padding: 20px; background: #f8f9fa; border-left: 4px solid #0099D8; border-radius: 8px; }
           .office-box h4 { margin: 0 0 15px 0; color: #2c3e50; font-size: 16px; }
           .office-box p { margin: 8px 0; font-size: 14px; }
           .disclaimer { font-size: 12px; color: #6c757d; margin-top: 25px; padding: 20px; background: #f8f9fa; border-radius: 8px; border: 1px solid #e9ecef; }
-          .application-number { background: #F97415; color: white; padding: 8px 16px; border-radius: 20px; font-weight: 600; display: inline-block; margin: 10px 0; }
+          .application-number { background: #0099D8; color: white; padding: 8px 16px; border-radius: 20px; font-weight: 600; display: inline-block; margin: 10px 0; }
           .loan-type-badge { background: #28a745; color: white; padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 600; display: inline-block; margin: 5px 0; }
           .amount-highlight { background: linear-gradient(135deg, #007bff 0%, #0056b3 100%); color: white; padding: 12px 20px; border-radius: 25px; font-size: 16px; font-weight: 700; display: inline-block; margin: 10px 0; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
           .business-header { background: linear-gradient(135deg, #28a745 0%, #20c997 100%); }
@@ -339,19 +339,19 @@ export const sendLoanApplicationConfirmationEmail = async (
 //         <style>
 //           body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333; line-height: 1.6; margin: 0; padding: 0; background-color: #f8f9fa; }
 //           .container { max-width: 650px; margin: 0 auto; padding: 20px; background-color: #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 12px; }
-//           .header { background: linear-gradient(135deg, #F97415 0%, #ff8c42 100%); padding: 40px 30px; border-radius: 12px 12px 0 0; color: white; text-align: center; }
+//           .header { background: linear-gradient(135deg, #0099D8 0%, #33B5E5 100%); padding: 40px 30px; border-radius: 12px 12px 0 0; color: white; text-align: center; }
 //           .header h1 { margin: 0; color: white; font-size: 28px; font-weight: 600; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
 //           .header p { margin: 10px 0 0 0; color: rgba(255,255,255,0.9); font-size: 16px; }
 //           .content { padding: 30px; }
 //           .greeting { font-size: 18px; color: #2c3e50; margin-bottom: 20px; font-weight: 500; }
 //           .section { margin: 30px 0; }
-//           .section-title { color: #F97415; font-weight: 600; margin-bottom: 15px; font-size: 18px; display: flex; align-items: center; }
+//           .section-title { color: #0099D8; font-weight: 600; margin-bottom: 15px; font-size: 18px; display: flex; align-items: center; }
 //           .section-title::before { content: ''; margin-right: 10px; }
-//           .details-box { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 25px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #F97415; }
+//           .details-box { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 25px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #0099D8; }
 //           .details-box p { margin: 12px 0; font-size: 15px; }
 //           .details-box strong { color: #2c3e50; }
-//           .highlight { background: linear-gradient(135deg, #fff4e6 0%, #ffe8cc 100%); padding: 25px; border-left: 4px solid #F97415; border-radius: 8px; margin: 25px 0; }
-//           .highlight h3 { margin-top: 0; color: #F97415; font-size: 18px; }
+//           .highlight { background: linear-gradient(135deg, #e6f7fc 0%, #cceeff 100%); padding: 25px; border-left: 4px solid #0099D8; border-radius: 8px; margin: 25px 0; }
+//           .highlight h3 { margin-top: 0; color: #0099D8; font-size: 18px; }
 //           .highlight ul { margin: 15px 0; padding-left: 25px; }
 //           .highlight li { margin: 10px 0; font-size: 15px; }
 //           .contact-box { background: #f8f9fa; padding: 25px; border-radius: 10px; margin: 25px 0; border: 1px solid #e9ecef; }
@@ -360,11 +360,11 @@ export const sendLoanApplicationConfirmationEmail = async (
 //           .contact-box li { margin: 10px 0; font-size: 15px; display: flex; align-items: center; }
 //           .contact-box li::before { content: '📞'; margin-right: 10px; font-size: 16px; }
 //           .footer { border-top: 1px solid #e9ecef; margin-top: 30px; padding-top: 25px; text-align: center; color: #6c757d; font-size: 13px; }
-//           .office-box { margin: 20px 0; padding: 20px; background: #f8f9fa; border-left: 4px solid #F97415; border-radius: 8px; }
+//           .office-box { margin: 20px 0; padding: 20px; background: #f8f9fa; border-left: 4px solid #0099D8; border-radius: 8px; }
 //           .office-box h4 { margin: 0 0 15px 0; color: #2c3e50; font-size: 16px; }
 //           .office-box p { margin: 8px 0; font-size: 14px; }
 //           .disclaimer { font-size: 12px; color: #6c757d; margin-top: 25px; padding: 20px; background: #f8f9fa; border-radius: 8px; border: 1px solid #e9ecef; }
-//           .application-number { background: #F97415; color: white; padding: 8px 16px; border-radius: 20px; font-weight: 600; display: inline-block; margin: 10px 0; }
+//           .application-number { background: #0099D8; color: white; padding: 8px 16px; border-radius: 20px; font-weight: 600; display: inline-block; margin: 10px 0; }
 //           .loan-type-badge { background: #28a745; color: white; padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 600; display: inline-block; margin: 5px 0; }
 //           .amount-highlight { background: linear-gradient(135deg, #007bff 0%, #0056b3 100%); color: white; padding: 12px 20px; border-radius: 25px; font-size: 16px; font-weight: 700; display: inline-block; margin: 10px 0; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
 //           .business-header { background: linear-gradient(135deg, #28a745 0%, #20c997 100%); }

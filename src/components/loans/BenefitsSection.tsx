@@ -74,14 +74,14 @@ export default function BenefitsSection({ benefits, variant = "default", anchorI
                   group relative rounded-2xl p-6 shadow-lg transition-all duration-500
                   ${variant === "personal" ? "bg-white/5 border border-white/10" : "bg-card"}
                   ${visibleItems.has(idx) ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}
-                  ${variant === "personal" ? "hover:border-[#F97415]/40 hover:shadow-[0_0_0_1px_rgba(249,116,21,0.18),0_20px_60px_-20px_rgba(249,116,21,0.35)]" : "hover:shadow-xl"}
+                  ${variant === "personal" ? "hover:border-[#0099D8]/40 hover:shadow-[0_0_0_1px_rgba(0,153,216,0.18),0_20px_60px_-20px_rgba(0,153,216,0.35)]" : "hover:shadow-xl"}
                   hover:-translate-y-2
                 `}
                 style={{ transitionDelay: `${idx * 100}ms` }}
               >
                 <div
                   className={`absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-10 ${
-                    variant === "personal" ? "bg-gradient-to-br from-[#F97415]/0 to-white/0" : "bg-gradient-to-br from-accent/0 to-primary/0"
+                    variant === "personal" ? "bg-gradient-to-br from-[#0099D8]/0 to-white/0" : "bg-gradient-to-br from-accent/0 to-primary/0"
                   }`}
                 />
 
@@ -89,7 +89,7 @@ export default function BenefitsSection({ benefits, variant = "default", anchorI
                   <div
                     className={`flex h-14 w-14 items-center justify-center rounded-xl transition-all duration-300 group-hover:scale-110 ${
                       variant === "personal"
-                        ? "bg-[#F97415]/15 text-[#F97415] group-hover:bg-[#F97415] group-hover:text-black"
+                        ? "bg-[#0099D8]/15 text-[#0099D8] group-hover:bg-[#0099D8] group-hover:text-black"
                         : "bg-accent/10 text-accent group-hover:bg-accent group-hover:text-accent-foreground group-hover:shadow-glow-accent"
                     }`}
                   >
@@ -98,7 +98,7 @@ export default function BenefitsSection({ benefits, variant = "default", anchorI
 
                   <h3
                     className={`mt-5 text-xl font-bold transition-colors duration-300 ${
-                      variant === "personal" ? "text-white group-hover:text-[#F97415]" : "text-foreground group-hover:text-primary"
+                      variant === "personal" ? "text-white group-hover:text-[#0099D8]" : "text-foreground group-hover:text-primary"
                     }`}
                   >
                     {benefit.title}
@@ -111,7 +111,7 @@ export default function BenefitsSection({ benefits, variant = "default", anchorI
                   <div
                     className={`mt-4 h-1 w-0 rounded-full transition-all duration-500 group-hover:w-full ${
                       variant === "personal"
-                        ? "bg-gradient-to-r from-[#F97415] to-white/40"
+                        ? "bg-gradient-to-r from-[#0099D8] to-white/40"
                         : "bg-gradient-to-r from-accent to-primary"
                     }`}
                   />

@@ -102,7 +102,7 @@ const ApplyNowPage = () => {
                     ></div>
 
                     <div className="relative z-10 text-white">
-                        <p className="text-lg font-semibold uppercase tracking-wider mb-4 text-blue-400">
+                        <p className="text-lg font-semibold uppercase tracking-wider mb-4 text-[#33B5E5]">
                             APPLY FOR A LOAN
                         </p>
                         <h1 className="text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight mb-6">
@@ -126,7 +126,7 @@ const ApplyNowPage = () => {
                                 <select
                                     id="product"
                                     {...register("product", { required: true })}
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#0099D8]/30 focus:border-transparent transition-all"
                                 >
                                     {products.map((product) => (
                                         <option key={product.value} value={product.value}>
@@ -148,7 +148,7 @@ const ApplyNowPage = () => {
                                     type="text"
                                     placeholder="9876543210"
                                     {...register("mobile", { required: true })}
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0099D8]/30 focus:border-transparent transition-all"
                                 />
                                 {errors.mobile && (
                                     <p className="text-red-500 text-sm mt-1">Mobile number is required</p>
@@ -164,7 +164,7 @@ const ApplyNowPage = () => {
                                     type="email"
                                     placeholder="you@example.com"
                                     {...register("email", { required: true })}
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0099D8]/30 focus:border-transparent transition-all"
                                 />
                                 {errors.email && (
                                     <p className="text-red-500 text-sm mt-1">Email is required</p>
@@ -180,7 +180,7 @@ const ApplyNowPage = () => {
                                     type="text"
                                     placeholder="ABCDE1234F"
                                     {...register("pan", { required: true })}
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0099D8]/30 focus:border-transparent transition-all"
                                 />
                                 {errors.pan && (
                                     <p className="text-red-500 text-sm mt-1">PAN is required</p>
@@ -196,7 +196,7 @@ const ApplyNowPage = () => {
                                 />
                                 <label htmlFor="terms" className="text-sm text-gray-600">
                                     By proceeding I agree to{" "}
-                                    <a href="#" className="text-blue-600 hover:underline font-semibold">
+                                    <a href="#" className="text-[#0099D8] hover:underline font-semibold">
                                         Terms and Conditions
                                     </a>{" "}
                                     and have read/understood approach for gradation of risk.
@@ -207,7 +207,7 @@ const ApplyNowPage = () => {
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-all duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed mt-6"
+                                className="w-full bg-[#0099D8] hover:bg-[#007BB0] text-white font-bold py-3 px-4 rounded-lg transition-all duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed mt-6"
                             >
                                 {loading ? "Processing..." : "NEXT"}
                             </button>
