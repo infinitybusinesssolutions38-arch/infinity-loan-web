@@ -4,6 +4,8 @@ import { requireAdmin } from "../../lib/guard";
 import CreditCardModel from "../../../models/credit-card-schema";
 import { toAdminDisplayStatus } from "../../../lib/admin-application-status";
 import { maybeSendStatusChangeEmail } from "../../../lib/loan-status-email";
+import { mapLoanDetail } from "../../../lib/loan-applications";
+import { isValidObjectId } from "../../lib/validate";
 
 export async function GET(req, { params }) {
   const auth = requireAdmin(req);
@@ -23,9 +25,11 @@ export async function GET(req, { params }) {
       );
     }
 
+    const data = { ...application, status: toAdminDisplayStatus(application) };
     return NextResponse.json({
       success: true,
-      data: { ...application, status: toAdminDisplayStatus(application) },
+      data,
+      detail: mapLoanDetail(application, "credit_card", "Credit Card"),
     });
   } catch (error) {
     console.error("Error fetching credit card application:", error);
@@ -55,6 +59,7 @@ export async function PATCH(req, { params }) {
     const patch = { reviewedAt: new Date() };
     if (status !== undefined) patch.status = String(status).toLowerCase();
     if (adminRemarks !== undefined) patch.adminRemarks = adminRemarks;
+    if (status === "Approved") patch.documentStatus = "verified";
 
     const existing = await CreditCardModel.findById(id).lean();
     if (!existing) {
@@ -85,14 +90,47 @@ export async function PATCH(req, { params }) {
       });
     }
 
+    const data = { ...application, status: toAdminDisplayStatus(application) };
     return NextResponse.json({
       success: true,
-      data: { ...application, status: toAdminDisplayStatus(application) },
+      data,
+      detail: mapLoanDetail(application, "credit_card", "Credit Card"),
     });
   } catch (error) {
     console.error("Error updating credit card application:", error);
     return NextResponse.json(
       { success: false, message: "Failed to update application" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(req, { params }) {
+  const auth = requireAdmin(req);
+  if (!auth.ok) return auth.res;
+
+  try {
+    const resolvedParams = await params;
+    const id = String(resolvedParams?.id || "").trim();
+    if (!isValidObjectId(id)) {
+      return NextResponse.json({ success: false, message: "Invalid application id" }, { status: 400 });
+    }
+
+    await connectDB();
+
+    const deleted = await CreditCardModel.findByIdAndDelete(id).lean();
+    if (!deleted) {
+      return NextResponse.json(
+        { success: false, message: "Application not found" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({ success: true, message: "Application deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting credit card application:", error);
+    return NextResponse.json(
+      { success: false, message: "Failed to delete application" },
       { status: 500 }
     );
   }

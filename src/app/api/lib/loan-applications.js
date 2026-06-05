@@ -72,6 +72,20 @@ export function formatDocumentStatusLabel(status) {
     return map[status] || "Documents Pending";
 }
 
+export function resolveEffectiveDocumentStatus(record) {
+    const status = normalizeApplicationStatus(record);
+    const raw = String(record?.documentStatus || "pending").trim().toLowerCase();
+    if (status === "approved") return "verified";
+    if (raw === "uploaded" || raw === "verified") return raw;
+    return "pending";
+}
+
+export function getDocumentTimelineLabel(documentStatus) {
+    if (documentStatus === "verified") return "Documents Verified";
+    if (documentStatus === "uploaded") return "Documents Submitted";
+    return "Documents Pending";
+}
+
 export function isApplicationLocked(status) {
     return status === "approved" || status === "rejected";
 }
@@ -84,7 +98,7 @@ export function isCreditCardApplication(record, categoryKey) {
 
 export function getApplicationPermissions(record, categoryKey) {
     const status = normalizeApplicationStatus(record);
-    const documentStatus = record.documentStatus || "pending";
+    const documentStatus = resolveEffectiveDocumentStatus(record);
     const isLocked = isApplicationLocked(status);
     const canEdit = !isLocked && (status === "pending" || status === "under_review");
     const creditCard = isCreditCardApplication(record, categoryKey);
@@ -192,6 +206,16 @@ export function buildEmploymentDetails(record, categoryKey) {
         ].filter(Boolean);
     }
 
+    if (categoryKey === "credit_card") {
+        return [
+            field("Job / Business", record.jobBusiness),
+            field("Official Email", record.officialEmail),
+            field("Office Address", record.currentOfficeAddress),
+            field("Office Pincode", record.currentOfficePincode),
+            field("Business Premises Status", record.businessPremisesStatus),
+        ].filter(Boolean);
+    }
+
     return [];
 }
 
@@ -206,7 +230,7 @@ export function buildLoanInformation(record) {
 
 export function mapLoanDetail(record, categoryKey, defaultLabel) {
     const status = normalizeApplicationStatus(record);
-    const documentStatus = record.documentStatus || "pending";
+    const documentStatus = resolveEffectiveDocumentStatus(record);
     const permissions = getApplicationPermissions(record, categoryKey);
 
     return {
@@ -339,7 +363,7 @@ export function getApplicantName(record) {
 
 export function mapLoanSummary(record, categoryKey, defaultLabel) {
     const status = normalizeApplicationStatus(record);
-    const documentStatus = record.documentStatus || "pending";
+    const documentStatus = resolveEffectiveDocumentStatus(record);
     return {
         id: String(record._id),
         applicationRef: record.applicationRef || "",
@@ -409,12 +433,12 @@ export function getPendingDocumentsList(categoryKey) {
 
 export function buildTimeline(record) {
     const status = normalizeApplicationStatus(record);
-    const documentStatus = record.documentStatus || "pending";
+    const documentStatus = resolveEffectiveDocumentStatus(record);
     const steps = [
         { key: "submitted", label: "Application Submitted", done: true },
         {
             key: "documents",
-            label: "Documents Pending",
+            label: getDocumentTimelineLabel(documentStatus),
             done: documentStatus !== "pending",
             active: documentStatus === "pending" && status !== "rejected",
         },

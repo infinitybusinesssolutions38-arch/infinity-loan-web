@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import AdminCategoryBanner from "@/components/admin/AdminCategoryBanner";
+import AdminListDeleteButton from "@/components/admin/AdminListDeleteButton";
 import AdminStatusBadge from "@/components/admin/AdminStatusBadge";
 
 type CreditCardApp = {
@@ -103,6 +104,26 @@ export default function CreditCardApplicationsPage() {
     void updateStatus(id, value);
   };
 
+  const deleteApplication = async (id: string) => {
+    setError(null);
+    try {
+      const res = await fetch(`/api/admin/credit-card-applications/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data?.success) {
+        setError(data?.message || "Failed to delete application");
+        return false;
+      }
+      setApplications((prev) => prev.filter((app) => String(app._id) !== id));
+      return true;
+    } catch {
+      setError("Failed to delete application");
+      return false;
+    }
+  };
+
   if (loading) {
     return (
       <div className="rounded-3xl border border-border/70 bg-card/70 p-6 shadow-sm backdrop-blur">
@@ -153,6 +174,7 @@ export default function CreditCardApplicationsPage() {
                   <th className="px-4 py-3">Approve / Reject</th>
                   <th className="px-4 py-3">Date</th>
                   <th className="px-4 py-3">Actions</th>
+                  <th className="px-4 py-3">Delete</th>
                 </tr>
               </thead>
               <tbody>
@@ -207,6 +229,12 @@ export default function CreditCardApplicationsPage() {
                       >
                         View Details
                       </Link>
+                    </td>
+                    <td className="px-4 py-3">
+                      <AdminListDeleteButton
+                        itemLabel={app.applicationRef || "application"}
+                        onDelete={() => deleteApplication(String(app._id))}
+                      />
                     </td>
                   </tr>
                 ))}
