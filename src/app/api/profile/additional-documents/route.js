@@ -1,11 +1,9 @@
 import { NextResponse } from "next/server";
-import jwt from "jsonwebtoken";
 import { v2 as cloudinary } from "cloudinary";
 
 import connectDB from "../../lib/db";
-import UserModel from "../../models/user-schema";
-import SalariedLoanModel from "../../models/salaried-loan-schema";
-import BusinessLoanModel from "../../models/business-loan-schema";
+import { requireAuthUser } from "../../lib/user-auth";
+import { findUserLoanByRef, getModelByCategory } from "../../lib/loan-applications";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -18,10 +16,6 @@ cloudinary.config({
 
 const MAX_FILE_SIZE_BYTES = 1 * 1024 * 1024; // 1MB
 const ALLOWED_MIME_TYPES = new Set(["application/pdf", "image/jpeg"]);
-
-function escapeRegex(input) {
-    return String(input || "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
 
 async function uploadToCloudinary(file) {
     if (!file) return null;
@@ -44,25 +38,12 @@ async function uploadToCloudinary(file) {
 
 export async function POST(req) {
     try {
-        const token = req.cookies.get("token")?.value;
-        if (!token) {
-            return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
-        }
-
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        const userId = decoded?.id;
-        if (!userId) {
-            return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+        const { user, error } = await requireAuthUser(req);
+        if (error) {
+            return NextResponse.json({ success: false, message: error.message }, { status: error.status });
         }
 
         await connectDB();
-
-        const user = await UserModel.findById(userId).lean();
-        if (!user) {
-            return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });
-        }
-
-        const userEmail = String(user.email || "").trim().toLowerCase();
 
         const formData = await req.formData();
         const applicationRef = String(formData.get("applicationRef") || "").trim();
@@ -103,18 +84,16 @@ export async function POST(req) {
             );
         }
 
-        const Model = targetType === "salaried" ? SalariedLoanModel : BusinessLoanModel;
-
-        const applicationRefRegex = new RegExp(`^${escapeRegex(applicationRef)}$`, "i");
-        const emailRegex = new RegExp(`^${escapeRegex(userEmail)}$`, "i");
-
-        const loan = await Model.findOne({ applicationRef: applicationRefRegex, personalEmail: emailRegex });
-        if (!loan) {
+        const found = await findUserLoanByRef(user, applicationRef);
+        if (!found || found.categoryKey !== targetType) {
             return NextResponse.json(
                 { success: false, message: "Loan application not found" },
                 { status: 404 }
             );
         }
+
+        const Model = getModelByCategory(targetType);
+        const loan = found.record;
 
         const uploadedDocs = [];
 

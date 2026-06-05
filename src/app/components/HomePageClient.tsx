@@ -1,6 +1,6 @@
-﻿"use client";
+"use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState, type ComponentType } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ComponentType, type KeyboardEvent } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -9,6 +9,8 @@ import {
   Building2,
   Briefcase,
   CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
   Clock,
   CreditCard,
   FileCheck,
@@ -21,11 +23,6 @@ import {
   TrendingUp,
   User,
   Users,
-  Car,
-  ChevronLeft,
-  ChevronRight,
-  Calculator,
-  MessageCircle,
 } from "lucide-react";
 
 
@@ -41,7 +38,7 @@ import LoanTestimonials from "./LoanTestimonials";
 import EmiRestructuringHighlight from "./Emirestructuringhighlight";
 import PropertyLoanHighlight from "./Propertyloanhighlight";
 import LogoCloud2 from "@/components/logocloud2";
-import { ScrollReveal } from "@/components/ui/scroll-reveal";
+import PopupModal from "@/components/PopupModal";
 
 
 type HubCategoryKey = "loans" | "insurance" | "credit-cards" | "government-schemes";
@@ -87,45 +84,11 @@ const CATEGORY_META: Array<{
     { key: "government-schemes", title: "Government Schemes", icon: Building2, gradient: "bg-gradient-government" },
   ];
 
-const QUICK_LINKS = [
-  { icon: FileCheck, label: "Apply Now", href: "/services" },
-  { icon: Clock, label: "Check Status", href: "/login" },
-  { icon: Calculator, label: "EMI Calculator", href: "/emi-calculator" },
-  { icon: MessageCircle, label: "Contact Us", href: "/contact" },
-];
-
 const TRUST_INDICATORS = [
   { icon: Users, value: "60,000+", label: "Happy Customers" },
-  { icon: TrendingUp, value: "â‚¹600 Cr+", label: "Loans Disbursed" },
+  { icon: TrendingUp, value: "₹600 Cr+", label: "Loans Disbursed" },
   { icon: Clock, value: "48 Hours", label: "Average Approval" },
   { icon: FileCheck, value: "96%", label: "Success Rate" },
-];
-
-const FEATURED_LOAN_CARDS = [
-  {
-    icon: User,
-    title: "Personal Loan",
-    description: "Flexible personal financing for education, medical, travel and more.",
-    href: "/personal-loan",
-  },
-  {
-    icon: Landmark,
-    title: "Home Loan",
-    description: "Competitive rates for home purchase, construction and balance transfer.",
-    href: "/services/loans",
-  },
-  {
-    icon: Briefcase,
-    title: "Business Loan",
-    description: "Working capital, MSME, machinery and expansion funding solutions.",
-    href: "/business-loan",
-  },
-  {
-    icon: Car,
-    title: "Vehicle Loan",
-    description: "Car, two-wheeler, commercial vehicle and EV financing options.",
-    href: "/services/loans",
-  },
 ];
 
 const LOAN_SERVICES: ServiceGroup[] = [
@@ -149,7 +112,7 @@ const LOAN_SERVICES: ServiceGroup[] = [
       {
         key: "overdraft-cash-credit",
         title: "Overdraft / Cash Credit (OD / CC)",
-        description: "A flexible limit for withdrawals as needed â€” interest is charged only on utilisation.",
+        description: "A flexible limit for withdrawals as needed — interest is charged only on utilisation.",
         infoHref: "/business-loan",
       },
       {
@@ -348,7 +311,7 @@ export default function HomePageClient() {
 
       return fileNames.map((fileName) => ({
         src: `/home2/${encodeURIComponent(fileName)}`,
-        alt: "Infinity Loan Services",
+        alt: "Infinity Loans & Business Solutions",
       }));
     },
     []
@@ -370,18 +333,18 @@ export default function HomePageClient() {
       {
         badge: "Quick & Transparent",
         icon: Banknote,
-        title: "Smart Loan & Funding Solutions for All Businesses â€” Proprietorships, Mid-Sized SMEs, Industrial Enterprises, and Corporates,",
+        title: "Smart Loan & Funding Solutions for All Businesses — Proprietorships, Mid-Sized SMEs, Industrial Enterprises, and Corporates,",
 
       },
       {
         badge: "Eligibility-led Guidance",
         icon: Briefcase,
-        title: "Smart Loan & Funding Solutions for All Professionals â€” Doctors, Chartered Accountants, Architects, Engineers, Lawyers, Consultants, and Self-Employed Professionals",
+        title: "Smart Loan & Funding Solutions for All Professionals — Doctors, Chartered Accountants, Architects, Engineers, Lawyers, Consultants, and Self-Employed Professionals",
       },
       {
         badge: "Eligibility-led Guidance",
         icon: Landmark,
-        title: "Smart Loan & Funding Solutions for Central & State Government Employees â€” Civil Services, Public Sector Staff, Defence Personnel, and Other Government Employees",
+        title: "Smart Loan & Funding Solutions for Central & State Government Employees — Civil Services, Public Sector Staff, Defence Personnel, and Other Government Employees",
       },
       {
         badge: "Eligibility-led Guidance",
@@ -400,6 +363,7 @@ export default function HomePageClient() {
   );
 
   const activeHeroContent = heroContentGroups[activeIndex % heroContentGroups.length];
+  const ActiveHeroIcon = activeHeroContent.icon;
   const isPausedRef = useRef(false);
   const intervalRef = useRef<number | null>(null);
 
@@ -468,6 +432,23 @@ export default function HomePageClient() {
     isPausedRef.current = false;
   }, []);
 
+  const onHeroKeyDown = useCallback(
+    (e: KeyboardEvent<HTMLElement>) => {
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        prevSlide();
+      }
+      if (e.key === "ArrowRight") {
+        e.preventDefault();
+        nextSlide();
+      }
+    },
+    [nextSlide, prevSlide]
+  );
+
+  const slidesPerGroup = slides.length / heroContentGroups.length;
+  const activeGroupIndex = Math.floor(activeIndex / slidesPerGroup);
+
   const [activeCategory, setActiveCategory] = useState<HubCategoryKey>("loans");
   const activeMeta = CATEGORY_META.find((c) => c.key === activeCategory)!;
 
@@ -483,7 +464,7 @@ export default function HomePageClient() {
         {
           key: "insurance-life",
           title: "Life Insurance",
-          description: "Protect your familyâ€™s future with the right life cover and plan benefits",
+          description: "Protect your family’s future with the right life cover and plan benefits",
           infoHref: "/services/insurance",
           highlight: true,
           badge: "Trusted",
@@ -592,13 +573,13 @@ export default function HomePageClient() {
           id: "loans-approval-time",
           question: "How long does approval and disbursal take?",
           answer:
-            "Most cases get an eligibility response quickly. Final approval and disbursal timelines depend on verification and documents, and can be as fast as 24â€“48 hours for eligible profiles.",
+            "Most cases get an eligibility response quickly. Final approval and disbursal timelines depend on verification and documents, and can be as fast as 24–48 hours for eligible profiles.",
         },
         {
           id: "loans-prepayment",
           question: "Can I prepay or foreclose my loan?",
           answer:
-            "Many lenders allow part-prepayment/foreclosure. Charges (if any) depend on lender and product. Weâ€™ll help you understand the exact terms before you proceed.",
+            "Many lenders allow part-prepayment/foreclosure. Charges (if any) depend on lender and product. We’ll help you understand the exact terms before you proceed.",
         },
       ];
     }
@@ -660,7 +641,7 @@ export default function HomePageClient() {
         id: "govt-docs",
         question: "What documents are generally required?",
         answer:
-          "Commonly KYC, business registration (Udyam/GST where applicable), bank details, and scheme-specific declarations. Weâ€™ll share a checklist for your selected scheme.",
+          "Commonly KYC, business registration (Udyam/GST where applicable), bank details, and scheme-specific declarations. We’ll share a checklist for your selected scheme.",
       },
       {
         id: "govt-timeline",
@@ -709,326 +690,315 @@ export default function HomePageClient() {
 
   return (
     <div className="min-h-screen bg-background">
-      <section
-        className="relative overflow-hidden"
-        aria-roledescription="carousel"
-        aria-label="Hero carousel"
-        onMouseEnter={onMouseEnter}
-        onMouseLeave={onMouseLeave}
-      >
-        <div className="absolute inset-0">
-          {previousIndex !== null && slides[previousIndex] && (
+      <div className="px-4 pt-4 sm:px-6 lg:px-8">
+        <section
+          className="relative mx-auto max-w-[1400px] overflow-hidden rounded-[20px] border border-[#D6EEF8] bg-white shadow-[0_8px_30px_rgba(15,23,42,0.10)] outline-none focus-visible:ring-4 focus-visible:ring-[#00AEEF]/20"
+          aria-roledescription="carousel"
+          aria-label="Hero carousel"
+          tabIndex={0}
+          onMouseEnter={onMouseEnter}
+          onMouseLeave={onMouseLeave}
+          onKeyDown={onHeroKeyDown}
+        >
+          {/* Slide images */}
+          <div className="absolute inset-0">
+            {previousIndex !== null && slides[previousIndex] && (
+              <div
+                key={`prev-${previousIndex}`}
+                className="absolute inset-0 transition-all duration-300 ease-out will-change-transform"
+                style={{ transform: isSlideAnimating ? "translateX(-100%)" : "translateX(0%)" }}
+                aria-hidden
+              >
+                <Image
+                  src={slides[previousIndex].src}
+                  alt={slides[previousIndex].alt}
+                  fill
+                  priority={false}
+                  sizes="(max-width: 1400px) 100vw, 1400px"
+                  className="object-cover object-top"
+                />
+              </div>
+            )}
+
             <div
-              key={`prev-${previousIndex}`}
-              className="absolute inset-0 transition-transform duration-700 ease-out will-change-transform"
-              style={{ transform: isSlideAnimating ? "translateX(-100%)" : "translateX(0%)" }}
-              aria-hidden
+              key={`active-${activeIndex}`}
+              className="absolute inset-0 transition-all duration-300 ease-out will-change-transform"
+              style={
+                previousIndex === null
+                  ? { transform: "translateX(0%)" }
+                  : { transform: isSlideAnimating ? "translateX(0%)" : "translateX(100%)" }
+              }
             >
               <Image
-                src={slides[previousIndex].src}
-                alt={slides[previousIndex].alt}
+                src={activeSlide.src}
+                alt={activeSlide.alt}
                 fill
-                priority={false}
-                sizes="100vw"
+                priority={activeIndex === 0}
+                sizes="(max-width: 1400px) 100vw, 1400px"
                 className="object-cover object-top"
               />
             </div>
-          )}
 
-          <div
-            key={`active-${activeIndex}`}
-            className="absolute inset-0 transition-transform duration-700 ease-out will-change-transform"
-            style={
-              previousIndex === null
-                ? { transform: "translateX(0%)" }
-                : { transform: isSlideAnimating ? "translateX(0%)" : "translateX(100%)" }
-            }
-          >
-            <Image
-              src={activeSlide.src}
-              alt={activeSlide.alt}
-              fill
-              priority={activeIndex === 0}
-              sizes="100vw"
-              className="object-cover object-top"
-            />
+            {/* Light fintech overlays for readability (no dark/black gradients) */}
+            <div className="absolute inset-0 bg-gradient-to-b from-white/90 via-white/55 to-white/85" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(0,174,239,0.20),transparent_55%)]" />
           </div>
 
-          <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/45 to-black/70" />
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/55 via-black/30 to-accent/30" />
-          <div className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-accent/20 blur-3xl" />
-          <div className="absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-cta/20 blur-3xl" />
-        </div>
+          {/* Hero content */}
+          <div className="relative z-10 flex min-h-[520px] items-center sm:min-h-[580px] lg:min-h-[680px]">
+            <div className="w-full px-6 py-16 sm:px-10 sm:py-16 lg:px-14 lg:py-20">
+              <div
+                key={`hero-content-${activeIndex}`}
+                className="max-w-[600px]"
+              >
+                <div className="inline-flex items-center gap-2 rounded-full border border-[#D6EEF8] bg-white px-4 py-2 text-sm font-semibold text-[#00AEEF] shadow-[0_2px_10px_rgba(15,23,42,0.06)]">
+                  <Sparkles className="h-4 w-4 shrink-0 text-[#00AEEF]" aria-hidden />
+                  <span className="text-[#1A1A1A]">{activeHeroContent.badge}</span>
+                </div>
 
-        <div className="relative">
-          <button
-            type="button"
-            onClick={prevSlide}
-            aria-label="Previous slide"
-            className="absolute left-4 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-black/30 text-white backdrop-blur-sm transition hover:bg-black/50 sm:left-6 sm:h-12 sm:w-12"
-          >
-            <ChevronLeft className="h-6 w-6" />
-          </button>
-          <button
-            type="button"
-            onClick={nextSlide}
-            aria-label="Next slide"
-            className="absolute right-4 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-black/30 text-white backdrop-blur-sm transition hover:bg-black/50 sm:right-6 sm:h-12 sm:w-12"
-          >
-            <ChevronRight className="h-6 w-6" />
-          </button>
-
-          <div className="container relative z-10 mx-auto px-4">
-            <div className="flex min-h-[520px] items-center py-14 sm:min-h-[600px] sm:py-16 lg:min-h-[680px]">
-              <div className="max-w-2xl text-left lg:max-w-3xl">
-                <h1 className="text-2xl font-extrabold leading-snug tracking-tight text-white drop-shadow-lg sm:text-3xl lg:text-4xl">
-                  {activeHeroContent.title}
+                <h1 className="mt-6 text-[1.75rem] font-bold leading-[1.2] tracking-tight text-[#1A1A1A] sm:mt-7 sm:text-4xl lg:mt-8 lg:text-[2.75rem] lg:leading-[1.15]">
+                  <span className="flex items-start gap-4">
+                    <span className="mt-1 flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-[#D6EEF8] bg-[#E6F7FD] shadow-[0_2px_10px_rgba(15,23,42,0.06)] sm:h-14 sm:w-14">
+                      <ActiveHeroIcon
+                        className="h-6 w-6 text-[#00AEEF] sm:h-7 sm:w-7"
+                        strokeWidth={2.25}
+                      />
+                    </span>
+                    <span>{activeHeroContent.title}</span>
+                  </span>
                 </h1>
               </div>
             </div>
           </div>
-        </div>
-      </section>
 
+          {/* Slider controls — arrows */}
+          <button
+            type="button"
+            onClick={prevSlide}
+            className="absolute left-4 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-[#D6EEF8] bg-white text-[#00AEEF] shadow-[0_2px_10px_rgba(15,23,42,0.06)] transition-all duration-300 ease-out hover:bg-[#E6F7FD] hover:border-[#00AEEF]/40 sm:left-6 lg:left-8"
+            aria-label="Previous slide"
+          >
+            <ChevronLeft className="h-5 w-5" strokeWidth={2.5} />
+          </button>
 
-      <div className="container mx-auto px-4">
-        <div className="mt-10 flex justify-center">
-          <div className="inline-flex max-w-full flex-wrap items-center justify-center gap-x-3 gap-y-2 rounded-3xl border-2 border-[#0099D8]/20 bg-white px-8 py-5 text-center shadow-lg sm:gap-x-4 sm:px-10 sm:py-6 lg:px-14 lg:py-7">
-            <span className="text-lg font-bold text-[#0099D8] sm:text-xl lg:text-2xl xl:text-3xl">
-              Our Key Strengths
-            </span>
-            <span className="text-base font-medium text-gray-400 sm:text-lg lg:text-xl xl:text-2xl">-</span>
-            <span className="text-lg font-bold text-gray-900 sm:text-xl lg:text-2xl xl:text-3xl">
-              Our Key Business Verticals
-            </span>
+          <button
+            type="button"
+            onClick={nextSlide}
+            className="absolute right-4 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-[#D6EEF8] bg-white text-[#00AEEF] shadow-[0_2px_10px_rgba(15,23,42,0.06)] transition-all duration-300 ease-out hover:bg-[#E6F7FD] hover:border-[#00AEEF]/40 sm:right-6 lg:right-8"
+            aria-label="Next slide"
+          >
+            <ChevronRight className="h-5 w-5" strokeWidth={2.5} />
+          </button>
+
+          {/* Slider controls — dot indicators (grouped by content) */}
+          <div
+            className="absolute bottom-6 left-1/2 z-20 flex -translate-x-1/2 items-center gap-2 rounded-full border border-[#D6EEF8] bg-white/90 px-4 py-2.5 shadow-[0_2px_10px_rgba(15,23,42,0.06)] sm:bottom-8"
+            aria-label="Slide pagination"
+          >
+            {heroContentGroups.map((_, i) => {
+              const isActive = activeGroupIndex === i;
+              return (
+                <button
+                  key={i}
+                  type="button"
+                  className={cx(
+                    "h-2 rounded-full transition-all duration-300",
+                    isActive
+                      ? "w-7 bg-[#00AEEF] shadow-[0_0_0_4px_rgba(0,174,239,0.14)]"
+                      : "w-2 bg-[#00AEEF]/25 hover:bg-[#00AEEF]/50"
+                  )}
+                  onClick={() => goToSlide(Math.round(i * slidesPerGroup))}
+                  aria-label={`Go to slide group ${i + 1}`}
+                  aria-current={isActive ? "true" : "false"}
+                />
+              );
+            })}
           </div>
-        </div>
+        </section>
       </div>
 
-      <PrivateInstitutionalHighlight />
-      <PoorCibilHighlight />
-      <EmiRestructuringHighlight />
-      <PropertyLoanHighlight />
 
-      {/* Quick Links */}
-      <section className="py-8 lg:py-10 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-            {QUICK_LINKS.map((item, idx) => (
-              <ScrollReveal key={item.label} delay={idx * 80} animation="scale-in">
-                <Link
-                  href={item.href}
-                  className="group flex flex-col items-center rounded-2xl border border-gray-200 bg-white p-6 text-center shadow-sm transition-all duration-300 hover:border-[#0099D8]/40 hover:shadow-md"
-                >
-                  <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-[#0099D8]/10 transition-transform duration-300 group-hover:scale-110">
-                    <item.icon className="h-7 w-7 text-[#0099D8]" />
-                  </div>
-                  <span className="text-sm font-semibold text-gray-900 group-hover:text-[#0099D8]">
-                    {item.label}
-                  </span>
-                </Link>
-              </ScrollReveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Explore Our Loan Services Banner */}
-      <section className="bg-[#0099D8]/5 py-12 lg:py-16">
-        <div className="container mx-auto px-4 text-center">
-          <ScrollReveal animation="fade-in-up">
-            <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-              Explore Our{" "}
-              <span className="text-[#0099D8]">Loan Services</span>
+      <section className="bg-[#F7F9FC] py-16 lg:py-24">
+        <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto mb-10 max-w-3xl text-center lg:mb-16">
+            <h2 className="text-2xl font-bold tracking-tight text-[#1A1A1A] sm:text-3xl lg:text-[2.5rem] lg:leading-tight">
+              <span className="text-[#00AEEF]">Our Key Strengths</span>
+              <span className="mx-2 font-normal text-[#666666]">-</span>
+              <span>Our Key Business Verticals</span>
             </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-lg text-gray-600">
-              Explore a comprehensive range of financial solutions tailored to your specific needs.
+          </div>
+
+          <div className="flex flex-col gap-6 sm:gap-8 lg:gap-10">
+            <PrivateInstitutionalHighlight />
+            <PoorCibilHighlight />
+            <EmiRestructuringHighlight />
+            <PropertyLoanHighlight />
+          </div>
+        </div>
+      </section>
+
+      <section className="relative z-20 bg-[#F7F9FC] py-16 lg:py-24">
+  <div className="container mx-auto px-4">
+    <div className="mb-7 sm:mb-8 text-center">
+      <h2 className="inline-flex items-center gap-2 rounded-full border border-[#D6EEF8] bg-white px-4 py-2 text-sm font-semibold text-[#1A1A1A] shadow-[0_2px_10px_rgba(15,23,42,0.06)]">
+        <span className="w-2 h-2 rounded-full bg-[#00AEEF]" />
+        Why Choose Us
+      </h2>
+    </div>
+    <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
+      {TRUST_INDICATORS.map((item, idx) => (
+        <div
+          key={idx}
+          className="flex items-center gap-4 rounded-[20px] bg-white border border-[#D6EEF8] p-5 sm:p-6 shadow-[0_2px_10px_rgba(15,23,42,0.06)]"
+          style={{ animationDelay: `${idx * 100}ms` }}
+        >
+          <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-[#E6F7FD] border border-[#D6EEF8]">
+            <item.icon className="h-8 w-8 text-[#00AEEF]" />
+          </div>
+          <div>
+            <p className="text-2xl sm:text-3xl font-extrabold text-[#1A1A1A]">
+              {item.value}
             </p>
-            <div className="mt-8">
-              <Link href="/services">
-                <button className="cursor-pointer rounded-xl bg-[#0099D8] px-8 py-3.5 font-semibold text-white shadow-lg shadow-[#0099D8]/25 transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#007BB0] hover:shadow-xl hover:shadow-[#0099D8]/30">
-                  View All Loan Services
-                </button>
-              </Link>
-            </div>
-          </ScrollReveal>
+            <p className="text-sm text-[#666666]">{item.label}</p>
+          </div>
         </div>
-      </section>
+      ))}
+    </div>
+  </div>
+</section>
 
-      {/* Featured Loan Cards */}
-      <section className="py-12 lg:py-16 bg-white">
+
+
+      <section className="py-16 lg:py-24">
         <div className="container mx-auto px-4">
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {FEATURED_LOAN_CARDS.map((card, idx) => (
-              <ScrollReveal key={card.title} delay={idx * 100} animation="scale-in">
-                <Link href={card.href} className="group block h-full">
-                  <div className="modern-dark-card modern-card-shine h-full p-6">
-                    <div className="pointer-events-none absolute -right-8 -top-8 h-24 w-24 rounded-full bg-[#0099D8]/10 blur-2xl transition-opacity duration-500 group-hover:opacity-100" />
-                    <div className="relative">
-                      <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[#0099D8]/20 to-[#2E3192]/10 transition-all duration-500 group-hover:scale-110 group-hover:rotate-3">
-                        <card.icon className="h-7 w-7 text-[#0099D8]" strokeWidth={2} />
-                      </div>
-                      <h3 className="text-lg font-bold text-gray-900 transition-colors duration-300 group-hover:text-[#0099D8]">
-                        {card.title}
-                      </h3>
-                      <p className="mt-2 text-sm leading-relaxed text-gray-600 transition-colors duration-300 group-hover:text-gray-700">
-                        {card.description}
-                      </p>
-                      <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[#0099D8]">
-                        Learn More
-                        <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-                      </span>
-                    </div>
-                  </div>
+          <div className="relative mb-10 overflow-hidden rounded-[20px] border border-[#D6EEF8] bg-background p-5 text-center shadow-[0_8px_24px_rgba(15,23,42,0.08)] transition-all duration-300 ease-out sm:mb-12 sm:p-6">
+
+            <div className="relative z-10">
+              <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl lg:text-5xl">
+                Explore Our <span className="text-[#00AEEF] text-4xl sm:text-5xl lg:text-6xl">Loan</span> Services
+              </h2>
+
+              <p className="mt-4 text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+                Explore a comprehensive range of financial solutions tailored to your specific needs.
+              </p>
+
+              <div className="mt-8">
+                <Link href="/services#ourAllServices">
+                  <button className="cursor-pointer px-8 py-3 bg-[#00AEEF] text-white font-semibold rounded-xl shadow-[0_2px_10px_rgba(0,174,239,0.18)] hover:bg-[#008FCC] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(0,174,239,0.18)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#00AEEF]/20">
+                    View All Loan Services
+                  </button>
                 </Link>
-              </ScrollReveal>
-            ))}
+              </div>
+            </div>
           </div>
-        </div>
-      </section>
-
-      <ModernSections />
-
-      {/* Trust Stats */}
-      <section className="relative z-20 bg-gray-50 py-10 lg:py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-            {TRUST_INDICATORS.map((item, idx) => (
-              <ScrollReveal key={idx} delay={idx * 100} animation="scale-in">
-                <div className="modern-stat-card modern-card-shine group flex items-center gap-4 p-6">
-                  <div className="relative flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#0099D8]/15 to-[#2E3192]/10 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3">
-                    <item.icon className="h-7 w-7 text-[#0099D8]" />
-                    <div className="absolute -inset-1 rounded-xl border border-[#0099D8]/20 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-                  </div>
-                  <div className="relative min-w-0">
-                    <p className="text-2xl font-bold tracking-tight text-foreground transition-colors duration-300 group-hover:text-[#0099D8]">
-                      {item.value}
-                    </p>
-                    <p className="text-sm text-muted-foreground">{item.label}</p>
-                  </div>
-                </div>
-              </ScrollReveal>
-            ))}
-          </div>
+          <ModernSections />
         </div>
       </section>
 
       <LogoCloud />
 
-      <section className="relative py-20 lg:py-32 overflow-hidden bg-gradient-to-b from-gray-50 via-white to-gray-50">
-        <div className="absolute inset-0 opacity-[0.03]">
+      <section className="relative overflow-hidden bg-[#F7F9FC] py-16 lg:py-24">
+        {/* Subtle Background Pattern */}
+        <div className="absolute inset-0 opacity-[0.04]">
           <div
             className="absolute inset-0"
             style={{
-              backgroundImage: `radial-gradient(circle at 1px 1px, black 1px, transparent 0)`,
-              backgroundSize: "40px 40px",
+              backgroundImage: `radial-gradient(circle at 1px 1px, rgba(0,174,239,0.8) 1px, transparent 0)`,
+              backgroundSize: "48px 48px",
             }}
           />
         </div>
 
-        <div className="absolute top-0 left-1/4 h-96 w-96 animate-blob rounded-full bg-gray-200 opacity-20 mix-blend-multiply blur-3xl filter" />
-        <div className="animation-delay-2000 absolute top-0 right-1/4 h-96 w-96 animate-blob rounded-full bg-gray-300 opacity-20 mix-blend-multiply blur-3xl filter" />
-
-        <div className="container relative z-10 mx-auto px-4">
-          <ScrollReveal animation="fade-in-up">
-            <div className="mb-16 space-y-4 text-center">
-              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-black/10 bg-black/5 px-4 py-2 backdrop-blur-sm">
-                <div className="h-2 w-2 animate-pulse rounded-full bg-[#0099D8]" />
-                <span className="text-sm font-medium text-gray-700">Why Choose Us</span>
-              </div>
-
-              <h2 className="text-4xl font-bold tracking-tight text-black md:text-5xl lg:text-6xl">
-                Built for Your{" "}
-                <span className="relative inline-block">
-                  <span className="relative z-10">Success</span>
-                  <span className="absolute bottom-2 left-0 h-3 w-full -rotate-1 bg-[#0099D8]/20" />
-                </span>
-              </h2>
-
-              <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-gray-600 md:text-xl">
-                We make financial products accessible, transparent, and hassle-free with cutting-edge technology
-              </p>
+        <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8 relative z-10">
+          {/* Header */}
+          <div className="text-center mb-12 lg:mb-16 space-y-4">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-[#D6EEF8] shadow-[0_2px_10px_rgba(15,23,42,0.06)] mb-4">
+              <div className="w-2 h-2 bg-[#00AEEF] rounded-full" />
+              <span className="text-sm font-semibold text-[#1A1A1A]">Why Choose Us</span>
             </div>
-          </ScrollReveal>
+
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-[#1A1A1A]">
+              Built for Your{" "}
+              <span className="relative inline-block">
+                <span className="relative z-10">Success</span>
+                <span className="absolute bottom-2 left-0 w-full h-3 bg-[#00AEEF]/20 -rotate-1" />
+              </span>
+            </h2>
+
+            <p className="mt-6 text-lg md:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
+              We make financial products accessible, transparent, and hassle-free with cutting-edge technology
+            </p>
+          </div>
 
           {/* Benefits Grid */}
-          <div className="mx-auto grid max-w-7xl gap-6 sm:grid-cols-2 md:gap-8 lg:grid-cols-3">
+          <div className="grid gap-6 md:gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {benefits.map((benefit, idx) => (
-              <ScrollReveal key={idx} delay={idx * 120} animation="scale-in">
-                <div className="group relative h-full">
-                  <div className="modern-dark-card modern-card-shine relative h-full overflow-hidden rounded-2xl border border-gray-200 shadow-lg transition-all duration-500 hover:shadow-2xl">
-                    <div className="absolute inset-0 bg-gradient-to-br from-[#0099D8]/10 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-                    <div className="absolute left-0 top-0 h-1 w-full bg-gradient-to-r from-transparent via-[#0099D8] to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-
-                    <div className="relative p-8">
-                      <div className="mb-6 flex items-start justify-between">
-                        <div className="relative">
-                          <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-gray-200 bg-gradient-to-br from-[#0099D8]/10 to-[#0099D8]/5 shadow-inner transition-all duration-500 group-hover:scale-110 group-hover:rotate-3">
-                            <benefit.icon className="h-8 w-8 text-[#0099D8]" strokeWidth={1.5} />
-                          </div>
-                          <div className="absolute -inset-2 rounded-2xl border-2 border-[#0099D8]/20 opacity-0 transition-all duration-500 group-hover:scale-110 group-hover:opacity-100" />
-                        </div>
-
-                        <div className="text-right">
-                          <div className="text-2xl font-bold text-[#0099D8]">{benefit.stat}</div>
-                          <div className="mt-1 text-xs font-medium text-[#0099D8]/80">{benefit.label}</div>
+              <div key={idx} className="relative">
+                <div className="relative h-full rounded-[20px] bg-white border border-[#D6EEF8] shadow-[0_2px_10px_rgba(15,23,42,0.06)] overflow-hidden">
+                  <div className="relative p-6 sm:p-8">
+                    {/* Icon Container with Stat Badge */}
+                    <div className="flex items-start justify-between mb-6">
+                      <div className="relative">
+                        {/* Icon Background */}
+                        <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-[#E6F7FD] border border-[#D6EEF8]">
+                          <benefit.icon className="h-7 w-7 text-[#00AEEF]" strokeWidth={1.75} />
                         </div>
                       </div>
 
-                      <div className="space-y-3">
-                        <h3 className="text-xl font-bold text-gray-900 transition-colors duration-300 group-hover:text-[#0099D8]">
-                          {benefit.title}
-                        </h3>
-                        <p className="leading-relaxed text-gray-600 transition-colors duration-300 group-hover:text-gray-700">
-                          {benefit.description}
-                        </p>
+                      {/* Stat Badge */}
+                      <div className="text-right">
+                        <div className="text-2xl font-bold text-[#00AEEF]">
+                          {benefit.stat}
+                        </div>
+                        <div className="text-xs text-[#666666] font-medium mt-1">
+                          {benefit.label}
+                        </div>
                       </div>
-
-                      <div className="absolute bottom-0 left-0 h-px w-full bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
                     </div>
 
-                    <div className="absolute right-0 top-0 h-20 w-20 rounded-bl-full bg-gradient-to-br from-[#0099D8]/10 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                    {/* Content */}
+                    <div className="space-y-3">
+                      <h3 className="text-lg sm:text-xl font-bold text-[#1A1A1A]">
+                        {benefit.title}
+                      </h3>
+                      <p className="text-[#666666] leading-relaxed">
+                        {benefit.description}
+                      </p>
+                    </div>
                   </div>
-
-                  <div className="absolute -inset-0.5 -z-10 rounded-2xl bg-gradient-to-r from-[#0099D8]/20 via-[#2E3192]/10 to-[#0099D8]/20 opacity-0 blur transition-opacity duration-500 group-hover:opacity-60" />
                 </div>
-              </ScrollReveal>
+              </div>
             ))}
           </div>
 
           {/* Bottom CTA (Optional) */}
-          <ScrollReveal animation="fade-in" delay={400}>
-            <div className="mt-16 text-center">
-              <div className="inline-flex items-center gap-2 text-sm text-gray-600">
-                <Shield className="h-4 w-4 text-[#0099D8]" />
-                <span>Trusted by over 60,000+ customers nationwide</span>
-              </div>
+          <div className="mt-16 text-center">
+            <div className="inline-flex items-center gap-2 text-sm text-gray-600">
+              <Shield className="w-4 h-4 text-[#00AEEF]" />
+              <span>Trusted by over 60,000+ customers nationwide</span>
             </div>
-          </ScrollReveal>
+          </div>
         </div>
+
       </section>
 
       {/* Testimonials Section */}
       <LoanTestimonials />
 
       <section className="py-16 lg:py-24">
-        <div className="container mx-auto px-4">
-          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-primary via-primary to-accent p-8 lg:p-16 text-center">
-            <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iYSIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBwYXR0ZXJuVHJhbnNmb3JtPSJyb3RhdGUoNDUpIj48cmVjdCB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4wNSkiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjYSkiLz48L3N2Zz4=')] opacity-50" />
+        <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
+          <div className="relative overflow-hidden rounded-[20px] border border-[#D6EEF8] bg-white p-8 lg:p-16 text-center shadow-[0_8px_30px_rgba(15,23,42,0.10)]">
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(0,174,239,0.18),transparent_55%)]" />
             <div className="relative z-10">
-              <h2 className="text-3xl font-bold text-primary-foreground sm:text-4xl lg:text-5xl">Ready to Get Started?</h2>
-              <p className="mt-4 text-lg text-primary-foreground/80 max-w-2xl mx-auto">
+              <h2 className="text-3xl font-bold text-[#1A1A1A] sm:text-4xl lg:text-5xl">Ready to Get Started?</h2>
+              <p className="mt-4 text-lg text-[#666666] max-w-2xl mx-auto leading-relaxed">
                 Apply now and get a decision within 48 hours. No hidden fees, no surprises.
               </p>
               <div className="mt-8 flex flex-wrap justify-center gap-4">
-                {/* <ApplyNowCTAButton loanType="Loan" redirectToUnifiedForm={true} className="shadow-2xl" size="xl">
-                  Apply Now
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </ApplyNowCTAButton> */}
-                <Button asChild variant="hero-outline" className="bg-[#0099D8] text-white" size="xl">
+                <Button asChild variant="hero" size="xl">
                   <Link href="/services">Get Started Now</Link>
                 </Button>
-                <Button asChild variant="hero-outline" size="xl">
+                <Button asChild variant="outline" size="xl">
                   <Link href="/contact#contact-form">Talk to an Expert</Link>
                 </Button>
               </div>
@@ -1036,6 +1006,8 @@ export default function HomePageClient() {
           </div>
         </div>
       </section>
+      
+      <PopupModal />
     </div>
   );
 }

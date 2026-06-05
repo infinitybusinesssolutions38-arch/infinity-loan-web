@@ -88,7 +88,7 @@ const NriSignupForm = () => {
                     </h2>
                     <p className="text-muted-foreground mb-6">
                         Join our international community of lenders and invest securely in
-                        India’s growing financial market with Fortune Loans.
+                        India’s growing financial market with Infinity Loans.
                     </p>
                     <ul className="space-y-2 text-muted-foreground">
                         <li>✅ Invest from anywhere in the world</li>

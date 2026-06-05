@@ -77,10 +77,10 @@ const styles = `
     border-bottom: 1px solid #222;
   }
   .breadcrumb .active {
-    color: #0099D8;
+    color: #2796CA;
   }
   .breadcrumb-sep {
-    color: #0099D8;
+    color: #2796CA;
     font-size: 14px;
     line-height: 1;
   }
@@ -110,7 +110,7 @@ const styles = `
     color: #0a0a0a;
   }
   .profile-header-left h1 span {
-    color: #0099D8;
+    color: #2796CA;
   }
   .profile-header-left p {
     margin-top: 8px;
@@ -143,7 +143,7 @@ const styles = `
     content: '';
     position: absolute;
     inset: 0;
-    background: #0099D8;
+    background: #2796CA;
     transform: scaleX(0);
     transform-origin: left;
     transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
@@ -169,7 +169,7 @@ const styles = `
     position: absolute;
     top: 0; left: 0; right: 0;
     height: 3px;
-    background: #0099D8;
+    background: #2796CA;
     transform: scaleX(0);
     transform-origin: left;
     transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
@@ -192,7 +192,7 @@ const styles = `
   .section-title-dot {
     width: 8px;
     height: 8px;
-    background: #0099D8;
+    background: #2796CA;
     border-radius: 50%;
     flex-shrink: 0;
   }
@@ -228,7 +228,7 @@ const styles = `
     transition: border-color 0.2s;
   }
   .account-field:hover .account-field-value {
-    border-color: #0099D8;
+    border-color: #2796CA;
   }
 
   /* Loans header row */
@@ -239,7 +239,7 @@ const styles = `
     margin-bottom: 24px;
   }
   .loans-count-badge {
-    background: #0099D8;
+    background: #2796CA;
     color: #fff;
     font-family: 'Syne', sans-serif;
     font-size: 12px;
@@ -266,13 +266,13 @@ const styles = `
     position: absolute;
     left: 0; top: 0; bottom: 0;
     width: 3px;
-    background: #0099D8;
+    background: #2796CA;
     opacity: 0;
     transition: opacity 0.25s;
   }
   .loan-card:hover {
-    border-color: #0099D8;
-    box-shadow: 0 8px 32px rgba(0,153,216,0.1);
+    border-color: #2796CA;
+    box-shadow: 0 8px 32px rgba(249,116,21,0.1);
     transform: translateX(4px);
   }
   .loan-card:hover::after { opacity: 1; }
@@ -296,7 +296,7 @@ const styles = `
   .loan-type-tag-dot {
     width: 6px;
     height: 6px;
-    background: #0099D8;
+    background: #2796CA;
     border-radius: 50%;
     display: inline-block;
   }
@@ -325,9 +325,9 @@ const styles = `
     flex-shrink: 0;
   }
   .status-badge.pending {
-    background: #e6f7fc;
-    color: #0099D8;
-    border: 1px solid rgba(0,153,216,0.3);
+    background: #fff7ed;
+    color: #2796CA;
+    border: 1px solid rgba(249,116,21,0.3);
   }
   .status-badge.approved {
     background: #f0fdf4;
@@ -399,7 +399,7 @@ const styles = `
     width: 36px;
     height: 36px;
     border: 3px solid #f0f0f0;
-    border-top-color: #0099D8;
+    border-top-color: #2796CA;
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
   }
@@ -408,9 +408,9 @@ const styles = `
   .error-card {
     padding: 32px;
     background: #fff5f0;
-    border: 1.5px solid rgba(0,153,216,0.3);
+    border: 1.5px solid rgba(249,116,21,0.3);
     border-radius: 20px;
-    color: #007BB0;
+    color: #2796CA;
     font-size: 14px;
     font-weight: 500;
     display: flex;
@@ -511,6 +511,12 @@ export default function ProfileClient() {
     const [receiptUploading, setReceiptUploading] = useState(false);
     const [receiptMessage, setReceiptMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
+    const [editingProfile, setEditingProfile] = useState(false);
+    const [editFullName, setEditFullName] = useState("");
+    const [editMobile, setEditMobile] = useState("");
+    const [profileSaving, setProfileSaving] = useState(false);
+    const [profileSaveMessage, setProfileSaveMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
     const loadProfile = useCallback(async () => {
         try {
             setLoading(true);
@@ -527,6 +533,10 @@ export default function ProfileClient() {
                 return;
             }
             setData(json);
+            if (json.user) {
+                setEditFullName(json.user.fullName || "");
+                setEditMobile(json.user.mobile || "");
+            }
         } catch {
             setError("Failed to load profile");
             setData(null);
@@ -551,6 +561,31 @@ export default function ProfileClient() {
             return bTime - aTime;
         });
     }, [data]);
+
+    const handleSaveProfile = useCallback(async () => {
+        setProfileSaveMessage(null);
+        setProfileSaving(true);
+        try {
+            const res = await fetch("/api/profile", {
+                method: "PUT",
+                credentials: "include",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ fullName: editFullName, mobile: editMobile }),
+            });
+            const json = await res.json();
+            if (!res.ok || !json.success) {
+                setProfileSaveMessage({ type: "error", text: json.message || "Failed to update profile" });
+                return;
+            }
+            setProfileSaveMessage({ type: "success", text: "Profile updated successfully" });
+            setEditingProfile(false);
+            await loadProfile();
+        } catch {
+            setProfileSaveMessage({ type: "error", text: "Failed to update profile" });
+        } finally {
+            setProfileSaving(false);
+        }
+    }, [editFullName, editMobile, loadProfile]);
 
     const handleUploadAdditionalDocuments = useCallback(async () => {
         setUploadMessage(null);
@@ -732,10 +767,98 @@ export default function ProfileClient() {
                     <>
                         {/* Account Details */}
                         <div className="card">
-                            <div className="section-title">
-                                <span className="section-title-dot" />
-                                Account Details
+                            <div className="section-title" style={{ justifyContent: "space-between" }}>
+                                <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                                    <span className="section-title-dot" />
+                                    Account Details
+                                </span>
+                                {!editingProfile ? (
+                                    <button
+                                        type="button"
+                                        className="btn-refresh"
+                                        style={{ padding: "8px 14px", fontSize: 12 }}
+                                        onClick={() => setEditingProfile(true)}
+                                    >
+                                        Edit Profile
+                                    </button>
+                                ) : null}
                             </div>
+                            {profileSaveMessage ? (
+                                <div
+                                    style={{
+                                        marginBottom: 16,
+                                        padding: "10px 14px",
+                                        borderRadius: 10,
+                                        fontSize: 13,
+                                        background: profileSaveMessage.type === "success" ? "#ecfdf5" : "#fef2f2",
+                                        color: profileSaveMessage.type === "success" ? "#166534" : "#991b1b",
+                                    }}
+                                >
+                                    {profileSaveMessage.text}
+                                </div>
+                            ) : null}
+                            {editingProfile ? (
+                                <div className="account-grid">
+                                    <div className="account-field">
+                                        <div className="account-field-label">Full Name</div>
+                                        <input
+                                            value={editFullName}
+                                            onChange={(e) => setEditFullName(e.target.value)}
+                                            style={{
+                                                width: "100%",
+                                                padding: "12px 14px",
+                                                borderRadius: 12,
+                                                border: "1.5px solid #e8e8e8",
+                                            }}
+                                        />
+                                    </div>
+                                    <div className="account-field">
+                                        <div className="account-field-label">Mobile</div>
+                                        <input
+                                            value={editMobile}
+                                            onChange={(e) => setEditMobile(e.target.value)}
+                                            style={{
+                                                width: "100%",
+                                                padding: "12px 14px",
+                                                borderRadius: 12,
+                                                border: "1.5px solid #e8e8e8",
+                                            }}
+                                        />
+                                    </div>
+                                    <div className="account-field">
+                                        <div className="account-field-label">Email</div>
+                                        <div className="account-field-value">{data.user.email}</div>
+                                    </div>
+                                    <div style={{ display: "flex", gap: 10, alignItems: "flex-end" }}>
+                                        <button
+                                            type="button"
+                                            className="btn-refresh"
+                                            disabled={profileSaving}
+                                            onClick={handleSaveProfile}
+                                        >
+                                            {profileSaving ? "Saving…" : "Save Changes"}
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setEditingProfile(false);
+                                                setEditFullName(data.user.fullName || "");
+                                                setEditMobile(data.user.mobile || "");
+                                                setProfileSaveMessage(null);
+                                            }}
+                                            style={{
+                                                padding: "12px 16px",
+                                                borderRadius: 12,
+                                                border: "1.5px solid #e8e8e8",
+                                                background: "#fff",
+                                                cursor: "pointer",
+                                            }}
+                                        >
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </div>
+                            ) : (
                             <div className="account-grid">
                                 {[
                                     { label: "Full Name", value: data.user.fullName },
@@ -748,6 +871,23 @@ export default function ProfileClient() {
                                         <div className="account-field-value">{f.value || "—"}</div>
                                     </div>
                                 ))}
+                            </div>
+                            )}
+                            <div style={{ marginTop: 20 }}>
+                                <a
+                                    href="/applied-loans"
+                                    style={{
+                                        display: "inline-flex",
+                                        alignItems: "center",
+                                        gap: 6,
+                                        color: "#2796CA",
+                                        fontWeight: 600,
+                                        fontSize: 14,
+                                        textDecoration: "none",
+                                    }}
+                                >
+                                    View all applied loans →
+                                </a>
                             </div>
                         </div>
 
@@ -902,7 +1042,7 @@ export default function ProfileClient() {
                                         borderRadius: 12,
                                         padding: "12px 18px",
                                         border: "none",
-                                        background: uploading ? "#aaa" : "#0099D8",
+                                        background: uploading ? "#aaa" : "#2796CA",
                                         color: "#fff",
                                         fontWeight: 900,
                                         cursor: uploading ? "not-allowed" : "pointer",
@@ -920,12 +1060,12 @@ export default function ProfileClient() {
                                         borderRadius: 14,
                                         fontSize: 13,
                                         fontWeight: 600,
-                                        background: uploadMessage.type === "success" ? "#f0fdf4" : "#e6f7fc",
-                                        color: uploadMessage.type === "success" ? "#16a34a" : "#007BB0",
+                                        background: uploadMessage.type === "success" ? "#f0fdf4" : "#fff7ed",
+                                        color: uploadMessage.type === "success" ? "#16a34a" : "#c44a00",
                                         border:
                                             uploadMessage.type === "success"
                                                 ? "1px solid rgba(22,163,74,0.3)"
-                                                : "1px solid rgba(0,153,216,0.3)",
+                                                : "1px solid rgba(249,116,21,0.3)",
                                     }}
                                 >
                                     {uploadMessage.text}
@@ -1089,7 +1229,7 @@ export default function ProfileClient() {
                                         borderRadius: 12,
                                         padding: "12px 18px",
                                         border: "none",
-                                        background: receiptUploading ? "#aaa" : "#0099D8",
+                                        background: receiptUploading ? "#aaa" : "#2796CA",
                                         color: "#fff",
                                         fontWeight: 900,
                                         cursor: receiptUploading ? "not-allowed" : "pointer",
@@ -1107,12 +1247,12 @@ export default function ProfileClient() {
                                         borderRadius: 14,
                                         fontSize: 13,
                                         fontWeight: 600,
-                                        background: receiptMessage.type === "success" ? "#f0fdf4" : "#e6f7fc",
-                                        color: receiptMessage.type === "success" ? "#16a34a" : "#007BB0",
+                                        background: receiptMessage.type === "success" ? "#f0fdf4" : "#fff7ed",
+                                        color: receiptMessage.type === "success" ? "#16a34a" : "#c44a00",
                                         border:
                                             receiptMessage.type === "success"
                                                 ? "1px solid rgba(22,163,74,0.3)"
-                                                : "1px solid rgba(0,153,216,0.3)",
+                                                : "1px solid rgba(249,116,21,0.3)",
                                     }}
                                 >
                                     {receiptMessage.text}

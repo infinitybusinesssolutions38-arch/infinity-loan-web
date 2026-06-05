@@ -3,575 +3,426 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React, { useEffect, useState } from "react";
-import { Menu, X } from "lucide-react";
-
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Briefcase,
   Banknote,
   Building2,
   CreditCard,
   Users,
+  Menu,
+  X,
+  ChevronDown,
 } from "lucide-react";
+import UserAccountMenu from "@/components/account/UserAccountMenu";
 
 const SERVICES_DROPDOWN_ITEMS = [
-  {
-    key: "salaried-employees",
-    title: "Loan Offers for Salaried Employees",
-    icon: Users,
-  },
-  {
-    key: "businesses",
-    title: "Smart Loan & Funding Solutions for All Businesses — Proprietorships, Mid-Sized SMEs, Industrial Enterprises, and Corporates",
-    icon: Banknote,
-  },
-  {
-    key: "professionals",
-    title: "Smart Loan & Funding Solutions for All Professionals — Doctors, Chartered Accountants, Architects, Engineers, Lawyers, Consultants, and Self-Employed Professionals",
-    icon: Briefcase,
-  },
-  {
-    key: "govt-employees",
-    title: "Smart Loan & Funding Solutions for Central & State Government Employees — Civil Services, Public Sector Staff, Defence Personnel, and Other Government Employees",
-    icon: Building2,
-  },
-  {
-    key: "government-schemes",
-    title: "End-to-End Financing Support for Central & State Government Schemes",
-    icon: Building2,
-  },
-  {
-    key: "builders-developers",
-    title: " Smart Loan & Project Funding Solutions for Builders & Developers",
-    icon: Building2,
-  },
-  {
-    key: "credit-cards",
-    title: "Credits & Cards",
-    icon: CreditCard,
-  },
+  { key: "salaried-employees", title: "Loan Offers for Salaried Employees", icon: Users },
+  { key: "businesses", title: "Smart Loan & Funding Solutions for All Businesses", icon: Banknote },
+  { key: "professionals", title: "Smart Loan & Funding Solutions for All Professionals", icon: Briefcase },
+  { key: "govt-employees", title: "Smart Loan & Funding Solutions for Government Employees", icon: Building2 },
+  { key: "government-schemes", title: "End-to-End Financing Support for Government Schemes", icon: Building2 },
+  { key: "builders-developers", title: "Smart Loan & Project Funding Solutions for Builders", icon: Building2 },
+  { key: "credit-cards", title: "Credits & Cards", icon: CreditCard },
+] as const;
+
+const CALCULATORS_DROPDOWN_ITEMS = [
+  { href: "/emi-calculator", title: "EMI Calculator" },
+  { href: "/obligation-calculator", title: "Obligation Calculator" },
+  { href: "/abb-calculator", title: "ABB Calculator" },
 ] as const;
 
 const Navbar = () => {
   const pathname = usePathname();
-
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isServicesDropdownOpen, setIsServicesDropdownOpen] = useState(false);
+  const [isCalculatorsDropdownOpen, setIsCalculatorsDropdownOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
-  const isServicesActive = pathname === "/services";
-
-  const getTokenExpiryMs = (token: string): number | null => {
+  const syncAuth = useCallback(async () => {
     try {
-      const parts = token.split(".");
-      if (parts.length < 2) return null;
-
-      const base64 = parts[1].replace(/-/g, "+").replace(/_/g, "/");
-      const padded = base64.padEnd(base64.length + ((4 - (base64.length % 4)) % 4), "=");
-      const json = JSON.parse(atob(padded));
-      if (!json || typeof json.exp !== "number") return null;
-      return json.exp * 1000;
+      const res = await fetch("/api/auth/me", { credentials: "include" });
+      const data = await res.json();
+      setIsLoggedIn(Boolean(data?.user));
     } catch {
-      return null;
+      const token = localStorage.getItem("token");
+      setIsLoggedIn(Boolean(token));
     }
-  };
-
-  useEffect(() => {
-    let logoutTimer: number | null = null;
-
-    const sync = () => {
-      if (logoutTimer) {
-        window.clearTimeout(logoutTimer);
-        logoutTimer = null;
-      }
-
-      try {
-        const token = localStorage.getItem("token");
-        setIsLoggedIn(Boolean(token));
-
-        if (token) {
-          const expMs = getTokenExpiryMs(token);
-          if (expMs) {
-            const msLeft = expMs - Date.now();
-            if (msLeft <= 0) {
-              localStorage.removeItem("token");
-              setIsLoggedIn(false);
-              return;
-            }
-
-            logoutTimer = window.setTimeout(async () => {
-              try {
-                await fetch("/api/logout", { method: "POST" });
-              } catch {
-                // ignore
-              } finally {
-                try {
-                  localStorage.removeItem("token");
-                } catch {
-                  // ignore
-                }
-                setIsLoggedIn(false);
-                window.location.href = "/login";
-              }
-            }, msLeft);
-          }
-        }
-      } catch {
-        setIsLoggedIn(false);
-      }
-    };
-
-    sync();
-    window.addEventListener("storage", sync);
-
-    return () => {
-      window.removeEventListener("storage", sync);
-      if (logoutTimer) {
-        window.clearTimeout(logoutTimer);
-        logoutTimer = null;
-      }
-    };
   }, []);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
-    };
+    syncAuth();
 
+    const onAuthChange = () => syncAuth();
+    window.addEventListener("storage", onAuthChange);
+    window.addEventListener("auth-change", onAuthChange);
+    return () => {
+      window.removeEventListener("storage", onAuthChange);
+      window.removeEventListener("auth-change", onAuthChange);
+    };
+  }, [syncAuth]);
+
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 8);
     handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   useEffect(() => {
-    setIsMobileMenuOpen(false);
-  }, [pathname]);
-
-  const handleLogout = async () => {
-    try {
-      await fetch("/api/logout", { method: "POST" });
-    } catch {
-      // ignore
-    } finally {
-      try {
-        localStorage.removeItem("token");
-      } catch {
-        // ignore
-      }
-      setIsLoggedIn(false);
-      setIsMobileMenuOpen(false);
-      window.location.href = "/login";
-    }
-  };
-
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen((open) => !open);
-  };
-
-  const closeMobileMenu = () => {
-    setIsMobileMenuOpen(false);
-  };
-
-  useEffect(() => {
-    const handleOutsideClick = (event: MouseEvent) => {
-      const target = event.target as HTMLElement;
-      if (isMobileMenuOpen && !target.closest(".mobile-menu-container")) {
-        closeMobileMenu();
-      }
-    };
-
-    if (isMobileMenuOpen) {
-      document.addEventListener("click", handleOutsideClick);
-      document.body.style.overflow = "hidden";
-    } else {
-      document.removeEventListener("click", handleOutsideClick);
-      document.body.style.overflow = "";
-    }
-
+    document.body.style.overflow = isMobileMenuOpen ? "hidden" : "";
     return () => {
-      document.removeEventListener("click", handleOutsideClick);
       document.body.style.overflow = "";
     };
   }, [isMobileMenuOpen]);
 
+  const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false);
+    setIsServicesDropdownOpen(false);
+    setIsCalculatorsDropdownOpen(false);
+  };
+
   const navLinkClass = (active: boolean) =>
-    `inline-flex items-center rounded-full px-4 py-2 text-sm font-semibold uppercase no-underline transition-all duration-300 hover:no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0099D8]/40 ${
+    `relative px-1 py-2 text-[15px] font-medium tracking-wide transition-all duration-300 ease-out after:absolute after:bottom-0 after:left-0 after:h-[2px] after:rounded-full after:bg-[#00AEEF] after:transition-all after:duration-300 after:ease-out ${
       active
-        ? "!bg-[#0099D8]/10 text-[#0099D8] shadow-sm"
-        : "bg-transparent text-gray-700 hover:!bg-[#0099D8]/10 hover:text-[#0099D8] hover:shadow-sm"
+        ? "text-[#00AEEF] after:w-full"
+        : "text-[#374151] hover:text-[#00AEEF] after:w-0 hover:after:w-full"
     }`;
 
-  const navButtonClass = (active: boolean) =>
-    `inline-flex cursor-pointer items-center rounded-full border-0 px-4 py-2 text-sm font-semibold uppercase transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0099D8]/40 ${
-      active
-        ? "bg-[#0099D8]/10 text-[#0099D8] shadow-sm"
-        : "bg-transparent text-gray-700 hover:bg-[#0099D8]/10 hover:text-[#0099D8] hover:shadow-sm"
-    }`;
+  const dropdownTriggerClass =
+    "relative flex cursor-pointer items-center gap-1 px-1 py-2 text-[15px] font-medium tracking-wide text-[#374151] transition-all duration-300 ease-out hover:text-[#00AEEF]";
 
-  const headerSurfaceClass = isScrolled
-    ? "bg-white/95 shadow-md border-b border-gray-200 backdrop-blur-xl"
-    : "bg-white/90 shadow-sm backdrop-blur-lg";
+  const ctaOutlineClass =
+    "inline-flex h-11 items-center justify-center rounded-xl border-2 border-[#00AEEF] bg-transparent px-5 text-sm font-semibold text-[#00AEEF] transition-all duration-300 ease-out hover:bg-[#00AEEF] hover:text-white";
 
-  const innerBarClass = isScrolled ? "bg-white/80" : "bg-transparent";
+  const ctaPrimaryClass =
+    "inline-flex h-11 items-center justify-center rounded-xl border-2 border-[#00AEEF] bg-[#00AEEF] px-5 text-sm font-semibold text-white shadow-sm transition-all duration-300 ease-out hover:-translate-y-0.5 hover:bg-[#008FCC] hover:border-[#008FCC] hover:shadow-md";
 
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-[9999] w-full transition-all duration-300 ease-in-out ${headerSurfaceClass}`}
+        className={`fixed top-0 z-50 w-full border-b transition-all duration-300 ease-out ${
+          isScrolled
+            ? "border-[#D6EEF8] bg-white/95 shadow-[0_4px_18px_rgba(15,23,42,0.08)]"
+            : "border-transparent bg-white"
+        }`}
       >
-        {/* Desktop Navigation */}
-        <div className="hidden md:block w-full py-2 px-3">
-          <div
-            className={`navbar mx-auto w-full max-w-full overflow-visible rounded-xl px-0 py-0 transition-all duration-300 ease-in-out ${innerBarClass}`}
+        <div className="mx-auto flex h-[76px] max-w-[1400px] items-center justify-between gap-6 px-5 sm:px-6 lg:px-8 xl:px-10">
+          {/* LOGO */}
+          <Link
+            href="/"
+            className="flex shrink-0 items-center transition-all duration-300 ease-out hover:opacity-95"
+            aria-label="Infinity Loans & Business Solutions — Home"
           >
-            {/* LOGO */}
-            <Link
-              href="/"
-              className="flex shrink-0 items-center transition-transform duration-300 hover:scale-105"
-            >
-              <div className="relative h-12 w-[180px] rounded-lg bg-white/80 shadow-sm backdrop-blur sm:h-20 sm:w-[210px]">
-                <Image
-                  src="/logo.png"
-                  alt="logo"
-                  fill
-                  sizes="(max-width: 640px) 180px, 210px"
-                  className="object-contain"
-                  priority
-                />
-              </div>
-            </Link>
+            <Image
+              src="/infinity-logo.png"
+              alt="Infinity Loans & Business Solutions"
+              width={88}
+              height={104}
+              className="h-12 w-auto object-contain object-left sm:h-[3.25rem]"
+              priority
+            />
+          </Link>
 
-            {/* DESKTOP MENU */}
-            <div className="flex-1 flex justify-center overflow-visible">
-              <ul className="menu menu-horizontal gap-1 uppercase font-semibold text-gray-700 overflow-visible">
-                <li>
-                  <Link href="/" className={navLinkClass(pathname === "/")}>
-                    Home
-                  </Link>
-                </li>
-
-                <li className="group relative z-[10001]">
-                  <button
-                    type="button"
-                    aria-haspopup="true"
-                    className={`${navButtonClass(isServicesActive)} group-hover:bg-[#0099D8]/10 group-hover:text-[#0099D8] group-hover:shadow-sm`}
-                  >
-                    Our Services
-                  </button>
-
-                  <div className="pointer-events-none absolute left-1/2 top-full z-[10002] hidden w-[min(720px,calc(100vw-2rem))] -translate-x-1/2 pt-3 group-hover:pointer-events-auto group-hover:block">
-                    <div className="services-dropdown-panel w-full rounded-2xl border border-gray-100 bg-white p-4 opacity-0 shadow-2xl shadow-[#0099D8]/10 translate-y-2 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0">
-                      <div className="grid grid-cols-1 gap-2 text-sm normal-case">
-                        {SERVICES_DROPDOWN_ITEMS.map((item) => {
-                          const Icon = item.icon;
-                          return (
-                            <Link
-                              key={item.key}
-                              href={`/services?category=${item.key}`}
-                              className="services-dropdown-item group/item flex items-center gap-2.5 rounded-lg border border-gray-100 bg-white px-3 py-2.5 text-gray-700 transition-all duration-300 hover:-translate-y-0.5 hover:border-[#0099D8]/30 hover:bg-[#0099D8]/5 hover:text-[#0099D8] hover:shadow-sm"
-                            >
-                              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-[#0099D8]/15 bg-[#0099D8]/10 transition-all duration-300 group-hover/item:scale-105 group-hover/item:border-[#0099D8]/30">
-                                <Icon className="h-3.5 w-3.5 text-[#0099D8]" />
-                              </span>
-                              <span className="leading-snug">{item.title}</span>
-                            </Link>
-                          );
-                        })}
-
-                        <div className="services-dropdown-item pt-1">
-                          <Link
-                            href="/services"
-                            className="inline-flex items-center rounded-lg border border-[#0099D8]/25 bg-[#0099D8]/10 px-3 py-2 text-sm font-semibold text-[#0099D8] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#0099D8]/40 hover:bg-[#0099D8]/15 hover:shadow-sm"
-                          >
-                            View All Services
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </li>
-
-                <li>
-                  <Link href="/about-us" className={navLinkClass(pathname === "/about-us")}>
-                    About-us
-                  </Link>
-                </li>
-
-                <li>
-                  <Link href="/contact" className={navLinkClass(pathname === "/contact")}>
-                    Contact
-                  </Link>
-                </li>
-
-                <li className="group relative z-[10001]">
-                  <span className={`${navButtonClass(false)} group-hover:bg-[#0099D8]/10 group-hover:text-[#0099D8] group-hover:shadow-sm`}>
-                    Calculator
-                  </span>
-
-                  <div className="pointer-events-none absolute top-full left-1/2 z-[10002] hidden -translate-x-1/2 pt-4 group-hover:pointer-events-auto group-hover:block">
-                    <div className="w-56 rounded-2xl border border-gray-200 bg-white p-2 shadow-2xl opacity-0 translate-y-2 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0">
-                      <div className="grid grid-cols-1 gap-1 text-sm normal-case">
-                        <Link
-                          href="/emi-calculator"
-                          className="flex items-center gap-2 rounded-md px-3 py-2 text-gray-700 transition-all duration-200 hover:bg-gray-50 hover:text-[#0099D8]"
-                        >
-                          EMI Calculator
-                        </Link>
-                        <Link
-                          href="/obligation-calculator"
-                          className="flex items-center gap-2 rounded-md px-3 py-2 text-gray-700 transition-all duration-200 hover:bg-gray-50 hover:text-[#0099D8]"
-                        >
-                          Obligation Calculator
-                        </Link>
-                        <Link
-                          href="/abb-calculator"
-                          className="flex items-center gap-2 rounded-md px-3 py-2 text-gray-700 transition-all duration-200 hover:bg-gray-50 hover:text-[#0099D8]"
-                        >
-                          ABB Calculator
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                </li>
-
-                <li>
-                  <Link href="/join-us" className={navLinkClass(pathname === "/join-us")}>
-                    Join Us
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            {/* DESKTOP RIGHT */}
-            <div className="flex shrink-0 items-center gap-2 mx-2">
-              {isLoggedIn ? (
-                <>
-                  <Link
-                    href="/profile"
-                    className="btn btn-md rounded-full border border-[#0099D8]/40 bg-[#0099D8]/10 text-[#0099D8] transition-all duration-300 hover:bg-[#0099D8]/15 hover:shadow-lg hover:-translate-y-0.5"
-                  >
-                    Profile
-                  </Link>
-                  <button
-                    type="button"
-                    onClick={handleLogout}
-                    className="btn btn-md rounded-full border-none bg-[#0099D8] text-white transition-all duration-300 hover:bg-[#0099D8]/90 hover:shadow-lg hover:-translate-y-0.5"
-                  >
-                    Logout
-                  </button>
-                </>
-              ) : (
-                <>
-                  <Link
-                    href="/login"
-                    className="btn btn-md rounded-full border-none bg-[#0099D8] text-white transition-all duration-300 hover:bg-[#0099D8]/90 hover:shadow-lg hover:-translate-y-0.5"
-                  >
-                    Login
-                  </Link>
-                  <Link
-                    href="/register"
-                    className="btn btn-md rounded-full border border-[#0099D8]/40 bg-[#0099D8]/10 text-[#0099D8] transition-all duration-300 hover:bg-[#0099D8]/15 hover:shadow-lg hover:-translate-y-0.5"
-                  >
-                    Sign Up
-                  </Link>
-                </>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Mobile Navigation */}
-        <div className="relative md:hidden w-full">
-          <div
-            className={`px-4 py-3 transition-all duration-300 ease-in-out ${
-              isScrolled ? "bg-white/95 shadow-md border-b border-gray-200" : "bg-white shadow-sm"
-            } backdrop-blur-lg`}
-          >
-            <div className="flex items-center justify-between">
-              <Link
-                href="/"
-                className="flex shrink-0 items-center transition-transform duration-300 hover:scale-105"
-              >
-                <div className="relative h-10 w-[140px] rounded-lg bg-white/80 shadow-sm backdrop-blur">
-                  <Image
-                    src="/logo.png"
-                    alt="logo"
-                    fill
-                    sizes="140px"
-                    className="object-contain"
-                    priority
-                  />
-                </div>
-              </Link>
-
-              <button
-                type="button"
-                onClick={toggleMobileMenu}
-                className="flex items-center justify-center w-10 h-10 rounded-lg text-gray-700 hover:text-[#0099D8] hover:bg-gray-100 transition-colors duration-200"
-                aria-label="Toggle menu"
-                aria-expanded={isMobileMenuOpen}
-              >
-                {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-              </button>
-            </div>
-          </div>
-
-          {isMobileMenuOpen && (
-            <div className="mobile-menu-container absolute left-0 right-0 top-full z-[9999] max-h-[calc(100dvh-4rem)] overflow-y-auto border-t border-gray-200 bg-white shadow-xl">
-              <div className="px-4 py-6">
-                <nav className="space-y-4">
-                  <div className="space-y-3">
-                    <Link
-                      href="/"
-                      onClick={closeMobileMenu}
-                      className={`block py-3 text-base font-medium text-gray-700 hover:text-[#0099D8] transition-colors ${
-                        pathname === "/" ? "text-[#0099D8]" : ""
-                      }`}
-                    >
-                      Home
-                    </Link>
-                    <Link
-                      href="/about-us"
-                      onClick={closeMobileMenu}
-                      className={`block py-3 text-base font-medium text-gray-700 hover:text-[#0099D8] transition-colors ${
-                        pathname === "/about-us" ? "text-[#0099D8]" : ""
-                      }`}
-                    >
-                      About Us
-                    </Link>
-                    <Link
-                      href="/contact"
-                      onClick={closeMobileMenu}
-                      className={`block py-3 text-base font-medium text-gray-700 hover:text-[#0099D8] transition-colors ${
-                        pathname === "/contact" ? "text-[#0099D8]" : ""
-                      }`}
-                    >
-                      Contact
-                    </Link>
-                    <Link
-                      href="/join-us"
-                      onClick={closeMobileMenu}
-                      className={`block py-3 text-base font-medium text-gray-700 hover:text-[#0099D8] transition-colors ${
-                        pathname === "/join-us" ? "text-[#0099D8]" : ""
-                      }`}
-                    >
-                      Join Us
-                    </Link>
-                  </div>
-
-                  <div className="border-t border-gray-200 pt-4">
-                    <p className="text-sm font-semibold text-gray-900 mb-3">Our Services</p>
-                    <div className="space-y-2.5">
+          {/* Desktop Menu */}
+          <nav className="hidden flex-1 justify-center lg:flex">
+            <ul className="flex items-center gap-7 xl:gap-9">
+              <li>
+                <Link href="/" className={navLinkClass(pathname === "/")}>
+                  Home
+                </Link>
+              </li>
+              <li className="group relative">
+                <span 
+                  className={dropdownTriggerClass}
+                  onMouseEnter={() => setIsServicesDropdownOpen(true)}
+                >
+                  Our Services
+                  <ChevronDown className="h-4 w-4 opacity-60 transition-all duration-300 ease-out group-hover:rotate-180" />
+                </span>
+                <div 
+                  className={`absolute top-full left-1/2 z-50 -translate-x-1/2 pt-3 transition-all duration-300 ease-out ${
+                    isServicesDropdownOpen ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'
+                  }`}
+                  onMouseEnter={() => setIsServicesDropdownOpen(true)}
+                  onMouseLeave={() => setIsServicesDropdownOpen(false)}
+                >
+                  <div className="w-[min(720px,calc(100vw-2rem))] rounded-2xl border border-[#D6EEF8] bg-white p-5 shadow-[0_12px_40px_rgba(0,0,0,0.08)]">
+                    <div className="grid grid-cols-1 gap-1 text-sm">
                       {SERVICES_DROPDOWN_ITEMS.map((item) => {
                         const Icon = item.icon;
                         return (
                           <Link
                             key={item.key}
                             href={`/services?category=${item.key}`}
-                            onClick={closeMobileMenu}
-                            className="group flex items-center gap-2.5 rounded-lg border border-gray-100 bg-white px-3 py-2.5 text-gray-700 transition-all duration-300 hover:border-[#0099D8]/30 hover:bg-[#0099D8]/5 hover:text-[#0099D8]"
+                            onClick={() => setIsServicesDropdownOpen(false)}
+                            className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-[#374151] transition-colors duration-200 hover:bg-[#F7F9FC] hover:text-[#00AEEF]"
                           >
-                            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-[#0099D8]/15 bg-[#0099D8]/10">
-                              <Icon className="h-4 w-4 text-[#0099D8]" />
-                            </span>
-                            <span className="text-sm leading-snug">{item.title}</span>
+                            <Icon className="h-4 w-4 shrink-0 text-[#00AEEF]" />
+                            <span className="leading-snug">{item.title}</span>
                           </Link>
                         );
                       })}
+                      <Link
+                        href="/services"
+                        onClick={() => setIsServicesDropdownOpen(false)}
+                        className="mt-1 inline-flex items-center rounded-xl border border-[#00AEEF]/20 bg-[#E6F7FD] px-3 py-2.5 font-semibold text-[#00AEEF] transition-colors duration-200 hover:bg-[#B3E8FA]"
+                      >
+                        View All Services
+                      </Link>
                     </div>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <Link href="/about-us" className={navLinkClass(pathname === "/about-us")}>
+                  About-us
+                </Link>
+              </li>
+              <li>
+                <Link href="/contact" className={navLinkClass(pathname === "/contact")}>
+                  Contact
+                </Link>
+              </li>
+              <li className="group relative">
+                <span className={dropdownTriggerClass}>
+                  Calculators
+                  <ChevronDown className="h-4 w-4 opacity-60 transition-all duration-300 ease-out group-hover:rotate-180" />
+                </span>
+                <div className="pointer-events-none absolute top-full left-1/2 z-50 -translate-x-1/2 pt-3 opacity-0 transition-all duration-300 ease-out group-hover:pointer-events-auto group-hover:opacity-100">
+                  <div className="w-[min(360px,calc(100vw-2rem))] rounded-2xl border border-[#D6EEF8] bg-white p-4 shadow-[0_12px_40px_rgba(0,0,0,0.08)]">
+                    <div className="grid grid-cols-1 gap-1 text-sm">
+                      {CALCULATORS_DROPDOWN_ITEMS.map((item) => (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          className="flex items-center gap-2 rounded-xl px-3 py-2.5 text-[#374151] transition-colors duration-200 hover:bg-[#F7F9FC] hover:text-[#00AEEF]"
+                        >
+                          <span className="leading-snug">{item.title}</span>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <Link href="/join-us" className={navLinkClass(pathname === "/join-us")}>
+                  Join Us
+                </Link>
+              </li>
+            </ul>
+          </nav>
+
+          {/* Desktop Right Side */}
+          <div className="hidden shrink-0 items-center gap-3 lg:flex">
+            {isLoggedIn ? (
+              <UserAccountMenu />
+            ) : (
+              <>
+                <Link href="/login" className={ctaOutlineClass}>
+                  Login
+                </Link>
+                <Link href="/register" className={ctaPrimaryClass}>
+                  Sign Up
+                </Link>
+              </>
+            )}
+          </div>
+
+          {/* Mobile Right Side */}
+          <div className="flex shrink-0 items-center gap-2 lg:hidden">
+            {isLoggedIn ? <UserAccountMenu /> : null}
+            <button
+            type="button"
+            onClick={toggleMobileMenu}
+            className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-[#D6EEF8] text-[#00AEEF] transition-all duration-300 ease-out hover:border-[#00AEEF]/30 hover:bg-[#F7F9FC] lg:hidden"
+            aria-label="Toggle mobile menu"
+            aria-expanded={isMobileMenuOpen}
+          >
+            {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* Mobile Menu Drawer */}
+      <div
+        className={`fixed inset-0 z-[60] lg:hidden ${isMobileMenuOpen ? "pointer-events-auto" : "pointer-events-none"}`}
+        aria-hidden={!isMobileMenuOpen}
+      >
+        <div
+          className={`fixed inset-0 bg-[#1A1A1A]/32 transition-all duration-300 ease-out ${
+            isMobileMenuOpen ? "opacity-100" : "opacity-0"
+          }`}
+          onClick={closeMobileMenu}
+        />
+        <div
+          className={`fixed right-0 top-0 flex h-full w-[min(340px,92vw)] flex-col overflow-hidden border-l border-[#D6EEF8] bg-white shadow-[-8px_0_32px_rgba(0,0,0,0.08)] transition-transform duration-300 ease-out ${
+            isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
+          }`}
+        >
+          <div className="flex h-[76px] shrink-0 items-center justify-between border-b border-[#D6EEF8] px-5">
+            <h2 className="text-base font-semibold text-[#1A1A1A]">Menu</h2>
+            <button
+              onClick={closeMobileMenu}
+              className="inline-flex h-10 w-10 items-center justify-center rounded-xl text-[#374151] transition-colors duration-200 hover:bg-[#F7F9FC] hover:text-[#00AEEF]"
+              aria-label="Close menu"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          </div>
+
+          <div className="flex flex-1 flex-col overflow-y-auto px-4 py-5">
+            <nav className="space-y-1">
+              <Link
+                href="/"
+                onClick={closeMobileMenu}
+                className={`block rounded-xl px-4 py-3 text-[15px] font-medium transition-colors duration-200 ${
+                  pathname === "/"
+                    ? "bg-[#E6F7FD] text-[#00AEEF]"
+                    : "text-[#374151] hover:bg-[#F7F9FC] hover:text-[#00AEEF]"
+                }`}
+              >
+                Home
+              </Link>
+
+              <div>
+                <button
+                  onClick={() => setIsServicesDropdownOpen(!isServicesDropdownOpen)}
+                  className="flex w-full items-center justify-between rounded-xl px-4 py-3.5 text-[15px] font-medium text-[#374151] transition-colors duration-200 hover:bg-[#F7F9FC] hover:text-[#00AEEF]"
+                >
+                  <span>Our Services</span>
+                  <ChevronDown
+                    className={`h-4 w-4 transition-transform duration-300 ${
+                      isServicesDropdownOpen ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+                <div
+                  className={`overflow-hidden transition-all duration-300 ${
+                    isServicesDropdownOpen ? "max-h-[520px] opacity-100" : "max-h-0 opacity-0"
+                  }`}
+                >
+                  <div className="mt-1 space-y-1 border-l-2 border-[#E6F7FD] pl-3">
+                    {SERVICES_DROPDOWN_ITEMS.map((item) => {
+                      const Icon = item.icon;
+                      return (
+                        <Link
+                          key={item.key}
+                          href={`/services?category=${item.key}`}
+                          onClick={closeMobileMenu}
+                          className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-[#666666] transition-colors duration-200 hover:bg-[#F7F9FC] hover:text-[#00AEEF]"
+                        >
+                          <Icon className="h-4 w-4 shrink-0 text-[#00AEEF]" />
+                          <span className="leading-snug">{item.title}</span>
+                        </Link>
+                      );
+                    })}
                     <Link
                       href="/services"
                       onClick={closeMobileMenu}
-                      className="inline-flex items-center rounded-lg border border-[#0099D8]/30 bg-[#0099D8]/10 px-4 py-3 mt-3 font-semibold text-[#0099D8] transition-all duration-200 hover:bg-[#0099D8]/15"
+                      className="block px-3 py-2.5 text-sm font-semibold text-[#00AEEF]"
                     >
                       View All Services
                     </Link>
                   </div>
-
-                  <div className="border-t border-gray-200 pt-4">
-                    <p className="text-sm font-semibold text-gray-900 mb-3">Calculators</p>
-                    <div className="space-y-2">
-                      <Link
-                        href="/emi-calculator"
-                        onClick={closeMobileMenu}
-                        className="flex items-center gap-3 rounded-lg px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#0099D8] transition-all duration-200"
-                      >
-                        EMI Calculator
-                      </Link>
-                      <Link
-                        href="/obligation-calculator"
-                        onClick={closeMobileMenu}
-                        className="flex items-center gap-3 rounded-lg px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#0099D8] transition-all duration-200"
-                      >
-                        Obligation Calculator
-                      </Link>
-                      <Link
-                        href="/abb-calculator"
-                        onClick={closeMobileMenu}
-                        className="flex items-center gap-3 rounded-lg px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#0099D8] transition-all duration-200"
-                      >
-                        ABB Calculator
-                      </Link>
-                    </div>
-                  </div>
-
-                  <div className="border-t border-gray-200 pt-4">
-                    <div className="space-y-3">
-                      {isLoggedIn ? (
-                        <>
-                          <Link
-                            href="/profile"
-                            onClick={closeMobileMenu}
-                            className="block w-full btn btn-md rounded-full border border-[#0099D8]/40 bg-[#0099D8]/10 text-[#0099D8] transition-all duration-300 hover:bg-[#0099D8]/15 hover:shadow-lg hover:-translate-y-0.5"
-                          >
-                            Profile
-                          </Link>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              handleLogout();
-                              closeMobileMenu();
-                            }}
-                            className="w-full btn btn-md rounded-full border-none bg-[#0099D8] text-white transition-all duration-300 hover:bg-[#0099D8]/90 hover:shadow-lg hover:-translate-y-0.5"
-                          >
-                            Logout
-                          </button>
-                        </>
-                      ) : (
-                        <>
-                          <Link
-                            href="/login"
-                            onClick={closeMobileMenu}
-                            className="block w-full btn btn-md rounded-full border-none bg-[#0099D8] text-white transition-all duration-300 hover:bg-[#0099D8]/90 hover:shadow-lg hover:-translate-y-0.5"
-                          >
-                            Login
-                          </Link>
-                          <Link
-                            href="/register"
-                            onClick={closeMobileMenu}
-                            className="block w-full btn btn-md rounded-full border border-[#0099D8]/40 bg-[#0099D8]/10 text-[#0099D8] transition-all duration-300 hover:bg-[#0099D8]/15 hover:shadow-lg hover:-translate-y-0.5"
-                          >
-                            Sign Up
-                          </Link>
-                        </>
-                      )}
-                    </div>
-                  </div>
-                </nav>
+                </div>
               </div>
-            </div>
-          )}
-        </div>
-      </header>
 
-      {/* Spacer so page content is never hidden behind the fixed navbar */}
-      <div
-        className="w-full shrink-0 h-16 md:h-24"
-        aria-hidden="true"
-      />
+              <Link
+                href="/about-us"
+                onClick={closeMobileMenu}
+                className={`block rounded-xl px-4 py-3 text-[15px] font-medium transition-colors duration-200 ${
+                  pathname === "/about-us"
+                    ? "bg-[#E6F7FD] text-[#00AEEF]"
+                    : "text-[#374151] hover:bg-[#F7F9FC] hover:text-[#00AEEF]"
+                }`}
+              >
+                About Us
+              </Link>
+
+              <Link
+                href="/contact"
+                onClick={closeMobileMenu}
+                className={`block rounded-xl px-4 py-3 text-[15px] font-medium transition-colors duration-200 ${
+                  pathname === "/contact"
+                    ? "bg-[#E6F7FD] text-[#00AEEF]"
+                    : "text-[#374151] hover:bg-[#F7F9FC] hover:text-[#00AEEF]"
+                }`}
+              >
+                Contact
+              </Link>
+
+              <div>
+                <button
+                  onClick={() => setIsCalculatorsDropdownOpen(!isCalculatorsDropdownOpen)}
+                  className="flex w-full items-center justify-between rounded-xl px-4 py-3.5 text-[15px] font-medium text-[#374151] transition-colors duration-200 hover:bg-[#F7F9FC] hover:text-[#00AEEF]"
+                >
+                  <span>Calculators</span>
+                  <ChevronDown
+                    className={`h-4 w-4 transition-transform duration-300 ${
+                      isCalculatorsDropdownOpen ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+                <div
+                  className={`overflow-hidden transition-all duration-300 ${
+                    isCalculatorsDropdownOpen ? "max-h-48 opacity-100" : "max-h-0 opacity-0"
+                  }`}
+                >
+                  <div className="mt-1 space-y-1 border-l-2 border-[#E6F7FD] pl-3">
+                    {CALCULATORS_DROPDOWN_ITEMS.map((item) => (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        onClick={closeMobileMenu}
+                        className="block rounded-xl px-3 py-2.5 text-sm text-[#666666] transition-colors duration-200 hover:bg-[#F7F9FC] hover:text-[#00AEEF]"
+                      >
+                        {item.title}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <Link
+                href="/join-us"
+                onClick={closeMobileMenu}
+                className={`block rounded-xl px-4 py-3 text-[15px] font-medium transition-colors duration-200 ${
+                  pathname === "/join-us"
+                    ? "bg-[#E6F7FD] text-[#00AEEF]"
+                    : "text-[#374151] hover:bg-[#F7F9FC] hover:text-[#00AEEF]"
+                }`}
+              >
+                Join Us
+              </Link>
+            </nav>
+
+            <div className="mt-auto space-y-3 border-t border-[#D6EEF8] pt-6">
+              {!isLoggedIn ? (
+                <>
+                  <Link
+                    href="/login"
+                    onClick={closeMobileMenu}
+                    className={`block w-full text-center ${ctaOutlineClass}`}
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    href="/register"
+                    onClick={closeMobileMenu}
+                    className={`block w-full text-center ${ctaPrimaryClass}`}
+                  >
+                    Sign Up
+                  </Link>
+                </>
+              ) : null}
+            </div>
+          </div>
+        </div>
+      </div>
     </>
   );
 };

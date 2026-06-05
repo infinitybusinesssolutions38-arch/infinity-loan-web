@@ -1,88 +1,207 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import {
+  ArrowUpRight,
+  BriefcaseBusiness,
+  CheckCircle2,
+  Clock3,
+  CreditCard,
+  FileText,
+  Handshake,
+  Mail,
+  TrendingUp,
+  Users,
+  Wallet,
+  XCircle,
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
-function StatCard({
-  title,
-  value,
-  href,
-  subtitle,
-  trend,
-}: {
+type DashboardStats = {
+  users?: number;
+  enquiries?: number;
+  loanApplications?: number;
+  creditCardApplications?: number;
+  partnerApplications?: number;
+  totalApplications?: number;
+  approvalRate?: number;
+  recentApplications?: number;
+  statusSummary?: { Pending?: number; Approved?: number; Rejected?: number };
+  applicationTypeSummary?: {
+    personal?: number;
+    business?: number;
+    creditCard?: number;
+    partner?: number;
+  };
+  monthlyTrends?: Array<{
+    month: string;
+    personal?: number;
+    business?: number;
+    creditCard?: number;
+    partner?: number;
+    total?: number;
+  }>;
+  topServiceCategories?: {
+    personal?: Array<{ _id?: string; count?: number }>;
+    business?: Array<{ _id?: string; count?: number }>;
+    creditCards?: Array<{ _id?: string; count?: number }>;
+  };
+};
+
+type KpiConfig = {
   title: string;
+  subtitle: string;
   value: string | number;
   href?: string;
-  subtitle?: string;
-  trend?: {
-    value: number;
-    isPositive: boolean;
-  };
-}) {
-  const card = (
-    <div className="rounded-3xl border border-border/70 bg-card/70 p-5 shadow-sm backdrop-blur">
-      <div className="flex items-start justify-between gap-4">
-        <div className="min-w-0 flex-1">
-          <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{title}</div>
-          <div className="mt-2 text-3xl font-bold tracking-tight md:text-4xl">{value}</div>
-          {subtitle && (
-            <div className="mt-1 text-xs text-muted-foreground">{subtitle}</div>
-          )}
-          {trend && (
-            <div className={`mt-2 text-xs font-medium ${
-              trend.isPositive ? 'text-green-600' : 'text-red-600'
-            }`}>
-              {trend.isPositive ? '↑' : '↓'} {trend.value}%
-            </div>
-          )}
+  icon: LucideIcon;
+  accent: string;
+  bg: string;
+};
+
+function formatMonthLabel(ym: string) {
+  const [y, m] = ym.split("-");
+  const date = new Date(Number(y), Number(m) - 1, 1);
+  return date.toLocaleDateString("en-IN", { month: "short", year: "numeric" });
+}
+
+function KpiCard({ title, subtitle, value, href, icon: Icon, accent, bg }: KpiConfig) {
+  const inner = (
+    <div className="admin-kpi-card group h-full">
+      <div className="flex items-start justify-between gap-3">
+        <div
+          className="admin-kpi-icon"
+          style={{ background: bg, color: accent }}
+        >
+          <Icon className="h-5 w-5" strokeWidth={2.25} />
         </div>
-        <div className="mt-1 h-10 w-10 rounded-2xl bg-gradient-to-br from-cta/25 via-accent/15 to-transparent ring-1 ring-border/60" />
+        {href && (
+          <span className="rounded-lg p-1 text-muted-foreground opacity-0 transition group-hover:opacity-100">
+            <ArrowUpRight className="h-4 w-4" style={{ color: accent }} />
+          </span>
+        )}
       </div>
+      <div className="mt-4 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+        {title}
+      </div>
+      <div className="mt-1 text-3xl font-bold tracking-tight text-foreground">{value}</div>
+      <div className="mt-1 text-xs text-muted-foreground">{subtitle}</div>
     </div>
   );
 
-  if (!href) return card;
+  if (!href) return inner;
 
   return (
-    <Link
-      href={href}
-      className="block rounded-3xl outline-none transition hover:-translate-y-0.5 hover:shadow-md focus-visible:ring-2 focus-visible:ring-primary/40"
-    >
-      {card}
+    <Link href={href} className="block h-full outline-none transition hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-[#00AEEF]/40 rounded-2xl">
+      {inner}
     </Link>
   );
 }
 
-function MetricCard({
-  title,
+function ProgressMetric({
+  label,
   value,
   total,
-  color = "primary",
+  color,
+  barColor,
 }: {
-  title: string;
+  label: string;
   value: number;
   total: number;
-  color?: "primary" | "green" | "red" | "yellow";
+  color: string;
+  barColor: string;
 }) {
-  const percentage = total > 0 ? Math.round((value / total) * 100) : 0;
-  const colorClasses = {
-    primary: "bg-primary/10 text-primary border-primary/20",
-    green: "bg-green-50 text-green-700 border-green-200",
-    red: "bg-red-50 text-red-700 border-red-200",
-    yellow: "bg-yellow-50 text-yellow-700 border-yellow-200",
-  };
+  const pct = total > 0 ? Math.round((value / total) * 100) : 0;
+  return (
+    <div className="admin-metric-row">
+      <div className="flex items-center justify-between gap-2">
+        <span className="text-sm font-medium text-foreground">{label}</span>
+        <span className="text-sm font-bold" style={{ color }}>
+          {value}
+        </span>
+      </div>
+      <div className="admin-metric-track">
+        <div className="admin-metric-bar" style={{ width: `${pct}%`, background: barColor }} />
+      </div>
+      <div className="text-[11px] text-muted-foreground">{pct}% of total applications</div>
+    </div>
+  );
+}
+
+function RankList({
+  title,
+  items,
+  accent,
+  emptyLabel,
+}: {
+  title: string;
+  items: Array<{ _id?: string; count?: number }>;
+  accent: string;
+  emptyLabel: string;
+}) {
+  const max = Math.max(...items.map((i) => i.count || 0), 1);
 
   return (
-    <div className={`rounded-2xl border p-3 ${colorClasses[color]}`}>
-      <div className="text-xs font-medium">{title}</div>
-      <div className="mt-1 text-lg font-bold">{value}</div>
-      <div className="text-xs opacity-75">{percentage}% of total</div>
+    <div className="admin-panel h-full">
+      <div className="admin-panel-header">
+        <h3 className="admin-panel-title">{title}</h3>
+      </div>
+      <div className="mt-4 space-y-2.5">
+        {items.length === 0 && (
+          <p className="py-6 text-center text-sm text-muted-foreground">{emptyLabel}</p>
+        )}
+        {items.slice(0, 5).map((item, index) => {
+          const count = item.count || 0;
+          const width = Math.round((count / max) * 100);
+          return (
+            <div key={`${item._id}-${index}`} className="admin-rank-item">
+              <div className="flex items-center gap-3">
+                <span
+                  className="admin-rank-badge"
+                  style={{ background: `${accent}18`, color: accent }}
+                >
+                  {index + 1}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <div className="truncate text-sm font-medium">{item._id || "Uncategorized"}</div>
+                  <div className="admin-rank-track mt-1.5">
+                    <div
+                      className="admin-rank-bar"
+                      style={{ width: `${width}%`, background: accent }}
+                    />
+                  </div>
+                </div>
+                <span className="text-sm font-bold tabular-nums" style={{ color: accent }}>
+                  {count}
+                </span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function DashboardSkeleton() {
+  return (
+    <div className="space-y-6 animate-pulse">
+      <div className="admin-welcome-banner h-28 rounded-2xl bg-[#E6F7FD]" />
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <div key={i} className="h-36 rounded-2xl bg-[#EEF9FE]" />
+        ))}
+      </div>
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <div className="h-64 rounded-2xl bg-[#F7F9FC]" />
+        <div className="h-64 rounded-2xl bg-[#F7F9FC]" />
+      </div>
     </div>
   );
 }
 
 export default function AdminDashboardPage() {
-  const [stats, setStats] = useState<any>(null);
+  const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -94,11 +213,8 @@ export default function AdminDashboardPage() {
         const res = await fetch("/api/admin/dashboard", { credentials: "include" });
         const data = await res.json().catch(() => ({}));
         if (!mounted) return;
-        if (res.ok && data?.success) {
-          setStats(data.data);
-        } else {
-          setStats(null);
-        }
+        if (res.ok && data?.success) setStats(data.data);
+        else setStats(null);
       } catch {
         if (mounted) setStats(null);
       } finally {
@@ -111,227 +227,392 @@ export default function AdminDashboardPage() {
     };
   }, []);
 
-  if (loading) {
-    return (
-      <div className="rounded-3xl border border-border/70 bg-card/70 p-6 shadow-sm backdrop-blur">
-        <div className="text-sm text-muted-foreground">Loading dashboard...</div>
-      </div>
-    );
-  }
+  const kpis: KpiConfig[] = useMemo(
+    () => [
+      {
+        title: "Total Users",
+        subtitle: "Registered accounts",
+        value: stats?.users ?? "—",
+        href: "/admin/users",
+        icon: Users,
+        accent: "#00AEEF",
+        bg: "#E6F7FD",
+      },
+      {
+        title: "Loan Enquiries",
+        subtitle: "Contact form submissions",
+        value: stats?.enquiries ?? "—",
+        href: "/admin/enquiries",
+        icon: Mail,
+        accent: "#33C1F3",
+        bg: "#E3F2FD",
+      },
+      {
+        title: "Loan Applications",
+        subtitle: "Personal & business combined",
+        value: stats?.loanApplications ?? "—",
+        href: "/admin/salary-loan-applications",
+        icon: Wallet,
+        accent: "#0D9488",
+        bg: "#CCFBF1",
+      },
+      {
+        title: "Credit Card Apps",
+        subtitle: "Card applications received",
+        value: stats?.creditCardApplications ?? "—",
+        href: "/admin/credit-card-applications",
+        icon: CreditCard,
+        accent: "#8B5CF6",
+        bg: "#EDE9FE",
+      },
+      {
+        title: "Partner Applications",
+        subtitle: "Loan partner registrations",
+        value: stats?.partnerApplications ?? "—",
+        href: "/admin/partner-applications",
+        icon: Handshake,
+        accent: "#F59E0B",
+        bg: "#FEF3C7",
+      },
+      {
+        title: "Approval Rate",
+        subtitle: "Approved vs total applications",
+        value: `${stats?.approvalRate ?? 0}%`,
+        icon: TrendingUp,
+        accent: "#16A34A",
+        bg: "#DCFCE7",
+      },
+    ],
+    [stats]
+  );
+
+  const totalApps = stats?.totalApplications || 0;
+  const status = stats?.statusSummary || {};
+  const statusTotal =
+    (status.Pending || 0) + (status.Approved || 0) + (status.Rejected || 0) || 1;
+  const trends = stats?.monthlyTrends?.slice(-6) || [];
+  const maxTrend = Math.max(...trends.map((t) => t.total || 0), 1);
+
+  const today = new Date().toLocaleDateString("en-IN", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+
+  if (loading) return <DashboardSkeleton />;
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-1">
-        <div className="text-lg font-bold tracking-tight">Admin Dashboard</div>
-        <div className="text-sm text-muted-foreground">Comprehensive overview of loan applications and platform metrics</div>
-      </div>
-
-      {/* Main Stats Grid */}
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-6">
-        <StatCard 
-          title="Total Users" 
-          value={stats?.users ?? "-"} 
-          href="/admin/users"
-          subtitle="Registered accounts"
-        />
-        <StatCard 
-          title="Loan Enquiries" 
-          value={stats?.enquiries ?? "-"} 
-          href="/admin/enquiries"
-          subtitle="Contact requests"
-        />
-        <StatCard 
-          title="Loan Applications" 
-          value={stats?.loanApplications ?? "-"} 
-          href="/admin/loan-applications"
-          subtitle="Total submitted"
-        />
-        <StatCard 
-          title="Credit Card Apps" 
-          value={stats?.creditCardApplications ?? "-"} 
-          href="/admin/credit-card-applications"
-          subtitle="Card applications"
-        />
-        <StatCard 
-          title="Partner Apps" 
-          value={stats?.partnerApplications ?? "-"} 
-          href="/admin/partner-applications"
-          subtitle="Join us forms"
-        />
-        <StatCard 
-          title="Approval Rate" 
-          value={`${stats?.approvalRate ?? 0}%`}
-          subtitle="Overall performance"
-        />
-      </div>
-
-      {/* Recent Activity */}
-      <div className="rounded-3xl border border-border/70 bg-card/70 p-5 shadow-sm backdrop-blur">
-        <div className="flex items-center justify-between gap-4">
+      {/* Welcome banner */}
+      <div className="admin-welcome-banner">
+        <div className="relative z-[1] flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <div className="text-sm font-semibold">Recent Activity</div>
-            <div className="mt-1 text-xs text-muted-foreground">Applications received in the last 7 days</div>
+            <p className="text-xs font-semibold uppercase tracking-wider text-white/75">
+              Overview
+            </p>
+            <h2 className="mt-1 text-xl font-bold text-white md:text-2xl">
+              Welcome back, Admin
+            </h2>
+            <p className="mt-1 max-w-xl text-sm text-white/80">
+              Monitor enquiries, loan applications, and platform performance at a glance.
+            </p>
+          </div>
+          <div className="shrink-0 rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-sm text-white backdrop-blur-sm">
+            <div className="text-[10px] font-semibold uppercase tracking-wider text-white/70">
+              Today
+            </div>
+            <div className="mt-0.5 font-medium">{today}</div>
           </div>
         </div>
-        <div className="mt-4">
-          <StatCard 
-            title="Recent Applications" 
-            value={stats?.recentApplications ?? "-"}
-            subtitle="Last 7 days"
-          />
+      </div>
+
+      {/* KPI grid */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        {kpis.map((kpi) => (
+          <KpiCard key={kpi.title} {...kpi} />
+        ))}
+      </div>
+
+      {/* Recent activity + Status */}
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <div className="admin-panel">
+          <div className="admin-panel-header">
+            <div>
+              <h3 className="admin-panel-title">Recent Activity</h3>
+              <p className="admin-panel-subtitle">Applications received in the last 7 days</p>
+            </div>
+            <div className="admin-panel-badge admin-panel-badge-blue">
+              <Clock3 className="h-3.5 w-3.5" />
+              7 days
+            </div>
+          </div>
+          <div className="mt-5 flex items-end gap-4">
+            <div className="text-5xl font-bold tracking-tight text-[#00AEEF]">
+              {stats?.recentApplications ?? 0}
+            </div>
+            <div className="mb-2 text-sm text-muted-foreground">new submissions</div>
+          </div>
+          <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
+            {[
+              { label: "Personal", value: stats?.applicationTypeSummary?.personal ?? 0, color: "#00AEEF" },
+              { label: "Business", value: stats?.applicationTypeSummary?.business ?? 0, color: "#00AEEF" },
+              { label: "Credit Card", value: stats?.applicationTypeSummary?.creditCard ?? 0, color: "#8B5CF6" },
+              { label: "Partner", value: stats?.applicationTypeSummary?.partner ?? 0, color: "#F59E0B" },
+            ].map((item) => (
+              <div key={item.label} className="admin-mini-stat">
+                <div className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                  {item.label}
+                </div>
+                <div className="mt-1 text-lg font-bold" style={{ color: item.color }}>
+                  {item.value}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="admin-panel">
+          <div className="admin-panel-header">
+            <div>
+              <h3 className="admin-panel-title">Application Status</h3>
+              <p className="admin-panel-subtitle">Current pipeline across all application types</p>
+            </div>
+          </div>
+          <div className="mt-5 space-y-4">
+            {[
+              {
+                label: "Pending review",
+                value: status.Pending || 0,
+                icon: Clock3,
+                color: "#F59E0B",
+                bg: "#FEF3C7",
+              },
+              {
+                label: "Approved",
+                value: status.Approved || 0,
+                icon: CheckCircle2,
+                color: "#16A34A",
+                bg: "#DCFCE7",
+              },
+              {
+                label: "Rejected",
+                value: status.Rejected || 0,
+                icon: XCircle,
+                color: "#E11D48",
+                bg: "#FFE4E6",
+              },
+            ].map((item) => {
+              const pct = Math.round((item.value / statusTotal) * 100);
+              const Icon = item.icon;
+              return (
+                <div key={item.label} className="flex items-center gap-3">
+                  <div
+                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
+                    style={{ background: item.bg, color: item.color }}
+                  >
+                    <Icon className="h-5 w-5" strokeWidth={2} />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-sm font-medium">{item.label}</span>
+                      <span className="text-sm font-bold tabular-nums" style={{ color: item.color }}>
+                        {item.value}
+                      </span>
+                    </div>
+                    <div className="admin-metric-track mt-1.5">
+                      <div
+                        className="admin-metric-bar"
+                        style={{ width: `${pct}%`, background: item.color }}
+                      />
+                    </div>
+                  </div>
+                  <span className="w-10 text-right text-xs font-semibold text-muted-foreground">
+                    {pct}%
+                  </span>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
 
-      {/* Application Type Breakdown */}
-      <div className="rounded-3xl border border-border/70 bg-card/70 p-5 shadow-sm backdrop-blur">
-        <div className="flex items-center justify-between gap-4">
+      {/* Application breakdown */}
+      <div className="admin-panel">
+        <div className="admin-panel-header">
           <div>
-            <div className="text-sm font-semibold">Application Type Breakdown</div>
-            <div className="mt-1 text-xs text-muted-foreground">Personal vs Business vs Credit Card vs Partner applications</div>
+            <h3 className="admin-panel-title">Application Breakdown</h3>
+            <p className="admin-panel-subtitle">
+              Distribution by product type · {totalApps} total applications
+            </p>
+          </div>
+          <div className="admin-panel-badge admin-panel-badge-blue">
+            <FileText className="h-3.5 w-3.5" />
+            All types
           </div>
         </div>
-        <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-4">
-          <MetricCard
-            title="Personal Loans"
+        <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2">
+          <ProgressMetric
+            label="Personal loans"
             value={stats?.applicationTypeSummary?.personal || 0}
-            total={stats?.totalApplications || 1}
-            color="primary"
+            total={totalApps || 1}
+            color="#00AEEF"
+            barColor="#00AEEF"
           />
-          <MetricCard
-            title="Business Loans"
+          <ProgressMetric
+            label="Business loans"
             value={stats?.applicationTypeSummary?.business || 0}
-            total={stats?.totalApplications || 1}
-            color="green"
+            total={totalApps || 1}
+            color="#00AEEF"
+            barColor="#00AEEF"
           />
-          <MetricCard
-            title="Credit Cards"
+          <ProgressMetric
+            label="Credit cards"
             value={stats?.applicationTypeSummary?.creditCard || 0}
-            total={stats?.totalApplications || 1}
-            color="yellow"
+            total={totalApps || 1}
+            color="#8B5CF6"
+            barColor="#8B5CF6"
           />
-          <MetricCard
-            title="Partner Apps"
+          <ProgressMetric
+            label="Partner applications"
             value={stats?.applicationTypeSummary?.partner || 0}
-            total={stats?.totalApplications || 1}
-            color="primary"
+            total={totalApps || 1}
+            color="#F59E0B"
+            barColor="#F59E0B"
           />
         </div>
       </div>
 
-      {/* Application Status Summary */}
-      <div className="rounded-3xl border border-border/70 bg-card/70 p-5 shadow-sm backdrop-blur">
-        <div className="flex items-center justify-between gap-4">
-          <div>
-            <div className="text-sm font-semibold">Application Status Summary</div>
-            <div className="mt-1 text-xs text-muted-foreground">Current status of all applications</div>
-          </div>
-        </div>
-        <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-3">
-          <MetricCard
-            title="Pending"
-            value={stats?.statusSummary?.Pending || 0}
-            total={stats?.loanApplications || 1}
-            color="yellow"
-          />
-          <MetricCard
-            title="Approved"
-            value={stats?.statusSummary?.Approved || 0}
-            total={stats?.loanApplications || 1}
-            color="green"
-          />
-          <MetricCard
-            title="Rejected"
-            value={stats?.statusSummary?.Rejected || 0}
-            total={stats?.loanApplications || 1}
-            color="red"
-          />
-        </div>
+      {/* Top categories */}
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <RankList
+          title="Top Personal Loan Categories"
+          items={stats?.topServiceCategories?.personal || []}
+          accent="#00AEEF"
+          emptyLabel="No personal loan data yet"
+        />
+        <RankList
+          title="Top Business Loan Categories"
+          items={stats?.topServiceCategories?.business || []}
+          accent="#00AEEF"
+          emptyLabel="No business loan data yet"
+        />
+        <RankList
+          title="Top Credit Card Types"
+          items={stats?.topServiceCategories?.creditCards || []}
+          accent="#8B5CF6"
+          emptyLabel="No credit card data yet"
+        />
       </div>
 
-      {/* Top Service Categories */}
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-        <div className="rounded-3xl border border-border/70 bg-card/70 p-5 shadow-sm backdrop-blur">
-          <div className="text-sm font-semibold">Top Personal Loan Categories</div>
-          <div className="mt-4 space-y-2">
-            {stats?.topServiceCategories?.personal?.slice(0, 3).map((category: any, index: number) => (
-              <div key={index} className="flex items-center justify-between rounded-lg border border-border/50 bg-background/50 p-3">
-                <div className="text-sm font-medium">{category._id || "Unknown"}</div>
-                <div className="rounded-full bg-primary/10 px-2 py-1 text-xs font-semibold text-primary">
-                  {category.count}
-                </div>
-              </div>
-            ))}
-            {(!stats?.topServiceCategories?.personal || stats.topServiceCategories.personal.length === 0) && (
-              <div className="text-sm text-muted-foreground">No data available</div>
-            )}
+      {/* Monthly trends */}
+      {trends.length > 0 && (
+        <div className="admin-panel">
+          <div className="admin-panel-header">
+            <div>
+              <h3 className="admin-panel-title">Monthly Trends</h3>
+              <p className="admin-panel-subtitle">Application volume over the last 6 months</p>
+            </div>
+            <div className="flex flex-wrap gap-3 text-[11px] font-medium text-muted-foreground">
+              <span className="flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-full bg-[#00AEEF]" /> Personal
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-full bg-[#00AEEF]" /> Business
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-full bg-[#8B5CF6]" /> Credit
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-full bg-[#F59E0B]" /> Partner
+              </span>
+            </div>
           </div>
-        </div>
+          <div className="mt-6 space-y-4">
+            {trends.map((trend) => {
+              const total = trend.total || 0;
+              const barWidth = Math.round((total / maxTrend) * 100);
+              const personal = trend.personal || 0;
+              const business = trend.business || 0;
+              const credit = trend.creditCard || 0;
+              const partner = trend.partner || 0;
+              const sum = personal + business + credit + partner || 1;
 
-        <div className="rounded-3xl border border-border/70 bg-card/70 p-5 shadow-sm backdrop-blur">
-          <div className="text-sm font-semibold">Top Business Loan Categories</div>
-          <div className="mt-4 space-y-2">
-            {stats?.topServiceCategories?.business?.slice(0, 3).map((category: any, index: number) => (
-              <div key={index} className="flex items-center justify-between rounded-lg border border-border/50 bg-background/50 p-3">
-                <div className="text-sm font-medium">{category._id || "Unknown"}</div>
-                <div className="rounded-full bg-green-500/10 px-2 py-1 text-xs font-semibold text-green-700">
-                  {category.count}
-                </div>
-              </div>
-            ))}
-            {(!stats?.topServiceCategories?.business || stats.topServiceCategories.business.length === 0) && (
-              <div className="text-sm text-muted-foreground">No data available</div>
-            )}
-          </div>
-        </div>
-
-        <div className="rounded-3xl border border-border/70 bg-card/70 p-5 shadow-sm backdrop-blur">
-          <div className="text-sm font-semibold">Top Credit Card Types</div>
-          <div className="mt-4 space-y-2">
-            {stats?.topServiceCategories?.creditCards?.slice(0, 3).map((category: any, index: number) => (
-              <div key={index} className="flex items-center justify-between rounded-lg border border-border/50 bg-background/50 p-3">
-                <div className="text-sm font-medium">{category._id || "Unknown"}</div>
-                <div className="rounded-full bg-yellow-500/10 px-2 py-1 text-xs font-semibold text-yellow-700">
-                  {category.count}
-                </div>
-              </div>
-            ))}
-            {(!stats?.topServiceCategories?.creditCards || stats.topServiceCategories.creditCards.length === 0) && (
-              <div className="text-sm text-muted-foreground">No data available</div>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Monthly Trends */}
-      {stats?.monthlyTrends && stats.monthlyTrends.length > 0 && (
-        <div className="rounded-3xl border border-border/70 bg-card/70 p-5 shadow-sm backdrop-blur">
-          <div className="text-sm font-semibold">Monthly Application Trends (Last 6 Months)</div>
-          <div className="mt-4 space-y-3">
-            {stats.monthlyTrends.slice(-6).map((trend: any, index: number) => (
-              <div key={index} className="flex items-center justify-between rounded-lg border border-border/50 bg-background/50 p-3">
-                <div className="text-sm font-medium">{trend.month}</div>
-                <div className="flex items-center gap-4">
-                  <div className="text-xs text-muted-foreground">
-                    Personal: {trend.personal || 0}
+              return (
+                <div key={trend.month} className="admin-trend-row">
+                  <div className="mb-2 flex items-center justify-between gap-2">
+                    <span className="text-sm font-semibold text-foreground">
+                      {formatMonthLabel(trend.month)}
+                    </span>
+                    <span className="rounded-full bg-[#E6F7FD] px-2.5 py-0.5 text-xs font-bold text-[#00AEEF]">
+                      {total} total
+                    </span>
                   </div>
-                  <div className="text-xs text-muted-foreground">
-                    Business: {trend.business || 0}
-                  </div>
-                  <div className="text-xs text-muted-foreground">
-                    Credit Card: {trend.creditCard || 0}
-                  </div>
-                  <div className="text-xs text-muted-foreground">
-                    Partner: {trend.partner || 0}
-                  </div>
-                  <div className="rounded-full bg-primary/10 px-2 py-1 text-xs font-semibold text-primary">
-                    Total: {trend.total}
+                  <div className="admin-trend-bar-wrap" style={{ width: `${Math.max(barWidth, 4)}%` }}>
+                    <div
+                      className="admin-trend-segment"
+                      style={{ width: `${(personal / sum) * 100}%`, background: "#00AEEF" }}
+                    />
+                    <div
+                      className="admin-trend-segment"
+                      style={{ width: `${(business / sum) * 100}%`, background: "#00AEEF" }}
+                    />
+                    <div
+                      className="admin-trend-segment"
+                      style={{ width: `${(credit / sum) * 100}%`, background: "#8B5CF6" }}
+                    />
+                    <div
+                      className="admin-trend-segment"
+                      style={{ width: `${(partner / sum) * 100}%`, background: "#F59E0B" }}
+                    />
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}
+
+      {/* Quick actions */}
+      <div className="admin-panel">
+        <div className="admin-panel-header">
+          <div>
+            <h3 className="admin-panel-title">Quick Actions</h3>
+            <p className="admin-panel-subtitle">Jump to frequently used admin sections</p>
+          </div>
+        </div>
+        <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+          {[
+            { href: "/admin/enquiries", label: "Loan Enquiries", icon: Mail, color: "#33C1F3" },
+            { href: "/admin/regular-enquiries", label: "Regular Enquiries", icon: FileText, color: "#16A34A" },
+            { href: "/admin/salary-loan-applications", label: "Salary Loans", icon: Wallet, color: "#0D9488" },
+            { href: "/admin/business-loan-applications", label: "Business Loans", icon: BriefcaseBusiness, color: "#00AEEF" },
+            { href: "/admin/credit-card-applications", label: "Credit Cards", icon: CreditCard, color: "#8B5CF6" },
+            { href: "/admin/google-forms", label: "Google Forms", icon: FileText, color: "#00AEEF" },
+            { href: "/admin/partner-applications", label: "Partners", icon: Handshake, color: "#F59E0B" },
+            { href: "/admin/users", label: "Users", icon: Users, color: "#00AEEF" },
+          ].map((action) => {
+            const Icon = action.icon;
+            return (
+              <Link
+                key={action.href}
+                href={action.href}
+                className="admin-quick-action group"
+              >
+                <span
+                  className="admin-quick-action-icon"
+                  style={{ background: `${action.color}14`, color: action.color }}
+                >
+                  <Icon className="h-4 w-4" strokeWidth={2.25} />
+                </span>
+                <span className="text-xs font-semibold text-foreground group-hover:text-[#00AEEF]">
+                  {action.label}
+                </span>
+              </Link>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 }

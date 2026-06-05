@@ -10,6 +10,13 @@ import { v2 as cloudinary } from "cloudinary";
 import nodemailer from "nodemailer";
 import { sendLoanApplicationConfirmationEmail } from "../lib/loan-application-email";
 import { createGmailTransporter } from "../lib/apply-now-email";
+import { resolveDirectorRecipients, notifyDirectorInternalMail } from "../lib/director-notification-email";
+import { attachUserIdToPayload } from "../lib/user-auth";
+import {
+  assertEmailNotUsedForLoanApplication,
+  applyNowLoanTypeToGuardType,
+} from "../lib/email-cross-loan-guard";
+import { assertPanNotUsedInOtherLoanType } from "../lib/pan-cross-loan-guard";
 
 // Handle unhandled promise rejections
 if (typeof process !== 'undefined' && process.on) {
@@ -44,37 +51,7 @@ const getLoanTypeName = (loanType) => {
 
 export async function POST(req) {
   try {
-    let formData;
-    let requestData = {};
-    
-    // Check if request is JSON or FormData
-    const contentType = req.headers.get('content-type');
-    
-    if (contentType && contentType.includes('application/json')) {
-      // Handle JSON request
-      requestData = await req.json();
-      console.log('=== DEBUG: JSON Request Data ===');
-      console.log(JSON.stringify(requestData, null, 2));
-      console.log('=== END DEBUG ===');
-      
-      // Convert JSON data to FormData-like object for compatibility
-      formData = {
-        get: (key) => requestData[key] || null,
-        entries: function* () {
-          for (const [key, value] of Object.entries(requestData)) {
-            yield [key, value];
-          }
-        }
-      };
-    } else {
-      // Handle FormData request
-      formData = await req.formData();
-      console.log('=== DEBUG: Form Data Fields ===');
-      for (let [key, value] of formData.entries()) {
-        console.log(`${key}: ${value}`);
-      }
-      console.log('=== END DEBUG ===');
-    }
+    const formData = await req.formData();
 
     await connectDB();
 
@@ -153,35 +130,6 @@ export async function POST(req) {
     const panNumber = formData.get("panNumber");
 
     const loanType = (formData.get("loanType") || "").trim().toLowerCase();
-    
-    // Handle simple form submissions that don't have loanType
-    let actualLoanType = loanType;
-    if (!loanType) {
-      const product = formData.get("product");
-      // Map product types to loan types for simple form
-      const productToLoanTypeMap = {
-        'personal-loan': 'personal',
-        'msme-sme-loan': 'business',
-        'working-capital': 'business',
-        'overdraft-cc': 'business',
-        'invoice-discounting': 'business',
-        'machinery-loan': 'business',
-        'instant-loan': 'personal',
-        'education-loan': 'education',
-        'medical-loan': 'personal',
-        'home-loan': 'home',
-        'loan-against-property': 'property',
-        'plot-construction-loan': 'property',
-        'car-loan': 'car',
-        'two-wheeler-loan': 'car',
-        'commercial-vehicle-loan': 'car',
-        'ev-loan': 'car',
-        'gold-loan': 'personal',
-        'loan-against-securities': 'personal'
-      };
-      actualLoanType = productToLoanTypeMap[product] || 'personal'; // Default to personal
-      console.log(`Mapped product '${product}' to loanType '${actualLoanType}'`);
-    }
 
     // Generate unique sequential application reference
     const totalPersonal = await PersonalLoanModel.countDocuments({});
@@ -193,6 +141,19 @@ export async function POST(req) {
     const applicationRef = `application_${String(nextNumber).padStart(4, "0")}`;
 
     /* =====================================================
+       DEBUG LOGGING
+    ===================================================== */
+    console.log("=== APPLY-NOW REQUEST DEBUG ===");
+    console.log("Loan Type:", loanType);
+    console.log("Form Data Entries:");
+    for (let [key, value] of formData.entries()) {
+      console.log(`  ${key}:`, value instanceof File ? `File(${value.name})` : value);
+    }
+    console.log("Extracted PAN Number:", panNumber);
+    console.log("Extracted Aadhaar Number:", aadhaarNumber);
+    console.log("===============================");
+
+    /* =====================================================
        BASIC VALIDATION
     ===================================================== */
     if (!personalEmail || !mobileNumber) {
@@ -202,12 +163,59 @@ export async function POST(req) {
       );
     }
 
+    const guardType = applyNowLoanTypeToGuardType(loanType);
+    if (guardType) {
+      const emailGuard = await assertEmailNotUsedForLoanApplication(
+        personalEmail,
+        guardType
+      );
+      if (!emailGuard.ok) {
+        return NextResponse.json(
+          {
+            success: false,
+            message: emailGuard.message,
+            code: emailGuard.code,
+          },
+          { status: emailGuard.status }
+        );
+      }
+    }
+
+    if (loanType === "salaried" || loanType === "business") {
+      const panGuard = await assertPanNotUsedInOtherLoanType(
+        panNumber,
+        loanType
+      );
+      if (!panGuard.ok) {
+        return NextResponse.json(
+          { success: false, message: panGuard.message, code: panGuard.code },
+          { status: panGuard.status }
+        );
+      }
+    }
+
+    // Credit card specific validation
+    if (loanType === "credit-card") {
+      if (!panNumber) {
+        return NextResponse.json(
+          { success: false, message: "PAN number is required for credit card applications" },
+          { status: 400 }
+        );
+      }
+      if (!aadhaarNumber) {
+        return NextResponse.json(
+          { success: false, message: "Aadhaar number is required for credit card applications" },
+          { status: 400 }
+        );
+      }
+    }
+
     let newApplication;
 
     /* =====================================================
        ================= SALARIED =================
     ===================================================== */
-    if (actualLoanType === "salaried") {
+    if (loanType === "salaried") {
       // Handle existing loans data with sanction letters
       const existingLoansData = JSON.parse(formData.get("existingLoansData") || "[]");
       const updatedExistingLoansData = await Promise.all(
@@ -222,7 +230,7 @@ export async function POST(req) {
         })
       );
 
-      newApplication = new SalariedLoanModel({
+      newApplication = new SalariedLoanModel(attachUserIdToPayload({
         applicationRef,
 
         firstName,
@@ -303,14 +311,14 @@ export async function POST(req) {
         loan_type: "salaried",
         application_status: "pending",
         role: "borrower-salaried",
-      });
+      }, req));
     }
 
     /* =====================================================
        ================= BUSINESS =================
     ===================================================== */
-    else if (actualLoanType === "business") {
-      newApplication = new BusinessLoanModel({
+    else if (loanType === "business") {
+      newApplication = new BusinessLoanModel(attachUserIdToPayload({
         applicationRef,
 
         firstname: firstName,
@@ -344,14 +352,14 @@ export async function POST(req) {
         preferredLoanTenureMonths: formData.get("preferredLoanTenureMonths"),
 
         role: "borrower-business",
-      });
+      }, req));
     }
 
     /* =====================================================
        ================= PERSONAL =================
     ===================================================== */
-    else if (actualLoanType === "personal") {
-      newApplication = new PersonalLoanModel({
+    else if (loanType === "personal") {
+      newApplication = new PersonalLoanModel(attachUserIdToPayload({
         applicationRef,
 
         firstname: firstName,
@@ -384,11 +392,11 @@ export async function POST(req) {
         loan_type: "personal",
         application_status: "pending",
         role: "borrower-personal",
-      });
+      }, req));
     }
 
     // Handle multiple file uploads for unified form
-    else if (actualLoanType === "unified") {
+    else if (loanType === "unified") {
       const businessCertificatesFiles = [];
       const existingLoanStatementFiles = [];
       
@@ -406,7 +414,7 @@ export async function POST(req) {
         }
       }
 
-      newApplication = new PersonalLoanModel({
+      newApplication = new PersonalLoanModel(attachUserIdToPayload({
         applicationRef,
 
         firstname: firstName,
@@ -477,14 +485,14 @@ export async function POST(req) {
         loan_type: "unified",
         application_status: "pending",
         role: "borrower-unified",
-      });
+      }, req));
     }
 
     /* =====================================================
        ================= CREDIT CARD =================
        ===================================================== */
-    else if (actualLoanType === "credit-card") {
-      newApplication = new CreditCardModel({
+    else if (loanType === "credit-card") {
+      newApplication = new CreditCardModel(attachUserIdToPayload({
         applicationRef,
 
         // Personal Information
@@ -498,7 +506,7 @@ export async function POST(req) {
 
         // Identity Information
         aadhaarNumber,
-        panNumber: panNumber, // Use the panNumber extracted from formData above
+        panNumber,
         voterIdNumber: formData.get("voterId"),
         drivingLicense: formData.get("drivingLicense"),
         passportNumber: formData.get("passport"),
@@ -526,17 +534,20 @@ export async function POST(req) {
         cibilScore: formData.get("cibilScore"),
         consent: formData.get("consent"),
 
-        // Document uploads
+        // Document uploads (collected in-form; no Google Form follow-up)
         aadhaarFront: await upload(formData.get("aadhaarFront")),
         aadhaarBack: await upload(formData.get("aadhaarBack")),
-        panCardFront: await upload(formData.get("panFront")),
-        residentialElectricityBillUrl: await upload(formData.get("residentialBill")),
-        shopElectricityBillUrl: await upload(formData.get("shopBill")),
+        panFront: await upload(formData.get("panFront")),
+        residentialBill: await upload(formData.get("residentialBill")),
+        shopBill: await upload(formData.get("shopBill")),
 
         loan_type: "credit-card",
+        loanTypeText: "credit-card",
         application_status: "pending",
+        documentStatus: "uploaded",
+        documentsConfirmedAt: new Date(),
         role: "borrower-credit-card",
-      });
+      }, req));
     }
 
     else {
@@ -546,26 +557,7 @@ export async function POST(req) {
       );
     }
 
-    let saved;
-    try {
-      saved = await newApplication.save();
-    } catch (validationError) {
-      // Handle Mongoose validation errors
-      if (validationError.name === 'ValidationError') {
-        const errorMessages = Object.values(validationError.errors).map(err => err.message);
-        console.error('Validation Error:', errorMessages);
-        return NextResponse.json(
-          { 
-            success: false, 
-            message: 'Validation failed. Please check all required fields.',
-            details: errorMessages 
-          },
-          { status: 400 }
-        );
-      }
-      // Re-throw other errors
-      throw validationError;
-    }
+    const saved = await newApplication.save();
 
     // Calculate display values for all email templates
     const loanAmount =
@@ -576,15 +568,15 @@ export async function POST(req) {
       "";
 
     // Use loanTypeText for unified forms, otherwise use getLoanTypeName
-    const displayLoanType = (actualLoanType === "unified" && saved?.loanTypeText) 
+    const displayLoanType = (loanType === "unified" && saved?.loanTypeText) 
       ? saved.loanTypeText 
-      : getLoanTypeName(actualLoanType);
+      : getLoanTypeName(loanType);
 
     // Email notifications (non-blocking)
     try {
-      const companyName = process.env.COMPANY_NAME || "Infinity Loan Services";
+      const companyName = process.env.COMPANY_NAME || "Infinity Loans & Business Solutions";
       const supportEmail = process.env.SUPPORT_EMAIL || process.env.EMAIL_FROM || process.env.EMAIL_USER;
-      const supportPhone = process.env.SUPPORT_PHONE || "+91-9579880841";
+      const supportPhone = process.env.SUPPORT_PHONE || "+91 90283 46300";
       const website = process.env.COMPANY_WEBSITE || "www.infinityloanservices.com";
 
       const fromAddress = process.env.EMAIL_FROM || process.env.EMAIL_USER;
@@ -606,10 +598,8 @@ export async function POST(req) {
       };
 
       const adminRecipients = normalizeEmailList(
+        ...resolveDirectorRecipients(),
         process.env.SUPPORT_EMAIL,
-        process.env.ADMIN_USER,
-        process.env.ADMIN_EMAIL,
-        process.env.DIRECTOR_EMAIL,
         ...extraAdminRecipients
       );
 
@@ -621,7 +611,7 @@ export async function POST(req) {
         `Name: ${firstName || ""} ${middleName || ""} ${lastName || ""}\n` +
         `Email: ${personalEmail || ""}\n` +
         `Mobile: ${mobileNumber || ""}\n` +
-        `Loan Type: ${actualLoanType || ""}\n\n` +
+        `Loan Type: ${loanType || ""}\n\n` +
         `Full Details:\n` +
         `${JSON.stringify(savedObject, null, 2)}`;
 
@@ -897,21 +887,14 @@ export async function POST(req) {
         console.error("apply-now official email error:", e?.message || e);
       }
 
-      // Send admin notifications using Gmail SMTP
+      // Send director/admin notifications
       try {
-        const gmailTransporter = createGmailTransporter();
-        
-        const adminEmail = process.env.ADMIN_EMAIL;
-        const directorEmail = process.env.DIRECTOR_EMAIL;
-        
-        const adminRecipients = [];
-        if (adminEmail) adminRecipients.push(adminEmail);
-        if (directorEmail) adminRecipients.push(directorEmail);
+        const adminRecipients = resolveDirectorRecipients();
 
         if (adminRecipients.length > 0) {
           const adminHtmlContent = `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-              <div style="background: linear-gradient(135deg, #0099D8 0%, #007BB0 100%); padding: 30px; border-radius: 10px; color: white; margin-bottom: 30px;">
+              <div style="background: linear-gradient(135deg, #00AEEF 0%, #E06410 100%); padding: 30px; border-radius: 10px; color: white; margin-bottom: 30px;">
                 <h1 style="margin: 0;">New Loan Application</h1>
                 <p style="margin: 10px 0 0 0;">Action Required - Review & Process</p>
               </div>
@@ -920,7 +903,7 @@ export async function POST(req) {
                 <p>A new loan application has been submitted on the Infinity Loans platform. Please review the details below and take appropriate action.</p>
 
                 <div style="background: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
-                  <h3 style="margin-top: 0; color: #0099D8;">Application Details:</h3>
+                  <h3 style="margin-top: 0; color: #00AEEF;">Application Details:</h3>
                   <table style="width: 100%; border-collapse: collapse;">
                     <tr style="border-bottom: 1px solid #ddd;">
                       <td style="padding: 10px 0; font-weight: bold; width: 30%;">Application ID:</td>
@@ -1004,32 +987,26 @@ export async function POST(req) {
 
                 <p>
                   Best regards,<br/>
-                  <strong>Infinity Loans System</strong>
+                  <strong>Infinity Loans</strong>
                 </p>
               </div>
 
               <div style="border-top: 1px solid #ddd; margin-top: 30px; padding-top: 20px; text-align: center; color: #666; font-size: 12px;">
-                <p>© ${new Date().getFullYear()} Infinity Loan Services. All rights reserved.</p>
+                <p>© ${new Date().getFullYear()} Infinity Loans & Business Solutions. All rights reserved.</p>
                 <p>This is an automated email from your loan application system.</p>
               </div>
             </div>
           `;
 
-          // Send to all admin emails
-          const emailPromises = adminRecipients.map(email => 
-            gmailTransporter.sendMail({
-              from: process.env.EMAIL_HOST_USER,
-              to: email,
-              subject: `New Loan Application - ${applicationRef} - ${firstName} ${lastName}`,
-              html: adminHtmlContent,
-            })
-          );
-
-          await Promise.all(emailPromises);
-          console.log("Admin Gmail notifications sent successfully");
+          await notifyDirectorInternalMail({
+            subject: `New Loan Application - ${applicationRef} - ${firstName} ${lastName}`,
+            replyTo: personalEmail,
+            html: adminHtmlContent,
+            recipients: adminRecipients,
+          });
         }
       } catch (gmailError) {
-        console.error("Failed to send admin Gmail notifications:", gmailError);
+        console.error("Failed to send director admin notifications:", gmailError);
       }
     } catch (emailErr) {
       console.error("apply-now email failed:", emailErr?.message || emailErr);
@@ -1045,6 +1022,22 @@ export async function POST(req) {
     // Log full error server-side
     console.error("apply-now handler error:", err);
 
+    const isDupEmail =
+      err?.code === 11000 &&
+      err?.keyPattern &&
+      Object.keys(err.keyPattern)[0] === "personalEmail";
+    if (isDupEmail) {
+      return NextResponse.json(
+        {
+          success: false,
+          code: "DUPLICATE_EMAIL",
+          message:
+            "An application with this email already exists. Check Applied Loans or use a different email to submit again.",
+        },
+        { status: 409 }
+      );
+    }
+
     // In development, include stack for easier debugging. In production, only return message.
     const isProd = String(process.env.NODE_ENV || "").toLowerCase() === "production";
     const payload = isProd
@@ -1055,473 +1048,3 @@ export async function POST(req) {
   }
 }
 
-
-
-
-
-
-// import { NextResponse } from "next/server";
-// import connectDB from "../lib/db";
-// import PersonalLoanModel from "../models/personal-loan-schema";
-// import BusinessLoanModel from "../models/business-loan-schema";
-// import SalariedLoanModel from "../models/salaried-loan-schema";
-// import nodemailer from "nodemailer";
-// import cloudinary from "cloudinary";
-// import { sendLoanApplicationConfirmationEmail } from "../lib/loan-application-email";
-
-// // ✅ Cloudinary Config
-// cloudinary.v2.config({
-//     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-//     api_key: process.env.CLOUDINARY_API_KEY,
-//     api_secret: process.env.CLOUDINARY_API_SECRET,
-// });
-
-// export async function POST(req) {
-//     try {
-//         const formData = await req.formData();
-
-//         // Extract common text fields
-//         const firstName = formData.get("firstName");
-//         const middleName = formData.get("middleName") || "";
-//         const lastName = formData.get("lastName");
-//         const mobileNumber = formData.get("mobileNumber");
-//         const alternateMobile = formData.get("alternateMobile") || "";
-//         const personalEmail = formData.get("personalEmail");
-//         const aadhaarNumber = formData.get("aadhaarNumber");
-//         const panNumber = formData.get("panNumber");
-//         const voterIdNumber = formData.get("voterIdNumber") || "";
-//         const drivingLicense = formData.get("drivingLicense") || "";
-//         const passportNumber = formData.get("passportNumber") || "";
-//         const requiredLoanAmount = formData.get("requiredLoanAmount");
-//         const loanType = formData.get("loanType") || "personal";
-
-//         // Check if this is a salaried application
-//         const isSalariedApp = loanType.toLowerCase().includes("salaried");
-
-//         // Extract salaried-specific fields if applicable
-//         let salariedData = {};
-//         if (isSalariedApp) {
-//             salariedData = {
-//                 dob: formData.get("dob") || "",
-//                 gender: formData.get("gender") || "",
-//                 maritalStatus: formData.get("maritalStatus") || "",
-//                 whatsappNumber: formData.get("whatsappNumber") || "",
-//                 state: formData.get("state") || "",
-//                 city: formData.get("city") || "",
-//                 permanentAddress: formData.get("permanentAddress") || "",
-//                 currentResidentialAddress: formData.get("currentResidentialAddress") || "",
-//                 currentResidentialPincode: formData.get("currentResidentialPincode") || "",
-//                 residenceType: formData.get("residenceType") || "",
-//                 stayingSinceYears: formData.get("stayingSinceYears") || "",
-//                 companyName: formData.get("companyName") || "",
-//                 organizationType: formData.get("organizationType") || "",
-//                 industry: formData.get("industry") || "",
-//                 designation: formData.get("designation") || "",
-//                 employmentType: formData.get("employmentType") || "",
-//                 dateOfJoining: formData.get("dateOfJoining") || "",
-//                 totalExperienceYears: formData.get("totalExperienceYears") || "",
-//                 officeLocation: formData.get("officeLocation") || "",
-//                 officePincode: formData.get("officePincode") || "",
-//                 officialEmail: formData.get("officialEmail") || "",
-//                 monthlyNetSalary: formData.get("monthlyNetSalary") || "",
-//                 salaryCreditMode: formData.get("salaryCreditMode") || "",
-//                 salaryAccountBankName: formData.get("salaryAccountBankName") || "",
-//                 numberOfExistingLoans: formData.get("numberOfExistingLoans") || "0",
-//                 existingLoansData: JSON.parse(formData.get("existingLoansData") || "[]"),
-//                 hasCibil: formData.get("hasCibil") || "",
-//                 cibilScore: formData.get("cibilScore") || "",
-//                 preferredTenure: formData.get("preferredTenure") || "",
-//                 purpose: formData.get("purpose") || "",
-//                 coApplicantName: formData.get("coApplicantName") || "",
-//                 coApplicantRelation: formData.get("coApplicantRelation") || "",
-//                 coApplicantEmploymentType: formData.get("coApplicantEmploymentType") || "",
-//             };
-//         } else {
-//             // Extract business/personal loan fields
-//             salariedData = {
-//                 businessEmail: formData.get("businessEmail") || "",
-//                 currentOfficeAddress: formData.get("currentOfficeAddress") || "",
-//                 currentOfficePincode: formData.get("currentOfficePincode") || "",
-//                 currentResidentialAddress: formData.get("currentResidentialAddress") || "",
-//                 currentResidentialPincode: formData.get("currentResidentialPincode") || "",
-//                 residentialStatus: formData.get("residentialStatus") || "",
-//                 businessPremisesStatus: formData.get("businessPremisesStatus") || "",
-//                 yearsAtCurrentResidentialAddress: formData.get("yearsAtCurrentResidentialAddress") || "",
-//                 yearsAtCurrentBusinessAddress: formData.get("yearsAtCurrentBusinessAddress") || "",
-//             };
-//         }
-
-//         if (!personalEmail || !mobileNumber) {
-//             return NextResponse.json(
-//                 { success: false, message: "Personal email and mobile are required" },
-//                 { status: 400 }
-//             );
-//         }
-
-//         // Validate personalEmail format
-//         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-//         if (!emailRegex.test(personalEmail)) {
-//             return NextResponse.json(
-//                 { success: false, message: "Invalid personal email format" },
-//                 { status: 400 }
-//             );
-//         }
-
-//         // ✅ Upload helper for Cloudinary
-//         async function uploadToCloudinary(file) {
-//             if (!file || typeof file === "string") return null;
-//             const bytes = await file.arrayBuffer();
-//             const buffer = Buffer.from(bytes);
-
-//             return new Promise((resolve, reject) => {
-//                 const uploadStream = cloudinary.v2.uploader.upload_stream(
-//                     { folder: "infinity_loan_applications", resource_type: "auto" },
-//                     (error, result) => {
-//                         if (error) reject(error);
-//                         else resolve(result.secure_url);
-//                     }
-//                 );
-//                 uploadStream.end(buffer);
-//             });
-//         }
-
-//         // ✅ Upload files based on application type
-//         let uploadedFiles = {};
-        
-//         if (isSalariedApp) {
-//             // Salaried-specific documents
-//             uploadedFiles.panPhotoUrl = await uploadToCloudinary(formData.get("panPhoto"));
-//             uploadedFiles.aadhaarPhotoUrl = await uploadToCloudinary(formData.get("aadhaarPhoto"));
-//             uploadedFiles.aadhaarBackPhotoUrl = await uploadToCloudinary(formData.get("aadhaarBackPhoto"));
-//             uploadedFiles.applicantPhotoUrl = await uploadToCloudinary(formData.get("applicantPhoto"));
-//             uploadedFiles.residencePhotoUrl = await uploadToCloudinary(formData.get("residencePhoto"));
-//             uploadedFiles.officeIdPhotoUrl = await uploadToCloudinary(formData.get("officeIdPhoto"));
-//             uploadedFiles.salarySlipsUrl = await uploadToCloudinary(formData.get("salarySlips"));
-//             uploadedFiles.bankStatementUrl = await uploadToCloudinary(formData.get("bankStatement"));
-//             uploadedFiles.cibilReportUrl = await uploadToCloudinary(formData.get("cibilReport"));
-//             uploadedFiles.lastElectricityBillUrl = await uploadToCloudinary(formData.get("lastElectricityBill"));
-//             uploadedFiles.permElectricityBillUrl = await uploadToCloudinary(formData.get("permElectricityBill"));
-//             uploadedFiles.rentAgreementUrl = await uploadToCloudinary(formData.get("rentAgreement"));
-//             uploadedFiles.companyAllotmentLetterUrl = await uploadToCloudinary(formData.get("companyAllotmentLetter"));
-
-//             // Validate required salaried documents
-//             if (!uploadedFiles.panPhotoUrl || !uploadedFiles.aadhaarPhotoUrl || !uploadedFiles.aadhaarBackPhotoUrl || !uploadedFiles.applicantPhotoUrl) {
-//                 return NextResponse.json(
-//                     { success: false, message: "Required documents missing: PAN, Aadhaar (front & back), and Applicant photo are mandatory" },
-//                     { status: 400 }
-//                 );
-//             }
-//         } else {
-//             // Business/Personal loan documents
-//             uploadedFiles.aadhaarFrontUrl = await uploadToCloudinary(formData.get("aadhaarFront"));
-//             uploadedFiles.aadhaarBackUrl = await uploadToCloudinary(formData.get("aadhaarBack"));
-//             uploadedFiles.panCardFrontUrl = await uploadToCloudinary(formData.get("panCardFront"));
-//             uploadedFiles.residentialBillUrl = await uploadToCloudinary(formData.get("residentialBill"));
-//             uploadedFiles.shopBillUrl = await uploadToCloudinary(formData.get("shopBill"));
-
-//             // Validate required business/personal documents
-//             if (!uploadedFiles.aadhaarFrontUrl || !uploadedFiles.aadhaarBackUrl || !uploadedFiles.panCardFrontUrl || !uploadedFiles.residentialBillUrl || !uploadedFiles.shopBillUrl) {
-//                 return NextResponse.json(
-//                     { success: false, message: "Required documents missing or upload failed" },
-//                     { status: 400 }
-//                 );
-//             }
-//         }
-
-//         // ✅ Connect to MongoDB
-//         await connectDB();
-
-//         // ✅ Clean up old indexes if they exist (migration from old schema)
-//         try {
-//             const personalCollection = PersonalLoanModel.collection;
-//             const businessCollection = BusinessLoanModel.collection;
-            
-//             // Drop old email_1 index if it exists
-//             try {
-//                 await personalCollection.dropIndex("email_1");
-//             } catch (err) {
-//                 // Index doesn't exist, which is fine
-//             }
-//             try {
-//                 await businessCollection.dropIndex("email_1");
-//             } catch (err) {
-//                 // Index doesn't exist, which is fine
-//             }
-//         } catch (indexError) {
-//             console.warn("Index cleanup warning (non-fatal):", indexError.message);
-//         }
-
-//         // ✅ Check for existing email to prevent duplicate submissions
-//         const existingPersonal = await PersonalLoanModel.findOne({ personalEmail });
-//         const existingBusiness = await BusinessLoanModel.findOne({ personalEmail });
-//         const existingSalaried = await SalariedLoanModel.findOne({ personalEmail });
-//         if (existingPersonal || existingBusiness || existingSalaried) {
-//             return NextResponse.json(
-//                 { success: false, message: "An application with this email already exists" },
-//                 { status: 409 }
-//             );
-//         }
-
-//         // ✅ Generate unique sequential application reference
-//         const totalPersonal = await PersonalLoanModel.countDocuments({});
-//         const totalBusiness = await BusinessLoanModel.countDocuments({});
-//         const totalSalaried = await SalariedLoanModel.countDocuments({});
-//         const totalApplications = totalPersonal + totalBusiness + totalSalaried;
-//         const nextNumber = totalApplications + 1;
-//         const applicationRef = `aplic_${String(nextNumber).padStart(5, "0")}`;
-
-//         // ✅ Save to appropriate model
-//         let newApplication = null;
-
-//         if (isSalariedApp) {
-//             // Save as salaried loan
-//             newApplication = new SalariedLoanModel({
-//                 applicationRef,
-//                 firstName,
-//                 middleName: middleName || "",
-//                 lastName,
-//                 dob: salariedData.dob,
-//                 gender: salariedData.gender,
-//                 maritalStatus: salariedData.maritalStatus,
-//                 mobileNumber,
-//                 whatsappNumber: salariedData.whatsappNumber,
-//                 alternateMobile: alternateMobile || "",
-//                 personalEmail,
-//                 panNumber,
-//                 aadhaarNumber,
-//                 voterIdNumber: voterIdNumber || "",
-//                 drivingLicense: drivingLicense || "",
-//                 passportNumber: passportNumber || "",
-//                 currentResidentialAddress: salariedData.currentResidentialAddress,
-//                 currentResidentialPincode: salariedData.currentResidentialPincode,
-//                 state: salariedData.state,
-//                 city: salariedData.city,
-//                 residenceType: salariedData.residenceType,
-//                 stayingSinceYears: salariedData.stayingSinceYears,
-//                 permanentAddress: salariedData.permanentAddress,
-//                 companyName: salariedData.companyName,
-//                 organizationType: salariedData.organizationType,
-//                 industry: salariedData.industry,
-//                 designation: salariedData.designation,
-//                 employmentType: salariedData.employmentType,
-//                 dateOfJoining: salariedData.dateOfJoining,
-//                 totalExperienceYears: salariedData.totalExperienceYears,
-//                 officeLocation: salariedData.officeLocation,
-//                 officePincode: salariedData.officePincode,
-//                 officialEmail: salariedData.officialEmail,
-//                 monthlyNetSalary: salariedData.monthlyNetSalary,
-//                 salaryCreditMode: salariedData.salaryCreditMode,
-//                 salaryAccountBankName: salariedData.salaryAccountBankName,
-//                 numberOfExistingLoans: salariedData.numberOfExistingLoans,
-//                 existingLoansData: updatedExistingLoansData,
-//                 hasCibil: salariedData.hasCibil,
-//                 cibilScore: salariedData.cibilScore,
-//                 requiredLoanAmount,
-//                 preferredTenure: salariedData.preferredTenure,
-//                 purpose: salariedData.purpose,
-//                 coApplicantName: salariedData.coApplicantName,
-//                 coApplicantRelation: salariedData.coApplicantRelation,
-//                 coApplicantEmploymentType: salariedData.coApplicantEmploymentType,
-//                 // Document URLs
-//                 panPhotoUrl: uploadedFiles.panPhotoUrl,
-//                 aadhaarPhotoUrl: uploadedFiles.aadhaarPhotoUrl,
-//                 aadhaarBackPhotoUrl: uploadedFiles.aadhaarBackPhotoUrl,
-//                 applicantPhotoUrl: uploadedFiles.applicantPhotoUrl,
-//                 residencePhotoUrl: uploadedFiles.residencePhotoUrl,
-//                 officeIdPhotoUrl: uploadedFiles.officeIdPhotoUrl,
-//                 salarySlipsUrl: uploadedFiles.salarySlipsUrl,
-//                 bankStatementUrl: uploadedFiles.bankStatementUrl,
-//                 cibilReportUrl: uploadedFiles.cibilReportUrl,
-//                 lastElectricityBillUrl: uploadedFiles.lastElectricityBillUrl,
-//                 permElectricityBillUrl: uploadedFiles.permElectricityBillUrl,
-//                 rentAgreementUrl: uploadedFiles.rentAgreementUrl,
-//                 companyAllotmentLetterUrl: uploadedFiles.companyAllotmentLetterUrl,
-//                 loan_type: "salaried",
-//                 application_status: "pending",
-//                 role: "borrower-salaried",
-//             });
-//         } else if (loanType.includes("business")) {
-//             newApplication = new BusinessLoanModel({
-//                 applicationRef,
-//                 firstname: firstName,
-//                 lastname: lastName,
-//                 mobileNumber,
-//                 alternateMobile: alternateMobile || "",
-//                 personalEmail,
-//                 businessEmail: salariedData.businessEmail || "",
-//                 panNumber,
-//                 aadhaarNumber,
-//                 voterIdNumber: voterIdNumber || "",
-//                 drivingLicense: drivingLicense || "",
-//                 passportNumber: passportNumber || "",
-//                 currentResidentialAddress: salariedData.currentResidentialAddress,
-//                 currentResidentialPincode: salariedData.currentResidentialPincode,
-//                 currentOfficeAddress: salariedData.currentOfficeAddress,
-//                 currentOfficePincode: salariedData.currentOfficePincode,
-//                 residentialStatus: salariedData.residentialStatus,
-//                 businessPremisesStatus: salariedData.businessPremisesStatus,
-//                 yearsAtCurrentResidentialAddress: Number(salariedData.yearsAtCurrentResidentialAddress) || 0,
-//                 yearsAtCurrentBusinessAddress: Number(salariedData.yearsAtCurrentBusinessAddress) || 0,
-//                 requiredLoanAmount,
-//                 aadhaarFront: uploadedFiles.aadhaarFrontUrl,
-//                 aadhaarBack: uploadedFiles.aadhaarBackUrl,
-//                 panCardFront: uploadedFiles.panCardFrontUrl,
-//                 residentialElectricityBillUrl: uploadedFiles.residentialBillUrl,
-//                 shopElectricityBillUrl: uploadedFiles.shopBillUrl,
-//                 loan_type: loanType,
-//                 application_status: "pending",
-//                 role: "borrower-business",
-//             });
-//         } else {
-//             newApplication = new PersonalLoanModel({
-//                 applicationRef,
-//                 firstname: firstName,
-//                 middleName: middleName,
-//                 lastname: lastName,
-//                 mobileNumber,
-//                 alternateMobile: alternateMobile || "",
-//                 personalEmail,
-//                 businessEmail: salariedData.businessEmail || "",
-//                 panNumber,
-//                 aadhaarNumber,
-//                 voterIdNumber: voterIdNumber || "",
-//                 drivingLicense: drivingLicense || "",
-//                 passportNumber: passportNumber || "",
-//                 currentResidentialAddress: salariedData.currentResidentialAddress,
-//                 currentResidentialPincode: salariedData.currentResidentialPincode,
-//                 currentOfficeAddress: salariedData.currentOfficeAddress,
-//                 currentOfficePincode: salariedData.currentOfficePincode,
-//                 residentialStatus: salariedData.residentialStatus,
-//                 businessPremisesStatus: salariedData.businessPremisesStatus,
-//                 yearsAtCurrentResidentialAddress: Number(salariedData.yearsAtCurrentResidentialAddress) || 0,
-//                 yearsAtCurrentBusinessAddress: Number(salariedData.yearsAtCurrentBusinessAddress) || 0,
-//                 requiredLoanAmount,
-//                 aadhaarFront: uploadedFiles.aadhaarFrontUrl,
-//                 aadhaarBack: uploadedFiles.aadhaarBackUrl,
-//                 panCardFront: uploadedFiles.panCardFrontUrl,
-//                 residentialElectricityBillUrl: uploadedFiles.residentialBillUrl,
-//                 shopElectricityBillUrl: uploadedFiles.shopBillUrl,
-//                 loan_type: loanType,
-//                 application_status: "pending",
-//                 role: "borrower-personal",
-//             });
-//         }
-
-//         await newApplication.save();
-
-//         // ✅ Send confirmation email
-//         try {
-//             const companyName = process.env.COMPANY_NAME || "Infinity Loan Services";
-//             const supportPhone = process.env.SUPPORT_PHONE || "+91-9579880841";
-//             const supportEmail = process.env.SUPPORT_EMAIL || process.env.EMAIL_FROM || "business@infinityloanservices.com";
-//             const website = process.env.COMPANY_WEBSITE || "www.infinityloanservices.com";
-
-//             const transporter = nodemailer.createTransport({
-//                 host: process.env.EMAIL_HOST,
-//                 port: Number(process.env.EMAIL_PORT || 465),
-//                 secure: String(process.env.EMAIL_SECURE || "true").toLowerCase() === "true",
-//                 auth: {
-//                     user: process.env.EMAIL_USER,
-//                     pass: process.env.EMAIL_PASS,
-//                 },
-//             });
-
-//             // Format application date
-//             const applicationDate = new Date().toLocaleDateString("en-IN", {
-//                 day: "numeric",
-//                 month: "long",
-//                 year: "numeric",
-//             });
-
-//             // Send confirmation email to customer using the detailed template
-//             const customerEmailResult = await sendLoanApplicationConfirmationEmail(
-//                 personalEmail,
-//                 {
-//                     customerName: firstName,
-//                     applicationNumber: applicationRef,
-//                     applicationDate: applicationDate,
-//                     loanType: loanType,
-//                     loanAmount: requiredLoanAmount,
-//                 }
-//             );
-
-//             // Also send to business email if provided
-//             if (businessEmail && customerEmailResult.success) {
-//                 await sendLoanApplicationConfirmationEmail(businessEmail, {
-//                     customerName: firstName,
-//                     applicationNumber: applicationRef,
-//                     applicationDate: applicationDate,
-//                     loanType: loanType,
-//                     loanAmount: requiredLoanAmount,
-//                 });
-//             }
-
-//             // Send notification to admin (HTML with links)
-//             const adminSubject = `New Loan Application Received – Reference No: ${applicationRef}`;
-
-//             const adminHtml = `
-//                 <h2>New Loan Application Received</h2>
-//                 <p><strong>Application Reference:</strong> ${applicationRef}</p>
-//                 <p><strong>Applicant:</strong> ${firstName} ${middleName ? middleName + ' ' : ''}${lastName}</p>
-//                 <p><strong>Email:</strong> ${personalEmail} <br/><strong>Mobile:</strong> ${mobileNumber}</p>
-//                 <p><strong>Loan Type:</strong> ${loanType} <br/><strong>Application Status:</strong> Pending Review<br/><strong>Loan Amount:</strong> ₹${requiredLoanAmount}</p>
-
-//                 <h3>Address Details</h3>
-//                 <p><strong>Residential:</strong> ${currentResidentialAddress}, ${currentResidentialPincode}<br/>
-//                 <strong>Office/Shop:</strong> ${currentOfficeAddress}, ${currentOfficePincode}</p>
-
-//                 <h3>Document Links</h3>
-//                 <ul>
-//                   <li><a href="${aadhaarFrontUrl}">Aadhaar Front</a></li>
-//                   <li><a href="${aadhaarBackUrl}">Aadhaar Back</a></li>
-//                   <li><a href="${panCardFrontUrl}">PAN Card Front</a></li>
-//                   <li><a href="${residentialBillUrl}">Residential Electricity Bill</a></li>
-//                   <li><a href="${shopBillUrl}">Shop/Office Electricity Bill</a></li>
-//                 </ul>
-
-//                 <h3>Document Details</h3>
-//                 <p><strong>Aadhaar:</strong> ${aadhaarNumber}<br/><strong>PAN:</strong> ${panNumber}</p>
-
-//                 <p><strong>Submitted At:</strong> ${new Date().toUTCString()}</p>
-//                 <p>Please review the application in the admin dashboard.</p>
-//             `;
-
-//             const adminRecipients = Array.from(
-//                 new Set(
-//                     [
-//                         process.env.SUPPORT_EMAIL,
-//                         process.env.DIRECTOR_EMAIL,
-//                         process.env.ADMIN_USER,
-//                     ].filter(Boolean)
-//                 )
-//             );
-
-//             await transporter.sendMail({
-//                 from: process.env.EMAIL_FROM,
-//                 to: adminRecipients,
-//                 subject: adminSubject,
-//                 text: `New application ${applicationRef} received.`,
-//                 html: adminHtml,
-//             });
-//         } catch (emailError) {
-//             console.error("Email sending failed:", emailError);
-//             // Don't fail the response if email fails
-//         }
-
-//         return NextResponse.json(
-//             {
-//                 success: true,
-//                 message: "Application submitted successfully!",
-//                 applicationRef,
-//                 email: personalEmail,
-//             },
-//             { status: 201 }
-//         );
-//     } catch (error) {
-//         console.error("Apply-now error:", error);
-//         return NextResponse.json(
-//             { success: false, message: error.message || "Internal Server Error" },
-//             { status: 500 }
-//         );
-//     }
-// }

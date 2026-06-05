@@ -2,8 +2,10 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import AdminCategoryBanner from "@/components/admin/AdminCategoryBanner";
+import AdminStatusBadge from "@/components/admin/AdminStatusBadge";
 
-type AppItem = any;
+const LIST_TYPE = "business";
 
 export default function AdminBusinessLoanApplicationsPage() {
   const [search, setSearch] = useState("");
@@ -20,7 +22,7 @@ export default function AdminBusinessLoanApplicationsPage() {
     const sp = new URLSearchParams();
     if (search.trim()) sp.set("search", search.trim());
     if (status) sp.set("status", status);
-    sp.set("type", "business"); // Filter for business loans only
+    sp.set("type", LIST_TYPE);
     sp.set("page", String(page));
     sp.set("limit", "10");
     return sp.toString();
@@ -70,8 +72,9 @@ export default function AdminBusinessLoanApplicationsPage() {
     setRowStatus(next);
   }, [items]);
 
-  const updateStatus = async (id: string) => {
-    const nextStatus = rowStatus[id] || "Pending";
+  const [savedFlash, setSavedFlash] = useState<Record<string, boolean>>({});
+
+  const updateStatus = async (id: string, nextStatus: string) => {
     setRowSaving((m) => ({ ...m, [id]: true }));
     setError(null);
 
@@ -89,7 +92,19 @@ export default function AdminBusinessLoanApplicationsPage() {
         return;
       }
 
-      setItems((prev) => prev.map((x) => (String(x._id) === id ? { ...x, status: data.data?.status || nextStatus } : x)));
+      const savedStatus = data.data?.status || nextStatus;
+      setItems((prev) =>
+        prev.map((x) => (String(x._id) === id ? { ...x, status: savedStatus } : x))
+      );
+      setRowStatus((m) => ({ ...m, [id]: savedStatus }));
+      setSavedFlash((m) => ({ ...m, [id]: true }));
+      setTimeout(() => {
+        setSavedFlash((m) => {
+          const next = { ...m };
+          delete next[id];
+          return next;
+        });
+      }, 2000);
     } catch {
       setError("Failed to update status");
     } finally {
@@ -97,10 +112,9 @@ export default function AdminBusinessLoanApplicationsPage() {
     }
   };
 
-  const badge = (s: string | undefined) => {
-    if (s === "Approved") return "bg-success/10 text-success";
-    if (s === "Rejected") return "bg-destructive/10 text-destructive";
-    return "bg-warning/10 text-warning";
+  const handleStatusChange = (id: string, value: string) => {
+    setRowStatus((m) => ({ ...m, [id]: value }));
+    void updateStatus(id, value);
   };
 
   const displayName = (x: any) => {
@@ -113,6 +127,11 @@ export default function AdminBusinessLoanApplicationsPage() {
         <div className="text-lg font-bold tracking-tight">Business Loan Applications</div>
         <div className="text-sm text-muted-foreground">Business loan applications for companies</div>
       </div>
+
+      <AdminCategoryBanner
+        title="Business loan applications only"
+        categoryKey={LIST_TYPE}
+      />
 
       <div className="mt-5 rounded-3xl border border-border/70 bg-card/70 p-5 shadow-sm backdrop-blur">
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
@@ -157,10 +176,10 @@ export default function AdminBusinessLoanApplicationsPage() {
             <tr className="text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               <th className="py-3">Ref</th>
               <th className="py-3">Business Name</th>
-              {/* <th className="py-3">Email</th> */}
+              <th className="py-3">Service</th>
               <th className="py-3">Mobile</th>
-              {/* <th className="py-3">Status</th> */}
-              <th className="py-3">Action</th>
+              <th className="py-3">Status</th>
+              <th className="py-3">Approve / Reject</th>
               <th className="py-3">View</th>
             </tr>
           </thead>
@@ -169,31 +188,28 @@ export default function AdminBusinessLoanApplicationsPage() {
               <tr key={x._id} className="border-t border-border/70">
                 <td className="py-4 font-medium">{x.applicationRef || "-"}</td>
                 <td className="py-4">{displayName(x)}</td>
-                {/* <td className="py-4">{x.personalEmail || x.email || "-"}</td> */}
+                <td className="py-4 text-muted-foreground">{x.serviceCategory || "-"}</td>
                 <td className="py-4">{x.mobileNumber || x.mobile || "-"}</td>
                 <td className="py-4">
-                  {/* <span className={"inline-flex rounded-full px-2.5 py-1 text-xs font-semibold " + badge(x.status)}>
-                    {x.status || "Pending"}
-                  </span> */}
+                  <AdminStatusBadge status={rowStatus[String(x._id)] || x.status} />
                 </td>
                 <td className="py-4">
-                  <div className="flex flex-col gap-2 md:flex-row md:items-center">
+                  <div className="flex flex-col gap-1">
                     <select
-                      className="w-full rounded-2xl border border-input bg-background/60 px-3 py-2 text-xs font-semibold outline-none transition focus:border-primary/50 focus:bg-background focus:shadow-[0_0_0_4px_hsl(var(--primary)/0.12)] md:w-36"
+                      className="w-full rounded-2xl border border-input bg-background/60 px-3 py-2 text-xs font-semibold outline-none md:w-36"
                       value={rowStatus[String(x._id)] || x.status || "Pending"}
-                      onChange={(e) => setRowStatus((m) => ({ ...m, [String(x._id)]: e.target.value }))}
+                      disabled={!!rowSaving[String(x._id)]}
+                      onChange={(e) => handleStatusChange(String(x._id), e.target.value)}
                     >
                       <option value="Pending">Pending</option>
                       <option value="Approved">Approved</option>
                       <option value="Rejected">Rejected</option>
                     </select>
-                    {/* <button
-                      onClick={() => updateStatus(String(x._id))}
-                      disabled={!!rowSaving[String(x._id)]}
-                      className="w-full rounded-2xl bg-gradient-to-r from-cta via-cta to-accent px-3 py-2 text-xs font-semibold text-cta-foreground shadow-glow-cta transition hover:opacity-95 disabled:opacity-50 md:w-auto"
-                    >
-                      {rowSaving[String(x._id)] ? "Saving..." : "Update"}
-                    </button> */}
+                    {rowSaving[String(x._id)] ? (
+                      <span className="text-[10px] text-muted-foreground">Saving…</span>
+                    ) : savedFlash[String(x._id)] ? (
+                      <span className="text-[10px] font-semibold text-[#16A34A]">Saved to database</span>
+                    ) : null}
                   </div>
                 </td>
                 <td className="py-4">

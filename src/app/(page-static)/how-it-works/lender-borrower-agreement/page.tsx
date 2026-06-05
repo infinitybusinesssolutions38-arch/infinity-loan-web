@@ -11,7 +11,7 @@ const page = () => {
                         (defined below) to be provided to Borrower(s) by the Lender(s) through Faircent.com
                     </p>
                     <p className='mb-4'>
-                        Once an interested individual seeks to register, we undertake a detailed verification process following KYC norms as laid down by various regulators. Thus, all personal and financial information pertaining to Borrowers and Lenders visible on fortune has been verified.
+                        Once an interested individual seeks to register, we undertake a detailed verification process following KYC norms as laid down by various regulators. Thus, all personal and financial information pertaining to Borrowers and Lenders visible on Infinity Loans has been verified.
                     </p>
                     <p className='mb-4'>
                         So go on and SIGN UP now to try out this new business opportunity because Every % Counts!

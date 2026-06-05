@@ -174,9 +174,9 @@ const LoanTestimonials: React.FC = () => {
 
   return (
 
-    <section className="w-full py-16 bg-gradient-to-br from-gray-100 via-gray-200 to-gray-300">
+    <section className="w-full py-16 lg:py-24 bg-[#F7F9FC]">
 
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
 
 
 
@@ -192,11 +192,11 @@ const LoanTestimonials: React.FC = () => {
 
 
 
-          <div className="w-20 h-1 bg-[#0099D8] mx-auto mt-4 rounded-full" />
+          <div className="w-20 h-1 bg-[#00AEEF] mx-auto mt-4 rounded-full" />
 
 
 
-          <p className="text-gray-700 mt-4">
+          <p className="text-[#666666] mt-4">
 
             Trusted by thousands of happy loan customers across India
 
@@ -212,28 +212,28 @@ const LoanTestimonials: React.FC = () => {
             {[...testimonials, ...testimonials].map((t, index) => (
               <div
                 key={`${t.name}-${t.role}-${index}`}
-                className="bg-gradient-to-br from-gray-900 via-gray-800 to-black p-6 rounded-2xl shadow-md hover:shadow-xl transition duration-300 border border-gray-700 flex flex-col shrink-0 w-80"
+                className="bg-white p-6 rounded-[20px] shadow-[0_2px_10px_rgba(15,23,42,0.06)] hover:-translate-y-1 transition-all duration-300 ease-out border border-[#D6EEF8] hover:border-[#00AEEF] flex flex-col shrink-0 w-80"
               >
                 {/* Stars */}
-                <div className="flex mb-4 text-[#0099D8]">
+                <div className="flex mb-4 text-[#00AEEF]">
                   {[...Array(5)].map((_, i) => (
-                    <Star key={i} size={16} fill="#0099D8" />
+                    <Star key={i} size={16} fill="#00AEEF" />
                   ))}
                 </div>
 
                 {/* Message */}
-                <p className="text-gray-300 text-sm flex-grow leading-relaxed mb-4">
+                <p className="text-[#666666] text-sm flex-grow leading-relaxed mb-4">
                   "{t.message}"
                 </p>
 
                 {/* User Info */}
-                <div className="flex items-center gap-3 border-t border-gray-700 pt-4">
-                  <div className="w-10 h-10 bg-[#0099D8]/20 rounded-full flex items-center justify-center">
-                    <User size={20} className="text-[#0099D8]" />
+                <div className="flex items-center gap-3 border-t border-[#D6EEF8] pt-4">
+                  <div className="w-10 h-10 bg-[#E6F7FD] rounded-full flex items-center justify-center">
+                    <User size={20} className="text-[#00AEEF]" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-white text-sm">{t.name}</h4>
-                    <span className="text-xs text-[#0099D8] font-medium">
+                    <h4 className="font-semibold text-[#1A1A1A] text-sm">{t.name}</h4>
+                    <span className="text-xs text-[#00AEEF] font-medium">
                       {t.role}
                     </span>
                   </div>

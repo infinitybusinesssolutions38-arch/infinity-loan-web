@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 const BorrowerBusinessSchema = new mongoose.Schema(
 {
     applicationRef: { type: String, required: true, unique: true },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: false },
 
     serviceCategoryKey: { type: String, required: false },
     serviceCategoryTitle: { type: String, required: false },
@@ -107,16 +108,6 @@ const BorrowerBusinessSchema = new mongoose.Schema(
     coApplicantState: { type: String, required: false },
     coApplicantCity: { type: String, required: false },
     coApplicantPincode: { type: String, required: false },
-    coApplicantPanPhotoUrl: { type: String, required: false },
-    coApplicantAadhaarPhotoUrl: { type: String, required: false },
-    coApplicantAadhaarBackPhotoUrl: { type: String, required: false },
-
-    // Address proof (text)
-    latestHomeElectricityBill: { type: String, required: false },
-    latestOfficeShopElectricityBill: { type: String, required: false },
-    latestHomeElectricityBillUrl: { type: String, required: false },
-    latestOfficeShopElectricityBillUrl: { type: String, required: false },
-
     // Registration
     businessRegistrationCertificates: { type: String, required: false },
     businessRegistrationCertificatesList: { type: [String], required: false, default: [] },
@@ -218,17 +209,9 @@ const BorrowerBusinessSchema = new mongoose.Schema(
     },
 
     // Documents
-    applicantPhotoUrl: { type: String, required: false },
-    panPhotoUrl: { type: String, required: false },
-    aadhaarPhotoUrl: { type: String, required: false },
-    aadhaarBackPhotoUrl: { type: String, required: false },
     gstCertificateUrl: { type: String, required: false },
     bankStatementUrl: { type: String, required: false },
     itrFileUrl: { type: String, required: false },
-
-    assessmentYear2324Url: { type: String, required: false },
-    assessmentYear2425Url: { type: String, required: false },
-    assessmentYear2526Url: { type: String, required: false },
 
     loanAccountStatementUrls: { type: [String], required: false, default: [] },
 
@@ -262,6 +245,13 @@ const BorrowerBusinessSchema = new mongoose.Schema(
     },
     adminRemarks: { type: String, default: "" },
     reviewedAt: { type: Date },
+
+    documentStatus: {
+        type: String,
+        enum: ["pending", "uploaded", "verified"],
+        default: "pending",
+    },
+    documentsConfirmedAt: { type: Date },
 
     // Role
     role: {

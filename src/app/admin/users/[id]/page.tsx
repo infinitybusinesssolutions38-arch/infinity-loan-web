@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 
 type UserItem = {
   _id: string;
@@ -13,7 +13,8 @@ type UserItem = {
   updatedAt?: string;
 };
 
-export default function AdminUserDetailPage({ params }: { params: { id: string } }) {
+export default function AdminUserDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
   const [item, setItem] = useState<UserItem | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -25,7 +26,7 @@ export default function AdminUserDetailPage({ params }: { params: { id: string }
     (async () => {
       try {
         setLoading(true);
-        const res = await fetch(`/api/admin/users/${params.id}`, { credentials: "include" });
+        const res = await fetch(`/api/admin/users/${id}`, { credentials: "include" });
         const data = await res.json().catch(() => ({}));
 
         if (!mounted) return;
@@ -45,7 +46,7 @@ export default function AdminUserDetailPage({ params }: { params: { id: string }
     return () => {
       mounted = false;
     };
-  }, [params.id]);
+  }, [id]);
 
   const toggleDisable = async () => {
     if (!item) return;
@@ -55,7 +56,7 @@ export default function AdminUserDetailPage({ params }: { params: { id: string }
     setError(null);
 
     try {
-      const res = await fetch(`/api/admin/users/${params.id}`, {
+      const res = await fetch(`/api/admin/users/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

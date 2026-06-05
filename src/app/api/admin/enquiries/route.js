@@ -40,11 +40,16 @@ export async function GET(req) {
   return NextResponse.json({
     success: true,
     data: {
-      items,
+      items: items.map((item) => ({
+        ...item,
+        _id: item._id?.toString?.() || String(item._id || ""),
+        status:
+          item.status === "Contacted" || item.status === "Closed" ? item.status : "New",
+      })),
       total,
       page,
       limit,
-      pages: Math.ceil(total / limit),
+      pages: Math.ceil(total / limit) || 1,
     },
   });
 }

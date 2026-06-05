@@ -1,13 +1,23 @@
 import { NextResponse } from "next/server";
-import jwt from "jsonwebtoken";
+import { getAuthUser } from "../../lib/user-auth";
 
 export async function GET(req) {
-    const token = req.cookies.get("token")?.value;
-    if (!token) return NextResponse.json({ user: null });
-    // console.log(token);
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        return NextResponse.json({ user: decoded });
+        const user = await getAuthUser(req);
+        if (!user) {
+            return NextResponse.json({ user: null });
+        }
+
+        return NextResponse.json({
+            user: {
+                id: user.id,
+                fullName: user.fullName,
+                email: user.email,
+                mobile: user.mobile,
+                role: user.role,
+                profileImageUrl: user.profileImageUrl,
+            },
+        });
     } catch {
         return NextResponse.json({ user: null });
     }

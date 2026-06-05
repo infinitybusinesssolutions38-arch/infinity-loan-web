@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 const BorrowerPersonalSchema = new mongoose.Schema(
     {
         applicationRef: { type: String, required: true, unique: true },
+        userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: false },
 
         // Basic Details
         firstname: { type: String, required: true },
@@ -103,6 +104,15 @@ const BorrowerPersonalSchema = new mongoose.Schema(
             enum: ["pending", "under_review", "approved", "rejected"],
             default: "pending",
         },
+
+        documentStatus: {
+            type: String,
+            enum: ["pending", "uploaded", "verified"],
+            default: "pending",
+        },
+        documentsConfirmedAt: { type: Date },
+        adminRemarks: { type: String, default: "" },
+        reviewedAt: { type: Date },
 
         role: {
             type: String,

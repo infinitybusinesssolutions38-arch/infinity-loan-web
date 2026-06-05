@@ -238,7 +238,7 @@ export default function AdminPartnerApplicationDetailPage({ params }: { params: 
               <div className="text-xs text-muted-foreground">Current Status</div>
               <div className="mt-1 text-sm font-semibold">
                 <span className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${
-                  item.status === "New" ? "bg-[#0099D8]/5 text-[#007BB0]" :
+                  item.status === "New" ? "bg-[#E6F7FD] text-[#008FCC]" :
                   item.status === "Contacted" ? "bg-yellow-50 text-yellow-700" :
                   item.status === "Approved" ? "bg-green-50 text-green-700" :
                   item.status === "Rejected" ? "bg-red-50 text-red-700" :
@@ -311,7 +311,7 @@ export default function AdminPartnerApplicationDetailPage({ params }: { params: 
             )}
             {item.bankPassbookUrl && (
               <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-                <div className="text-xs text-muted-foreground">Bank Passbook</div>
+                <div className="text-xs text-muted-foreground">Bank Passbook / Cancelled Cheque</div>
                 <div className="mt-2">
                   <a 
                     href={item.bankPassbookUrl} 

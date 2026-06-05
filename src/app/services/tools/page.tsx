@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import EMICalculator from "@/components/EmiCalculator";
 
 export const metadata: Metadata = {
-  title: "Tools | Infinity Loans",
+  title: "Tools | Infinity Loans & Business Solutions",
   description:
     "Use loan tools like EMI Calculator and Eligibility Checker to plan affordability before applying.",
 };

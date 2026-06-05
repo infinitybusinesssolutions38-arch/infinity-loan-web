@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 const SalariedLoanSchema = new mongoose.Schema(
 {
     applicationRef: { type: String, required: true, unique: true },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: false },
 
     // Personal details
     firstName: { type: String, required: true },
@@ -23,7 +24,7 @@ const SalariedLoanSchema = new mongoose.Schema(
     mobileNumber: { type: String, required: true },
     whatsappNumber: { type: String, required: false },
     alternateMobile: { type: String, required: false },
-    personalEmail: { type: String, required: true, unique: true, sparse: true },
+    personalEmail: { type: String, required: true },
     officialEmail: { type: String, required: false },
     officeEmailId: { type: String, required: false },
 
@@ -151,7 +152,6 @@ const SalariedLoanSchema = new mongoose.Schema(
     coApplicantEmploymentType: { type: String, required: false },
     coApplicantEmail: { type: String, required: false },
     coApplicantMobile: { type: String, required: false },
-    coApplicantPhotoUrl: { type: String, required: false },
 
     // References
     references: [
@@ -168,28 +168,16 @@ const SalariedLoanSchema = new mongoose.Schema(
     ],
 
     // Documents
-    panPhotoUrl: { type: String, required: false },
-    aadhaarPhotoUrl: { type: String, required: false },
-    aadhaarBackPhotoUrl: { type: String, required: false },
-    coApplicantPanPhotoUrl: { type: String, required: false },
-    coApplicantAadhaarPhotoUrl: { type: String, required: false },
-    coApplicantAadhaarBackPhotoUrl: { type: String, required: false },
-    applicantPhotoUrl: { type: String, required: true },
-    residencePhotoUrl: { type: String, required: false },
     officeIdPhotoUrl: { type: String, required: false },
     salarySlipsUrl: { type: String, required: false },
     bankStatementUrl: { type: String, required: false },
     oneYearBankStatementUrl: { type: String, required: false },
     cibilReportUrl: { type: String, required: false },
-    lastElectricityBillUrl: { type: String, required: false },
     permElectricityBillUrl: { type: String, required: false },
     rentAgreementUrl: { type: String, required: false },
     companyAllotmentLetterUrl: { type: String, required: false },
     quotationFileUrl: { type: String, required: false },
 
-    assessmentYear2324Url: { type: String, required: false },
-    assessmentYear2425Url: { type: String, required: false },
-    assessmentYear2526Url: { type: String, required: false },
     proformaInvoiceFileUrl: { type: String, required: false },
 
     // Other supported documents
@@ -231,6 +219,15 @@ const SalariedLoanSchema = new mongoose.Schema(
         default: "pending",
     },
 
+    documentStatus: {
+        type: String,
+        enum: ["pending", "uploaded", "verified"],
+        default: "pending",
+    },
+    documentsConfirmedAt: { type: Date },
+    adminRemarks: { type: String, default: "" },
+    reviewedAt: { type: Date },
+
     role: {
         type: String,
         default: "borrower-salaried",
@@ -242,6 +239,7 @@ const SalariedLoanSchema = new mongoose.Schema(
 
 // Indexes
 SalariedLoanSchema.index({ personalEmail: 1, mobileNumber: 1 });
+SalariedLoanSchema.index({ userId: 1, createdAt: -1 });
 SalariedLoanSchema.index({ createdAt: -1 });
 
 const SalariedLoanModel =

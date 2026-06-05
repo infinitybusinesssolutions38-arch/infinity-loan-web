@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import LoanDetailPage from "@/components/loans/LoanDetailPage";
 
 export const metadata: Metadata = {
-  title: "Government Schemes | Infinity Loans",
+  title: "Government Schemes | Infinity Loans & Business Solutions",
   description:
     "Explore government-backed loan schemes for MSMEs and entrepreneurs. Check eligibility or apply with guidance.",
 };

@@ -5,65 +5,109 @@ import {
   sendPartnerConfirmationEmail,
   sendPartnerNotificationToAdminEmails,
 } from "../lib/partner-email";
+import { notifyDirectorOnFormSubmit } from "../lib/director-notification-email";
 import { v2 as cloudinary } from "cloudinary";
 
-// Configure Cloudinary
+export const runtime = "nodejs";
+export const maxDuration = 60;
+
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// Helper function to upload file to Cloudinary
-const uploadFile = async (file) => {
-  if (!file || file.size === 0) return "";
+function formText(formData, key) {
+  const value = formData.get(key);
+  if (value == null || typeof value === "object") return "";
+  return String(value).trim();
+}
 
-  const bytes = await file.arrayBuffer();
-  const buffer = Buffer.from(bytes);
+/** Accept 10-digit mobile, or +91 / 0 prefixed Indian numbers. */
+function normalizeIndianMobile(value) {
+  let digits = String(value || "").replace(/\D/g, "");
+  if (digits.length === 12 && digits.startsWith("91")) {
+    digits = digits.slice(2);
+  } else if (digits.length === 11 && digits.startsWith("0")) {
+    digits = digits.slice(1);
+  }
+  return digits;
+}
+
+function isUploadFile(value) {
+  return (
+    value &&
+    typeof value === "object" &&
+    typeof value.arrayBuffer === "function" &&
+    typeof value.size === "number" &&
+    value.size > 0
+  );
+}
+
+async function uploadFile(file) {
+  if (!isUploadFile(file)) return "";
+
+  const buffer = Buffer.from(await file.arrayBuffer());
 
   return new Promise((resolve, reject) => {
-    cloudinary.uploader.upload_stream(
-      {
-        resource_type: "auto",
-        folder: "partner-documents",
-      },
-      (error, result) => {
-        if (error) {
-          console.error("Cloudinary upload error:", error);
-          reject(error);
-        } else {
-          resolve(result.secure_url);
+    cloudinary.uploader
+      .upload_stream(
+        {
+          resource_type: "auto",
+          folder: "partner-documents",
+        },
+        (error, result) => {
+          if (error) {
+            console.error("Cloudinary upload error:", error);
+            reject(error);
+          } else {
+            resolve(result?.secure_url || "");
+          }
         }
-      }
-    ).end(buffer);
+      )
+      .end(buffer);
   });
-};
+}
+
+async function uploadPartnerDocuments(formData) {
+  const fields = [
+    ["aadhaarFront", "aadhaarFrontUrl"],
+    ["aadhaarBack", "aadhaarBackUrl"],
+    ["panFront", "panFrontUrl"],
+    ["bankPassbook", "bankPassbookUrl"],
+    ["passportPhoto", "passportPhotoUrl"],
+  ];
+
+  const urls = {};
+  for (const [inputName, urlField] of fields) {
+    const file = formData.get(inputName);
+    if (!isUploadFile(file)) continue;
+    try {
+      urls[urlField] = await uploadFile(file);
+    } catch (err) {
+      console.error(`Partner document upload failed (${inputName}):`, err?.message || err);
+      urls[urlField] = "";
+    }
+  }
+  return urls;
+}
 
 export async function POST(req) {
   try {
     const formData = await req.formData();
 
-    // Extract form fields
-    const fullName = formData.get("fullName");
-    const mobileNumber = formData.get("mobileNumber");
-    const altMobileNumber = formData.get("altMobileNumber");
-    const whatsappNumber = formData.get("whatsappNumber");
-    const email = formData.get("email");
-    const state = formData.get("state");
-    const city = formData.get("city");
-    const pincode = formData.get("pincode");
-    const preferredLoan = formData.get("preferredLoan");
-    const experience = formData.get("experience");
-    const preferredCategory = formData.get("preferredCategory");
+    const fullName = formText(formData, "fullName");
+    const mobileNumber = normalizeIndianMobile(formText(formData, "mobileNumber"));
+    const altMobileNumber = normalizeIndianMobile(formText(formData, "altMobileNumber"));
+    const whatsappNumber = normalizeIndianMobile(formText(formData, "whatsappNumber"));
+    const email = formText(formData, "email").toLowerCase();
+    const state = formText(formData, "state");
+    const city = formText(formData, "city");
+    const pincode = formText(formData, "pincode").replace(/\D/g, "");
+    const preferredLoan = formText(formData, "preferredLoan");
+    const experience = formText(formData, "experience");
+    const preferredCategory = formText(formData, "preferredCategory");
 
-    // Extract files
-    const aadhaarFront = formData.get("aadhaarFront");
-    const aadhaarBack = formData.get("aadhaarBack");
-    const panFront = formData.get("panFront");
-    const bankPassbook = formData.get("bankPassbook");
-    const passportPhoto = formData.get("passportPhoto");
-
-    // Validation
     if (
       !fullName ||
       !mobileNumber ||
@@ -79,7 +123,6 @@ export async function POST(req) {
       );
     }
 
-    // Validate mobile number (10 digits)
     if (!/^\d{10}$/.test(mobileNumber)) {
       return NextResponse.json(
         { success: false, message: "Please enter a valid 10-digit mobile number" },
@@ -87,7 +130,6 @@ export async function POST(req) {
       );
     }
 
-    // Validate alt mobile number if provided
     if (altMobileNumber && !/^\d{10}$/.test(altMobileNumber)) {
       return NextResponse.json(
         { success: false, message: "Please enter a valid 10-digit alternate mobile number" },
@@ -95,7 +137,6 @@ export async function POST(req) {
       );
     }
 
-    // Validate whatsapp number if provided
     if (whatsappNumber && !/^\d{10}$/.test(whatsappNumber)) {
       return NextResponse.json(
         { success: false, message: "Please enter a valid 10-digit WhatsApp number" },
@@ -103,7 +144,6 @@ export async function POST(req) {
       );
     }
 
-    // Validate pincode (6 digits)
     if (!/^\d{6}$/.test(pincode)) {
       return NextResponse.json(
         { success: false, message: "Please enter a valid 6-digit pincode" },
@@ -111,7 +151,6 @@ export async function POST(req) {
       );
     }
 
-    // Validate email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return NextResponse.json(
@@ -120,82 +159,76 @@ export async function POST(req) {
       );
     }
 
-    // Connect to database
     await connectDB();
 
-    // Check if partner already exists
-    const existingPartner = await PartnerRegisterModel.findOne({
-      $or: [{ email: email.toLowerCase() }, { mobileNumber }],
-    });
-
-    if (existingPartner) {
+    const existingByEmail = await PartnerRegisterModel.findOne({ email }).lean();
+    if (existingByEmail) {
       return NextResponse.json(
-        { success: false, message: "Partner with this email or mobile number already registered" },
+        {
+          success: false,
+          code: "DUPLICATE_EMAIL",
+          message:
+            "This email is already registered as a partner. Use a different email or contact support if you need help.",
+        },
         { status: 400 }
       );
     }
 
-    // Upload files to Cloudinary
-    let aadhaarFrontUrl = "";
-    let aadhaarBackUrl = "";
-    let panFrontUrl = "";
-    let bankPassbookUrl = "";
-    let passportPhotoUrl = "";
-
-    try {
-      if (aadhaarFront && aadhaarFront.size > 0) {
-        aadhaarFrontUrl = await uploadFile(aadhaarFront);
-      }
-      if (aadhaarBack && aadhaarBack.size > 0) {
-        aadhaarBackUrl = await uploadFile(aadhaarBack);
-      }
-      if (panFront && panFront.size > 0) {
-        panFrontUrl = await uploadFile(panFront);
-      }
-      if (bankPassbook && bankPassbook.size > 0) {
-        bankPassbookUrl = await uploadFile(bankPassbook);
-      }
-      if (passportPhoto && passportPhoto.size > 0) {
-        passportPhotoUrl = await uploadFile(passportPhoto);
-      }
-    } catch (uploadError) {
-      console.error("File upload error:", uploadError);
+    const existingByMobile = await PartnerRegisterModel.findOne({ mobileNumber }).lean();
+    if (existingByMobile) {
       return NextResponse.json(
-        { success: false, message: "Error uploading documents. Please try again." },
-        { status: 500 }
+        {
+          success: false,
+          code: "DUPLICATE_MOBILE",
+          message:
+            "This mobile number is already registered as a partner. Use a different number or contact support if you need help.",
+        },
+        { status: 400 }
       );
     }
 
-    // Create new partner registration
-    const newPartner = new PartnerRegisterModel({
+    const documentUrls = await uploadPartnerDocuments(formData);
+
+    const savedPartner = await PartnerRegisterModel.create({
       fullName,
       mobileNumber,
-      altMobileNumber,
-      whatsappNumber,
-      email: email.toLowerCase(),
+      altMobileNumber: altMobileNumber || undefined,
+      whatsappNumber: whatsappNumber || undefined,
+      email,
       state,
       city,
       pincode,
       preferredLoan,
       experience: experience || "Not provided",
       preferredCategory: preferredCategory || "Not specified",
-      aadhaarFrontUrl,
-      aadhaarBackUrl,
-      panFrontUrl,
-      bankPassbookUrl,
-      passportPhotoUrl,
+      aadhaarFrontUrl: documentUrls.aadhaarFrontUrl || "",
+      aadhaarBackUrl: documentUrls.aadhaarBackUrl || "",
+      panFrontUrl: documentUrls.panFrontUrl || "",
+      bankPassbookUrl: documentUrls.bankPassbookUrl || "",
+      passportPhotoUrl: documentUrls.passportPhotoUrl || "",
+      status: "New",
     });
 
-    // Save to database
-    const savedPartner = await newPartner.save();
-
-    // Send emails (non-blocking)
     try {
       await sendPartnerConfirmationEmail(savedPartner);
       await sendPartnerNotificationToAdminEmails(savedPartner);
+      await notifyDirectorOnFormSubmit({
+        serviceName: "Loan Partner Application",
+        referenceId: String(savedPartner._id),
+        submittedAt: savedPartner.createdAt,
+        fields: [
+          { label: "Full Name", value: savedPartner.fullName },
+          { label: "Email", value: savedPartner.email },
+          { label: "Mobile", value: savedPartner.mobileNumber },
+          { label: "City", value: savedPartner.city },
+          { label: "State", value: savedPartner.state },
+          { label: "Preferred Loan", value: savedPartner.preferredLoan },
+        ],
+        actionNote:
+          "Review this partner registration in Admin → Loan Partner Applications.",
+      });
     } catch (emailError) {
-      console.error("Email sending error:", emailError);
-      // Don't fail the response if emails fail
+      console.error("Partner registration email error:", emailError);
     }
 
     return NextResponse.json({
@@ -209,7 +242,6 @@ export async function POST(req) {
         createdAt: savedPartner.createdAt,
       },
     });
-
   } catch (error) {
     console.error("Partner registration error:", error);
     return NextResponse.json(
@@ -219,10 +251,8 @@ export async function POST(req) {
   }
 }
 
-// Optional: GET endpoint to retrieve partner requests (for admin dashboard)
 export async function GET(req) {
   try {
-    // Add authentication check here in production
     const authHeader = req.headers.get("authorization");
     if (!authHeader || authHeader !== `Bearer ${process.env.ADMIN_API_KEY}`) {
       return NextResponse.json(

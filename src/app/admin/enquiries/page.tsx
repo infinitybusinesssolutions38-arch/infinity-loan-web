@@ -24,8 +24,9 @@ export default function AdminEnquiriesPage() {
   const [error, setError] = useState<string | null>(null);
   const [rowSaving, setRowSaving] = useState<Record<string, boolean>>({});
   const [rowStatus, setRowStatus] = useState<Record<string, EnquiryItem["status"]>>({});
+  const [savedFlash, setSavedFlash] = useState<Record<string, boolean>>({});
 
-  const getId = (x: any) => {
+  const getId = (x: EnquiryItem | { _id?: unknown }) => {
     const raw = x?._id;
     if (!raw) return "";
     if (typeof raw === "string") return raw;
@@ -55,7 +56,14 @@ export default function AdminEnquiriesPage() {
         if (!mounted) return;
 
         if (res.ok && data?.success) {
-          setItems(data.data.items || []);
+          const list = Array.isArray(data.data?.items) ? data.data.items : [];
+          setItems(
+            list.map((x: EnquiryItem & { _id?: unknown }) => ({
+              ...x,
+              _id: getId(x),
+              status: (x.status === "Contacted" || x.status === "Closed" ? x.status : "New") as EnquiryItem["status"],
+            }))
+          );
           setPages(data.data.pages || 1);
         } else {
           setItems([]);
@@ -88,13 +96,17 @@ export default function AdminEnquiriesPage() {
     setRowStatus(next);
   }, [items]);
 
-  const updateRowStatus = async (id: string) => {
-    const nextStatus = rowStatus[id] || "New";
+  const updateRowStatus = async (id: string, nextStatus: EnquiryItem["status"]) => {
+    if (!id) {
+      setError("Invalid enquiry id — refresh the page and try again.");
+      return;
+    }
+
     setRowSaving((m) => ({ ...m, [id]: true }));
     setError(null);
 
     try {
-      const res = await fetch(`/api/admin/enquiries/${id}`, {
+      const res = await fetch(`/api/admin/enquiries/${encodeURIComponent(id)}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -103,20 +115,33 @@ export default function AdminEnquiriesPage() {
 
       const data = await res.json().catch(() => ({}));
       if (!res.ok || !data?.success) {
-        setError(data?.message || "Failed to update status");
+        setError(data?.message || `Failed to update status (${res.status})`);
         return;
       }
 
+      const savedStatus = (data.data?.status || nextStatus) as EnquiryItem["status"];
       setItems((prev) =>
-        prev.map((x) =>
-          getId(x) === id ? { ...x, status: data.data?.status || nextStatus } : x
-        )
+        prev.map((x) => (getId(x) === id ? { ...x, status: savedStatus } : x))
       );
+      setRowStatus((m) => ({ ...m, [id]: savedStatus }));
+      setSavedFlash((m) => ({ ...m, [id]: true }));
+      setTimeout(() => {
+        setSavedFlash((m) => {
+          const next = { ...m };
+          delete next[id];
+          return next;
+        });
+      }, 2000);
     } catch {
       setError("Failed to update status");
     } finally {
       setRowSaving((m) => ({ ...m, [id]: false }));
     }
+  };
+
+  const handleStatusChange = (id: string, value: EnquiryItem["status"]) => {
+    setRowStatus((m) => ({ ...m, [id]: value }));
+    void updateRowStatus(id, value);
   };
 
   const badge = (s: string | undefined) => {
@@ -178,7 +203,7 @@ export default function AdminEnquiriesPage() {
               <th className="py-3">Mobile</th>
               <th className="py-3">Subject</th>
               <th className="py-3">Status</th>
-              <th className="py-3">Action</th>
+              <th className="py-3">Change status</th>
               <th className="py-3">View</th>
             </tr>
           </thead>
@@ -197,23 +222,24 @@ export default function AdminEnquiriesPage() {
                   </span>
                 </td>
                 <td className="py-4">
-                  <div className="flex flex-col gap-2 md:flex-row md:items-center">
+                  <div className="flex flex-col gap-1">
                     <select
-                      className="w-full rounded-2xl border border-input bg-background/60 px-3 py-2 text-xs font-semibold outline-none transition focus:border-primary/50 focus:bg-background focus:shadow-[0_0_0_4px_hsl(var(--primary)/0.12)] md:w-36"
+                      className="w-full rounded-2xl border border-input bg-background/60 px-3 py-2 text-xs font-semibold outline-none transition focus:border-primary/50 focus:bg-background md:w-36"
                       value={rowStatus[id] || e.status || "New"}
-                      onChange={(ev) => setRowStatus((m) => ({ ...m, [id]: ev.target.value as any }))}
+                      disabled={!id || !!rowSaving[id]}
+                      onChange={(ev) =>
+                        handleStatusChange(id, ev.target.value as EnquiryItem["status"])
+                      }
                     >
                       <option value="New">New</option>
                       <option value="Contacted">Contacted</option>
                       <option value="Closed">Closed</option>
                     </select>
-                    <button
-                      onClick={() => updateRowStatus(id)}
-                      disabled={!id || !!rowSaving[id]}
-                      className="w-full rounded-2xl bg-gradient-to-r from-cta via-cta to-accent px-3 py-2 text-xs font-semibold text-cta-foreground shadow-glow-cta transition hover:opacity-95 disabled:opacity-50 md:w-auto"
-                    >
-                      {rowSaving[id] ? "Saving..." : "Update"}
-                    </button>
+                    {rowSaving[id] ? (
+                      <span className="text-[10px] text-muted-foreground">Saving…</span>
+                    ) : savedFlash[id] ? (
+                      <span className="text-[10px] font-semibold text-[#16A34A]">Saved</span>
+                    ) : null}
                   </div>
                 </td>
                 <td className="py-4">

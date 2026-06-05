@@ -4,9 +4,32 @@ import { requireAdmin } from "../lib/guard";
 import PersonalLoanModel from "../../models/personal-loan-schema";
 import BusinessLoanModel from "../../models/business-loan-schema";
 import SalariedLoanModel from "../../models/salaried-loan-schema";
+import {
+  buildStatusFilter,
+  normalizeAdminListItem,
+} from "../../lib/admin-application-status";
 
-function normalizeItem(item, type) {
-  return { ...item, _type: type };
+function buildSearchFilter(fields, search) {
+  const filter = {};
+  if (search) {
+    filter.$or = fields.map((f) => ({ [f]: { $regex: search, $options: "i" } }));
+  }
+  return filter;
+}
+
+async function queryModel(Model, loanType, searchFields, { search, status, skip, limit }) {
+  const filter = buildSearchFilter(searchFields, search);
+  Object.assign(filter, buildStatusFilter(loanType, status));
+
+  const [items, total] = await Promise.all([
+    Model.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
+    Model.countDocuments(filter),
+  ]);
+
+  return {
+    items: items.map((i) => normalizeAdminListItem(i, loanType)),
+    total,
+  };
 }
 
 export async function GET(req) {
@@ -18,58 +41,55 @@ export async function GET(req) {
   const { searchParams } = new URL(req.url);
   const search = String(searchParams.get("search") || "").trim();
   const status = String(searchParams.get("status") || "").trim();
-  const type = String(searchParams.get("type") || "").trim();
+  const type = String(searchParams.get("type") || "").trim().toLowerCase();
   const page = Math.max(1, Number(searchParams.get("page") || 1));
   const limit = Math.min(100, Math.max(1, Number(searchParams.get("limit") || 10)));
   const skip = (page - 1) * limit;
 
-  const buildFilter = (fields) => {
-    const filter = {};
+  const common = { search, status, skip, limit };
+  const nameFields = ["firstName", "lastName", "personalEmail", "mobileNumber", "applicationRef"];
+  const personalNameFields = ["firstname", "lastname", "personalEmail", "mobileNumber", "applicationRef"];
 
-    if (search) {
-      filter.$or = fields.map((f) => ({ [f]: { $regex: search, $options: "i" } }));
-    }
+  let items = [];
+  let total = 0;
 
-    if (status) {
-      filter.status = status;
-    }
+  if (type === "salaried") {
+    const result = await queryModel(SalariedLoanModel, "salaried", nameFields, common);
+    items = result.items;
+    total = result.total;
+  } else if (type === "business") {
+    const result = await queryModel(BusinessLoanModel, "business", nameFields, common);
+    items = result.items;
+    total = result.total;
+  } else if (type === "personal") {
+    const result = await queryModel(PersonalLoanModel, "personal", personalNameFields, common);
+    items = result.items;
+    total = result.total;
+  } else {
+    const perTypeLimit = limit;
+    const [salaried, business, personal] = await Promise.all([
+      queryModel(SalariedLoanModel, "salaried", nameFields, {
+        ...common,
+        skip: 0,
+        limit: perTypeLimit,
+      }),
+      queryModel(BusinessLoanModel, "business", nameFields, {
+        ...common,
+        skip: 0,
+        limit: perTypeLimit,
+      }),
+      queryModel(PersonalLoanModel, "personal", personalNameFields, {
+        ...common,
+        skip: 0,
+        limit: perTypeLimit,
+      }),
+    ]);
 
-    return filter;
-  };
-
-  const personalFilter = buildFilter(["firstname", "lastname", "personalEmail", "mobileNumber", "applicationRef"]);
-  const businessFilter = buildFilter(["firstName", "lastName", "personalEmail", "mobileNumber", "applicationRef"]);
-  const salariedFilter = buildFilter(["firstname", "lastname", "personalEmail", "mobileNumber", "applicationRef"]);
-
-  const includePersonal = !type || type === "personal";
-  const includeBusiness = !type || type === "business";
-
-  const [personalItems, personalTotal, businessItems, businessTotal, salariedItems, salariedTotal] = await Promise.all([
-    includePersonal
-      ? PersonalLoanModel.find(personalFilter).sort({ createdAt: -1 }).skip(skip).limit(limit).lean()
-      : Promise.resolve([]),
-    includePersonal ? PersonalLoanModel.countDocuments(personalFilter) : Promise.resolve(0),
-    includeBusiness
-      ? BusinessLoanModel.find(businessFilter).sort({ createdAt: -1 }).skip(skip).limit(limit).lean()
-      : Promise.resolve([]),
-    includeBusiness ? BusinessLoanModel.countDocuments(businessFilter) : Promise.resolve(0),
-    includePersonal
-      ? SalariedLoanModel.find(salariedFilter).sort({ createdAt: -1 }).skip(skip).limit(limit).lean()
-      : Promise.resolve([]),
-    includePersonal ? SalariedLoanModel.countDocuments(salariedFilter) : Promise.resolve(0),
-  ]);
-
-  const items = [
-    ...personalItems.map((i) => normalizeItem(i, "personal")),
-    ...businessItems.map((i) => normalizeItem(i, "business")),
-    ...salariedItems.map((i) => normalizeItem(i, "personal")), // Treat salaried as personal
-  ].sort((a, b) => {
-    const ad = new Date(a.createdAt || 0).getTime();
-    const bd = new Date(b.createdAt || 0).getTime();
-    return bd - ad;
-  });
-
-  const total = personalTotal + businessTotal + salariedTotal;
+    items = [...salaried.items, ...business.items, ...personal.items]
+      .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0))
+      .slice(0, limit);
+    total = salaried.total + business.total + personal.total;
+  }
 
   return NextResponse.json({
     success: true,
@@ -78,7 +98,8 @@ export async function GET(req) {
       total,
       page,
       limit,
-      pages: Math.ceil(total / limit),
+      pages: Math.max(1, Math.ceil(total / limit)),
+      type: type || "all",
     },
   });
 }

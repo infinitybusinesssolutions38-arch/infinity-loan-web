@@ -108,7 +108,7 @@ export default function HeroSection({
 
   return (
     <section
-      className={cx("relative overflow-hidden", className)}
+      className={cx("relative overflow-hidden bg-[#F7F9FC]", className)}
       aria-roledescription="carousel"
       aria-label="Hero carousel"
       onMouseEnter={onMouseEnter}
@@ -137,44 +137,45 @@ export default function HeroSection({
                 fill
                 priority={i === 0}
                 sizes="100vw"
-                className="object-cover"
+                className="object-cover object-top"
               />
-              <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/45 to-black/60" />
-              <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-black/30" />
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(0,174,239,0.22),transparent_55%)]" />
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,rgba(0,174,239,0.14),transparent_60%)]" />
+              <div className="absolute inset-0 bg-white/58" />
             </div>
           );
         })}
       </div>
 
       <div className="relative">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <div className="flex min-h-[520px] items-center py-14 sm:min-h-[620px] sm:py-20 lg:min-h-[720px]">
+        <div className="container-custom">
+          <div className="flex min-h-[500px] items-center py-12 sm:min-h-[600px] sm:py-16 lg:min-h-[700px] lg:py-20">
             <div className="mx-auto w-full max-w-3xl text-center">
               {badgeText ? (
-                <div className="inline-flex items-center rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-semibold text-white shadow-sm backdrop-blur">
+                <div className="inline-flex items-center rounded-full border border-[#B3E8FA] bg-[#E6F7FD] px-4 py-2 text-sm font-semibold text-[#00AEEF] shadow-[0_2px_8px_rgba(0,174,239,0.1)]">
                   {badgeText}
                 </div>
               ) : null}
 
-              <h1 className="mt-5 text-4xl font-bold leading-tight tracking-tight text-white sm:text-5xl lg:text-6xl">
+              <h1 className="mt-6 text-4xl font-bold leading-tight tracking-tight text-[#1A1A1A] sm:text-5xl lg:text-6xl">
                 {headline}
                 {headlineEmphasis ? (
-                  <span className="text-yellow-200"> {headlineEmphasis}</span>
+                  <span className="text-[#00AEEF]"> {headlineEmphasis}</span>
                 ) : null}
               </h1>
 
               {subheading ? (
-                <p className="mt-5 text-base leading-relaxed text-white/85 sm:text-lg">
+                <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-[#4B5563] sm:text-lg">
                   {subheading}
                 </p>
               ) : null}
 
               {(hasPrimary || hasSecondary) && (
-                <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
+                <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
                   {hasPrimary ? (
                     <Link
                       href={primaryCta.href}
-                      className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-white px-6 text-sm font-semibold text-[#007BB0] shadow-lg transition hover:bg-white/90 focus:outline-none focus:ring-4 focus:ring-white/30 sm:w-auto"
+                                            className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-[#00AEEF] bg-[#00AEEF] px-6 text-sm font-semibold text-white shadow-[0_8px_22px_rgba(0,174,239,0.22)] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:bg-[#008FCC] hover:shadow-[0_10px_26px_rgba(0,174,239,0.24)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00AEEF]/35 sm:w-auto"
                       aria-label={primaryCta.ariaLabel || primaryCta.label}
                     >
                       {primaryCta.label}
@@ -185,7 +186,7 @@ export default function HeroSection({
                   {hasSecondary ? (
                     <Link
                       href={secondaryCta.href}
-                      className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-white/35 bg-white/10 px-6 text-sm font-semibold text-white shadow-lg backdrop-blur transition hover:bg-white/15 focus:outline-none focus:ring-4 focus:ring-white/30 sm:w-auto"
+                      className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-[#B3E8FA] bg-white px-6 text-sm font-semibold text-[#00AEEF] shadow-[0_4px_14px_rgba(15,23,42,0.08)] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:border-[#00AEEF]/35 hover:bg-[#F5FCFF] focus:outline-none focus:ring-2 focus:ring-[#00AEEF]/25 sm:w-auto"
                       aria-label={secondaryCta.ariaLabel || secondaryCta.label}
                     >
                       {secondaryCta.label}
@@ -196,11 +197,11 @@ export default function HeroSection({
               )}
 
               {Array.isArray(stats) && stats.length > 0 ? (
-                <div className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-white/80">
+                <div className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-[#4B5563]">
                   {stats.map((s) => (
                     <div key={s.label} className="flex items-center gap-2">
                       {s.icon ? (
-                        <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-white/10 backdrop-blur">
+                        <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-[#E6F7FD] text-[#00AEEF]">
                           {s.icon}
                         </span>
                       ) : null}
@@ -218,10 +219,10 @@ export default function HeroSection({
                       key={i}
                       type="button"
                       className={cx(
-                        "h-2.5 w-2.5 rounded-full transition",
+                        "h-2.5 w-2.5 rounded-full transition-all duration-300 ease-out",
                         isActive
-                          ? "bg-white shadow-[0_0_0_4px_rgba(255,255,255,0.18)]"
-                          : "bg-white/40 hover:bg-white/70"
+                          ? "bg-[#00AEEF] shadow-[0_0_0_4px_rgba(0,174,239,0.16)]"
+                          : "bg-[#BFD7F5] hover:bg-[#00AEEF]/60"
                       )}
                       onClick={() => goTo(i)}
                       aria-label={`Go to slide ${i + 1}`}
@@ -234,7 +235,7 @@ export default function HeroSection({
               <button
                 type="button"
                 onClick={prev}
-                className="absolute left-4 top-1/2 -translate-y-1/2 inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 px-3 py-2 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/15 focus:outline-none focus:ring-4 focus:ring-white/20"
+                className="absolute left-3 top-1/2 -translate-y-1/2 inline-flex items-center justify-center rounded-full border border-[#B3E8FA] bg-white px-3 py-2 text-sm font-semibold text-[#00AEEF] shadow-[0_4px_12px_rgba(15,23,42,0.08)] transition-all duration-300 ease-out hover:border-[#00AEEF]/35 hover:bg-[#F5FCFF] focus:outline-none focus:ring-2 focus:ring-[#00AEEF]/25 sm:left-4"
                 aria-label="Previous slide"
               >
                 <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" aria-hidden="true">
@@ -257,7 +258,7 @@ export default function HeroSection({
               <button
                 type="button"
                 onClick={next}
-                className="absolute right-4 top-1/2 -translate-y-1/2 inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 px-3 py-2 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/15 focus:outline-none focus:ring-4 focus:ring-white/20"
+                className="absolute right-3 top-1/2 -translate-y-1/2 inline-flex items-center justify-center rounded-full border border-[#B3E8FA] bg-white px-3 py-2 text-sm font-semibold text-[#00AEEF] shadow-[0_4px_12px_rgba(15,23,42,0.08)] transition-all duration-300 ease-out hover:border-[#00AEEF]/35 hover:bg-[#F5FCFF] focus:outline-none focus:ring-2 focus:ring-[#00AEEF]/25 sm:right-4"
                 aria-label="Next slide"
               >
                 <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" aria-hidden="true">

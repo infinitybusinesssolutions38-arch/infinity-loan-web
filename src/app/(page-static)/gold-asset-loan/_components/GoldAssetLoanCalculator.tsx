@@ -76,7 +76,7 @@ export default function GoldAssetLoanCalculator() {
             min={0}
             value={inputs.assetValue}
             onChange={(e) => setInputs((prev) => ({ ...prev, assetValue: e.target.value }))}
-            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 shadow-sm outline-none transition focus:border-[#0099D8] focus:ring-4 focus:ring-[#0099D8]/20"
+            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 shadow-sm outline-none transition focus:border-[#00AEEF] focus:ring-4 focus:ring-[#E6F7FD]"
             placeholder="e.g. 1000000"
           />
         </label>
@@ -91,7 +91,7 @@ export default function GoldAssetLoanCalculator() {
             step="0.01"
             value={inputs.ltvPercent}
             onChange={(e) => setInputs((prev) => ({ ...prev, ltvPercent: e.target.value }))}
-            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 shadow-sm outline-none transition focus:border-[#0099D8] focus:ring-4 focus:ring-[#0099D8]/20"
+            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 shadow-sm outline-none transition focus:border-[#00AEEF] focus:ring-4 focus:ring-[#E6F7FD]"
             placeholder="e.g. 75"
           />
         </label>
@@ -105,7 +105,7 @@ export default function GoldAssetLoanCalculator() {
             step="0.01"
             value={inputs.interestRate}
             onChange={(e) => setInputs((prev) => ({ ...prev, interestRate: e.target.value }))}
-            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 shadow-sm outline-none transition focus:border-[#0099D8] focus:ring-4 focus:ring-[#0099D8]/20"
+            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 shadow-sm outline-none transition focus:border-[#00AEEF] focus:ring-4 focus:ring-[#E6F7FD]"
             placeholder="e.g. 11.5"
           />
         </label>
@@ -118,7 +118,7 @@ export default function GoldAssetLoanCalculator() {
             min={0}
             value={inputs.tenureYears}
             onChange={(e) => setInputs((prev) => ({ ...prev, tenureYears: e.target.value }))}
-            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 shadow-sm outline-none transition focus:border-[#0099D8] focus:ring-4 focus:ring-[#0099D8]/20"
+            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 shadow-sm outline-none transition focus:border-[#00AEEF] focus:ring-4 focus:ring-[#E6F7FD]"
             placeholder="e.g. 3"
           />
         </label>
@@ -143,8 +143,8 @@ export default function GoldAssetLoanCalculator() {
         </div>
       </div>
 
-      <div className="mt-4 rounded-xl border border-[#0099D8]/15 bg-[#0099D8]/5 px-4 py-3">
-        <p className="text-xs text-[#004D2C]">
+      <div className="mt-4 rounded-xl border border-[#E6F7FD] bg-[#E6F7FD] px-4 py-3">
+        <p className="text-xs text-[#2E3192]">
           Indicative calculation. Actual EMI and eligible loan amount depend on lender LTV policy, asset type, and final
           sanctioned terms.
         </p>

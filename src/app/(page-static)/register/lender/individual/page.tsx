@@ -78,7 +78,7 @@ const SignupForm = () => {
                     </h2>
                     <p className="text-muted-foreground mb-6">
                         Apply for a loan with flexible repayment options and quick
-                        approvals. Manage your finances smarter with Fortune Loans.
+                        approvals. Manage your finances smarter with Infinity Loans.
                     </p>
                     <ul className="space-y-2 text-muted-foreground">
                         <li>✅ Instant approval process</li>
@@ -213,7 +213,7 @@ const SignupForm = () => {
                                 {...register("agree2", { required: true })}
                             />
                             <label htmlFor="agree2" className="text-sm text-muted-foreground select-none">
-                                I have understood all the risks associated with the lending transactions and acknowledge that Fortune Loans does not assure the return of principal or payment of interest. I am aware that there exists a likelihood of loss of entire principal in case of default by a borrower. Fortune Loans does not provide any assurance or guarantee for the recovery of loans and does not promote peer-to-peer lending as an investment product with features like tenure-linked assured minimum returns, liquidity options, etc.
+                                I have understood all the risks associated with the lending transactions and acknowledge that Infinity Loans does not assure the return of principal or payment of interest. I am aware that there exists a likelihood of loss of entire principal in case of default by a borrower. Infinity Loans does not provide any assurance or guarantee for the recovery of loans and does not promote peer-to-peer lending as an investment product with features like tenure-linked assured minimum returns, liquidity options, etc.
                             </label>
                         </div>
                         {errors.agree2 && (

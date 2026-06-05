@@ -3,7 +3,7 @@ import React from 'react'
 const page = () => {
   return (
     <div>
-      this is fortune experience page
+      Infinity Loans experience page
     </div>
   )
 }

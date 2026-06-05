@@ -20,7 +20,7 @@ const page = () => {
                 <div>
                     <h3 className="text-2xl font-bold border-b">Returns</h3>
                     <p className='my-3'>
-                        Fortune encourages its lenders to build a diversified portfolio by spreading their lending across various loans and loan products at different interest rates. We recommend that lending should be spread, such that returns are a weighted average of the individual loan parts. This is explained through an illustration below.
+                        Infinity Loans encourages its lenders to build a diversified portfolio by spreading their lending across various loans and loan products at different interest rates. We recommend that lending should be spread, such that returns are a weighted average of the individual loan parts. This is explained through an illustration below.
                     </p>
                     <p className='my-3'>
                         For example, on a loan of Rs. 150,000 spread across 3 borrowers, for a period of 1 year at various interest rates; the returns can be as follows:
@@ -59,7 +59,7 @@ const page = () => {
 
                 <div>
                     <p className="my-3">
-                        So, in the example above the lender is earning on an average 16% interest on total lending. Also, Interest earnings can be more or less depending on loan amount split across interest rates. For egs the lender may decide to lend only Rs. 20,000/- @ 12% and increase the amount to Rs. 60,000/- @ 16% and to Rs. 70,000/- @ 20%. This will increase the lender&apos;s average return. At Fortune, what amount to lend at what interest rate is controlled by the lender depending on his/her judgment.
+                        So, in the example above the lender is earning on an average 16% interest on total lending. Also, Interest earnings can be more or less depending on loan amount split across interest rates. For egs the lender may decide to lend only Rs. 20,000/- @ 12% and increase the amount to Rs. 60,000/- @ 16% and to Rs. 70,000/- @ 20%. This will increase the lender&apos;s average return. At Infinity Loans, what amount to lend at what interest rate is controlled by the lender depending on his/her judgment.
                     </p>
                     <p className="my-3">
                         Sounds interesting? SIGN UP now and start making  every % counts!
@@ -69,13 +69,13 @@ const page = () => {
                 <div>
                     <h3 className="text-2xl font-bold border-b">Non-Payment of EMI</h3>
                     <p className="my-3">
-                        Though we do our best to manage the risk at every step, defaults may happen. In such a scenario, Fortune will facilitate the collection through our in-house collection mechanism and also send a legal notice on behalf of the lender to the borrower. Expenses incurred for sending legal notices, by recovery agency and towards other legal proceedings are borne by the lender.
+                        Though we do our best to manage the risk at every step, defaults may happen. In such a scenario, Infinity Loans will facilitate the collection through our in-house collection mechanism and also send a legal notice on behalf of the lender to the borrower. Expenses incurred for sending legal notices, by recovery agency and towards other legal proceedings are borne by the lender.
                     </p>
                 </div>
                 <div>
                     <h3 className="text-2xl font-bold border-b">Registration/ Listing / Subscription Fees</h3>
                     <p className="my-3">
-                        A non-refundable, subscription fee up to Rs. 5,000/- is payable by the lender to Fortune.
+                        A non-refundable, subscription fee up to Rs. 5,000/- is payable by the lender to Infinity Loans.
                     </p>
                 </div>
                 <div>
@@ -102,12 +102,12 @@ const page = () => {
                         A non-refundable fee of Rs. 100/- will be charged for every recharge of less than Rs. 5,000/- in to the Escrow Account. The fees will be deducted from the Lender&apos;s escrow balance.
                     </p>
                     <p>
-                        Lender(s) are obliged to maintain details of their loan including statement of accounts. In case, they need Fortune&apos;s assistance in this regard then a non-refundable fee of Rs. 500/- per statement of accounts will be charged.
+                        Lender(s) are obliged to maintain details of their loan including statement of accounts. In case, they need Infinity Loans' assistance in this regard then a non-refundable fee of Rs. 500/- per statement of accounts will be charged.
                     </p>
                 </div>
                 <div>
                     <p className="my-3">
-                        Fortune.com only facilitates a virtual meeting place between Borrowers and Lenders on its online platform. The decision to lend money to a borrower is entirely at the discretion of the Lenders and Fortune does not guarantee that a borrower will receive any loans from the Lenders. Fortune merely aids and assists Lenders and Borrowers listed on its website to make and receive loans and charges a service fee from Lenders and Borrowers for such assistance. Fortune is only an ‘Intermediary’ under the provisions of the Information Technology Act, 1999.
+                        Infinity Loans only facilitates a virtual meeting place between Borrowers and Lenders on its online platform. The decision to lend money to a borrower is entirely at the discretion of the Lenders and Infinity Loans does not guarantee that a borrower will receive any loans from the Lenders. Infinity Loans merely aids and assists Lenders and Borrowers listed on its website to make and receive loans and charges a service fee from Lenders and Borrowers for such assistance. Infinity Loans is only an ‘Intermediary’ under the provisions of the Information Technology Act, 1999.
                     </p>
                 </div>
             </div>

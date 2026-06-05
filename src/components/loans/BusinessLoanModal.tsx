@@ -1,8 +1,13 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import LoanApplicationSuccessModal from "./LoanApplicationSuccessModal";
 import { useForm } from "react-hook-form";
 import axios from "axios";
+import {
+    resetCloudinarySignatureCache,
+    uploadFileToCloudinary,
+} from "@/lib/cloudinary-client-upload";
 
 type Props = {
     isOpen: boolean;
@@ -12,6 +17,9 @@ type Props = {
 };
 
 export default function BusinessLoanModal({ isOpen, onClose, categoryKey, categoryTitle }: Props) {
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [submittedApplicationRef, setSubmittedApplicationRef] = useState<string | null>(null);
+
     const {
         register,
         handleSubmit,
@@ -20,8 +28,17 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
         formState: { errors },
     } = useForm();
 
+    useEffect(() => {
+        if (!isOpen) setShowSuccessModal(false);
+    }, [isOpen]);
+
+    const handleSuccessClose = () => {
+        setShowSuccessModal(false);
+        setSubmittedApplicationRef(null);
+        onClose();
+    };
+
     const MAX_FILE_BYTES = 5 * 1024 * 1024;
-    const MAX_ITR_FILE_BYTES = 7 * 1024 * 1024;
     const getFileFromValue = (value: any): File | null => {
         if (value instanceof File) return value;
         if (value?.[0] instanceof File) return value[0];
@@ -32,54 +49,10 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
         if (!file) return true;
         return file.size <= MAX_FILE_BYTES || "Max file size is 5MB";
     };
-    const validatePdfOnlyMax7MB = (value: any) => {
-        const file = getFileFromValue(value);
-        if (!file) return true;
-        const isAllowedMime = file.type === "application/pdf";
-        const fileName = typeof file.name === "string" ? file.name.toLowerCase() : "";
-        const isAllowedExt = fileName.endsWith(".pdf");
-        if (!isAllowedMime && !isAllowedExt) return "Please upload PDF only";
-        return file.size <= MAX_ITR_FILE_BYTES || "Max file size is 7MB";
-    };
     const [referenceCount, setReferenceCount] = useState(1);
     const [applicantAssetsCount, setApplicantAssetsCount] = useState(1);
 
-    const getCloudinarySignature = async (folder: string) => {
-        const res = await axios.post("/api/cloudinary-signature", { folder }, { timeout: 60000 });
-        if (!res?.data?.success) {
-            throw new Error(res?.data?.message || "Failed to get upload signature");
-        }
-        return res.data as {
-            cloudName: string;
-            apiKey: string;
-            timestamp: number;
-            folder: string;
-            signature: string;
-        };
-    };
-
-    const uploadToCloudinary = async (file: File, folder: string) => {
-        const sig = await getCloudinarySignature(folder);
-        const uploadUrl = `https://api.cloudinary.com/v1_1/${sig.cloudName}/auto/upload`;
-
-        const fd = new FormData();
-        fd.append("file", file);
-        fd.append("api_key", sig.apiKey);
-        fd.append("timestamp", String(sig.timestamp));
-        fd.append("folder", sig.folder);
-        fd.append("signature", sig.signature);
-
-        const uploadRes = await axios.post(uploadUrl, fd, {
-            timeout: 15000,
-            headers: { "Content-Type": "multipart/form-data" },
-        });
-
-        const secureUrl = await uploadRes?.data?.secure_url;
-        if (!secureUrl || typeof secureUrl !== "string") {
-            throw new Error("Cloud upload failed");
-        }
-        return secureUrl;
-    };
+    const uploadToCloudinary = uploadFileToCloudinary;
 
     const getError = (key: string) => {
         const err = (errors as any)?.[key];
@@ -89,9 +62,6 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
     };
 
     const [loading, setLoading] = useState(false);
-    const [submitSuccess, setSubmitSuccess] = useState<
-        null | { applicationRef?: string; data?: any }
-    >(null);
 
     // Dynamic sections
     const [bankStatements, setBankStatements] = useState<
@@ -188,21 +158,9 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
 
             const pickFirstFile = (value: any): File | null => {
                 if (!value) return null;
-                if (typeof value === "string") return null;
                 if (value instanceof File) return value;
                 if (value?.[0] instanceof File) return value[0];
                 return null;
-            };
-
-            const appendFileOrUrl = async (targetKey: string, value: any, folder: string) => {
-                if (!value) return;
-                if (typeof value === "string") {
-                    appendIfPresent(targetKey, value);
-                    return;
-                }
-                const f = pickFirstFile(value);
-                if (!f) return;
-                formData.append(targetKey, await uploadToCloudinary(f, folder));
             };
 
             if (categoryKey) formData.append("serviceCategoryKey", categoryKey);
@@ -257,57 +215,6 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
             // =============================
             // File Uploads
             // =============================
-            await appendFileOrUrl("applicantPhoto", data.applicantPhoto, "loan_applications/business");
-            await appendFileOrUrl("panPhoto", data.panPhoto, "loan_applications/business");
-            await appendFileOrUrl("aadhaarPhoto", data.aadhaarPhoto, "loan_applications/business");
-            await appendFileOrUrl("aadhaarBackPhoto", data.aadhaarBackPhoto, "loan_applications/business");
-
-            const gstCertificate = pickFirstFile(data.gstCertificate);
-            if (gstCertificate) {
-                formData.append(
-                    "gstCertificate",
-                    await uploadToCloudinary(gstCertificate, "loan_applications/business")
-                );
-            }
-
-            const bankStatement = pickFirstFile(data.bankStatement);
-            if (bankStatement) {
-                formData.append(
-                    "bankStatement",
-                    await uploadToCloudinary(bankStatement, "loan_applications/business")
-                );
-            }
-
-            const itrFile = pickFirstFile(data.itrFile);
-            if (itrFile) {
-                formData.append(
-                    "itrFile",
-                    await uploadToCloudinary(itrFile, "loan_applications/business")
-                );
-            }
-
-            const ay2324 = pickFirstFile(data.AssessmentYear2324);
-            if (ay2324) {
-                formData.append(
-                    "assessmentYear2324",
-                    await uploadToCloudinary(ay2324, "loan_applications/business")
-                );
-            }
-            const ay2425 = pickFirstFile(data.AssessmentYear2425);
-            if (ay2425) {
-                formData.append(
-                    "assessmentYear2425",
-                    await uploadToCloudinary(ay2425, "loan_applications/business")
-                );
-            }
-            const ay2526 = pickFirstFile(data.AssessmentYear2526);
-            if (ay2526) {
-                formData.append(
-                    "assessmentYear2526",
-                    await uploadToCloudinary(ay2526, "loan_applications/business")
-                );
-            }
-
             const proformaInvoiceFile = pickFirstFile(data.proformaInvoiceFile);
             if (proformaInvoiceFile) {
                 formData.append(
@@ -452,72 +359,6 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
             appendIfPresent("coApplicantState", data.CoApplicantState);
             appendIfPresent("coApplicantCity", data.CoApplicantCity);
             appendIfPresent("coApplicantPincode", data.CoApplicantPincode);
-
-            const coApplicantPanPhoto = pickFirstFile(data.CoApplicantpanPhoto);
-            if (coApplicantPanPhoto) {
-                formData.append(
-                    "CoApplicantpanPhoto",
-                    await uploadToCloudinary(coApplicantPanPhoto, "loan_applications/business")
-                );
-            }
-
-            const coApplicantAadhaarPhoto = pickFirstFile(data.CoApplicantAadhaarPhoto);
-            if (coApplicantAadhaarPhoto) {
-                formData.append(
-                    "CoApplicantAadhaarPhoto",
-                    await uploadToCloudinary(
-                        coApplicantAadhaarPhoto,
-                        "loan_applications/business"
-                    )
-                );
-            }
-
-            const coApplicantAadhaarBackPhoto = pickFirstFile(
-                data.CoApplicantAadhaarBackPhoto
-            );
-            if (coApplicantAadhaarBackPhoto) {
-                formData.append(
-                    "CoApplicantAadhaarBackPhoto",
-                    await uploadToCloudinary(
-                        coApplicantAadhaarBackPhoto,
-                        "loan_applications/business"
-                    )
-                );
-            }
-
-            // Address proof (these inputs are currently plain text)
-            const latestHomeElectricityBillFile = pickFirstFile(
-                data.LatestHomeElectricityBill
-            );
-            if (typeof data.LatestHomeElectricityBill === "string") {
-                appendIfPresent("latestHomeElectricityBill", data.LatestHomeElectricityBill);
-            } else if (latestHomeElectricityBillFile) {
-                formData.append(
-                    "latestHomeElectricityBill",
-                    await uploadToCloudinary(
-                        latestHomeElectricityBillFile,
-                        "loan_applications/business"
-                    )
-                );
-            }
-
-            const latestOfficeShopElectricityBillFile = pickFirstFile(
-                data["LatestOfficeShopElectricityBill "]
-            );
-            if (typeof data["LatestOfficeShopElectricityBill "] === "string") {
-                appendIfPresent(
-                    "latestOfficeShopElectricityBill",
-                    data["LatestOfficeShopElectricityBill "]
-                );
-            } else if (latestOfficeShopElectricityBillFile) {
-                formData.append(
-                    "latestOfficeShopElectricityBill",
-                    await uploadToCloudinary(
-                        latestOfficeShopElectricityBillFile,
-                        "loan_applications/business"
-                    )
-                );
-            }
 
             // Registration certificate selection
             const businessRegistrationCertificatesArray: string[] = Array.isArray(
@@ -697,10 +538,12 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                 throw new Error(res?.data?.message || "Submission failed");
             }
 
-            setSubmitSuccess({
-                applicationRef: res?.data?.applicationRef,
-                data: res?.data?.data,
-            });
+            const ref =
+                res?.data?.applicationRef ||
+                res?.data?.data?.applicationRef ||
+                null;
+            setSubmittedApplicationRef(ref ? String(ref) : null);
+            setShowSuccessModal(true);
         } catch (error) {
             console.error(error);
             const message =
@@ -709,6 +552,7 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                 (error instanceof Error ? error.message : "Something went wrong");
             alert(message);
         } finally {
+            resetCloudinarySignatureCache();
             setLoading(false);
         }
     };
@@ -739,20 +583,29 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
     // ------------------ UI ------------------
 
     return (
+        <>
+        <LoanApplicationSuccessModal
+            isOpen={showSuccessModal}
+            onClose={handleSuccessClose}
+            applicationRef={submittedApplicationRef}
+            categoryKey={categoryKey}
+            categoryTitle={categoryTitle}
+        />
         <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm sm:p-6 overflow-auto"
+            className={`fixed inset-0 z-50 flex items-center justify-center overflow-auto bg-[#0F172A]/28 p-4 sm:p-6 ${showSuccessModal ? "pointer-events-none" : ""}`}
+            aria-hidden={showSuccessModal}
             onClick={(e) => {
-                if (e.target === e.currentTarget) onClose();
+                if (e.target === e.currentTarget && !showSuccessModal) onClose();
             }}
         >
-            <div className="relative w-full max-w-5xl overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-black/5 max-h-[92vh] flex flex-col">
-                <div className="sticky top-0 z-10 border-b bg-gradient-to-r from-gray-950 via-gray-900 to-gray-950 px-6 pt-6 pb-5 text-white sm:px-8">
+            <div className="relative flex max-h-[92vh] w-full max-w-3xl flex-col overflow-hidden rounded-[20px] bg-white shadow-[0_14px_30px_rgba(15,23,42,0.12)] ring-1 ring-[#D6EEF8]">
+                <div className="sticky top-0 z-10 border-b border-[#D6EEF8] bg-[#F5FCFF] px-6 pb-5 pt-6 text-[#1A1A1A] sm:px-8">
                     <div className="relative">
                         <button
                             type="button"
                             onClick={onClose}
                             aria-label="Close"
-                            className="absolute right-3 top-3 rounded-full p-2 text-white/80 transition hover:bg-white/10 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/40"
+                            className="absolute right-3 top-3 rounded-full p-2 text-[#6B7280] transition-all duration-300 ease-out hover:bg-[#E6F7FD] hover:text-[#00AEEF] focus:outline-none focus:ring-2 focus:ring-[#00AEEF]/25"
                         >
                             ×
                         </button>
@@ -767,69 +620,11 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                     </div>
                 </div>
 
-                {submitSuccess ? (
-                    <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6 sm:px-8 sm:py-8 bg-gray-50">
-                        <div className="rounded-2xl border border-green-200 bg-green-50 p-5 shadow-sm sm:p-6">
-                            <h3 className="text-base font-semibold text-green-700">Application submitted successfully</h3>
-                            <div className="mt-2 text-sm text-green-800">
-                                <div>
-                                    <span className="font-semibold">Application Number:</span>{" "}
-                                    {submitSuccess.applicationRef || "-"}
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                            <h3 className="mb-4 text-base font-semibold text-[#0099D8]">Uploaded Documents</h3>
-                            {(() => {
-                                const data = submitSuccess.data || {};
-                                const entries = Object.entries(data);
-                                const docs: Array<{ label: string; url: string }> = [];
-
-                                for (const [k, v] of entries) {
-                                    if (!v) continue;
-                                    if (typeof v === "string" && k.toLowerCase().includes("url")) {
-                                        docs.push({ label: k, url: v });
-                                        continue;
-                                    }
-                                    if (Array.isArray(v) && k.toLowerCase().includes("url")) {
-                                        v.filter(Boolean).forEach((u: any, idx: number) => {
-                                            if (typeof u === "string") {
-                                                docs.push({ label: `${k} ${idx + 1}`, url: u });
-                                            }
-                                        });
-                                        continue;
-                                    }
-                                }
-
-                                const uniqueDocs = docs.filter((d, idx) => docs.findIndex((x) => x.url === d.url) === idx);
-
-                                return uniqueDocs.length ? (
-                                    <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-                                        {uniqueDocs.map((d) => (
-                                            <a
-                                                key={d.url}
-                                                href={d.url}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="rounded-xl border border-border/70 bg-background/50 p-4 text-sm font-medium text-[#007BB0] hover:bg-background/70"
-                                            >
-                                                {d.label}
-                                            </a>
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <div className="text-sm text-gray-600">No document links found in the response.</div>
-                                );
-                            })()}
-                        </div>
-                    </div>
-                ) : (
-                    <form id="businessLoanForm" onSubmit={handleSubmit(onSubmit)} className="flex-1 overflow-y-auto px-6 py-6 space-y-6 sm:px-8 sm:py-8 bg-gray-50">
+                <form id="businessLoanForm" onSubmit={handleSubmit(onSubmit)} className="flex-1 space-y-6 overflow-y-auto bg-[#F7F9FC] px-6 py-6 sm:px-8 sm:py-8">
 
                     {/* =================A. BASIC DETAILS ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-bold text-[#0099D8]">1. Applicant Basic Details</h3>
+                        <h3 className="mb-4 text-base font-bold text-[#00AEEF]">1. Applicant Basic Details</h3>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 
                             <div className="space-y-1">
@@ -967,7 +762,7 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= B. Residential Address Details ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-bold text-[#0099D8]">2. Applicant Current Residential Address Details</h3>
+                        <h3 className="mb-4 text-base font-bold text-[#00AEEF]">2. Applicant Current Residential Address Details</h3>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Current Residential Address <span className="text-destructive">*</span></label>
@@ -1003,7 +798,7 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= C. Office/Shop Address Details ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-bold text-[#0099D8]">3. Applicant Current Office/Shop Address Details</h3>
+                        <h3 className="mb-4 text-base font-bold text-[#00AEEF]">3. Applicant Current Office/Shop Address Details</h3>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Current Office/Shop Address <span className="text-destructive">*</span></label>
@@ -1034,14 +829,6 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                                 ) : null}
                             </div>
                             <div className="space-y-1">
-                                <label className="text-sm font-medium">Shop/office photo  <span className="text-destructive">(Optional (JPEG only, Max size: 5 MB))</span></label>
-                                <input type="file" {...register("Shopofficephoto")} placeholder="Pincode" className="py-2 px-2 mx-2 w-[80%] rounded-md bg-gray-200" />
-                            </div>
-                            <div className="space-y-1">
-                                <label className="text-sm font-medium"> Additional photo  upload option <span className="text-destructive">(Optional (JPEG only, Max size: 5 MB))</span></label>
-                                <input type="file" {...register("Additionalphotouploadoption")} placeholder="Pincode" className="py-2 mx-2 w-[80%] px-2 rounded-md bg-gray-200" />
-                            </div>
-                            <div className="space-y-1">
                                 <label className="text-sm font-medium">Type of Company <span className="text-destructive">(optional)</span></label>
                                 <select  {...register("typeofcompany")} className="py-2 px-1 rounded-md bg-gray-200" >
                                     <option value="">Select your business type</option>
@@ -1055,7 +842,7 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= D. Loan Requirement Details ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-bold text-[#0099D8]">4. Applicant Loan Requirement Details</h3>
+                        <h3 className="mb-4 text-base font-bold text-[#00AEEF]">4. Applicant Loan Requirement Details</h3>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Required Loan Amount <span className="text-destructive">*</span></label>
@@ -1086,7 +873,7 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= E. ID PROOF ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-bold text-[#0099D8]">5. Applicant KYC Document Details</h3>
+                        <h3 className="mb-4 text-base font-bold text-[#00AEEF]">5. Applicant KYC Document Details</h3>
                         <div className="grid md:grid-cols-3 gap-4">
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">PAN Number <span className="text-destructive">*</span></label>
@@ -1102,40 +889,12 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                                     <p className="text-sm text-red-600">{getError("aadhaarNumber")}</p>
                                 ) : null}
                             </div>
-                            <div className="space-y-1">
-                                <label className="text-sm font-medium">PAN Card Photo <span className="text-destructive">JPEG or PDF allowed (Max size: 5 MB)*</span></label>
-                                <input type="file" {...register("panPhoto", { validate: validateMax2MB })} className="input bg-gray-200" />
-                                {getError("panPhoto") ? (
-                                    <p className="text-sm text-red-600">{getError("panPhoto")}</p>
-                                ) : null}
-                            </div>
-                            <div className="space-y-1">
-                                <label className="text-sm font-medium">Aadhaar Card Front Photo <span className="text-destructive">JPEG or PDF allowed (Max size: 5 MB)*</span></label>
-                                <input type="file" {...register("aadhaarPhoto", { validate: validateMax2MB })} className="input bg-gray-200" />
-                                {getError("aadhaarPhoto") ? (
-                                    <p className="text-sm text-red-600">{getError("aadhaarPhoto")}</p>
-                                ) : null}
-                            </div>
-                            <div className="space-y-1">
-                                <label className="text-sm font-medium">Aadhaar Card Back Photo <span className="text-destructive">JPEG or PDF allowed (Max size: 5 MB)*</span></label>
-                                <input type="file" {...register("aadhaarBackPhoto", { validate: validateMax2MB })} className="input bg-gray-200" />
-                                {getError("aadhaarBackPhoto") ? (
-                                    <p className="text-sm text-red-600">{getError("aadhaarBackPhoto")}</p>
-                                ) : null}
-                            </div>
-                            <div className="space-y-1">
-                                <label className="text-sm font-medium">Applicant Photo <span className="text-destructive">JPEG only (Max size: 5 MB)*</span></label>
-                                <input type="file" {...register("applicantPhoto", { required: true, validate: validateMax2MB })} className="input bg-gray-200" />
-                                {getError("applicantPhoto") ? (
-                                    <p className="text-sm text-red-600">{getError("applicantPhoto")}</p>
-                                ) : null}
-                            </div>
                         </div>
                     </div>
 
                     {/* ================= F Co-Applicant Details ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-bold text-[#0099D8]">6. Co-Applicant Details (If Any)</h3>
+                        <h3 className="mb-4 text-base font-bold text-[#00AEEF]">6. Co-Applicant Details (If Any)</h3>
                         <div className="grid md:grid-cols-2 gap-4">
                             <div className="space-y-1 flex flex-col">
                                 <label className="text-sm font-medium">Co-Applicant Name <span className="text-red-400 text-xs">(optional)</span></label>
@@ -1149,28 +908,6 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                             <div className="space-y-1 flex flex-col">
                                 <label className="text-sm font-medium">Co-Applicant Employment Type <span className="text-red-400 text-xs">(optional)</span></label>
                                 <input {...register("CoApplicantEmploymentType")} placeholder="Co-Applicant Employment Type" className="input bg-gray-200" />
-                            </div>
-
-                            <div className="space-y-1 flex flex-col">
-                                <label className="text-sm font-medium">Co-Applicant PAN Card Photo <span className="text-destructive">(optional, JPEG or PDF allowed (Max size: 5 MB))</span></label>
-                                <input type="file" {...register("CoApplicantpanPhoto", { validate: validateMax2MB })} className="input bg-gray-200" />
-                                {getError("CoApplicantpanPhoto") ? (
-                                    <p className="text-sm text-red-600">{getError("CoApplicantpanPhoto")}</p>
-                                ) : null}
-                            </div>
-                            <div className="space-y-1 flex flex-col">
-                                <label className="text-sm font-medium">Co-Applicant Aadhaar Front Photo <span className="text-destructive">(optional, JPEG or PDF allowed (Max size: 5 MB))</span></label>
-                                <input type="file" {...register("CoApplicantAadhaarPhoto", { validate: validateMax2MB })} className="input bg-gray-200" />
-                                {getError("CoApplicantAadhaarPhoto") ? (
-                                    <p className="text-sm text-red-600">{getError("CoApplicantAadhaarPhoto")}</p>
-                                ) : null}
-                            </div>
-                            <div className="space-y-1 flex flex-col">
-                                <label className="text-sm font-medium">Co-Applicant Aadhaar Back Photo <span className="text-destructive">(optional,JPEG or PDF allowed (Max size: 5 MB))</span></label>
-                                <input type="file" {...register("CoApplicantAadhaarBackPhoto", { validate: validateMax2MB })} className="input bg-gray-200" />
-                                {getError("CoApplicantAadhaarBackPhoto") ? (
-                                    <p className="text-sm text-red-600">{getError("CoApplicantAadhaarBackPhoto")}</p>
-                                ) : null}
                             </div>
 
                             <div className="space-y-1 flex flex-col">
@@ -1206,34 +943,10 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                         </div>
                     </div>
 
-                    {/* ================= G Address Proof Documents ================= */}
-                    <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-bold text-[#0099D8]">7. Applicant Address Proof Documents</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="space-y-1">
-                                <label className="text-sm font-medium">Latest Home Electricity Bill (Only PDF Allowed) <span className="text-destructive">*</span></label>
-                                <input type="file" accept="application/pdf" {...register("LatestHomeElectricityBill", { required: true, validate: validateMax2MB })} className="input bg-gray-200" />
-                                {getError("LatestHomeElectricityBill") ? (
-                                    <p className="text-sm text-red-600">{getError("LatestHomeElectricityBill")}</p>
-                                ) : null}
-                            </div>
-                            <div className="space-y-1">
-                                <label className="text-sm font-medium">Latest Office/Shop Electricity Bill (Only PDF Allowed)  <span className="text-destructive">*</span></label>
-                                <input type="file" accept="application/pdf" {...register("LatestOfficeShopElectricityBill ", { required: true, validate: validateMax2MB })} className="input bg-gray-200" />
-                                {getError("LatestOfficeShopElectricityBill ") ? (
-                                    <p className="text-sm text-red-600">{getError("LatestOfficeShopElectricityBill ")}</p>
-                                ) : null}
-                            </div>
-
-                        </div>
-                    </div>
-
-
-
                     {/* ================= H. BANK STATEMENTS ================= */}
 
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-1 text-base font-bold text-[#0099D8]">8. Applicant Bank Statement Details</h3>
+                        <h3 className="mb-1 text-base font-bold text-[#00AEEF]">7. Applicant Bank Statement Details</h3>
                         <span className="text-sm">(pdf should not be protected with password  else write down the password)</span>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1">
@@ -1345,7 +1058,7 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* =================I. EXISTING LOANS ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-bold text-[#0099D8]">9. Applicant Existing Loan Details</h3>
+                        <h3 className="mb-4 text-base font-bold text-[#00AEEF]">8. Applicant Existing Loan Details</h3>
                         <div className="flex flex-col mb-2">
                             <label className="text-sm font-medium">Number Of Existing Loans<span className="text-red-400 text-xs">(optional)</span></label>
                             <select {...register("NumberOfExistingLoans")} className="input bg-gray-200" >
@@ -1490,50 +1203,15 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                                     },
                                 ])
                             }
-                            className="mt-2 inline-flex w-fit items-center justify-center rounded-lg border border-[#0099D8]/20 bg-[#0099D8]/5 px-3 py-2 text-sm font-medium text-[#007BB0] transition hover:bg-[#0099D8]/10"
+                            className="mt-2 inline-flex w-fit items-center justify-center rounded-lg border border-[#D6EEF8] bg-[#E6F7FD] px-3 py-2 text-sm font-medium text-[#008FCC] transition hover:bg-[#E6F7FD]"
                         >
                             + Add More
                         </button>
                     </div>
 
-                    {/* ================= J ================= */}
-                    <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-bold text-[#0099D8]">10. Applicant Income Tax Return</h3>
-                        <div className="grid grid-col-2 gap-3">
-                            <div className="space-y-1">
-                                <div>
-                                    <label className="text-sm font-medium">Assessment Year 2023-24 <span className="text-destructive">(Optional - PDF only (Max 7 MB))</span></label>
-                                </div>
-                                <input type="file" accept="application/pdf" {...register("AssessmentYear2324", { validate: validatePdfOnlyMax7MB })} className="input bg-gray-200" />
-                                {getError("AssessmentYear2324") ? (
-                                    <p className="text-sm text-red-600">{getError("AssessmentYear2324")}</p>
-                                ) : null}
-                            </div>
-                            <div className="space-y-1">
-                                <div>
-                                    <label className="text-sm font-medium">Assessment Year 2024-25 <span className="text-destructive">(Optional - PDF only (Max 7 MB))</span></label>
-                                </div>
-                                <input type="file" accept="application/pdf" {...register("AssessmentYear2425", { validate: validatePdfOnlyMax7MB })} className="input bg-gray-200" />
-                                {getError("AssessmentYear2425") ? (
-                                    <p className="text-sm text-red-600">{getError("AssessmentYear2425")}</p>
-                                ) : null}
-                            </div>
-                            <div className="space-y-1">
-                                <div>
-                                    <label className="text-sm font-medium">Assessment Year 2025-26 <span className="text-destructive">(Optional - PDF only (Max 7 MB))</span></label>
-                                </div>
-                                <input type="file" accept="application/pdf" {...register("AssessmentYear2526", { validate: validatePdfOnlyMax7MB })} className="input bg-gray-200" />
-                                {getError("AssessmentYear2526") ? (
-                                    <p className="text-sm text-red-600">{getError("AssessmentYear2526")}</p>
-                                ) : null}
-                            </div>
-
-                        </div>
-                    </div>
-
                     {/* =================K Applicant  GST Return ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-bold text-[#0099D8]">11. Applicant   GST Return </h3>
+                        <h3 className="mb-4 text-base font-bold text-[#00AEEF]">9. Applicant   GST Return </h3>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1">
@@ -1625,7 +1303,7 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= 12. Business Registration Certificates ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-bold text-[#0099D8]">12. Business Registration Certificates(one document mandatory)</h3>
+                        <h3 className="mb-4 text-base font-bold text-[#00AEEF]">10. Business Registration Certificates(one document mandatory)</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Business Registration Certificates <span className="text-red-400">*</span></label>
@@ -1689,7 +1367,7 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                     </div>
                     {/* ================= 13. Buying Goods ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-bold text-[#0099D8]">13. Buying Goods</h3>
+                        <h3 className="mb-4 text-base font-bold text-[#00AEEF]">11. Buying Goods</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1">
                                 <div>
@@ -1758,7 +1436,7 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= 14. Applicant CIBIL Score ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-[#0099D8]">14. Applicant CIBIL Score</h3>
+                        <h3 className="mb-4 text-base font-semibold text-[#00AEEF]">12. Applicant CIBIL Score</h3>
                         <div className="space-y-1">
                             <div>
                                 <label className="text-sm font-medium">CIBIL Available <span className="text-destructive">*</span></label>
@@ -1806,7 +1484,7 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= 15. Upload Other Supported Document ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-bold text-[#0099D8]">15. Upload Other Supported Document</h3>
+                        <h3 className="mb-4 text-base font-bold text-[#00AEEF]">13. Upload Other Supported Document</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Number of Other Documents</label>
@@ -1867,7 +1545,7 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= 16. Reference name details ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-[#0099D8]">16. Reference name details</h3>
+                        <h3 className="mb-4 text-base font-semibold text-[#00AEEF]">14. Reference name details</h3>
                         <span>(Give 4 Reference Details)</span>
                         {Array.from({ length: Math.max(1, referenceCount || 1) }).map((_, idx) => {
                             const suffix = idx === 0 ? "" : `_${idx}`;
@@ -1912,7 +1590,7 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
 
                         <button
                             type="button"
-                            className="mt-3 inline-flex w-fit items-center justify-center rounded-lg border border-[#0099D8]/20 bg-[#0099D8]/5 px-3 py-2 text-sm font-medium text-[#007BB0] transition hover:bg-[#0099D8]/10"
+                            className="mt-3 inline-flex w-fit items-center justify-center rounded-lg border border-[#D6EEF8] bg-[#E6F7FD] px-3 py-2 text-sm font-medium text-[#008FCC] transition hover:bg-[#E6F7FD]"
                             onClick={() => setReferenceCount((c) => Math.max(1, (c || 1) + 1))}
                         >
                             Add More Reference Details
@@ -1921,7 +1599,7 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= 17. Applicant Assets details ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-bold text-[#0099D8]">17. Applicant Assets details digital or physical</h3>
+                        <h3 className="mb-4 text-base font-bold text-[#00AEEF]">15. Applicant Assets details digital or physical</h3>
                         {Array.from({ length: applicantAssetsCount }).map((_, idx) => (
                             <div key={idx} className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-1">
@@ -1955,7 +1633,7 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                         ))}
                         <button
                                 type="button"
-                                className="mt-3 inline-flex w-fit items-center justify-center rounded-lg border border-[#0099D8]/20 bg-[#0099D8]/5 px-3 py-2 text-sm font-medium text-[#007BB0] transition hover:bg-[#0099D8]/10"
+                                className="mt-3 inline-flex w-fit items-center justify-center rounded-lg border border-[#D6EEF8] bg-[#E6F7FD] px-3 py-2 text-sm font-medium text-[#008FCC] transition hover:bg-[#E6F7FD]"
                                 onClick={() => setApplicantAssetsCount((c) => Math.max(1, (c || 1) + 1))}
                             >
                                 Add More 
@@ -1964,7 +1642,7 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= 18. Applicant Medical History ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-bold text-[#0099D8]">18. Applicant Medical History</h3>
+                        <h3 className="mb-4 text-base font-bold text-[#00AEEF]">16. Applicant Medical History</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1">
                                 <div>
@@ -2024,7 +1702,7 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= 19. Applicant Addictive Habits ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-bold text-[#0099D8]">19. Applicant Addictive Habits</h3>
+                        <h3 className="mb-4 text-base font-bold text-[#00AEEF]">17. Applicant Addictive Habits</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1">
                                 <div>
@@ -2068,7 +1746,7 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= 20. Applicant Civil or Criminal Case history ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-bold text-[#0099D8]">20. Applicant Civil or Criminal Case history</h3>
+                        <h3 className="mb-4 text-base font-bold text-[#00AEEF]">18. Applicant Civil or Criminal Case history</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1">
                                 <div>
@@ -2113,7 +1791,7 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= 21. Consent ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-bold text-[#0099D8]">21. Consent</h3>
+                        <h3 className="mb-4 text-base font-bold text-[#00AEEF]">19. Consent</h3>
                         <div className="space-y-3">
                             <div className="flex items-start gap-3">
                                 <input type="checkbox" {...register("consent", { required: true })} className="mt-1 h-4 w-4" />
@@ -2131,28 +1809,29 @@ export default function BusinessLoanModal({ isOpen, onClose, categoryKey, catego
                         </div>
                     </div>
 
-                    </form>
-                )}
+                </form>
 
-                <div className="sticky bottom-0 z-10 border-t bg-white/90 px-6 py-4 backdrop-blur sm:px-8">
-                    <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end sm:gap-4">
-                        <button type="button" onClick={onClose} className="w-full rounded-xl border border-gray-300 bg-white px-6 py-2.5 text-sm font-semibold text-gray-700 shadow-sm transition hover:bg-gray-50 sm:w-auto">
+                <div className="sticky bottom-0 z-10 border-t border-[#D6EEF8] bg-white px-6 py-4 sm:px-8">
+                    <div className="flex flex-col-reverse  gap-3 sm:flex-row sm:justify-end sm:gap-4">
+                        <button
+                            type="button"
+                            onClick={onClose}
+                            className="w-full rounded-xl border border-gray-300 bg-white px-6 py-2.5 text-sm font-semibold text-gray-700 shadow-sm transition hover:bg-gray-50 sm:w-auto"
+                        >
                             Cancel
                         </button>
-                        {!submitSuccess ? (
-                            <button
-                                type="submit"
-                                form="businessLoanForm"
-                                disabled={loading}
-                                className="w-full rounded-xl px-6 py-2.5 text-sm bg-[#0099D8] font-semibold text-white shadow-lg transition hover:opacity-95 disabled:opacity-60 sm:w-auto "
-                            >
-                                {loading ? "Submitting..." : "Submit"}
-                            </button>
-                        ) : null}
+                        <button
+                            type="submit"
+                            form="businessLoanForm"
+                            disabled={loading}
+                            className="w-full rounded-xl px-6 py-2.5 text-sm bg-[#00AEEF] font-semibold text-white shadow-lg transition hover:opacity-95 disabled:opacity-60 sm:w-auto "
+                        >
+                            {loading ? "Submitting..." : "Submit"}
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
+        </>
     );
-
 }

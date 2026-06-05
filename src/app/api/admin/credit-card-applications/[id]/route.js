@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import connectDB from "../../../lib/db";
 import { requireAdmin } from "../../lib/guard";
 import CreditCardModel from "../../../models/credit-card-schema";
+import { toAdminDisplayStatus } from "../../../lib/admin-application-status";
+import { maybeSendStatusChangeEmail } from "../../../lib/loan-status-email";
 
 export async function GET(req, { params }) {
   const auth = requireAdmin(req);
@@ -10,13 +12,11 @@ export async function GET(req, { params }) {
   await connectDB();
 
   try {
-    console.log("Fetching credit card application with ID:", params.id);
-    
-    const application = await CreditCardModel.findById(params.id);
-    console.log("Found application:", application);
-    
+    const resolvedParams = await params;
+    const id = resolvedParams?.id;
+    const application = await CreditCardModel.findById(id).lean();
+
     if (!application) {
-      console.log("Application not found for ID:", params.id);
       return NextResponse.json(
         { success: false, message: "Application not found" },
         { status: 404 }
@@ -25,7 +25,7 @@ export async function GET(req, { params }) {
 
     return NextResponse.json({
       success: true,
-      data: application,
+      data: { ...application, status: toAdminDisplayStatus(application) },
     });
   } catch (error) {
     console.error("Error fetching credit card application:", error);
@@ -43,18 +43,30 @@ export async function PATCH(req, { params }) {
   await connectDB();
 
   try {
-    const body = await req.json();
+    const resolvedParams = await params;
+    const id = resolvedParams?.id;
+    const body = await req.json().catch(() => ({}));
     const { status, adminRemarks } = body;
 
-    const application = await CreditCardModel.findByIdAndUpdate(
-      params.id,
-      { 
-        status: status || "Pending",
-        adminRemarks: adminRemarks || "",
-        updatedAt: new Date()
-      },
-      { new: true }
-    );
+    if (status !== undefined && !["Pending", "Approved", "Rejected"].includes(status)) {
+      return NextResponse.json({ success: false, message: "Invalid status" }, { status: 400 });
+    }
+
+    const patch = { reviewedAt: new Date() };
+    if (status !== undefined) patch.status = String(status).toLowerCase();
+    if (adminRemarks !== undefined) patch.adminRemarks = adminRemarks;
+
+    const existing = await CreditCardModel.findById(id).lean();
+    if (!existing) {
+      return NextResponse.json(
+        { success: false, message: "Application not found" },
+        { status: 404 }
+      );
+    }
+
+    const previousStatus = toAdminDisplayStatus(existing);
+
+    const application = await CreditCardModel.findByIdAndUpdate(id, patch, { new: true }).lean();
 
     if (!application) {
       return NextResponse.json(
@@ -63,9 +75,19 @@ export async function PATCH(req, { params }) {
       );
     }
 
+    if (status !== undefined) {
+      await maybeSendStatusChangeEmail({
+        previousStatus,
+        newStatus: status,
+        record: application,
+        loanType: "credit-card",
+        adminRemarks,
+      });
+    }
+
     return NextResponse.json({
       success: true,
-      data: application,
+      data: { ...application, status: toAdminDisplayStatus(application) },
     });
   } catch (error) {
     console.error("Error updating credit card application:", error);

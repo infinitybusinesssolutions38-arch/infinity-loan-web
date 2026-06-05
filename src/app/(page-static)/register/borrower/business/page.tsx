@@ -133,7 +133,7 @@ const SignupForm = () => {
                     </h2>
                     <p className="text-muted-foreground mb-6">
                         Apply for a business loan with flexible repayment options and quick
-                        approvals. Manage your finances smarter with Fortune Loans.
+                        approvals. Manage your finances smarter with Infinity Loans.
                     </p>
                     <ul className="space-y-2 text-muted-foreground">
                         <li>✅ Instant approval process</li>

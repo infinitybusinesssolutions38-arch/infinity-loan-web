@@ -7,15 +7,17 @@ import {
     Upload,
     CheckCircle2,
     Rocket,
+    Clock,
     Shield,
+    Zap,
     ChevronDown,
     HelpCircle,
     Sparkles,
     ArrowRight,
     CircleDot,
     MousePointerClick,
+    TrendingUp,
 } from "lucide-react";
-import { ScrollReveal } from "@/components/ui/scroll-reveal";
 
 // Replace these with your actual data
 const activeHowItWorks = [
@@ -137,133 +139,128 @@ export default function ModernSections() {
     return (
         <div className="w-full">
             {/* HOW IT WORKS SECTION */}
-            <section className="py-16 lg:py-24 relative overflow-hidden">
-                {/* Background Elements (removed parent dark gradient to inherit page background) */}
-                <div className="absolute top-0 right-0 w-96 h-96 bg-[#0099D8]/10 rounded-full blur-3xl" />
-                <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#0099D8]/10 rounded-full blur-3xl" />
+            <section className="py-16 lg:py-24 relative overflow-hidden bg-[#F7F9FC]">
+                {/* Background Elements */}
+                <div className="absolute top-0 right-0 h-96 w-96 rounded-full bg-[#E6F7FD] opacity-60 blur-3xl" />
+                <div className="absolute bottom-0 left-0 h-96 w-96 rounded-full bg-[#E6F7FD] opacity-60 blur-3xl" />
 
-                <div className="container mx-auto px-4 lg:px-8 relative z-10">
+                <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8 relative z-10">
                     {/* Header */}
-                    <ScrollReveal animation="fade-in-up">
-                        <div className="mx-auto mb-16 max-w-3xl text-center">
-                            <div className="mb-6 inline-flex animate-fade-in items-center gap-2 rounded-full border-2 border-[#0099D8]/30 bg-[#0099D8]/5 px-5 py-2.5 shadow-sm">
-                                <Sparkles className="h-4 w-4 text-[#0099D8]" />
-                                <span className="text-sm font-bold uppercase tracking-wide text-[#0099D8]">
-                                    Simple Process
-                                </span>
-                            </div>
-
-                            <h2 className="mb-4 text-4xl font-black text-gray-900 lg:text-5xl">
-                                How It Works
-                            </h2>
-
-                            <p className="text-lg text-gray-600">
-                                A simple step by step, guided process tailored to your selected service
-                            </p>
+                    <div className="mx-auto mb-16 max-w-3xl text-center">
+                        <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#D6EEF8] bg-white px-5 py-2.5 shadow-sm">
+                            <Sparkles className="h-4 w-4 text-[#00AEEF]" />
+                            <span className="text-sm font-bold text-[#00AEEF] uppercase tracking-wide">
+                                Simple Process
+                            </span>
                         </div>
-                    </ScrollReveal>
+
+                        <h2 className="mb-4 text-4xl font-bold text-[#1A1A1A] lg:text-5xl">
+                            How It Works
+                        </h2>
+
+                        <p className="text-lg text-[#666666]">
+                            A simple step by step, guided process tailored to your selected service
+                        </p>
+                    </div>
 
                     {/* Steps Grid */}
-                    <div className="mx-auto max-w-7xl">
-                        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 lg:gap-8">
+                    <div className="max-w-7xl mx-auto">
+                        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
                             {activeHowItWorks.map((step, idx) => {
                                 const Icon = stepIcons[idx];
                                 return (
-                                    <ScrollReveal key={idx} delay={idx * 100} animation="scale-in">
-                                        <div className="group relative h-full">
-                                            {idx < activeHowItWorks.length - 1 && (
-                                                <div className="absolute -z-10 hidden lg:block left-[60%] top-14 h-0.5 w-full">
-                                                    <div className="h-full w-3/4 bg-gradient-to-r from-[#0099D8] to-transparent opacity-30" />
+                                    <div key={idx} className="group relative">
+                                        {/* Connector Line */}
+                                        {idx < activeHowItWorks.length - 1 && (
+                                            <div className="hidden lg:block absolute top-14 left-[60%] w-full h-0.5 -z-10">
+                                                <div className="w-3/4 h-full bg-gradient-to-r from-[#00AEEF] to-transparent opacity-20" />
+                                            </div>
+                                        )}
+
+                                        {/* Card */}
+                                        <div className="relative h-full rounded-[20px] border border-[#D6EEF8] bg-white p-6 shadow-[0_2px_8px_rgba(0,0,0,0.06)] transition-all duration-300 ease-out group-hover:-translate-y-0.5 hover:border-[#00AEEF] hover:shadow-[0_8px_24px_rgba(0,174,239,0.12)]">
+                                            {/* Step Number */}
+                                            <div className="absolute -right-3 -top-3 z-10 flex h-10 w-10 items-center justify-center rounded-xl bg-[#00AEEF] text-lg font-bold text-white shadow-[0_4px_12px_rgba(0,174,239,0.2)] transition-all duration-300 ease-out">
+                                                {idx + 1}
+                                            </div>
+
+                                            {/* Icon */}
+                                            <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-xl bg-[#E6F7FD] transition-all duration-300 ease-out">
+                                                <Icon className="w-8 h-8 text-[#00AEEF]" strokeWidth={2.5} />
+                                            </div>
+
+                                            {/* Content */}
+                                            <h3 className="mb-3 text-xl font-bold text-[#1A1A1A] transition-all duration-300 ease-out group-hover:text-[#00AEEF]">
+                                                {step.title}
+                                            </h3>
+
+                                            <p className="text-sm text-[#666666] leading-relaxed">
+                                                {step.description}
+                                            </p>
+
+                                            {/* Progress Dot */}
+                                            <div className="mt-4 flex items-center gap-2">
+                                                <div className="flex-1 h-1 bg-[#D6EEF8] rounded-full overflow-hidden">
+                                                    <div
+                                                        className="h-full bg-[#00AEEF] transition-all duration-300 ease-out"
+                                                        style={{
+                                                            width: `${((idx + 1) / activeHowItWorks.length) * 100}%`,
+                                                        }}
+                                                    />
                                                 </div>
-                                            )}
-
-                                            <div className="modern-dark-card modern-card-shine relative h-full p-6">
-                                                <div className="absolute -right-3 -top-3 z-10 flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#0099D8] to-[#2E3192] text-lg font-black text-white shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:rotate-6">
-                                                    {idx + 1}
-                                                </div>
-
-                                                <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#0099D8]/20 to-[#2E3192]/10 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3">
-                                                    <Icon className="h-8 w-8 text-[#0099D8]" strokeWidth={2.5} />
-                                                </div>
-
-                                                <h3 className="mb-3 text-xl font-bold text-gray-900 transition-colors group-hover:text-[#0099D8]">
-                                                    {step.title}
-                                                </h3>
-
-                                                <p className="text-sm leading-relaxed text-gray-600">
-                                                    {step.description}
-                                                </p>
-
-                                                <div className="mt-4 flex items-center gap-2">
-                                                    <div className="h-1 flex-1 overflow-hidden rounded-full bg-gray-200">
-                                                        <div
-                                                            className="h-full bg-gradient-to-r from-[#0099D8] to-[#007BB0] transition-all duration-700"
-                                                            style={{
-                                                                width: `${((idx + 1) / activeHowItWorks.length) * 100}%`,
-                                                            }}
-                                                        />
-                                                    </div>
-                                                    <CircleDot className="h-4 w-4 shrink-0 text-[#0099D8]" />
-                                                </div>
+                                                <CircleDot className="w-4 h-4 text-[#00AEEF] flex-shrink-0" />
                                             </div>
                                         </div>
-                                    </ScrollReveal>
+                                    </div>
                                 );
                             })}
                         </div>
 
                         {/* CTA */}
-                        <ScrollReveal animation="fade-in-up" delay={400}>
-                            <div className="mt-12 text-center">
-                                <Link
-                                    href="/services"
-                                    className="group inline-flex items-center gap-3 rounded-xl bg-gradient-to-r from-[#0099D8] to-[#2E3192] px-8 py-4 text-lg font-bold text-white shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-[#0099D8]/30"
-                                >
-                                    <MousePointerClick className="h-5 w-5" />
-                                    Get Started Now On Your Loan Journey
-                                    <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
-                                </Link>
-                            </div>
-                        </ScrollReveal>
+                        <div className="mt-12 text-center">
+                            <Link href="/services" className="inline-flex items-center gap-3 px-8 py-4 bg-[#00AEEF] text-white font-bold text-lg rounded-xl shadow-[0_2px_10px_rgba(0,174,239,0.18)] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:bg-[#008FCC] hover:shadow-[0_8px_24px_rgba(0,174,239,0.18)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#00AEEF]/20 group">
+                                <MousePointerClick className="w-5 h-5" />
+                                Get Started Now On Your Loan Journey
+                                <ArrowRight className="h-5 w-5 transition-all duration-300 ease-out group-hover:translate-x-0.5" />
+                            </Link>
+                        </div>
                     </div>
                 </div>
             </section>
 
             {/* FAQ SECTION */}
-            <section className="relative rounded-3xl bg-gradient-to-b from-gray-50 via-white to-gray-50 py-16 lg:py-24">
-                <div className="container mx-auto px-4 lg:px-8">
+            <section className="relative rounded-[20px] border border-[#D6EEF8] bg-white py-16 lg:py-24 shadow-[0_8px_30px_rgba(15,23,42,0.10)]">
+                <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
                     {/* Header */}
-                    <ScrollReveal animation="fade-in-up">
-                        <div className="mx-auto mb-12 max-w-3xl text-center">
-                            <div className="mb-6 inline-flex items-center gap-2 rounded-full border-2 border-[#0099D8]/30 bg-[#0099D8]/5 px-5 py-2.5 shadow-sm">
-                                <HelpCircle className="h-4 w-4 text-[#0099D8]" />
-                                <span className="text-sm font-bold uppercase tracking-wide text-[#0099D8]">
-                                    Got Questions?
-                                </span>
-                            </div>
-
-                            <h2 className="mb-4 text-4xl font-black text-gray-900 lg:text-5xl">
-                                Frequently Asked Questions (FAQs)
-                            </h2>
-
-                            <p className="text-lg text-gray-600">
-                                Quick answers based on the service you&apos;re viewing
-                            </p>
+                    <div className="text-center max-w-3xl mx-auto mb-12">
+                        <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#D6EEF8] bg-[#E6F7FD] px-5 py-2.5 shadow-[0_2px_10px_rgba(15,23,42,0.06)]">
+                            <HelpCircle className="h-4 w-4 text-[#00AEEF]" />
+                            <span className="text-sm font-bold text-[#00AEEF] uppercase tracking-wide">
+                                Got Questions?
+                            </span>
                         </div>
-                    </ScrollReveal>
+
+                        <h2 className="mb-4 text-4xl font-black text-[#1A1A1A] lg:text-5xl">
+                            Frequently Asked Questions (FAQs)
+                        </h2>
+
+                        <p className="text-lg text-[#666666]">
+                            Quick answers based on the service you're viewing
+                        </p>
+                    </div>
 
                     {/* FAQ Items */}
-                    <div className="mx-auto max-w-3xl space-y-4">
-                        {activeFaqItems.map((item, idx) => {
+                    <div className="max-w-3xl mx-auto space-y-4">
+                        {activeFaqItems.map((item) => {
                             const isOpen = openFaqId === item.id;
 
                             return (
-                                <ScrollReveal key={item.id} delay={Math.min(idx * 60, 400)} animation="fade-in-up">
+                                <div key={item.id}>
                                     <div
-                                        className={`modern-dark-card overflow-hidden transition-all duration-300 ${
+                                        className={`rounded-[20px] shadow-[0_2px_10px_rgba(15,23,42,0.06)] border transition-all duration-300 ease-out overflow-hidden ${
                                             isOpen
-                                                ? "border-[#0099D8] shadow-lg shadow-[#0099D8]/10"
-                                                : "hover:border-[#0099D8]/50"
+                                                ? "border-[#00AEEF]"
+                                                : "border-[#D6EEF8] hover:border-[#00AEEF]/40 hover:-translate-y-0.5"
                                         }`}
                                     >
                                         {/* Question Button */}
@@ -271,30 +268,30 @@ export default function ModernSections() {
                                             onClick={() =>
                                                 setOpenFaqId((prev) => (prev === item.id ? null : item.id))
                                             }
-                                            className="w-full px-5 py-4 text-left flex items-center justify-between gap-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0099D8] focus-visible:ring-offset-2 group"
+                                            className="w-full px-5 py-4 text-left flex items-center justify-between gap-4 focus:outline-none focus-visible:ring-4 focus-visible:ring-[#00AEEF]/20 focus-visible:ring-offset-2 group"
                                         >
                                             <div className="flex items-start gap-3 flex-1">
                                                 {/* Icon */}
                                                 <div
-                                                    className={`flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-300 ${
+                                                    className={`flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg transition-all duration-300 ease-out ${
                                                         isOpen
-                                                            ? "bg-gradient-to-br from-[#0099D8] to-[#2E3192]"
-                                                            : "bg-gray-100 group-hover:bg-gray-200"
+                                                            ? "bg-[#E6F7FD]"
+                                                            : "bg-[#F7F9FC] group-hover:bg-[#E6F7FD]"
                                                     }`}
                                                 >
                                                     <HelpCircle
                                                         className={`w-4 h-4 ${
-                                                            isOpen ? "text-white" : "text-[#0099D8]"
+                                                            isOpen ? "text-[#00AEEF]" : "text-[#00AEEF]"
                                                         }`}
                                                     />
                                                 </div>
 
                                                 {/* Question */}
                                                 <span
-                                                    className={`text-base lg:text-lg font-bold pr-4 transition-colors ${
+                                                    className={`pr-4 text-base font-bold transition-all duration-300 ease-out lg:text-lg ${
                                                         isOpen
-                                                            ? "text-[#0099D8]"
-                                                            : "text-gray-900 group-hover:text-[#0099D8]"
+                                                            ? "text-[#00AEEF]"
+                                                            : "text-[#1A1A1A] group-hover:text-[#00AEEF]"
                                                     }`}
                                                 >
                                                     {item.question}
@@ -303,81 +300,78 @@ export default function ModernSections() {
 
                                             {/* Chevron */}
                                             <div
-                                                className={`flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-300 ${
+                                                className={`flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg transition-all duration-300 ease-out ${
                                                     isOpen
-                                                        ? "bg-gradient-to-br from-[#0099D8] to-[#2E3192] rotate-180"
-                                                        : "bg-gray-100 group-hover:bg-gray-200"
+                                                        ? "bg-[#E6F7FD] rotate-180"
+                                                        : "bg-[#F7F9FC] group-hover:bg-[#E6F7FD]"
                                                 }`}
                                             >
                                                 <ChevronDown
-                                                    className={`w-5 h-5 ${isOpen ? "text-white" : "text-gray-500"}`}
+                                                    className={`w-5 h-5 ${isOpen ? "text-[#00AEEF]" : "text-[#666666]"}`}
                                                 />
                                             </div>
                                         </button>
 
                                         {/* Answer */}
                                         <div
-                                            className={`transition-all duration-500 ease-in-out ${
+                                            className={`transition-all duration-300 ease-out ${
                                                 isOpen ? "max-h-80 opacity-100" : "max-h-0 opacity-0"
                                             }`}
                                         >
                                             <div className="px-5 pb-5">
-                                                <div className="h-px bg-gradient-to-r from-transparent via-[#0099D8]/40 to-transparent mb-4" />
+                                                <div className="h-px bg-gradient-to-r from-transparent via-[#00AEEF]/25 to-transparent mb-4" />
                                                 
                                                 <div className="flex gap-3">
                                                     <div className="flex-shrink-0 mt-1">
-                                                        <div className="w-5 h-5 rounded-full bg-[#0099D8]/20 flex items-center justify-center">
-                                                            <CheckCircle2 className="w-3 h-3 text-[#0099D8]" />
+                                                        <div className="w-5 h-5 rounded-full bg-[#E6F7FD] flex items-center justify-center border border-[#D6EEF8]">
+                                                            <CheckCircle2 className="w-3 h-3 text-[#00AEEF]" />
                                                         </div>
                                                     </div>
-                                                    <p className="text-sm lg:text-base text-gray-600 leading-relaxed whitespace-pre-line">
+                                                    <p className="text-sm lg:text-base text-[#666666] leading-relaxed whitespace-pre-line">
                                                         {item.answer}
                                                     </p>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </ScrollReveal>
+                                </div>
                             );
                         })}
                     </div>
 
-                    <ScrollReveal animation="fade-in-up" delay={200}>
-                        <div className="mx-auto mt-8 max-w-3xl">
-                            <div className="modern-dark-card overflow-hidden border-[#0099D8]/40">
-                                <div className="flex items-start gap-3 px-5 py-4">
-                                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-[#0099D8] to-[#2E3192]">
-                                        <Shield className="h-4 w-4 text-white" />
-                                    </div>
-                                    <div className="flex-1">
-                                        <p className="text-base font-bold text-gray-900 lg:text-lg">Disclaimer</p>
-                                        <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-gray-600 lg:text-base">
-                                            Infinity Loans & Business Solutions is not a Bank or NBFC.
-                                            {"\n"}
-                                            We provide loan advisory and facilitation services only. Final loan sanction, interest rates, terms, and disbursement are solely at the discretion of the respective Bank or NBFC, subject to eligibility norms and internal policies.
-                                        </p>
-                                    </div>
+                    <div className="mx-auto mt-8 max-w-3xl">
+                        <div className="bg-[#F7F9FC] rounded-[20px] shadow-[0_2px_10px_rgba(15,23,42,0.06)] border border-[#D6EEF8] overflow-hidden">
+                            <div className="px-5 py-4 flex items-start gap-3">
+                                <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-[#E6F7FD] border border-[#D6EEF8] flex items-center justify-center">
+                                    <Shield className="w-4 h-4 text-[#00AEEF]" />
+                                </div>
+                                <div className="flex-1">
+                                    <p className="text-base lg:text-lg font-bold text-[#1A1A1A]">Disclaimer</p>
+                                    <p className="mt-2 text-sm lg:text-base text-[#666666] leading-relaxed whitespace-pre-line">
+                                        Infinity Loans & Business Solutions is not a Bank or NBFC.
+                                        {"\n"}
+                                        We provide loan advisory and facilitation services only. Final loan sanction, interest rates, terms, and disbursement are solely at the discretion of the respective Bank or NBFC, subject to eligibility norms and internal policies.
+                                    </p>
                                 </div>
                             </div>
                         </div>
-                    </ScrollReveal>
+                    </div>
 
                     {/* Help Footer */}
-                    <ScrollReveal animation="fade-in-up" delay={300}>
-                        <div className="mt-10 text-center">
-                            <div className="inline-flex items-center gap-3 rounded-2xl border border-[#0099D8]/30 bg-white px-6 py-3 shadow-sm">
-                                <Shield className="h-5 w-5 text-[#0099D8]" />
-                                <p className="text-sm font-semibold text-gray-600">
-                                    Still have questions?{" "}
-                                    <Link href="/contact" className="cursor-pointer text-[#0099D8] underline transition-colors hover:text-[#33B5E5]">
-                                        Contact our support team
-                                    </Link>
-                                </p>
-                            </div>
+                    <div className="mt-10 text-center">
+                        <div className="inline-flex items-center gap-3 rounded-[20px] border border-[#D6EEF8] bg-white px-6 py-3 shadow-[0_2px_10px_rgba(15,23,42,0.06)]">
+                            <Shield className="w-5 h-5 text-[#00AEEF]" />
+                            <p className="text-sm font-semibold text-[#666666]">
+                                Still have questions?{" "}
+                                <Link href={"/contact"} className="cursor-pointer text-[#00AEEF] underline transition-all duration-300 ease-out hover:text-[#008FCC]">
+                                    Contact our support team
+                                </Link>
+                            </p>
                         </div>
-                    </ScrollReveal>
+                    </div>
                 </div>
             </section>
+
         </div>
     );
 }

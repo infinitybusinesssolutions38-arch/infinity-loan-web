@@ -5,7 +5,7 @@ import Navbar from "./Navbar";
 import { Footer } from "./Footer";
 import { LoanModalProvider } from "@/components/LoanModalProvider";
 import StickyContactButtons from "./StickyContactButtons";
-import SuccessBadge from "./SuccessBadge";
+// import SuccessBadge from "./SuccessBadge"; remove
 
 export default function LayoutClient({
     children,
@@ -18,9 +18,9 @@ export default function LayoutClient({
     return (
         <LoanModalProvider>
             {!isAdminRoute && <Navbar />}
-            {!isAdminRoute && <SuccessBadge />}
+            {/* {!isAdminRoute && <SuccessBadge />} */}
             {!isAdminRoute && <StickyContactButtons />}
-            <div>
+            <div className={!isAdminRoute ? "pt-[76px]" : ""}>
                 {children}
             </div>
             {!isAdminRoute && <Footer />}

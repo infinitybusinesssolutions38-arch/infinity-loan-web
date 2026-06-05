@@ -10,11 +10,15 @@ import {
 import {
   type ServiceGroup,
   ServiceGroupCard,
+  ServiceSection,
   ServicesPageShell,
+  serviceGridClass,
+  serviceSectionIntro,
+  serviceSectionTitle,
 } from "../_components/service-ui";
 
 export const metadata: Metadata = {
-  title: "Loans | Infinity Loans",
+  title: "Loans | Infinity Loans & Business Solutions",
   description:
     "Explore business, personal, home, vehicle, and secured loan options offered by Infinity Loans. Check eligibility or apply in minutes.",
 };
@@ -206,11 +210,16 @@ export default function LoansServicesPage() {
       title="Loans for individuals and businesses"
       description="Choose a loan category below. Each option includes a short summary and a clear next step to check eligibility or apply."
     >
-      <section className="grid gap-4 lg:grid-cols-2">
-        {loanGroups.map((group) => (
-          <ServiceGroupCard key={group.title} group={group} />
-        ))}
-      </section>
+      <ServiceSection tone="white">
+        <header className={serviceSectionIntro}>
+          <h2 className={serviceSectionTitle}>Explore Our Loan Services</h2>
+        </header>
+        <div className={serviceGridClass}>
+          {loanGroups.map((group) => (
+            <ServiceGroupCard key={group.title} group={group} />
+          ))}
+        </div>
+      </ServiceSection>
     </ServicesPageShell>
   );
 }

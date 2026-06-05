@@ -28,7 +28,7 @@ const page = () => {
                 <div>
                     <h3 className="text-2xl font-bold border-b">Borrower Eligibility Criteria</h3>
                     <p className='text-lg font-semibold my-4'>
-                        A Borrower on Fortune must:
+                        A Borrower on Infinity Loans must:
                     </p>
                     <ul className='ml-5'>
                         <li className='list-decimal'>
@@ -46,7 +46,7 @@ const page = () => {
                         QUICK CHECK OF DOCUMENTATION REQUIRED
                     </p>
                     <p className='my-2'>
-                        Borrowers will be required to provide Fortune with following documentation at the time of verification.
+                        Borrowers will be required to provide Infinity Loans with following documentation at the time of verification.
                     </p>
                 </div>
 
@@ -63,7 +63,7 @@ const page = () => {
                             {documents.map((docs, idx) => (
                                 <tr
                                     key={idx}
-                                    className={`${idx % 2 === 0 ? "bg-white" : "bg-[#0099D8]/5"} border hover:bg-gray-50 transition-colors`}
+                                    className={`${idx % 2 === 0 ? "bg-white" : "bg-[#E6F7FD]"} border hover:bg-gray-50 transition-colors`}
                                 >
                                     <td className="px-3 py-2 md:px-4 md:py-2 border">{docs.id}</td>
                                     <td className="px-3 py-2 md:px-4 md:py-2 border">{docs.document}</td>
@@ -91,7 +91,7 @@ const page = () => {
                         NACH is used to electronically transfer funds from lender&apos;s escrow account to Borrower&apos;s bank account and to make repayments from borrower&apos;s account to lender&apos;s escrow account. Thus, it&apos;s important to ensure that the sign on the NACH mandate matches with the borrower&apos;s bank account signature.
                     </p>
                     <p className='my-3'>
-                        Information provided by you will be used strictly for official purposes, and Fortune safeguards client confidentiality. For further information, please read the Fortune Policy and Terms and Conditions mentioned on the website.
+                        Information provided by you will be used strictly for official purposes, and Infinity Loans safeguards client confidentiality. For further information, please read the Infinity Loans Policy and Terms and Conditions mentioned on the website.
                     </p>
                 </div>
 

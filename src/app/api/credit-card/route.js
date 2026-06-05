@@ -4,7 +4,9 @@ import CreditCardModel from "../models/credit-card-schema";
 import { v2 as cloudinary } from "cloudinary";
 import nodemailer from "nodemailer";
 import { sendLoanApplicationConfirmationEmail } from "../lib/loan-application-email";
-import { createGmailTransporter } from "../lib/apply-now-email";
+import { notifyDirectorInternalMail } from "../lib/director-notification-email";
+import { attachUserIdToPayload } from "../lib/user-auth";
+import { assertEmailNotUsedForLoanApplication, isDuplicatePersonalEmailError } from "../lib/email-cross-loan-guard";
 
 // =============================
 // Cloudinary Config
@@ -18,8 +20,24 @@ cloudinary.config({
 // =============================
 // Generate 6 Digit Reference
 // =============================
-const generateApplicationRef = () => {
-  return Math.floor(100000 + Math.random() * 900000).toString();
+const generateRandomApplicationRef = () => {
+  const ts = Date.now().toString(36).toUpperCase();
+  const rnd = Math.random().toString(36).slice(2, 8).toUpperCase();
+  return `CC_${ts}_${rnd}`;
+};
+
+const toSafeUpperToken = (value, maxLen) => {
+  const raw = typeof value === "string" ? value : String(value || "");
+  const cleaned = raw.trim().toUpperCase().replace(/[^A-Z0-9]/g, "");
+  if (!cleaned) return "";
+  return typeof maxLen === "number" ? cleaned.slice(0, maxLen) : cleaned;
+};
+
+const generatePreferredApplicationRef = (nameRaw, panRaw) => {
+  const name4 = toSafeUpperToken(nameRaw, 4);
+  const pan = toSafeUpperToken(panRaw);
+  if (!name4 || !pan) return null;
+  return `CC_${name4}_${pan}`;
 };
 
 // =============================
@@ -30,11 +48,23 @@ export async function POST(req) {
     await connectDB();
     const formData = await req.formData();
 
+    const emailGuard = await assertEmailNotUsedForLoanApplication(
+      formData.get("personalEmail"),
+      "credit_card"
+    );
+    if (!emailGuard.ok) {
+      return NextResponse.json(
+        { success: false, message: emailGuard.message, code: emailGuard.code },
+        { status: emailGuard.status }
+      );
+    }
+
     // =============================
     // Upload Helper
     // =============================
     async function upload(file) {
-      if (!file) return null;
+      if (!file || typeof file === "string") return null;
+      if (typeof file.arrayBuffer !== "function") return null;
 
       const arrayBuffer = await file.arrayBuffer();
       const buffer = Buffer.from(arrayBuffer);
@@ -52,13 +82,15 @@ export async function POST(req) {
       });
     }
 
-    const applicationRef = generateApplicationRef();
+    const preferredRef = generatePreferredApplicationRef(
+      `${formData.get("firstname") || ""} ${formData.get("lastname") || ""}`,
+      formData.get("panNumber")
+    );
 
     // =============================
     // Create Document
     // =============================
-    const newApplication = new CreditCardModel({
-      applicationRef,
+    const applicationBase = {
 
       // Personal Info
       firstname: formData.get("firstname"),
@@ -116,39 +148,82 @@ export async function POST(req) {
 
       loanTypeText: "credit-card",
       status: "pending",
-    });
+      documentStatus: "uploaded",
+      documentsConfirmedAt: new Date(),
+    };
 
-    const saved = await newApplication.save();
+    let saved;
+    let applicationRef;
+    for (let attempt = 0; attempt < 5; attempt += 1) {
+      if (attempt === 0 && preferredRef) {
+        applicationRef = preferredRef;
+      } else {
+        applicationRef = generateRandomApplicationRef();
+      }
+
+      try {
+        const newApplication = new CreditCardModel(
+          attachUserIdToPayload(
+            {
+          applicationRef,
+          ...applicationBase,
+            },
+            req
+          )
+        );
+        saved = await newApplication.save();
+        break;
+      } catch (err) {
+        const code = err?.code;
+        const dupField = err?.keyPattern ? Object.keys(err.keyPattern)[0] : "";
+        const isRefDup = code === 11000 && dupField === "applicationRef";
+        if (isRefDup) continue;
+        throw err;
+      }
+    }
+
+    if (!saved) {
+      throw new Error("Failed to generate unique applicationRef");
+    }
 
     const applicationDate = new Date().toLocaleDateString("en-IN");
 
-    // =============================
-    // Client Email (Simple)
-    // =============================
-    await sendLoanApplicationConfirmationEmail(
-      formData.get("personalEmail"),
-      {
-        customerName: formData.get("firstname"),
-        applicationNumber: applicationRef,
-        applicationDate,
-        loanType: "Credit Card",
-        loanAmount: formData.get("limitAmount"),
+    // Customer confirmation email — must not block successful submission.
+    try {
+      const confirmationResult = await sendLoanApplicationConfirmationEmail(
+        formData.get("personalEmail"),
+        {
+          customerName: formData.get("firstname"),
+          applicationNumber: applicationRef,
+          applicationDate,
+          loanType: "credit-card",
+          originalLoanType: "credit-card",
+          loanAmount: formData.get("limitAmount"),
+          bankName: formData.get("bankName"),
+          limitAmount: formData.get("limitAmount"),
+          cardType: formData.get("cardType"),
+          cibilIssues: formData.get("cibilIssues"),
+        }
+      );
+
+      if (!confirmationResult?.success) {
+        console.warn("Credit card customer confirmation email failed", {
+          applicationRef,
+          error: confirmationResult?.error,
+        });
       }
-    );
+    } catch (emailErr) {
+      console.warn("Credit card customer confirmation email error", {
+        applicationRef,
+        error: emailErr?.message || emailErr,
+      });
+    }
 
-    // =============================
-    // Admin + Director Email via Gmail SMTP
-    // =============================
-    const gmailTransporter = createGmailTransporter();
-    const internalRecipients = [process.env.ADMIN_EMAIL, process.env.DIRECTOR_EMAIL]
-      .filter(Boolean)
-      .join(",");
-
-    if (internalRecipients) {
-      await gmailTransporter.sendMail({
-        from: process.env.EMAIL_HOST_USER || process.env.EMAIL_SMTP_USER,
-        to: internalRecipients,
+    // Admin notification email — must not block successful submission.
+    try {
+      await notifyDirectorInternalMail({
         subject: `New Credit Card Application - ${applicationRef}`,
+        replyTo: formData.get("personalEmail"),
         html: `
         <h2>New Credit Card Application</h2>
         <p><strong>Application Ref:</strong> ${applicationRef}</p>
@@ -156,7 +231,24 @@ export async function POST(req) {
         <h3>Applicant Details</h3>
         <p>Name: ${formData.get("firstname")} ${formData.get("lastname")}</p>
         <p>Email: ${formData.get("personalEmail")}</p>
+        <p>Official Email: ${formData.get("officialEmail") || "-"}</p>
         <p>Mobile: ${formData.get("mobileNumber")}</p>
+        <p>WhatsApp: ${formData.get("whatsappNumber") || "-"}</p>
+
+        <h3>KYC</h3>
+        <p>PAN Number: ${formData.get("panNumber") || "-"}</p>
+        <p>Aadhaar Number: ${formData.get("aadhaarNumber") || "-"}</p>
+        <p>Voter ID: ${formData.get("voterIdNumber") || "-"}</p>
+        <p>Driving License: ${formData.get("drivingLicense") || "-"}</p>
+        <p>Passport Number: ${formData.get("passportNumber") || "-"}</p>
+
+        <h3>Address</h3>
+        <p>Current Residential Address: ${formData.get("currentResidentialAddress") || "-"}</p>
+        <p>Current Residential Pincode: ${formData.get("currentResidentialPincode") || "-"}</p>
+        <p>Current Office/Shop Address: ${formData.get("currentOfficeAddress") || "-"}</p>
+        <p>Current Office/Shop Pincode: ${formData.get("currentOfficePincode") || "-"}</p>
+        <p>Residential Status: ${formData.get("residentialStatus") || "-"}</p>
+        <p>Years at Current Residential Address: ${formData.get("yearsAtCurrentResidentialAddress") || "-"}</p>
 
         <h3>Card Details</h3>
         <p>Bank Name: ${formData.get("bankName")}</p>
@@ -169,7 +261,13 @@ export async function POST(req) {
         <p>PAN: ${saved.panFront || "Not Uploaded"}</p>
         <p>Residential Bill: ${saved.residentialBill || "Not Uploaded"}</p>
         <p>Shop Bill: ${saved.shopBill || "Not Uploaded"}</p>
+        <p>Rent Agreement (Office/Shop): ${saved.uploadRentAgreementOfficeShop || "Not Uploaded"}</p>
       `,
+      });
+    } catch (emailErr) {
+      console.warn("Credit card admin notification email error", {
+        applicationRef,
+        error: emailErr?.message || emailErr,
       });
     }
 
@@ -182,8 +280,24 @@ export async function POST(req) {
 
   } catch (error) {
     console.error("Credit Card Error:", error);
+    if (isDuplicatePersonalEmailError(error)) {
+      return NextResponse.json(
+        {
+          success: false,
+          code: "DUPLICATE_EMAIL",
+          message:
+            "An application with this email already exists. Check Applied Loans or use a different email to submit again.",
+        },
+        { status: 409 }
+      );
+    }
     return NextResponse.json(
-      { success: false, message: error.message },
+      {
+        success: false,
+        message:
+          error?.message ||
+          "Unable to submit credit card application. Please try again.",
+      },
       { status: 500 }
     );
   }

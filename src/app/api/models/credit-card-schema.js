@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 const CreditCardSchema = new mongoose.Schema(
     {
         applicationRef: { type: String, required: true, unique: true },
+        userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: false },
 
         // Personal Information
         firstname: { type: String, required: true },
@@ -59,7 +60,16 @@ const CreditCardSchema = new mongoose.Schema(
         // Metadata
         createdAt: { type: Date, default: Date.now },
         updatedAt: { type: Date, default: Date.now },
-        status: { type: String, default: "pending" }
+        status: { type: String, default: "pending" },
+
+        documentStatus: {
+            type: String,
+            enum: ["pending", "uploaded", "verified"],
+            default: "pending",
+        },
+        documentsConfirmedAt: { type: Date },
+        adminRemarks: { type: String, default: "" },
+        reviewedAt: { type: Date },
     },
     { timestamps: true }
 );

@@ -1,60 +1,166 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import {
+  BriefcaseBusiness,
+  CreditCard,
+  FileSpreadsheet,
+  Handshake,
+  LayoutDashboard,
+  LogOut,
+  Mail,
+  MessageSquare,
+  Wallet,
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+import type { CSSProperties } from "react";
 
-const nav = [
-  { href: "/admin/dashboard", label: "Dashboard" },
-  { href: "/admin/salary-loan-applications", label: "Salary employee Loan application" },
-  { href: "/admin/business-loan-applications", label: "Business Loan application" },
-  { href: "/admin/credit-card-applications", label: "Credit Card application" },
-  { href: "/admin/partner-applications", label: "Loan Partner application" },
+type NavItem = {
+  href: string;
+  label: string;
+  icon: LucideIcon;
+  accent: string;
+  activeBg: string;
+  hoverBg: string;
+  iconBg: string;
+};
+
+const nav: NavItem[] = [
+  {
+    href: "/admin/dashboard",
+    label: "Dashboard",
+    icon: LayoutDashboard,
+    accent: "#00AEEF",
+    activeBg: "#E6F7FD",
+    hoverBg: "#EEF9FE",
+    iconBg: "rgba(0, 174, 239, 0.12)",
+  },
+  {
+    href: "/admin/enquiries",
+    label: "Loan Enquiries",
+    icon: Mail,
+    accent: "#33C1F3",
+    activeBg: "#E3F2FD",
+    hoverBg: "#F0F8FF",
+    iconBg: "rgba(0, 174, 239, 0.12)",
+  },
+  {
+    href: "/admin/regular-enquiries",
+    label: "Regular Enquiries",
+    icon: MessageSquare,
+    accent: "#16A34A",
+    activeBg: "#DCFCE7",
+    hoverBg: "#F0FDF4",
+    iconBg: "rgba(22, 163, 74, 0.12)",
+  },
+  {
+    href: "/admin/salary-loan-applications",
+    label: "Salary employee Loan application",
+    icon: Wallet,
+    accent: "#0D9488",
+    activeBg: "#CCFBF1",
+    hoverBg: "#F0FDFA",
+    iconBg: "rgba(13, 148, 136, 0.12)",
+  },
+  {
+    href: "/admin/business-loan-applications",
+    label: "Business Loan application",
+    icon: BriefcaseBusiness,
+    accent: "#00AEEF",
+    activeBg: "#FFEDD5",
+    hoverBg: "#FFF7ED",
+    iconBg: "rgba(249, 115, 22, 0.12)",
+  },
+  {
+    href: "/admin/credit-card-applications",
+    label: "Credit Card application",
+    icon: CreditCard,
+    accent: "#8B5CF6",
+    activeBg: "#EDE9FE",
+    hoverBg: "#F5F3FF",
+    iconBg: "rgba(139, 92, 246, 0.12)",
+  },
+  {
+    href: "/admin/google-forms",
+    label: "Google Forms",
+    icon: FileSpreadsheet,
+    accent: "#00AEEF",
+    activeBg: "#E6F7FD",
+    hoverBg: "#EEF9FE",
+    iconBg: "rgba(0, 174, 239, 0.12)",
+  },
+  {
+    href: "/admin/partner-applications",
+    label: "Loan Partner application",
+    icon: Handshake,
+    accent: "#F59E0B",
+    activeBg: "#FEF3C7",
+    hoverBg: "#FFFBEB",
+    iconBg: "rgba(245, 158, 11, 0.14)",
+  },
 ];
 
 export default function AdminSidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="hidden w-72 shrink-0 md:block">
-      <div className="rounded-3xl border border-border/70 bg-card/70 p-4 shadow-sm backdrop-blur">
-        <div className="px-2 py-2">
-          <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Admin Panel</div>
-          <div className="mt-1 text-lg font-bold leading-none">Infinity Loans</div>
-          <div className="mt-2 h-px bg-border/70" />
+    <aside className="admin-sidebar-col hidden w-72 shrink-0 md:block">
+      <div className="admin-sidebar flex h-[calc(100dvh-3rem)] flex-col overflow-hidden">
+        <div className="admin-sidebar-header shrink-0">
+          <div className="admin-sidebar-logo-wrap">
+            <div className="admin-sidebar-logo">
+              <Image
+                src="/infinity-logo.png"
+                alt="Infinity Loans & Business Solutions"
+                width={40}
+                height={48}
+                className="h-10 w-auto object-contain"
+              />
+            </div>
+            <div className="min-w-0">
+              <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-white/75">
+                Admin Panel
+              </div>
+              <div className="truncate text-sm font-bold leading-tight text-white">
+                Infinity Loans & Business Solutions
+              </div>
+            </div>
+          </div>
         </div>
 
-        <nav className="mt-4 space-y-1">
+        <nav className="mt-2 min-h-0 flex-1 space-y-0.5 overflow-hidden px-2 py-1">
           {nav.map((item) => {
             const active = pathname === item.href;
+            const Icon = item.icon;
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                className={
-                  "group flex items-center justify-between rounded-2xl px-3 py-2.5 text-sm font-medium transition " +
-                  (active
-                    ? "bg-gradient-to-r from-cta/20 via-accent/10 to-transparent text-foreground ring-1 ring-border/70"
-                    : "text-muted-foreground hover:bg-secondary/60 hover:text-foreground")
+                className={"admin-nav-link " + (active ? "is-active" : "")}
+                style={
+                  {
+                    "--nav-accent": item.accent,
+                    "--nav-active-bg": item.activeBg,
+                    "--nav-hover-bg": item.hoverBg,
+                    "--nav-icon-bg": item.iconBg,
+                  } as CSSProperties
                 }
               >
-                <span>{item.label}</span>
-                <span
-                  className={
-                    "h-1.5 w-1.5 rounded-full transition " +
-                    (active ? "bg-cta" : "bg-muted-foreground/30 group-hover:bg-muted-foreground/50")
-                  }
-                />
+                <span className="admin-nav-icon">
+                  <Icon className="h-3.5 w-3.5" strokeWidth={2.25} />
+                </span>
+                <span className="min-w-0 flex-1 leading-snug">{item.label}</span>
               </Link>
             );
           })}
         </nav>
 
-        <div className="mt-6 border-t border-border/70 pt-4">
-          <Link
-            href={"/admin/logout"}
-            className="block rounded-2xl px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-secondary/60 hover:text-foreground"
-          >
-            Logout
+        <div className="shrink-0 border-t border-[#D6EEF8]/80 px-2 py-3">
+          <Link href="/admin/logout" className="admin-logout">
+            <LogOut className="h-4 w-4 shrink-0" strokeWidth={2} />
+            <span>Logout</span>
           </Link>
         </div>
       </div>

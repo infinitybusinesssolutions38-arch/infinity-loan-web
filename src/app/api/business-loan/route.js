@@ -11,6 +11,15 @@ import nodemailer from "nodemailer";
 import { sendLoanApplicationConfirmationEmail } from "../lib/loan-application-email";
 
 import { createGmailTransporter } from "../lib/apply-now-email";
+import { attachUserIdToPayload } from "../lib/user-auth";
+import {
+  resolveDirectorRecipients,
+  notifyDirectorInternalMail,
+} from "../lib/director-notification-email";
+import {
+  assertPanNotUsedInOtherLoanType,
+} from "../lib/pan-cross-loan-guard";
+import { assertEmailNotUsedForLoanApplication } from "../lib/email-cross-loan-guard";
 
 
 
@@ -52,7 +61,27 @@ export async function POST(req) {
 
     const formData = await req.formData();
 
+    const panGuard = await assertPanNotUsedInOtherLoanType(
+      formData.get("panNumber"),
+      "business"
+    );
+    if (!panGuard.ok) {
+      return NextResponse.json(
+        { success: false, message: panGuard.message, code: panGuard.code },
+        { status: panGuard.status }
+      );
+    }
 
+    const emailGuard = await assertEmailNotUsedForLoanApplication(
+      formData.get("personalEmail"),
+      "business"
+    );
+    if (!emailGuard.ok) {
+      return NextResponse.json(
+        { success: false, message: emailGuard.message, code: emailGuard.code },
+        { status: emailGuard.status }
+      );
+    }
 
     const safeJsonParse = (value, fallback) => {
 
@@ -439,7 +468,7 @@ export async function POST(req) {
 
 
 
-    const newApplication = new BusinessLoanModel({
+    const applicationData = attachUserIdToPayload({
 
       applicationRef,
 
@@ -573,34 +602,6 @@ export async function POST(req) {
 
       coApplicantPincode: formData.get("coApplicantPincode"),
 
-      coApplicantPanPhotoUrl: await upload(formData.get("CoApplicantpanPhoto")),
-
-      coApplicantAadhaarPhotoUrl: await upload(formData.get("CoApplicantAadhaarPhoto")),
-
-      coApplicantAadhaarBackPhotoUrl: await upload(
-
-        formData.get("CoApplicantAadhaarBackPhoto")
-
-      ),
-
-
-
-      // Address proof (currently submitted as text)
-
-      latestHomeElectricityBillUrl: await upload(
-
-        formData.get("latestHomeElectricityBill")
-
-      ),
-
-      latestOfficeShopElectricityBillUrl: await upload(
-
-        formData.get("latestOfficeShopElectricityBill")
-
-      ),
-
-
-
       // Registration / other
 
       businessRegistrationCertificates: formData.get(
@@ -697,7 +698,7 @@ export async function POST(req) {
 
       // Identification
 
-      panNumber: formData.get("panNumber"),
+      panNumber: panGuard.pan,
 
       aadhaarNumber: formData.get("aadhaarNumber"),
 
@@ -707,14 +708,6 @@ export async function POST(req) {
 
       // Documents
 
-      applicantPhotoUrl: await upload(formData.get("applicantPhoto")),
-
-      panPhotoUrl: await upload(formData.get("panPhoto")),
-
-      aadhaarPhotoUrl: await upload(formData.get("aadhaarPhoto")),
-
-      aadhaarBackPhotoUrl: await upload(formData.get("aadhaarBackPhoto")),
-
       gstCertificateUrl: await upload(formData.get("gstCertificate")),
 
       bankStatementUrl: await upload(formData.get("bankStatement")),
@@ -722,12 +715,6 @@ export async function POST(req) {
       itrFileUrl: await upload(formData.get("itrFile")),
 
 
-
-      assessmentYear2324Url: await upload(formData.get("assessmentYear2324")),
-
-      assessmentYear2425Url: await upload(formData.get("assessmentYear2425")),
-
-      assessmentYear2526Url: await upload(formData.get("assessmentYear2526")),
 
       yearlyGstReturnType:
 
@@ -761,9 +748,9 @@ export async function POST(req) {
 
       application_status: "pending",
 
-    });
+    }, req);
 
-
+    const newApplication = new BusinessLoanModel(applicationData);
 
     let saved;
 
@@ -998,13 +985,10 @@ export async function POST(req) {
     const gmailTransporter = createGmailTransporter();
 
     const internalRecipients = normalizeEmailList(
-
+      ...resolveDirectorRecipients(),
       directorEmailRaw,
-
       supportEmailRaw,
-
       process.env.ADMIN_USER
-
     );
 
     const safe = (v) => {
@@ -1021,7 +1005,7 @@ export async function POST(req) {
 
       if (!url) return "-";
 
-      return `<a href="${url}" target="_blank" rel="noreferrer" style="color:#0099D8;text-decoration:underline">View Document</a>`;
+      return `<a href="${url}" target="_blank" rel="noreferrer" style="color:#2563eb;text-decoration:underline">View Document</a>`;
 
     };
 
@@ -1437,31 +1421,13 @@ export async function POST(req) {
 
           <tbody>
 
-            <tr><td style="border:1px solid #e5e7eb;padding:8px;width:35%"><strong>Applicant Photo</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.applicantPhotoUrl)}</td></tr>
-
-            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>PAN Photo</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.panPhotoUrl)}</td></tr>
-
-            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Aadhaar Front</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.aadhaarPhotoUrl)}</td></tr>
-
-            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Aadhaar Back</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.aadhaarBackPhotoUrl)}</td></tr>
-
-            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>GST Certificate</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.gstCertificateUrl)}</td></tr>
+            <tr><td style="border:1px solid #e5e7eb;padding:8px;width:35%"><strong>GST Certificate</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.gstCertificateUrl)}</td></tr>
 
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Bank Statement</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.bankStatementUrl)}</td></tr>
 
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>One Year Bank Statement</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.oneYearBankStatementUrl)}</td></tr>
 
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>ITR File</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.itrFileUrl)}</td></tr>
-
-            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Latest Home Electricity Bill</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.latestHomeElectricityBillUrl)}</td></tr>
-
-            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Latest Office/Shop Electricity Bill</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.latestOfficeShopElectricityBillUrl)}</td></tr>
-
-            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Assessment Year 2023-24</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.assessmentYear2324Url)}</td></tr>
-
-            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Assessment Year 2024-25</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.assessmentYear2425Url)}</td></tr>
-
-            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Assessment Year 2025-26</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.assessmentYear2526Url)}</td></tr>
 
             ${Array.isArray(saved?.loanAccountStatementUrls) && saved.loanAccountStatementUrls.filter(Boolean).length
 
@@ -1518,12 +1484,6 @@ export async function POST(req) {
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Proforma Invoice</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.proformaInvoiceFileUrl)}</td></tr>
 
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>CIBIL Report</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.cibilReportUrl)}</td></tr>
-
-            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Co-Applicant PAN Photo</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.coApplicantPanPhotoUrl)}</td></tr>
-
-            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Co-Applicant Aadhaar Front</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.coApplicantAadhaarPhotoUrl)}</td></tr>
-
-            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Co-Applicant Aadhaar Back</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.coApplicantAadhaarBackPhotoUrl)}</td></tr>
 
           </tbody>
 
@@ -1715,7 +1675,7 @@ export async function POST(req) {
 
           .container { max-width: 820px; margin: 0 auto; padding: 20px; background-color: #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 12px; }
 
-          .header { background: linear-gradient(135deg, #0099D8 0%, #33B5E5 100%); padding: 28px 24px; border-radius: 12px 12px 0 0; color: white; text-align: center; }
+          .header { background: linear-gradient(135deg, #00AEEF 0%, #33C1F3 100%); padding: 28px 24px; border-radius: 12px 12px 0 0; color: white; text-align: center; }
 
           .header h1 { margin: 0; color: white; font-size: 24px; font-weight: 700; }
 
@@ -1723,17 +1683,17 @@ export async function POST(req) {
 
           .content { padding: 22px; }
 
-          .details-box { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 18px; border-radius: 10px; margin: 16px 0; border-left: 4px solid #0099D8; }
+          .details-box { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 18px; border-radius: 10px; margin: 16px 0; border-left: 4px solid #00AEEF; }
 
           .details-box p { margin: 10px 0; font-size: 14px; }
 
-          .application-number { background: #0099D8; color: white; padding: 6px 12px; border-radius: 999px; font-weight: 700; display: inline-block; }
+          .application-number { background: #00AEEF; color: white; padding: 6px 12px; border-radius: 999px; font-weight: 700; display: inline-block; }
 
           .loan-type-badge { background: #111827; color: white; padding: 6px 12px; border-radius: 999px; font-size: 12px; font-weight: 700; display: inline-block; }
 
           .footer { border-top: 1px solid #e9ecef; margin-top: 20px; padding-top: 16px; text-align: center; color: #6c757d; font-size: 12px; }
 
-          a { color:#0099D8; text-decoration: underline; }
+          a { color:#2563eb; text-decoration: underline; }
 
         </style>
 
@@ -1933,7 +1893,7 @@ export async function POST(req) {
 
 
 
-    const internalTextFinal = `${internalTextWithHabbit}${assetsText ? `\n\nApplicant Assets (List)\n${assetsText}` : ""}${gstReturnsText ? `\n\nGST Returns\n${gstReturnsText}` : ""}\n\nDocuments\nApplicant Photo: ${safe(saved?.applicantPhotoUrl) || "-"}\nPAN Photo: ${safe(saved?.panPhotoUrl) || "-"}\nAadhaar Front: ${safe(saved?.aadhaarPhotoUrl) || "-"}\nAadhaar Back: ${safe(saved?.aadhaarBackPhotoUrl) || "-"}`;
+    const internalTextFinal = `${internalTextWithHabbit}${assetsText ? `\n\nApplicant Assets (List)\n${assetsText}` : ""}${gstReturnsText ? `\n\nGST Returns\n${gstReturnsText}` : ""}`;
 
 
 
@@ -1951,31 +1911,17 @@ export async function POST(req) {
 
     if (internalRecipients.length > 0) {
       emailTasks.push(
-
         withTimeout(
-
-          gmailTransporter.sendMail({
-
-            from: process.env.ADMIN_USER,
-
-            to: internalRecipients,
-
-            replyTo: safe(saved?.personalEmail) || undefined,
-
+          notifyDirectorInternalMail({
             subject: `New Business Loan Application - ${applicationRef}`,
-
             html: internalBrandedHtml,
-
             text: internalTextFinal,
-
+            replyTo: safe(saved?.personalEmail) || undefined,
+            recipients: internalRecipients,
           }),
-
           12000
-
         )
-
       );
-
     }
 
 

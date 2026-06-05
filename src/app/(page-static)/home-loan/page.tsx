@@ -14,12 +14,12 @@ export default function HomeLoanPage() {
   return (
     <main className="bg-gradient-to-b from-gray-50 via-white to-gray-50">
       {/* Hero Section this is testing git up */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800">
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#00AEEF] via-blue-700 to-indigo-800">
         {/* Decorative background elements */}
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-[#0099D8] opacity-20 blur-3xl" />
+          <div className="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-[#33C1F3] opacity-20 blur-3xl" />
           <div className="absolute -bottom-32 -left-40 h-96 w-96 rounded-full bg-indigo-400 opacity-20 blur-3xl" />
-          <div className="absolute top-1/2 left-1/3 h-72 w-72 rounded-full bg-[#33B5E5] opacity-10 blur-3xl" />
+          <div className="absolute top-1/2 left-1/3 h-72 w-72 rounded-full bg-[#66D4F7] opacity-10 blur-3xl" />
         </div>
 
         {/* Content */}
@@ -29,31 +29,31 @@ export default function HomeLoanPage() {
               {/* Left Content */}
               <div className="space-y-6 sm:space-y-8">
                 <div className="space-y-2">
-                  <p className="text-sm font-semibold text-white/70 uppercase tracking-widest">
+                  <p className="text-sm font-semibold text-[#B3E8FA] uppercase tracking-widest">
                     Smart Home Financing
                   </p>
                   <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
-                    Finance Your <span className="text-white/70">Dream Home</span> Today
+                    Finance Your <span className="text-[#B3E8FA]">Dream Home</span> Today
                   </h1>
                 </div>
 
-                <p className="max-w-2xl text-lg text-white/80 sm:text-xl">
+                <p className="max-w-2xl text-lg text-[#E6F7FD] sm:text-xl">
                   Get flexible home loans with competitive interest rates, extended tenures, and potential tax benefits. Whether you're buying, building, or renovating—we make homeownership accessible.
                 </p>
 
                 {/* Key Features */}
                 <div className="space-y-3 pt-4">
                   <div className="flex items-start gap-3">
-                    <CheckCircle className="mt-1 h-5 w-5 flex-shrink-0 text-[#33B5E5]" />
-                    <span className="text-white/90">Loan amounts up to ₹1 Crore with minimal documentation</span>
+                    <CheckCircle className="mt-1 h-5 w-5 flex-shrink-0 text-[#66D4F7]" />
+                    <span className="text-blue-50">Loan amounts up to ₹1 Crore with minimal documentation</span>
                   </div>
                   <div className="flex items-start gap-3">
-                    <CheckCircle className="mt-1 h-5 w-5 flex-shrink-0 text-[#33B5E5]" />
-                    <span className="text-white/90">Tenure up to 30 years to fit your budget</span>
+                    <CheckCircle className="mt-1 h-5 w-5 flex-shrink-0 text-[#66D4F7]" />
+                    <span className="text-blue-50">Tenure up to 30 years to fit your budget</span>
                   </div>
                   <div className="flex items-start gap-3">
-                    <CheckCircle className="mt-1 h-5 w-5 flex-shrink-0 text-[#33B5E5]" />
-                    <span className="text-white/90">Fixed or floating rates based on your preference</span>
+                    <CheckCircle className="mt-1 h-5 w-5 flex-shrink-0 text-[#66D4F7]" />
+                    <span className="text-blue-50">Fixed or floating rates based on your preference</span>
                   </div>
                 </div>
 
@@ -65,25 +65,25 @@ export default function HomeLoanPage() {
                   </ApplyNowCTAButton>
                   <Link
                     href="#calculator"
-                    className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-[#0099D8]/20 bg-[#0099D8]/10 px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold text-white/80 backdrop-blur-sm transition hover:bg-[#0099D8]/20 hover:border-[#0099D8]/30 focus:outline-none focus:ring-4 focus:ring-[#0099D8]/30"
+                    className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-[#D6EEF8] bg-[#E6F7FD]0/10 px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold text-[#E6F7FD] backdrop-blur-sm transition hover:bg-[#E6F7FD]0/20 hover:border-[#B3E8FA] focus:outline-none focus:ring-4 focus:ring-[#B3E8FA]"
                   >
                     Calculate EMI
                   </Link>
                 </div>
 
                 {/* Stats */}
-                <div className="grid grid-cols-3 gap-4 pt-8 border-t border-[#0099D8]/40/30">
+                <div className="grid grid-cols-3 gap-4 pt-8 border-t border-[#33C1F3]/30">
                   <div>
                     <p className="text-2xl sm:text-3xl font-bold text-white">50K+</p>
-                    <p className="text-sm text-white/70">Happy Customers</p>
+                    <p className="text-sm text-[#B3E8FA]">Happy Customers</p>
                   </div>
                   <div>
                     <p className="text-2xl sm:text-3xl font-bold text-white">₹500Cr+</p>
-                    <p className="text-sm text-white/70">Disbursed</p>
+                    <p className="text-sm text-[#B3E8FA]">Disbursed</p>
                   </div>
                   <div>
                     <p className="text-2xl sm:text-3xl font-bold text-white">24hrs</p>
-                    <p className="text-sm text-white/70">Approval</p>
+                    <p className="text-sm text-[#B3E8FA]">Approval</p>
                   </div>
                 </div>
               </div>
@@ -91,39 +91,39 @@ export default function HomeLoanPage() {
               {/* Right Side - Feature Cards */}
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 {/* Card 1 */}
-                <div className="group rounded-2xl border border-[#0099D8]/40/30 bg-white/10 p-6 backdrop-blur-md transition hover:bg-white/15 hover:border-[#0099D8]/50">
-                  <div className="flex items-center justify-center h-12 w-12 rounded-xl bg-white/20 group-hover:bg-[#33B5E5] transition">
+                <div className="group rounded-2xl border border-[#33C1F3]/30 bg-white/10 p-6 backdrop-blur-md transition hover:bg-white/15 hover:border-[#B3E8FA]/50">
+                  <div className="flex items-center justify-center h-12 w-12 rounded-xl bg-white/20 group-hover:bg-[#66D4F7] transition">
                     <TrendingUp className="h-6 w-6 text-white" />
                   </div>
                   <h3 className="mt-4 text-lg font-semibold text-white">Competitive Rates</h3>
-                  <p className="mt-2 text-sm text-white/80">Starting from 6.5% onwards, tailored to your profile</p>
+                  <p className="mt-2 text-sm text-[#E6F7FD]">Starting from 6.5% onwards, tailored to your profile</p>
                 </div>
 
                 {/* Card 2 */}
-                <div className="group rounded-2xl border border-[#0099D8]/40/30 bg-white/10 p-6 backdrop-blur-md transition hover:bg-white/15 hover:border-[#0099D8]/50">
-                  <div className="flex items-center justify-center h-12 w-12 rounded-xl bg-white/20 group-hover:bg-[#33B5E5] transition">
+                <div className="group rounded-2xl border border-[#33C1F3]/30 bg-white/10 p-6 backdrop-blur-md transition hover:bg-white/15 hover:border-[#B3E8FA]/50">
+                  <div className="flex items-center justify-center h-12 w-12 rounded-xl bg-white/20 group-hover:bg-[#66D4F7] transition">
                     <Clock className="h-6 w-6 text-white" />
                   </div>
                   <h3 className="mt-4 text-lg font-semibold text-white">Quick Processing</h3>
-                  <p className="mt-2 text-sm text-white/80">Approval within 24 hours with instant disbursal</p>
+                  <p className="mt-2 text-sm text-[#E6F7FD]">Approval within 24 hours with instant disbursal</p>
                 </div>
 
                 {/* Card 3 */}
-                <div className="group rounded-2xl border border-[#0099D8]/40/30 bg-white/10 p-6 backdrop-blur-md transition hover:bg-white/15 hover:border-[#0099D8]/50">
-                  <div className="flex items-center justify-center h-12 w-12 rounded-xl bg-white/20 group-hover:bg-[#33B5E5] transition">
+                <div className="group rounded-2xl border border-[#33C1F3]/30 bg-white/10 p-6 backdrop-blur-md transition hover:bg-white/15 hover:border-[#B3E8FA]/50">
+                  <div className="flex items-center justify-center h-12 w-12 rounded-xl bg-white/20 group-hover:bg-[#66D4F7] transition">
                     <Shield className="h-6 w-6 text-white" />
                   </div>
                   <h3 className="mt-4 text-lg font-semibold text-white">Secure & Safe</h3>
-                  <p className="mt-2 text-sm text-white/80">256-bit encryption & RBI compliant platform</p>
+                  <p className="mt-2 text-sm text-[#E6F7FD]">256-bit encryption & RBI compliant platform</p>
                 </div>
 
                 {/* Card 4 */}
-                <div className="group rounded-2xl border border-[#0099D8]/40/30 bg-white/10 p-6 backdrop-blur-md transition hover:bg-white/15 hover:border-[#0099D8]/50">
-                  <div className="flex items-center justify-center h-12 w-12 rounded-xl bg-white/20 group-hover:bg-[#33B5E5] transition">
+                <div className="group rounded-2xl border border-[#33C1F3]/30 bg-white/10 p-6 backdrop-blur-md transition hover:bg-white/15 hover:border-[#B3E8FA]/50">
+                  <div className="flex items-center justify-center h-12 w-12 rounded-xl bg-white/20 group-hover:bg-[#66D4F7] transition">
                     <FileText className="h-6 w-6 text-white" />
                   </div>
                   <h3 className="mt-4 text-lg font-semibold text-white">Easy Documentation</h3>
-                  <p className="mt-2 text-sm text-white/80">Minimal documents required with digital verification</p>
+                  <p className="mt-2 text-sm text-[#E6F7FD]">Minimal documents required with digital verification</p>
                 </div>
               </div>
             </div>
@@ -210,7 +210,7 @@ export default function HomeLoanPage() {
               <div className="pt-4">
                 <Link
                   href="#calculator"
-                  className="inline-flex items-center gap-2 text-[#0099D8] font-semibold hover:text-[#007BB0] transition"
+                  className="inline-flex items-center gap-2 text-[#00AEEF] font-semibold hover:text-[#008FCC] transition"
                 >
                   Use EMI Calculator
                   <ArrowRight className="h-4 w-4" />
@@ -219,13 +219,13 @@ export default function HomeLoanPage() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="rounded-2xl border border-gray-100 bg-gradient-to-br from-blue-50 to-indigo-50 p-6">
+              <div className="rounded-2xl border border-gray-100 bg-gradient-to-br from-[#E6F7FD] to-[#E8EAF6] p-6">
                 <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-900">Interest Rates</h3>
                 <p className="mt-3 text-2xl font-bold text-gray-900">6.5% - 9.5%</p>
                 <p className="mt-2 text-sm text-gray-600">Rates vary by lender and profile</p>
               </div>
 
-              <div className="rounded-2xl border border-gray-100 bg-gradient-to-br from-blue-50 to-indigo-50 p-6">
+              <div className="rounded-2xl border border-gray-100 bg-gradient-to-br from-[#E6F7FD] to-[#E8EAF6] p-6">
                 <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-900">Tenure</h3>
                 <p className="mt-3 text-2xl font-bold text-gray-900">Up to 30 Years</p>
                 <p className="mt-2 text-sm text-gray-600">Flexible repayment options</p>
@@ -237,7 +237,7 @@ export default function HomeLoanPage() {
                 <p className="mt-2 text-sm text-gray-600">Based on profile and property</p>
               </div>
 
-              <div className="rounded-2xl border border-gray-100 bg-gradient-to-br from-sky-50 to-sky-50 p-6">
+              <div className="rounded-2xl border border-gray-100 bg-gradient-to-br from-orange-50 to-amber-50 p-6">
                 <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-900">Processing Fee</h3>
                 <p className="mt-3 text-2xl font-bold text-gray-900">0% - 2%</p>
                 <p className="mt-2 text-sm text-gray-600">Transparent & minimal</p>
@@ -286,7 +286,7 @@ export default function HomeLoanPage() {
               <p className="mt-2 text-gray-600">Keep digital copies ready. The exact list depends on your profile.</p>
 
               <div className="mt-6 grid gap-4">
-                <div className="rounded-xl border-l-4 border-l-blue-600 bg-[#0099D8]/5 p-5">
+                <div className="rounded-xl border-l-4 border-l-blue-600 bg-[#E6F7FD] p-5">
                   <h3 className="text-sm font-semibold text-gray-900">Identity Proof</h3>
                   <p className="mt-2 text-sm text-gray-700">Aadhaar, PAN, Passport, or Voter ID</p>
                 </div>
@@ -298,11 +298,11 @@ export default function HomeLoanPage() {
                   <h3 className="text-sm font-semibold text-gray-900">Income Proof</h3>
                   <p className="mt-2 text-sm text-gray-700">Salary slips, Form 16, ITR, or business financials</p>
                 </div>
-                <div className="rounded-xl border-l-4 border-l-[#0099D8] bg-[#0099D8]/5 p-5">
+                <div className="rounded-xl border-l-4 border-l-orange-600 bg-orange-50 p-5">
                   <h3 className="text-sm font-semibold text-gray-900">Property Documents</h3>
                   <p className="mt-2 text-sm text-gray-700">Sale agreement, title deed, approved plan, and NOC</p>
                 </div>
-                <div className="rounded-xl border-l-4 border-l-green-600 bg-green-50 p-5">
+                <div className="rounded-xl border-l-4 border-l-red-600 bg-red-50 p-5">
                   <h3 className="text-sm font-semibold text-gray-900">Bank Statements</h3>
                   <p className="mt-2 text-sm text-gray-700">Last 6 months statements (commonly requested)</p>
                 </div>
@@ -317,33 +317,33 @@ export default function HomeLoanPage() {
               <h3 className="text-lg font-bold text-gray-900">💡 Quick Tips</h3>
               <ul className="mt-4 space-y-3">
                 <li className="flex gap-3">
-                  <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-[#0099D8]" />
+                  <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-[#00AEEF]" />
                   <span className="text-sm text-gray-700">Keep your credit score 700+ for better rates</span>
                 </li>
                 <li className="flex gap-3">
-                  <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-[#0099D8]" />
+                  <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-[#00AEEF]" />
                   <span className="text-sm text-gray-700">Compare fixed vs floating rates based on risk comfort</span>
                 </li>
                 <li className="flex gap-3">
-                  <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-[#0099D8]" />
+                  <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-[#00AEEF]" />
                   <span className="text-sm text-gray-700">Maintain a buffer for registration and closing costs</span>
                 </li>
                 <li className="flex gap-3">
-                  <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-[#0099D8]" />
+                  <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-[#00AEEF]" />
                   <span className="text-sm text-gray-700">Pre-approval can boost your negotiating power</span>
                 </li>
               </ul>
             </div>
 
             {/* Expert Help CTA */}
-            <div className="rounded-2xl border-2 border-[#0099D8]/20 bg-gradient-to-br from-blue-50 to-indigo-50 p-6">
-              <h3 className="text-lg font-bold text-[#004D2C]">🤝 Need Expert Guidance?</h3>
-              <p className="mt-2 text-sm text-[#004D2C]">
+            <div className="rounded-2xl border-2 border-[#D6EEF8] bg-gradient-to-br from-[#E6F7FD] to-[#E8EAF6] p-6">
+              <h3 className="text-lg font-bold text-[#2E3192]">🤝 Need Expert Guidance?</h3>
+              <p className="mt-2 text-sm text-[#2E3192]">
                 Our financial experts will help you find the best loan tailored to your needs.
               </p>
               <Link
                 href="/contact"
-                className="mt-4 block w-full rounded-lg bg-[#0099D8] px-4 py-3 text-center text-sm font-semibold text-white hover:bg-[#007BB0] transition"
+                className="mt-4 block w-full rounded-lg bg-[#00AEEF] px-4 py-3 text-center text-sm font-semibold text-white hover:bg-[#008FCC] transition"
               >
                 Talk to an Expert
               </Link>
@@ -354,7 +354,7 @@ export default function HomeLoanPage() {
               <h3 className="text-lg font-bold text-gray-900">❓ Common Questions</h3>
               <div className="mt-4 space-y-3">
                 <details className="group cursor-pointer">
-                  <summary className="text-sm font-medium text-gray-900 group-open:text-[#0099D8]">
+                  <summary className="text-sm font-medium text-gray-900 group-open:text-[#00AEEF]">
                     How long does approval take?
                   </summary>
                   <p className="mt-2 text-xs text-gray-600 leading-relaxed">
@@ -362,7 +362,7 @@ export default function HomeLoanPage() {
                   </p>
                 </details>
                 <details className="group cursor-pointer">
-                  <summary className="text-sm font-medium text-gray-900 group-open:text-[#0099D8]">
+                  <summary className="text-sm font-medium text-gray-900 group-open:text-[#00AEEF]">
                     What's the minimum credit score?
                   </summary>
                   <p className="mt-2 text-xs text-gray-600 leading-relaxed">
@@ -370,7 +370,7 @@ export default function HomeLoanPage() {
                   </p>
                 </details>
                 <details className="group cursor-pointer">
-                  <summary className="text-sm font-medium text-gray-900 group-open:text-[#0099D8]">
+                  <summary className="text-sm font-medium text-gray-900 group-open:text-[#00AEEF]">
                     Can I prepay without penalty?
                   </summary>
                   <p className="mt-2 text-xs text-gray-600 leading-relaxed">
@@ -389,7 +389,7 @@ export default function HomeLoanPage() {
       </section>
 
       {/* CTA Section */}
-      <section id="apply" className="relative overflow-hidden bg-gradient-to-r from-blue-600 to-indigo-700 py-16 sm:py-20 lg:py-24">
+      <section id="apply" className="relative overflow-hidden bg-gradient-to-r from-[#00AEEF] to-indigo-700 py-16 sm:py-20 lg:py-24">
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-20 -right-20 h-64 w-64 rounded-full bg-white opacity-5 blur-3xl" />
           <div className="absolute -bottom-20 -left-20 h-64 w-64 rounded-full bg-white opacity-5 blur-3xl" />
@@ -399,7 +399,7 @@ export default function HomeLoanPage() {
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white">
             Ready to Own Your Dream Home?
           </h2>
-          <p className="mt-4 text-lg text-white/80 max-w-2xl mx-auto">
+          <p className="mt-4 text-lg text-[#E6F7FD] max-w-2xl mx-auto">
             Start your application today and get approval within 24 hours. Our team will guide you through every step of the process.
           </p>
 
@@ -416,7 +416,7 @@ export default function HomeLoanPage() {
             </Link>
           </div>
 
-          <p className="mt-8 text-sm text-white/70">
+          <p className="mt-8 text-sm text-[#B3E8FA]">
             ✓ No hidden charges | ✓ Transparent process | ✓ Expert support
           </p>
         </div>
@@ -450,7 +450,7 @@ export default function HomeLoanPage() {
 //         <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
 //           <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
 //             <div className="space-y-4">
-//               <p className="text-sm font-semibold text-[#0099D8]">Home Loan</p>
+//               <p className="text-sm font-semibold text-[#00AEEF]">Home Loan</p>
 //               <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
 //                 Finance your dream home with flexible EMIs
 //               </h1>
@@ -462,7 +462,7 @@ export default function HomeLoanPage() {
 //               <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
 //                 <Link
 //                   href="#apply"
-//                   className="inline-flex items-center justify-center rounded-xl bg-[#0099D8] px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#007BB0] focus:outline-none focus:ring-4 focus:ring-[#0099D8]/20"
+//                   className="inline-flex items-center justify-center rounded-xl bg-[#00AEEF] px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#008FCC] focus:outline-none focus:ring-4 focus:ring-[#B3E8FA]"
 //                 >
 //                   Apply for Home Loan
 //                 </Link>
@@ -475,7 +475,7 @@ export default function HomeLoanPage() {
 //               </div>
 //             </div>
 
-//             <div className="rounded-3xl border border-gray-100 bg-gradient-to-br from-blue-50 via-white to-indigo-50 p-6 shadow-sm sm:p-8">
+//             <div className="rounded-3xl border border-gray-100 bg-gradient-to-br from-[#E6F7FD] via-white to-[#E8EAF6] p-6 shadow-sm sm:p-8">
 //               <div className="grid gap-4 sm:grid-cols-2">
 //                 <div className="rounded-2xl bg-white p-4 shadow-sm">
 //                   <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Typical Tenure</p>
@@ -560,28 +560,28 @@ export default function HomeLoanPage() {
 //               <h3 className="text-base font-bold text-gray-900">Quick tips</h3>
 //               <ul className="mt-3 space-y-2 text-sm text-gray-600">
 //                 <li className="flex gap-2">
-//                   <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-[#0099D8]" />
+//                   <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-[#00AEEF]" />
 //                   Keep your credit score healthy before applying.
 //                 </li>
 //                 <li className="flex gap-2">
-//                   <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-[#0099D8]" />
+//                   <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-[#00AEEF]" />
 //                   Compare fixed vs floating based on risk comfort.
 //                 </li>
 //                 <li className="flex gap-2">
-//                   <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-[#0099D8]" />
+//                   <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-[#00AEEF]" />
 //                   Maintain a buffer for registration and other costs.
 //                 </li>
 //               </ul>
 //             </div>
 
-//             <div className="rounded-2xl border border-[#0099D8]/15 bg-[#0099D8]/5 p-6 shadow-sm">
-//               <h3 className="text-base font-bold text-[#004D2C]">Need help choosing?</h3>
-//               <p className="mt-2 text-sm text-[#004D2C]/80">
+//             <div className="rounded-2xl border border-[#E6F7FD] bg-[#E6F7FD] p-6 shadow-sm">
+//               <h3 className="text-base font-bold text-[#2E3192]">Need help choosing?</h3>
+//               <p className="mt-2 text-sm text-[#2E3192]/80">
 //                 Share your requirement and we’ll help you shortlist a suitable lender and product.
 //               </p>
 //               <Link
 //                 href="/contact"
-//                 className="mt-4 inline-flex w-full items-center justify-center rounded-xl bg-[#0099D8] px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#007BB0] focus:outline-none focus:ring-4 focus:ring-[#0099D8]/20"
+//                 className="mt-4 inline-flex w-full items-center justify-center rounded-xl bg-[#00AEEF] px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#008FCC] focus:outline-none focus:ring-4 focus:ring-[#B3E8FA]"
 //               >
 //                 Talk to an expert
 //               </Link>
@@ -671,7 +671,7 @@ export default function HomeLoanPage() {
 //               <div className="flex flex-col gap-3 sm:flex-row">
 //                 <Link
 //                   href="/register"
-//                   className="inline-flex items-center justify-center rounded-xl bg-[#0099D8] px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#007BB0] focus:outline-none focus:ring-4 focus:ring-[#0099D8]/20"
+//                   className="inline-flex items-center justify-center rounded-xl bg-[#00AEEF] px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#008FCC] focus:outline-none focus:ring-4 focus:ring-[#B3E8FA]"
 //                 >
 //                   Apply for Home Loan
 //                 </Link>

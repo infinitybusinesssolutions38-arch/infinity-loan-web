@@ -34,7 +34,7 @@ export default function EMICalculator() {
     return (
         <section
             id="emi-calculator"
-            className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-indigo-50 flex items-center justify-center px-4 py-12"
+            className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-[#E8EAF6] flex items-center justify-center px-4 py-12"
         >
             <div className="w-full max-w-5xl bg-white/80 border border-gray-200 backdrop-blur-xl rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.08)] p-6 lg:p-10">
 
@@ -60,7 +60,7 @@ export default function EMICalculator() {
                                 <span className="text-sm font-medium text-gray-700">
                                     Loan Amount
                                 </span>
-                                <span className="text-sm font-bold text-indigo-600">
+                                <span className="text-sm font-bold text-[#2E3192]">
                                     ₹ {amount.toLocaleString()}
                                 </span>
                             </div>
@@ -81,7 +81,7 @@ export default function EMICalculator() {
                                 <span className="text-sm font-medium text-gray-700">
                                     Tenure
                                 </span>
-                                <span className="text-sm font-bold text-indigo-600">
+                                <span className="text-sm font-bold text-[#2E3192]">
                                     {tenure} Months
                                 </span>
                             </div>
@@ -102,7 +102,7 @@ export default function EMICalculator() {
                                 <span className="text-sm font-medium text-gray-700">
                                     Interest Rate (Annual)
                                 </span>
-                                <span className="text-sm font-bold text-indigo-600">
+                                <span className="text-sm font-bold text-[#2E3192]">
                                     {annualRate}%
                                 </span>
                             </div>
@@ -128,7 +128,7 @@ export default function EMICalculator() {
                     </div>
 
                     {/* RIGHT */}
-                    <div className="rounded-2xl bg-gradient-to-br from-white to-blue-50 p-6 shadow-xl border border-[#0099D8]/15/60 flex flex-col justify-between">
+                    <div className="rounded-2xl bg-gradient-to-br from-white to-[#E6F7FD] p-6 shadow-xl border border-[#E6F7FD]/60 flex flex-col justify-between">
 
                         <div>
                             <h3 className="text-lg font-semibold mb-4 text-gray-900">

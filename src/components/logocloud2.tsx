@@ -106,7 +106,7 @@ export default function LogoCloud2() {
     ];
 
     return (
-        <section className="relative bg-gradient-to-b from-white via-sky-50/30 to-white overflow-hidden py-16 lg:py-20">
+        <section className="relative bg-gradient-to-b from-white via-orange-50/30 to-white overflow-hidden py-16 lg:py-20">
             {/* Background Pattern */}
             <div className="absolute inset-0 opacity-5">
                 <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNGOTc0MTUiPjxwYXRoIGQ9Ik0zNiAzNHYyaDh2LTJoLTh6TTIwIDM0djJoOHYtMmgtOHoiLz48L2c+PC9nPjwvc3ZnPg==')] animate-slide" />
@@ -116,9 +116,9 @@ export default function LogoCloud2() {
                 {/* Header Section */}
                 <div className="text-center mb-12">
                     {/* Badge */}
-                    <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-white border-2 border-[#0099D8]/30 rounded-full mb-6 shadow-md animate-fade-in">
-                        <Award className="h-4 w-4 text-[#0099D8]" />
-                        <span className="text-sm font-bold text-[#0099D8] uppercase tracking-wide">
+                    <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-white border-2 border-[#00CED1]/30 rounded-full mb-6 shadow-md animate-fade-in">
+                        <Award className="h-4 w-4 text-[#00CED1]" />
+                        <span className="text-sm font-bold text-[#00CED1] uppercase tracking-wide">
                             Our Partners
                         </span>
                     </div>
@@ -126,7 +126,7 @@ export default function LogoCloud2() {
                     {/* Title */}
                     <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-gray-900 mb-4 animate-fade-in-up">
                         Trusted by Leading
-                        <span className="block mt-2 bg-gradient-to-r from-[#0099D8] via-[#0099D8] to-[#2E3192] bg-clip-text text-transparent">
+                        <span className="block mt-2 bg-gradient-to-r from-[#00CED1] via-orange-600 to-amber-600 bg-clip-text text-transparent">
                             Banks & Financial Institutions
                         </span>
                     </h2>
@@ -141,13 +141,13 @@ export default function LogoCloud2() {
                     {stats.map((stat, index) => (
                         <div
                             key={stat.label}
-                            className="bg-white rounded-2xl p-4 sm:p-6 shadow-lg border-2 border-gray-100 hover:border-[#0099D8]/30 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+                            className="bg-white rounded-2xl p-4 sm:p-6 shadow-lg border-2 border-gray-100 hover:border-[#00CED1]/30 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
                         >
                             <div className="flex flex-col items-center text-center">
-                                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-sky-100 to-sky-50 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                                    <stat.icon className="w-5 h-5 sm:w-6 sm:h-6 text-[#0099D8]" strokeWidth={2.5} />
+                                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-orange-100 to-orange-50 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                                    <stat.icon className="w-5 h-5 sm:w-6 sm:h-6 text-[#00CED1]" strokeWidth={2.5} />
                                 </div>
-                                <p className="text-2xl sm:text-3xl font-black text-[#0099D8] mb-1">
+                                <p className="text-2xl sm:text-3xl font-black text-[#00CED1] mb-1">
                                     {stat.value}
                                 </p>
                                 <p className="text-xs sm:text-sm font-bold text-gray-600">
@@ -161,7 +161,7 @@ export default function LogoCloud2() {
                 {/* Logo Slider Container */}
                 <div className="relative py-8 animate-fade-in-up animation-delay-300">
                     {/* Decorative Border Top */}
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-1 bg-gradient-to-r from-transparent via-[#0099D8] to-transparent rounded-full" />
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-1 bg-gradient-to-r from-transparent via-[#00CED1] to-transparent rounded-full" />
 
                     {/* Main Slider */}
                     <div className="bg-white rounded-3xl border-2 border-gray-100 shadow-xl overflow-hidden py-8 relative">
@@ -171,7 +171,7 @@ export default function LogoCloud2() {
                                     key={index}
                                     className="flex items-center group/logo"
                                 >
-                                    <div className="relative h-20 w-40 px-4 py-2 rounded-xl transition-all duration-300 group-hover/logo:bg-[#0099D8]/5 group-hover/logo:scale-110">
+                                    <div className="relative h-20 w-40 px-4 py-2 rounded-xl transition-all duration-300 group-hover/logo:bg-orange-50 group-hover/logo:scale-110">
                                         <Image
                                             src={logo.src}
                                             alt={logo.alt}
@@ -203,23 +203,23 @@ export default function LogoCloud2() {
                     </div>
 
                     {/* Decorative Border Bottom */}
-                    <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-32 h-1 bg-gradient-to-r from-transparent via-[#0099D8] to-transparent rounded-full" />
+                    <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-32 h-1 bg-gradient-to-r from-transparent via-[#00CED1] to-transparent rounded-full" />
                 </div>
 
                 {/* Trust Indicators */}
                 <div className="mt-10 flex flex-wrap items-center justify-center gap-6 text-sm text-gray-600 font-semibold animate-fade-in-up animation-delay-400">
                     <div className="flex items-center gap-2">
-                        <CheckCircle2 className="w-5 h-5 text-[#0099D8]" />
+                        <CheckCircle2 className="w-5 h-5 text-[#00CED1]" />
                         <span>RBI Approved Partners</span>
                     </div>
                     <div className="hidden sm:block w-1 h-1 rounded-full bg-gray-400" />
                     <div className="flex items-center gap-2">
-                        <CheckCircle2 className="w-5 h-5 text-[#0099D8]" />
+                        <CheckCircle2 className="w-5 h-5 text-[#00CED1]" />
                         <span>Secure & Transparent</span>
                     </div>
                     <div className="hidden sm:block w-1 h-1 rounded-full bg-gray-400" />
                     <div className="flex items-center gap-2">
-                        <CheckCircle2 className="w-5 h-5 text-[#0099D8]" />
+                        <CheckCircle2 className="w-5 h-5 text-[#00CED1]" />
                         <span>Best Interest Rates</span>
                     </div>
                 </div>

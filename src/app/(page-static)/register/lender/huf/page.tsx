@@ -107,7 +107,7 @@ const OrganizationSignupForm = () => {
         {
             question: "Contact Us",
             answer:
-                "For any queries or onboarding support, please contact our institutional partnership team at institutional@fortuneloans.com or through our contact page.",
+                "For any queries or onboarding support, please contact our institutional partnership team at business@infinityloanservices.com or through our contact page.",
         },
     ];
     return (
@@ -146,7 +146,7 @@ const OrganizationSignupForm = () => {
                             <Input
                                 id="firmName"
                                 type="text"
-                                placeholder="Fortune Pvt Ltd"
+                                placeholder="Infinity Pvt Ltd"
                                 {...register("firmName", { required: true })}
                                 className="border border-border bg-background"
                             />
@@ -451,7 +451,7 @@ const OrganizationSignupForm = () => {
                         REGISTER AS HUF LENDER
                     </h2> */}
                     {/* <p className="text-gray-600 mb-6">
-                        Join Fortune Loans as a corporate lender and start growing your
+                        Join Infinity Loans as a corporate lender and start growing your
                         investments smartly.
                     </p>
                     <ul className="space-y-2 text-gray-600">

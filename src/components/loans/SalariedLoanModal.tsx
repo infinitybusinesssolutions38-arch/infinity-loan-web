@@ -2,9 +2,14 @@
 
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
+import LoanApplicationSuccessModal from "./LoanApplicationSuccessModal";
 import { useForm } from "react-hook-form";
 import axios from "axios";
+import {
+    resetCloudinarySignatureCache,
+    uploadFileToCloudinary,
+} from "@/lib/cloudinary-client-upload";
 
 type Props = {
     isOpen: boolean;
@@ -16,12 +21,25 @@ type Props = {
 type LoanFormData = Record<string, any>;
 
 export default function SalariedLoanModal({ isOpen, onClose, categoryKey, categoryTitle }: Props) {
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [submittedApplicationRef, setSubmittedApplicationRef] = useState<string | null>(null);
+
     const {
         register,
         handleSubmit,
         watch,
         formState: { errors },
     } = useForm<LoanFormData>();
+
+    useEffect(() => {
+        if (!isOpen) setShowSuccessModal(false);
+    }, [isOpen]);
+
+    const handleSuccessClose = () => {
+        setShowSuccessModal(false);
+        setSubmittedApplicationRef(null);
+        onClose();
+    };
 
     const toAccountKey = (value: any) => {
         return String(value || "")
@@ -30,11 +48,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
             .replace(/^_+|_+$/g, "");
     };
 
-    const SIGNATURE_TIMEOUT_MS = 90000;
-    const CLOUDINARY_UPLOAD_TIMEOUT_MS = 180000;
     const SUBMIT_TIMEOUT_MS = 120000;
-
-    const cloudinarySignaturePromiseCache = useRef(new Map<string, Promise<any>>());
 
     const isPdfPasswordProtected = async (file: File) => {
         try {
@@ -83,118 +97,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
         return true;
     };
 
-    const validatePdfOnlyMax2MB = async (value: any) => {
-        const file = getFileFromValue(value);
-        if (!file) return true;
-
-        const isAllowedMime = file.type === "application/pdf";
-        const fileName = typeof file.name === "string" ? file.name.toLowerCase() : "";
-        const isAllowedExt = fileName.endsWith(".pdf");
-        if (!isAllowedMime && !isAllowedExt) return "Please upload PDF only";
-
-        if (await isPdfPasswordProtected(file)) {
-            return "Password-protected PDFs are not supported";
-        }
-        if (file.size > 5 * 1024 * 1024) return "Max size is 5 MB";
-        return true;
-    };
-
-    const validateMax1MBJpegOnly = async (value: any) => {
-        const file = getFileFromValue(value);
-        if (!file) return true;
-
-        const isAllowedMime = file.type === "image/jpeg" || file.type === "image/jpg";
-        const fileName = typeof file.name === "string" ? file.name.toLowerCase() : "";
-        const isAllowedExt = fileName.endsWith(".jpg") || fileName.endsWith(".jpeg");
-        if (!isAllowedMime && !isAllowedExt) return "Please upload JPEG only";
-
-        if (file.size > 1 * 1024 * 1024) return "Max size is 1 MB";
-        return true;
-    };
-
-    const getCloudinarySignature = async (folder: string) => {
-        const cachedPromise = cloudinarySignaturePromiseCache.current.get(folder);
-        if (cachedPromise) {
-            return cachedPromise;
-        }
-
-        let res;
-        const promise = (async () => {
-            try {
-                res = await axios.post(
-                    "/api/cloudinary-signature",
-                    { folder },
-                    { timeout: SIGNATURE_TIMEOUT_MS }
-                );
-            } catch (err) {
-                cloudinarySignaturePromiseCache.current.delete(folder);
-                if (axios.isAxiosError(err)) {
-                    const data: any = err.response?.data;
-                    const msg =
-                        data?.message ||
-                        (typeof data === "string" ? data : "") ||
-                        err.message;
-                    throw new Error(`Cloudinary signature failed: ${msg}`);
-                }
-                throw err;
-            }
-
-            if (!res?.data?.success) {
-                cloudinarySignaturePromiseCache.current.delete(folder);
-                throw new Error(res?.data?.message || "Failed to get upload signature");
-            }
-
-            return res.data as {
-                cloudName: string;
-                apiKey: string;
-                timestamp: number;
-                folder: string;
-                signature: string;
-            };
-        })();
-
-        cloudinarySignaturePromiseCache.current.set(folder, promise);
-        return promise;
-    };
-
-    const uploadToCloudinary = async (file: File, folder: string) => {
-        const sig = await getCloudinarySignature(folder);
-        const uploadUrl = `https://api.cloudinary.com/v1_1/${sig.cloudName}/auto/upload`;
-
-        const fd = new FormData();
-        fd.append("file", file);
-        fd.append("api_key", sig.apiKey);
-        fd.append("timestamp", String(sig.timestamp));
-        fd.append("folder", sig.folder);
-        fd.append("signature", sig.signature);
-
-        let uploadRes;
-        try {
-            uploadRes = await axios.post(uploadUrl, fd, {
-                timeout: CLOUDINARY_UPLOAD_TIMEOUT_MS,
-                headers: { "Content-Type": "multipart/form-data" },
-            });
-        } catch (err) {
-            if (axios.isAxiosError(err)) {
-                const data: any = err.response?.data;
-                const cloudMsg =
-                    data?.error?.message ||
-                    data?.message ||
-                    (typeof data === "string" ? data : "");
-                const finalMsg = cloudMsg
-                    ? `Cloudinary upload failed: ${cloudMsg}`
-                    : `Cloudinary upload failed: ${err.message}`;
-                throw new Error(finalMsg);
-            }
-            throw err;
-        }
-
-        const secureUrl = uploadRes?.data?.secure_url;
-        if (!secureUrl || typeof secureUrl !== "string") {
-            throw new Error("Cloud upload failed");
-        }
-        return secureUrl;
-    };
+    const uploadToCloudinary = uploadFileToCloudinary;
 
     const getError = (key: string) => {
         const err = (errors as any)?.[key];
@@ -518,77 +421,6 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
             // =====================================
             // Documents (Files)
             // =====================================
-            const applicantPhoto = pickFirstFile(data.applicantPhoto);
-            if (applicantPhoto) {
-                formData.append(
-                    "applicantPhoto",
-                    await uploadToCloudinary(applicantPhoto, "loan_applications")
-                );
-            }
-
-            const panPhoto = pickFirstFile(data.panPhoto);
-            if (panPhoto) {
-                formData.append(
-                    "panPhoto",
-                    await uploadToCloudinary(panPhoto, "loan_applications")
-                );
-            }
-
-            const aadhaarPhoto = pickFirstFile(data.aadhaarPhoto);
-            if (aadhaarPhoto) {
-                formData.append(
-                    "aadhaarPhoto",
-                    await uploadToCloudinary(aadhaarPhoto, "loan_applications")
-                );
-            }
-
-            const aadhaarBackPhoto = pickFirstFile(data.aadhaarBackPhoto);
-            if (aadhaarBackPhoto) {
-                formData.append(
-                    "aadhaarBackPhoto",
-                    await uploadToCloudinary(aadhaarBackPhoto, "loan_applications")
-                );
-            }
-
-            const AssessmentYear2324 = pickFirstFile(data.AssessmentYear2324);
-            if (AssessmentYear2324) {
-                formData.append(
-                    "AssessmentYear2324",
-                    await uploadToCloudinary(AssessmentYear2324, "loan_applications")
-                );
-            }
-
-            const AssessmentYear2425 = pickFirstFile(data.AssessmentYear2425);
-            if (AssessmentYear2425) {
-                formData.append(
-                    "AssessmentYear2425",
-                    await uploadToCloudinary(AssessmentYear2425, "loan_applications")
-                );
-            }
-
-            const AssessmentYear2526 = pickFirstFile(data.AssessmentYear2526);
-            if (AssessmentYear2526) {
-                formData.append(
-                    "AssessmentYear2526",
-                    await uploadToCloudinary(AssessmentYear2526, "loan_applications")
-                );
-            }
-
-            const residencePhoto = pickFirstFile(data.residencePhoto);
-            if (residencePhoto) {
-                formData.append(
-                    "residencePhoto",
-                    await uploadToCloudinary(residencePhoto, "loan_applications")
-                );
-            }
-
-            const lastElectricityBill = pickFirstFile(data.latestElectricityBill);
-            if (lastElectricityBill)
-                formData.append(
-                    "lastElectricityBill",
-                    await uploadToCloudinary(lastElectricityBill, "loan_applications")
-                );
-
             const permElectricityBill = pickFirstFile(data.permanentAddressElectricityBill);
             if (permElectricityBill)
                 formData.append(
@@ -610,59 +442,11 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                     await uploadToCloudinary(companyAllotmentLetter, "loan_applications")
                 );
 
-            const officeIdPhoto = pickFirstFile(data.officeIdPhoto);
-            if (officeIdPhoto)
-                formData.append(
-                    "officeIdPhoto",
-                    await uploadToCloudinary(officeIdPhoto, "loan_applications")
-                );
-
-            const officeIDCardPhoto = pickFirstFile(data.officeIDCardPhoto);
-            if (officeIDCardPhoto)
-                formData.append(
-                    "officeIdPhoto",
-                    await uploadToCloudinary(officeIDCardPhoto, "loan_applications")
-                );
-
-            const salarySlips = pickFirstFile(data.salarySlips);
-            if (salarySlips)
-                formData.append(
-                    "salarySlips",
-                    await uploadToCloudinary(salarySlips, "loan_applications")
-                );
-
-            const lastThreeMonthsSalarySlips = pickFirstFile(data.LastThreeMonthsSalarySlips);
-            if (lastThreeMonthsSalarySlips)
-                formData.append(
-                    "salarySlips",
-                    await uploadToCloudinary(
-                        lastThreeMonthsSalarySlips,
-                        "loan_applications"
-                    )
-                );
-
-            const bankStatement = pickFirstFile(data.bankStatement);
-            if (bankStatement)
-                formData.append(
-                    "bankStatement",
-                    await uploadToCloudinary(bankStatement, "loan_applications")
-                );
-
             const cibilReport = pickFirstFile(data.cibilReport);
             if (cibilReport)
                 formData.append(
                     "cibilReport",
                     await uploadToCloudinary(cibilReport, "loan_applications")
-                );
-
-            const lastSixMonthsBankStatement = pickFirstFile(data.lastSixMonthsBankStatement);
-            if (lastSixMonthsBankStatement)
-                formData.append(
-                    "bankStatement",
-                    await uploadToCloudinary(
-                        lastSixMonthsBankStatement,
-                        "loan_applications"
-                    )
                 );
 
             const quotationFile = pickFirstFile(data.quotationFile);
@@ -685,39 +469,6 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                 formData.append(
                     "proformaInvoiceFile",
                     await uploadToCloudinary(proformaInvoiceFile, "loan_applications")
-                );
-
-            const coApplicantPanPhoto = pickFirstFile(data.CoApplicantpanPhoto);
-            if (coApplicantPanPhoto)
-                formData.append(
-                    "CoApplicantpanPhoto",
-                    await uploadToCloudinary(coApplicantPanPhoto, "loan_applications")
-                );
-
-            const coApplicantAadhaarPhoto = pickFirstFile(data.CoApplicantAadhaarPhoto);
-            if (coApplicantAadhaarPhoto)
-                formData.append(
-                    "CoApplicantAadhaarPhoto",
-                    await uploadToCloudinary(coApplicantAadhaarPhoto, "loan_applications")
-                );
-
-            const coApplicantAadhaarBackPhoto = pickFirstFile(
-                data.CoApplicantAadhaarBackPhoto
-            );
-            if (coApplicantAadhaarBackPhoto)
-                formData.append(
-                    "CoApplicantAadhaarBackPhoto",
-                    await uploadToCloudinary(
-                        coApplicantAadhaarBackPhoto,
-                        "loan_applications"
-                    )
-                );
-
-            const coApplicantPhoto = pickFirstFile(data.CoApplicantPhont);
-            if (coApplicantPhoto)
-                formData.append(
-                    "CoApplicantPhoto",
-                    await uploadToCloudinary(coApplicantPhoto, "loan_applications")
                 );
 
             // =====================================
@@ -755,8 +506,12 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                 throw new Error(res?.data?.message || "Submission failed");
             }
 
-            alert("Your form successfully submitted!");
-            onClose();
+            const ref =
+                res?.data?.applicationRef ||
+                res?.data?.data?.applicationRef ||
+                null;
+            setSubmittedApplicationRef(ref ? String(ref) : null);
+            setShowSuccessModal(true);
         } catch (error) {
             console.error(error);
             const message =
@@ -765,6 +520,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                 (error instanceof Error ? error.message : "Submission failed");
             alert(message);
         } finally {
+            resetCloudinarySignatureCache();
             setLoading(false);
         }
     };
@@ -799,19 +555,28 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
     ]
 
     return (
+        <>
+        <LoanApplicationSuccessModal
+            isOpen={showSuccessModal}
+            onClose={handleSuccessClose}
+            applicationRef={submittedApplicationRef}
+            categoryKey={categoryKey}
+            categoryTitle={categoryTitle}
+        />
         <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm sm:p-6 overflow-auto"
+            className={`fixed inset-0 z-50 flex items-center justify-center overflow-auto bg-[#0F172A]/28 p-4 sm:p-6 ${showSuccessModal ? "pointer-events-none" : ""}`}
+            aria-hidden={showSuccessModal}
             onClick={(e) => {
-                if (e.target === e.currentTarget) onClose();
+                if (e.target === e.currentTarget && !showSuccessModal) onClose();
             }}
         >
-            <div className="relative w-full max-w-5xl overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-black/5 max-h-[92vh] flex flex-col">
-                <div className="sticky top-0 z-10 border-b bg-gradient-to-r from-gray-950 via-gray-900 to-gray-950 px-6 pt-6 pb-5 text-white sm:px-8">
+            <div className="relative flex max-h-[92vh] w-full max-w-5xl flex-col overflow-hidden rounded-[20px] bg-white shadow-[0_14px_30px_rgba(15,23,42,0.12)] ring-1 ring-[#D6EEF8]">
+                <div className="sticky top-0 z-10 border-b border-[#D6EEF8] bg-[#F5FCFF] px-6 pb-5 pt-6 text-[#1A1A1A] sm:px-8">
                     <button
                         type="button"
                         onClick={onClose}
                         aria-label="Close"
-                        className="absolute right-3 top-3 rounded-full p-2 text-white/80 transition hover:bg-white/10 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/40"
+                        className="absolute right-3 top-3 rounded-full p-2 text-[#6B7280] transition-all duration-300 ease-out hover:bg-[#E6F7FD] hover:text-[#00AEEF] focus:outline-none focus:ring-2 focus:ring-[#00AEEF]/25"
                     >
                         ×
                     </button>
@@ -823,11 +588,11 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                     ) : null} */}
                 </div>
 
-                <form id="salariedLoanForm" onSubmit={handleSubmit(onSubmit)} className="flex-1 overflow-y-auto px-6 py-6 space-y-6 sm:px-8 sm:py-8 bg-gray-50">
+                <form id="salariedLoanForm" onSubmit={handleSubmit(onSubmit)} className="flex-1 space-y-6 overflow-y-auto bg-[#F7F9FC] px-6 py-6 sm:px-8 sm:py-8">
 
                     {/* ================= PERSONAL DETAILS ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-[#0099D8]">1. Applicant Basic Details</h3>
+                        <h3 className="mb-4 text-base font-semibold text-[#00AEEF]">1. Applicant Basic Details</h3>
                         <div className="grid md:grid-cols-3 gap-4">
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">First Name <span className="text-destructive">*</span></label>
@@ -937,7 +702,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= ID DETAILS ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-[#0099D8]">2. Applicant KYC Details</h3>
+                        <h3 className="mb-4 text-base font-semibold text-[#00AEEF]">2. Applicant KYC Details</h3>
                         <div className="grid md:grid-cols-3 gap-4">
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">PAN Number <span className="text-destructive">*</span></label>
@@ -953,60 +718,12 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                                     <p className="text-sm text-red-600">{getError("aadhaarNumber")}</p>
                                 ) : null}
                             </div>
-                            <div className="space-y-1">
-                                <label className="text-sm font-medium">PAN Card Photo <span className="text-destructive">JPEG or PDF allowed (Max size: 5 MB)*</span></label>
-                                <input
-                                    type="file"
-                                    accept="image/jpeg,image/jpg,application/pdf"
-                                    {...register("panPhoto", { required: true, validate: validateMax2MB })}
-                                    className="input bg-gray-200"
-                                />
-                                {getError("panPhoto") ? (
-                                    <p className="text-sm text-red-600">{getError("panPhoto")}</p>
-                                ) : null}
-                            </div>
-                            <div className="space-y-1">
-                                <label className="text-sm font-medium">Aadhaar Card Front Photo <span className="text-destructive">JPEG or PDF allowed (Max size: 5 MB)*</span></label>
-                                <input
-                                    type="file"
-                                    accept="image/jpeg,image/jpg,application/pdf"
-                                    {...register("aadhaarPhoto", { required: true, validate: validateMax2MB })}
-                                    className="input bg-gray-200"
-                                />
-                                {getError("aadhaarPhoto") ? (
-                                    <p className="text-sm text-red-600">{getError("aadhaarPhoto")}</p>
-                                ) : null}
-                            </div>
-                            <div className="space-y-1">
-                                <label className="text-sm font-medium">Aadhaar Card Back Photo <span className="text-destructive">JPEG or PDF allowed (Max size: 5 MB)*</span></label>
-                                <input
-                                    type="file"
-                                    accept="image/jpeg,image/jpg,application/pdf"
-                                    {...register("aadhaarBackPhoto", { required: true, validate: validateMax2MB })}
-                                    className="input bg-gray-200"
-                                />
-                                {getError("aadhaarBackPhoto") ? (
-                                    <p className="text-sm text-red-600">{getError("aadhaarBackPhoto")}</p>
-                                ) : null}
-                            </div>
-                            <div className="space-y-1">
-                                <label className="text-sm font-medium">Applicant Photo <span className="text-destructive">JPEG only (Max size: 5 MB)*</span></label>
-                                <input
-                                    type="file"
-                                    accept="image/jpeg,image/jpg"
-                                    {...register("applicantPhoto", { required: true, validate: validateMax2MB })}
-                                    className="input bg-gray-200"
-                                />
-                                {getError("applicantPhoto") ? (
-                                    <p className="text-sm text-red-600">{getError("applicantPhoto")}</p>
-                                ) : null}
-                            </div>
                         </div>
                     </div>
 
                     {/* ================= ADDRESS ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-[#0099D8]">3. Applicant Current Residential Address Details</h3>
+                        <h3 className="mb-4 text-base font-semibold text-[#00AEEF]">3. Applicant Current Residential Address Details</h3>
                         <div className="grid md:grid-cols-3 gap-4">
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Current Address <span className="text-destructive">*</span></label>
@@ -1046,27 +763,6 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                                 </select>
                                 {getError("residenceType") ? (
                                     <p className="text-sm text-red-600">{getError("residenceType")}</p>
-                                ) : null}
-                            </div>
-
-                            <div className="space-y-1">
-                                <label className="text-sm font-medium">Home photo <span className="text-destructive">(JPEG only, Max size: 1 MB)</span></label>
-                                <input type="file" {...register("residencePhoto", { validate: validateMax1MBJpegOnly })} className="input bg-gray-200" />
-                                {getError("residencePhoto") ? (
-                                    <p className="text-sm text-red-600">{getError("residencePhoto")}</p>
-                                ) : null}
-                            </div>
-
-                            <div className="space-y-1">
-                                <label className="text-sm font-medium">Home Electricity Bill <span className="text-destructive">(JPEG or PDF allowed (Max size: 5 MB))</span></label>
-                                <input
-                                    type="file"
-                                    accept="image/jpeg,image/jpg,application/pdf"
-                                    {...register("latestElectricityBill", { validate: validateMax2MB })}
-                                    className="input bg-gray-200"
-                                />
-                                {getError("latestElectricityBill") ? (
-                                    <p className="text-sm text-red-600">{getError("latestElectricityBill")}</p>
                                 ) : null}
                             </div>
 
@@ -1129,7 +825,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= EMPLOYMENT ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-[#0099D8]">4. Applicant Employment Details</h3>
+                        <h3 className="mb-4 text-base font-semibold text-[#00AEEF]">4. Applicant Employment Details</h3>
                         <div className="grid md:grid-cols-3 gap-4">
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Current working company name <span className="text-destructive">*</span></label>
@@ -1239,19 +935,12 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                                 <label className="text-sm font-medium">Office Email ID <span className="text-red-400 text-xs">(optional)</span></label>
                                 <input {...register("officelEmailID")} placeholder="Official Email" className="input bg-gray-200" />
                             </div>
-                            <div className="space-y-1">
-                                <label className="text-sm font-medium">Office ID Card Photo (pdf, jpg allowed )   <span className="text-destructive">*</span></label>
-                                <input type="file" {...register("officeIDCardPhoto", { required: true })} className="input bg-gray-200" />
-                                {getError("officeIDCardPhoto") ? (
-                                    <p className="text-sm text-red-600">{getError("officeIDCardPhoto")}</p>
-                                ) : null}
-                            </div>
                         </div>
                     </div>
 
                     {/* ================= Income Details ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-[#0099D8]">5. Applicant Income Details</h3>
+                        <h3 className="mb-4 text-base font-semibold text-[#00AEEF]">5. Applicant Income Details</h3>
                         <div className="grid md:grid-cols-2 gap-4">
                             <div className="space-y-1">
                                 <div>
@@ -1287,26 +976,12 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                                     <p className="text-sm text-red-600">{getError("salaryAccountBankName")}</p>
                                 ) : null}
                             </div>
-                            <div className="space-y-1">
-                                <label className="text-sm font-medium">Last 6 Months Salary Slips (pdf, jpg allowed ) <span className="text-destructive">*</span></label>
-                                <input type="file" {...register("LastThreeMonthsSalarySlips", { required: true })} className="input bg-gray-200" />
-                                {getError("LastThreeMonthsSalarySlips") ? (
-                                    <p className="text-sm text-red-600">{getError("LastThreeMonthsSalarySlips")}</p>
-                                ) : null}
-                            </div>
-                            <div className="space-y-1">
-                                <label className="text-sm font-medium">Last 6 Months Bank Statement (pdf, jpg allowed ) <span className="text-destructive">*</span></label>
-                                <input type="file" {...register("lastSixMonthsBankStatement", { required: true })} className="input bg-gray-200" />
-                                {getError("lastSixMonthsBankStatement") ? (
-                                    <p className="text-sm text-red-600">{getError("lastSixMonthsBankStatement")}</p>
-                                ) : null}
-                            </div>
                         </div>
                     </div>
 
                     {/* ================= EXISTING LOANS ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-[#0099D8]">6. Applicant Existing Loans Details</h3>
+                        <h3 className="mb-4 text-base font-semibold text-[#00AEEF]">6. Applicant Existing Loans Details</h3>
                         <div className="flex flex-col mb-2">
                             <label className="text-sm font-medium">Number Of Existing Loans<span className="text-red-400 text-xs">(optional)</span></label>
                             <select {...register("NumberOfExistingLoans")} className="input bg-gray-200" >
@@ -1423,64 +1098,15 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                                     },
                                 ])
                             }
-                            className="mt-2 inline-flex w-fit items-center justify-center rounded-lg border border-[#0099D8]/20 bg-[#0099D8]/5 px-3 py-2 text-sm font-medium text-[#007BB0] transition hover:bg-[#0099D8]/10"
+                            className="mt-2 inline-flex w-fit items-center justify-center rounded-lg border border-[#D6EEF8] bg-[#E6F7FD] px-3 py-2 text-sm font-medium text-[#008FCC] transition hover:bg-[#E6F7FD]"
                         >
                             + Add More
                         </button>
                     </div>
 
-                    {/* ================= Income Tax Return ================= */}
-                    <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-[#0099D8]">7. Form 16</h3>
-                        <div className="grid grid-col-2 gap-3">
-                            <div className="space-y-1">
-                                <div>
-                                    <label className="text-sm font-medium">Assessment Year 2023-24 <span className="text-destructive">(Optional - PDF only (Max 5 MB))</span></label>
-                                </div>
-                                <input
-                                    type="file"
-                                    accept="application/pdf"
-                                    {...register("AssessmentYear2324", { validate: validatePdfOnlyMax2MB })}
-                                    className="input bg-gray-200"
-                                />
-                                {getError("AssessmentYear2324") ? (
-                                    <p className="text-sm text-red-600">{getError("AssessmentYear2324")}</p>
-                                ) : null}
-                            </div>
-                            <div className="space-y-1">
-                                <div>
-                                    <label className="text-sm font-medium">Assessment Year 2024-25 <span className="text-destructive">(Optional - PDF only (Max 5 MB))</span></label>
-                                </div>
-                                <input
-                                    type="file"
-                                    accept="application/pdf"
-                                    {...register("AssessmentYear2425", { validate: validatePdfOnlyMax2MB })}
-                                    className="input bg-gray-200"
-                                />
-                                {getError("AssessmentYear2425") ? (
-                                    <p className="text-sm text-red-600">{getError("AssessmentYear2425")}</p>
-                                ) : null}
-                            </div>
-                            <div className="space-y-1">
-                                <div>
-                                    <label className="text-sm font-medium">Assessment Year 2025-26 <span className="text-destructive">(Optional - PDF only (Max 5 MB))</span></label>
-                                </div>
-                                <input
-                                    type="file"
-                                    accept="application/pdf"
-                                    {...register("AssessmentYear2526", { validate: validatePdfOnlyMax2MB })}
-                                    className="input bg-gray-200"
-                                />
-                                {getError("AssessmentYear2526") ? (
-                                    <p className="text-sm text-red-600">{getError("AssessmentYear2526")}</p>
-                                ) : null}
-                            </div>
-                        </div>
-                    </div>
-
                     {/* ================= Bank Statement Details ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-1 text-base font-semibold text-[#0099D8]">8. Applicant Bank Statement Details</h3>
+                        <h3 className="mb-1 text-base font-semibold text-[#00AEEF]">7. Applicant Bank Statement Details</h3>
                         <span className="text-sm">(pdf should not be protected with password else write down the password)</span>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
                             <div className="space-y-1">
@@ -1593,7 +1219,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                     </div>
                     {/* ================= G.Credit Score ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-[#0099D8]">9. Applicant CIBIL  Score Details</h3>
+                        <h3 className="mb-4 text-base font-semibold text-[#00AEEF]">8. Applicant CIBIL  Score Details</h3>
                         <div className="space-y-1">
                             <div>
                                 <label className="text-sm font-medium">CIBIL Available <span className="text-destructive">*</span></label>
@@ -1644,7 +1270,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= Q. Applicant Assets details ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-[#0099D8]">10. Applicant Assets Details Digital or physical</h3>
+                        <h3 className="mb-4 text-base font-semibold text-[#00AEEF]">9. Applicant Assets Details Digital or physical</h3>
                         {Array.from({ length: applicantAssetsCount }).map((_, idx) => (
                             <div key={idx} className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-1">
@@ -1681,7 +1307,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                         ))}
                         <button
                             type="button"
-                            className="mt-3 inline-flex w-fit items-center justify-center rounded-lg border border-[#0099D8]/20 bg-[#0099D8]/5 px-3 py-2 text-sm font-medium text-[#007BB0] transition hover:bg-[#0099D8]/10"
+                            className="mt-3 inline-flex w-fit items-center justify-center rounded-lg border border-[#D6EEF8] bg-[#E6F7FD] px-3 py-2 text-sm font-medium text-[#008FCC] transition hover:bg-[#E6F7FD]"
                             onClick={() => setApplicantAssetsCount((c) => Math.max(1, (c || 1) + 1))}
                         >
                             Add More
@@ -1690,7 +1316,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= Medical History ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-[#0099D8]">11. Applicant Medical History</h3>
+                        <h3 className="mb-4 text-base font-semibold text-[#00AEEF]">10. Applicant Medical History</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1">
                                 <div>
@@ -1750,7 +1376,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= Habbit ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-[#0099D8]">12. Applicant Addictive Habits</h3>
+                        <h3 className="mb-4 text-base font-semibold text-[#00AEEF]">11. Applicant Addictive Habits</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1">
                                 <div>
@@ -1794,7 +1420,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= Civil or Criminal Case history ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-[#0099D8]">13. Applicant Civil or Criminal Case history</h3>
+                        <h3 className="mb-4 text-base font-semibold text-[#00AEEF]">12. Applicant Civil or Criminal Case history</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1">
                                 <div>
@@ -1838,7 +1464,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= LOAN DETAILS ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-[#0099D8]">14. Loan Requirement Details</h3>
+                        <h3 className="mb-4 text-base font-semibold text-[#00AEEF]">13. Loan Requirement Details</h3>
                         <div className="grid md:grid-cols-2 gap-4">
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Required Loan Amount <span className="text-destructive">*</span></label>
@@ -1943,7 +1569,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= DOCUMENTS ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-[#0099D8]">15. Co-Applicant Details (If Any)</h3>
+                        <h3 className="mb-4 text-base font-semibold text-[#00AEEF]">14. Co-Applicant Details (If Any)</h3>
                         <div className="grid md:grid-cols-2 gap-4">
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Co-Applicant Name <span className="text-red-400 text-xs">(optional)</span></label>
@@ -1960,62 +1586,21 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
                             </div>
 
                             <div className="space-y-1">
-                                <label className="text-sm font-medium">Co-Applicant Photo  <span className="text-red-400 text-xs">(optional)</span></label>
-                                <input type="file" {...register("CoApplicantPhont")} className="input bg-gray-200" />
-                            </div>
-
-                            <div className="space-y-1">
                                 <label className="text-sm font-medium">Co-Applicant Email ID <span className="text-red-400 text-xs">(optional)</span></label>
                                 <input {...register("CoApplicantEmailID")} placeholder="Co-Applicant Email ID" className="input bg-gray-200" />
                             </div>
 
                             <div className="space-y-1">
-                                <label className="text-sm font-medium">Co-Applicant Mobile Number <span className="text-red-400 text-xs">*</span></label>
-                                <input {...register("CoApplicantMobileNO", { required: true })} placeholder="Co-Applicant Mobile Number" className="input bg-gray-200" />
+                                <label className="text-sm font-medium">Co-Applicant Mobile Number <span className="text-red-400 text-xs">(optional)</span></label>
+                                <input {...register("CoApplicantMobileNO")} placeholder="Co-Applicant Mobile Number" className="input bg-gray-200" />
                             </div>
 
-                            <div className="space-y-1">
-                                <label className="text-sm font-medium">Co-Applicant PAN Card Photo <span className="text-destructive">(optional, JPEG or PDF allowed (Max size: 5 MB))</span></label>
-                                <input
-                                    type="file"
-                                    accept="image/jpeg,image/jpg,application/pdf"
-                                    {...register("CoApplicantpanPhoto", { validate: validateMax2MB })}
-                                    className="input bg-gray-200"
-                                />
-                                {getError("CoApplicantpanPhoto") ? (
-                                    <p className="text-sm text-red-600">{getError("CoApplicantpanPhoto")}</p>
-                                ) : null}
-                            </div>
-                            <div className="space-y-1">
-                                <label className="text-sm font-medium">Co-Applicant Aadhaar Front Photo <span className="text-destructive">(optional, JPEG or PDF allowed (Max size: 5 MB))</span></label>
-                                <input
-                                    type="file"
-                                    accept="image/jpeg,image/jpg,application/pdf"
-                                    {...register("CoApplicantAadhaarPhoto", { validate: validateMax2MB })}
-                                    className="input bg-gray-200"
-                                />
-                                {getError("CoApplicantAadhaarPhoto") ? (
-                                    <p className="text-sm text-red-600">{getError("CoApplicantAadhaarPhoto")}</p>
-                                ) : null}
-                            </div>
-                            <div className="space-y-1">
-                                <label className="text-sm font-medium">Co-Applicant Aadhaar Back Photo <span className="text-destructive">(optional,JPEG or PDF allowed (Max size: 5 MB))</span></label>
-                                <input
-                                    type="file"
-                                    accept="image/jpeg,image/jpg,application/pdf"
-                                    {...register("CoApplicantAadhaarBackPhoto", { validate: validateMax2MB })}
-                                    className="input bg-gray-200"
-                                />
-                                {getError("CoApplicantAadhaarBackPhoto") ? (
-                                    <p className="text-sm text-red-600">{getError("CoApplicantAadhaarBackPhoto")}</p>
-                                ) : null}
-                            </div>
                         </div>
                     </div>
 
                     {/* ================= J. Upload Other Supported Document================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-[#0099D8]">16. Upload Other Supported Document</h3>
+                        <h3 className="mb-4 text-base font-semibold text-[#00AEEF]">15. Upload Other Supported Document</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1">
                                 <label className="text-sm font-medium">Number of Other Documents</label>
@@ -2071,7 +1656,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= reference name details ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-[#0099D8]">17. Reference name details</h3>
+                        <h3 className="mb-4 text-base font-semibold text-[#00AEEF]">16. Reference name details</h3>
 
                         {Array.from({ length: Math.max(1, referenceCount || 1) }).map((_, idx) => {
                             const suffix = idx === 0 ? "" : `_${idx}`;
@@ -2123,7 +1708,7 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
 
                     {/* ================= CONSENT ================= */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                        <h3 className="mb-4 text-base font-semibold text-[#0099D8]">18. Declaration & Consent</h3>
+                        <h3 className="mb-4 text-base font-semibold text-[#00AEEF]">17. Declaration & Consent</h3>
                         <div className="space-y-3">
                             <div className="flex items-start gap-3">
                                 <input type="checkbox" {...register("consent", { required: true })} className="mt-1 h-4 w-4" />
@@ -2141,17 +1726,18 @@ export default function SalariedLoanModal({ isOpen, onClose, categoryKey, catego
 
                 </form>
 
-                <div className="sticky bottom-0 z-10 border-t bg-white/90 px-6 py-4 backdrop-blur sm:px-8">
+                <div className="sticky bottom-0 z-10 border-t border-[#D6EEF8] bg-white px-6 py-4 sm:px-8">
                     <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end sm:gap-4">
                         <button type="button" onClick={onClose} className="w-full rounded-xl border border-gray-300 bg-white px-6 py-2.5 text-sm font-semibold text-gray-700 shadow-sm transition hover:bg-gray-50 sm:w-auto">
                             Cancel
                         </button>
-                        <button type="submit" form="salariedLoanForm" disabled={loading} className="w-full rounded-xl bg-[#0099D8] px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-sky-500/20 transition hover:brightness-110 disabled:opacity-60 sm:w-auto">
+                        <button type="submit" form="salariedLoanForm" disabled={loading} className="w-full rounded-xl bg-[#00AEEF] px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-orange-500/20 transition hover:brightness-110 disabled:opacity-60 sm:w-auto">
                             {loading ? "Submitting..." : "Submit"}
                         </button>
                     </div>
                 </div>
             </div>
         </div>
+        </>
     );
 }

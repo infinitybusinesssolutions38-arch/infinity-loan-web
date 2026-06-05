@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import connectDB from "../../lib/db";
 import { requireAdmin } from "../lib/guard";
 import CreditCardModel from "../../models/credit-card-schema";
+import { toAdminDisplayStatus } from "../../lib/admin-application-status";
 
 export async function GET(req) {
   const auth = requireAdmin(req);
@@ -10,13 +11,14 @@ export async function GET(req) {
   await connectDB();
 
   try {
-    const applications = await CreditCardModel.find()
-      .sort({ createdAt: -1 })
-      .lean();
+    const applications = await CreditCardModel.find().sort({ createdAt: -1 }).lean();
 
     return NextResponse.json({
       success: true,
-      data: applications,
+      data: applications.map((app) => ({
+        ...app,
+        status: toAdminDisplayStatus(app),
+      })),
     });
   } catch (error) {
     console.error("Error fetching credit card applications:", error);

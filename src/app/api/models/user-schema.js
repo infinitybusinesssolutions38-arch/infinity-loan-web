@@ -19,6 +19,11 @@ const UserSchema = new mongoose.Schema(
                 "lender-huf",
             ],
         },
+        emailVerified: { type: Boolean, default: false },
+        emailVerificationToken: { type: String },
+        emailVerificationTokenExpires: { type: Date },
+        welcomeEmailSent: { type: Boolean, default: false },
+        profileImageUrl: { type: String, required: false, trim: true },
     },
     { timestamps: true }
 );

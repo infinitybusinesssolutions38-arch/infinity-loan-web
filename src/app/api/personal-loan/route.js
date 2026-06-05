@@ -4,7 +4,9 @@ import PersonalLoanModel from "../models/personal-loan-schema";
 import { v2 as cloudinary } from "cloudinary";
 import nodemailer from "nodemailer";
 import { sendLoanApplicationConfirmationEmail } from "../lib/loan-application-email";
-import { createGmailTransporter } from "../lib/apply-now-email";
+import { notifyDirectorInternalMail } from "../lib/director-notification-email";
+import { attachUserIdToPayload } from "../lib/user-auth";
+import { assertEmailNotUsedForLoanApplication, isDuplicatePersonalEmailError } from "../lib/email-cross-loan-guard";
 
 // =============================
 // Cloudinary Config
@@ -22,6 +24,17 @@ export async function POST(req) {
   try {
     await connectDB();
     const formData = await req.formData();
+
+    const emailGuard = await assertEmailNotUsedForLoanApplication(
+      formData.get("personalEmail"),
+      "personal"
+    );
+    if (!emailGuard.ok) {
+      return NextResponse.json(
+        { success: false, message: emailGuard.message, code: emailGuard.code },
+        { status: emailGuard.status }
+      );
+    }
 
     // =============================
     // Upload Helper
@@ -54,7 +67,9 @@ export async function POST(req) {
     // =============================
     // Create Document
     // =============================
-    const newApplication = new PersonalLoanModel({
+    const newApplication = new PersonalLoanModel(
+      attachUserIdToPayload(
+        {
       applicationRef,
 
       // Personal Details
@@ -106,7 +121,10 @@ export async function POST(req) {
 
       loan_type: "personal",
       application_status: "pending",
-    });
+        },
+        req
+      )
+    );
 
     const saved = await newApplication.save();
 
@@ -127,19 +145,12 @@ export async function POST(req) {
     );
 
     // =============================
-    // Admin + Director Email via Gmail SMTP
+    // Admin + Director notification
     // =============================
-    const gmailTransporter = createGmailTransporter();
-    const internalRecipients = [process.env.ADMIN_EMAIL, process.env.DIRECTOR_EMAIL]
-      .filter(Boolean)
-      .join(",");
-
-    if (internalRecipients) {
-      await gmailTransporter.sendMail({
-        from: process.env.EMAIL_HOST_USER || process.env.EMAIL_SMTP_USER,
-        to: internalRecipients,
-        subject: `New Personal Loan Application - ${applicationRef}`,
-        html: `
+    await notifyDirectorInternalMail({
+      subject: `New Personal Loan Application - ${applicationRef}`,
+      replyTo: formData.get("personalEmail"),
+      html: `
         <h2>New Personal Loan Application</h2>
         <p><strong>Application Ref:</strong> ${applicationRef}</p>
 
@@ -160,8 +171,7 @@ export async function POST(req) {
         <p>Aadhaar Back: ${saved.aadhaarBackPhotoUrl || "Not Uploaded"}</p>
         <p>Bank Statement: ${saved.bankStatementUrl || "Not Uploaded"}</p>
       `,
-      });
-    }
+    });
 
     return NextResponse.json({
       success: true,
@@ -172,6 +182,17 @@ export async function POST(req) {
 
   } catch (error) {
     console.error("Personal Loan Error:", error);
+    if (isDuplicatePersonalEmailError(error)) {
+      return NextResponse.json(
+        {
+          success: false,
+          code: "DUPLICATE_EMAIL",
+          message:
+            "An application with this email already exists. Check Applied Loans or use a different email to submit again.",
+        },
+        { status: 409 }
+      );
+    }
     return NextResponse.json(
       { success: false, message: error.message },
       { status: 500 }

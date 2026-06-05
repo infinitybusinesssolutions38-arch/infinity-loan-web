@@ -78,17 +78,17 @@ export default function VehicleLoanEmiCalculator() {
   };
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 px-4 py-8 sm:px-6 lg:px-8">
+    <div className="relative min-h-screen bg-gradient-to-br from-[#E6F7FD] via-white to-[#E8EAF6] px-4 py-8 sm:px-6 lg:px-8">
       {/* Decorative background elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#0099D8]/20 rounded-full blur-3xl"></div>
+        <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#B3E8FA]/30 rounded-full blur-3xl"></div>
         <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-indigo-200/30 rounded-full blur-3xl"></div>
       </div>
 
       <div className="relative max-w-6xl mx-auto">
         {/* Header Section */}
         <div className="text-center mb-12 md:mb-16">
-          <div className="inline-flex items-center justify-center w-16 h-16 mb-6 rounded-full bg-gradient-to-br from-blue-400 to-indigo-600">
+          <div className="inline-flex items-center justify-center w-16 h-16 mb-6 rounded-full bg-gradient-to-br from-[#33C1F3] to-[#2E3192]">
             <IndianRupee className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4 tracking-tight">
@@ -102,10 +102,10 @@ export default function VehicleLoanEmiCalculator() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Input Section */}
           <div className="lg:col-span-1">
-            <div className="sticky top-8 bg-gradient-to-b from-white/90 to-blue-50/90 backdrop-blur-xl rounded-3xl border border-[#0099D8]/20/50 p-8 shadow-xl">
+            <div className="sticky top-8 bg-gradient-to-b from-white/90 to-[#E6F7FD]/90 backdrop-blur-xl rounded-3xl border border-[#D6EEF8]/50 p-8 shadow-xl">
               <h2 className="text-xl font-semibold text-slate-900 mb-8 flex items-center gap-3">
-                <span className="w-8 h-8 rounded-lg bg-[#0099D8]/10 flex items-center justify-center">
-                  <span className="w-2 h-2 rounded-full bg-[#0099D8]/50"></span>
+                <span className="w-8 h-8 rounded-lg bg-[#E6F7FD] flex items-center justify-center">
+                  <span className="w-2 h-2 rounded-full bg-[#E6F7FD]0"></span>
                 </span>
                 Loan Details
               </h2>
@@ -125,7 +125,7 @@ export default function VehicleLoanEmiCalculator() {
                       onChange={(e) =>
                         handleInputChange("loanAmount", e.target.value)
                       }
-                      className="w-full px-5 py-3.5 rounded-xl bg-white border border-[#0099D8]/20 text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#0099D8] focus:ring-2 focus:ring-[#0099D8]/20 transition-all duration-200"
+                      className="w-full px-5 py-3.5 rounded-xl bg-white border border-[#D6EEF8] text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#00AEEF] focus:ring-2 focus:ring-[#B3E8FA] transition-all duration-200"
                       placeholder="800000"
                     />
                     <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-600">
@@ -141,7 +141,7 @@ export default function VehicleLoanEmiCalculator() {
                     onChange={(e) =>
                       handleInputChange("loanAmount", e.target.value)
                     }
-                    className="w-full h-2 bg-[#0099D8]/20 rounded-lg appearance-none cursor-pointer accent-[#0099D8]"
+                    className="w-full h-2 bg-[#B3E8FA] rounded-lg appearance-none cursor-pointer accent-[#00AEEF]"
                   />
                 </div>
 
@@ -160,7 +160,7 @@ export default function VehicleLoanEmiCalculator() {
                       onChange={(e) =>
                         handleInputChange("interestRate", e.target.value)
                       }
-                      className="w-full px-5 py-3.5 rounded-xl bg-white border border-[#0099D8]/20 text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#0099D8] focus:ring-2 focus:ring-[#0099D8]/20 transition-all duration-200"
+                      className="w-full px-5 py-3.5 rounded-xl bg-white border border-[#D6EEF8] text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#00AEEF] focus:ring-2 focus:ring-[#B3E8FA] transition-all duration-200"
                       placeholder="9.5"
                     />
                     <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-600">
@@ -176,7 +176,7 @@ export default function VehicleLoanEmiCalculator() {
                     onChange={(e) =>
                       handleInputChange("interestRate", e.target.value)
                     }
-                    className="w-full h-2 bg-[#0099D8]/20 rounded-lg appearance-none cursor-pointer accent-[#0099D8]"
+                    className="w-full h-2 bg-[#B3E8FA] rounded-lg appearance-none cursor-pointer accent-[#00AEEF]"
                   />
                 </div>
 
@@ -194,7 +194,7 @@ export default function VehicleLoanEmiCalculator() {
                       onChange={(e) =>
                         handleInputChange("tenureYears", e.target.value)
                       }
-                      className="w-full px-5 py-3.5 rounded-xl bg-white border border-[#0099D8]/20 text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#0099D8] focus:ring-2 focus:ring-[#0099D8]/20 transition-all duration-200"
+                      className="w-full px-5 py-3.5 rounded-xl bg-white border border-[#D6EEF8] text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#00AEEF] focus:ring-2 focus:ring-[#B3E8FA] transition-all duration-200"
                       placeholder="5"
                     />
                     <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-600">
@@ -210,14 +210,14 @@ export default function VehicleLoanEmiCalculator() {
                     onChange={(e) =>
                       handleInputChange("tenureYears", e.target.value)
                     }
-                    className="w-full h-2 bg-[#0099D8]/20 rounded-lg appearance-none cursor-pointer accent-[#0099D8]"
+                    className="w-full h-2 bg-[#B3E8FA] rounded-lg appearance-none cursor-pointer accent-[#00AEEF]"
                   />
                 </div>
               </div>
 
               {/* Disclaimer */}
-              <div className="mt-8 p-4 rounded-xl bg-[#0099D8]/5 border border-[#0099D8]/20">
-                <p className="text-xs text-[#004D2C]">
+              <div className="mt-8 p-4 rounded-xl bg-[#E6F7FD] border border-[#D6EEF8]">
+                <p className="text-xs text-[#2E3192]">
                   ℹ️ Estimates are indicative. Actual EMI may vary based on lender fees and sanctioned rates.
                 </p>
               </div>
@@ -227,14 +227,14 @@ export default function VehicleLoanEmiCalculator() {
           {/* Results Section */}
           <div className="lg:col-span-2 space-y-6">
             {/* Main EMI Card */}
-            <div className="group relative bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl overflow-hidden shadow-2xl hover:shadow-3xl transition-all duration-300">
+            <div className="group relative bg-gradient-to-br from-[#00AEEF] to-indigo-700 rounded-3xl overflow-hidden shadow-2xl hover:shadow-3xl transition-all duration-300">
               {/* Gradient overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
               <div className="relative p-8 md:p-12">
                 <div className="flex items-start justify-between mb-8">
                   <div>
-                    <p className="text-sm font-semibold text-white/80 uppercase tracking-wider mb-2">
+                    <p className="text-sm font-semibold text-[#E6F7FD] uppercase tracking-wider mb-2">
                       Monthly EMI
                     </p>
                     <p className="text-5xl md:text-6xl font-bold text-white">
@@ -242,13 +242,13 @@ export default function VehicleLoanEmiCalculator() {
                     </p>
                   </div>
                   <div className="hidden md:flex items-center justify-center w-20 h-20 rounded-2xl bg-white/10 backdrop-blur-sm">
-                    <Calendar className="w-10 h-10 text-white/70" />
+                    <Calendar className="w-10 h-10 text-[#B3E8FA]" />
                   </div>
                 </div>
 
-                <div className="flex items-baseline gap-3 text-white/80 text-sm">
+                <div className="flex items-baseline gap-3 text-[#E6F7FD] text-sm">
                   <span>for {inputs.tenureYears} years</span>
-                  <span className="text-[#33B5E5]/60">•</span>
+                  <span className="text-[#66D4F7]/60">•</span>
                   <span>
                     {Number.isFinite(toNumberOrNaN(inputs.tenureYears)) &&
                       Math.round(
@@ -284,7 +284,7 @@ export default function VehicleLoanEmiCalculator() {
                   <p className="text-sm font-medium text-slate-300 uppercase tracking-wide">
                     Total Interest
                   </p>
-                  <div className="w-3 h-3 rounded-full bg-[#0099D8]/30"></div>
+                  <div className="w-3 h-3 rounded-full bg-orange-500/30"></div>
                 </div>
                 <p className="text-3xl md:text-4xl font-bold text-white mb-2">
                   {formatINR(result.totalInterest)}
@@ -307,7 +307,7 @@ export default function VehicleLoanEmiCalculator() {
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id as typeof activeTab)}
                     className={`flex-1 px-6 py-4 text-sm font-semibold transition-all duration-200 ${activeTab === tab.id
-                        ? "text-[#33B5E5] border-b-2 border-[#0099D8]/40"
+                        ? "text-[#33C1F3] border-b-2 border-[#33C1F3]"
                         : "text-slate-400 hover:text-slate-300 border-b-2 border-transparent"
                       }`}
                   >
@@ -333,7 +333,7 @@ export default function VehicleLoanEmiCalculator() {
                         </div>
                         <div className="w-full h-2 bg-slate-700 rounded-full overflow-hidden">
                           <div
-                            className="h-full bg-gradient-to-r from-blue-500 to-blue-400 rounded-full"
+                            className="h-full bg-gradient-to-r from-[#00AEEF] to-[#33C1F3] rounded-full"
                             style={{
                               width: `${(principal / result.totalPayable) * 100
                                 }%`,
@@ -353,7 +353,7 @@ export default function VehicleLoanEmiCalculator() {
                         </div>
                         <div className="w-full h-2 bg-slate-700 rounded-full overflow-hidden">
                           <div
-                            className="h-full bg-gradient-to-r from-[#0099D8] to-[#33B5E5] rounded-full"
+                            className="h-full bg-gradient-to-r from-orange-500 to-orange-400 rounded-full"
                             style={{
                               width: `${(result.totalInterest / result.totalPayable) *
                                 100
@@ -441,7 +441,7 @@ export default function VehicleLoanEmiCalculator() {
                           months
                         </span>
                         . This includes{" "}
-                        <span className="font-semibold text-[#0099D8]">
+                        <span className="font-semibold text-orange-400">
                           {formatINR(result.totalInterest)}
                         </span>{" "}
                         in interest on your loan.

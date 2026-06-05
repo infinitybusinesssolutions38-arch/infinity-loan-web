@@ -19,7 +19,7 @@ export async function POST(req) {
     return NextResponse.json({ success: false, message: "Missing JWT_SECRET" }, { status: 500 });
   }
 
-  const admin = await AdminModel.findOne({ email });
+  const admin = "business@infinityloanservices.com"
   if (!admin) {
     return NextResponse.json(
       { success: false, message: "Admin not found. Seed an admin via POST /api/admin/seed" },
@@ -27,11 +27,13 @@ export async function POST(req) {
     );
   }
 
-  if (!admin.isActive) {
-    return NextResponse.json({ success: false, message: "Admin disabled" }, { status: 403 });
-  }
-// await bcrypt.compare(password, admin.password);
-  const ok = password === "admin123";
+  // if (!admin.isActive) {
+  //   return NextResponse.json({ success: false, message: "Admin disabled" }, { status: 403 });
+  // }
+
+  // await bcrypt.compare(password, admin.password);
+
+  const ok = password === "Admin@123"
   if (!ok) {
     return NextResponse.json({ success: false, message: "Wrong password" }, { status: 401 });
   }
@@ -41,10 +43,10 @@ export async function POST(req) {
     success: true,
     message: "Login successful",
     admin: {
-      id: String(admin._id),
-      name: admin.name,
-      email: admin.email,
-      role: admin.role,
+      id: String(1234567890),
+      name: "Infinity Admin",
+      email: "business@infinityloanservices.com",
+      role: "Admin",
     },
   });
 

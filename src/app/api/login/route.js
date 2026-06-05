@@ -4,9 +4,19 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import UserModel from "../models/user-schema";
 
+function escapeRegex(input) {
+    return String(input || "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
 
 export async function POST(req) {
     try {
+        if (!process.env.JWT_SECRET) {
+            return NextResponse.json(
+                { success: false, message: "Server configuration error: JWT_SECRET is missing" },
+                { status: 500 }
+            );
+        }
+
         await connectDB();
         const { email, password } = await req.json();
 
@@ -20,11 +30,19 @@ export async function POST(req) {
             );
         }
 
-        const user = await UserModel.findOne({ email: normalizedEmail });
+        const user = await UserModel.findOne({
+            email: new RegExp(`^${escapeRegex(normalizedEmail)}$`, "i"),
+        });
+
         if (!user) {
             return NextResponse.json(
-                { success: false, message: "Account not found. Please register first." },
-                { status: 404 }
+                {
+                    success: false,
+                    message:
+                        "No account found for this email. Please register first or check you are using the correct email.",
+                    code: "ACCOUNT_NOT_FOUND",
+                },
+                { status: 401 }
             );
         }
 
@@ -38,18 +56,17 @@ export async function POST(req) {
         const isValid = await bcrypt.compare(rawPassword, user.password);
         if (!isValid) {
             return NextResponse.json(
-                { success: false, message: "Invalid credentials" },
+                { success: false, message: "Invalid email or password", code: "INVALID_CREDENTIALS" },
                 { status: 401 }
             );
         }
 
         const role = user.role || "unknown";
 
-        // Generate JWT
         const token = jwt.sign(
             { id: user._id, role },
             process.env.JWT_SECRET,
-            { expiresIn: "24h" } // Token expires in 24 hours
+            { expiresIn: "24h" }
         );
 
         // Set cookie with 24h expiry
@@ -72,6 +89,10 @@ export async function POST(req) {
         return res;
     } catch (err) {
         console.error("Login error:", err);
-        return NextResponse.json({ success: false, message: "Server error" });
+        const message =
+            err?.name === "MongoServerError" || err?.message?.includes("connect")
+                ? "Database connection failed. Please check CONNECTIONSTRING in .env and restart the server."
+                : "Server error. Please try again.";
+        return NextResponse.json({ success: false, message }, { status: 500 });
     }
 }

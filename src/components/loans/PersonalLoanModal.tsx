@@ -23,9 +23,6 @@ export default function PersonalLoanModal({ isOpen, onClose }: Props) {
         { bankName: string; amount: string; emi: string }[]
     >([{ bankName: "", amount: "", emi: "" }]);
 
-    // Other documents
-    const [otherDocuments, setOtherDocuments] = useState<File[]>([]);
-
     if (!isOpen) return null;
 
     // ================= SUBMIT =================
@@ -88,31 +85,8 @@ export default function PersonalLoanModal({ isOpen, onClose }: Props) {
             formData.append("preferredTenure", data.preferredTenure);
             formData.append("purpose", data.purpose);
 
-            // =============================
-            // Documents (Files)
-            // =============================
-            if (data.applicantPhoto)
-                formData.append("applicantPhoto", data.applicantPhoto);
-
-            if (data.panPhoto)
-                formData.append("panPhoto", data.panPhoto);
-
-            if (data.aadhaarPhoto)
-                formData.append("aadhaarPhoto", data.aadhaarPhoto);
-
-            if (data.aadhaarBackPhoto)
-                formData.append("aadhaarBackPhoto", data.aadhaarBackPhoto);
-
-            if (data.bankStatement)
-                formData.append("bankStatement", data.bankStatement);
-
             // Append existing loans
             formData.append("existingLoans", JSON.stringify(existingLoans));
-
-            // Append other documents
-            otherDocuments.forEach((file, index) => {
-                formData.append(`otherDocument_${index}`, file);
-            });
 
             await axios.post("/api/personal-loan", formData);
 
@@ -129,17 +103,17 @@ export default function PersonalLoanModal({ isOpen, onClose }: Props) {
     // ================= UI =================
     return (
         <div
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50 overflow-auto"
+            className="fixed inset-0 bg-[#1A1A1A]/40 flex justify-center items-center z-50 overflow-auto"
             onClick={(e) => {
                 if (e.target === e.currentTarget) onClose();
             }}
         >
-            <div className="relative bg-white w-full max-w-4xl rounded-xl p-8 max-h-[90vh] overflow-y-auto">
+            <div className="relative bg-white w-full max-w-4xl rounded-[20px] border border-[#D6EEF8] p-6 sm:p-8 shadow-[0_20px_60px_rgba(15,23,42,0.18)] max-h-[90vh] overflow-y-auto">
                 <button
                     type="button"
                     onClick={onClose}
                     aria-label="Close"
-                    className="absolute right-4 top-4 rounded-md p-2 text-gray-600 hover:bg-gray-100"
+                    className="absolute right-4 top-4 inline-flex h-10 w-10 items-center justify-center rounded-xl text-[#666666] transition-colors duration-300 ease-out hover:bg-[#F7F9FC] hover:text-[#1A1A1A] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#00AEEF]/20"
                 >
                     ×
                 </button>
@@ -206,8 +180,6 @@ export default function PersonalLoanModal({ isOpen, onClose }: Props) {
                             placeholder="Aadhaar Number"
                             className="input"
                         />
-                        <input type="file" {...register("panPhoto")} className="input" />
-                        <input type="file" {...register("aadhaarPhoto")} className="input" />
                     </div>
 
                     {/* ================= ADDRESS ================= */}
@@ -314,23 +286,10 @@ export default function PersonalLoanModal({ isOpen, onClose }: Props) {
                                     { bankName: "", amount: "", emi: "" },
                                 ])
                             }
-                            className="text-[#0099D8]"
+                            className="text-[#00AEEF]"
                         >
                             + Add More
                         </button>
-                    </div>
-
-                    {/* ================= DOCUMENTS ================= */}
-                    <div>
-                        <h3 className="font-semibold mb-2">Upload Documents</h3>
-                        <input
-                            type="file"
-                            multiple
-                            onChange={(e) =>
-                                setOtherDocuments(Array.from(e.target.files || []))
-                            }
-                            className="input"
-                        />
                     </div>
 
                     {/* ================= CONSENT ================= */}
@@ -352,7 +311,7 @@ export default function PersonalLoanModal({ isOpen, onClose }: Props) {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="px-6 py-2 bg-[#0099D8] text-white rounded-lg"
+                            className="px-6 py-2 bg-[#00AEEF] text-white rounded-lg"
                         >
                             {loading ? "Submitting..." : "Submit"}
                         </button>

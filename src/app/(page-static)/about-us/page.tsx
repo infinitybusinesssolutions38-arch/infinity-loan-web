@@ -14,98 +14,94 @@ export const metadata: Metadata = {
 
 export default function AboutUsPage() {
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen bg-[#F7F9FC]">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-slate-50 via-white to-blue-50/40 py-20 lg:py-32">
-        {/* Animated Background Elements */}
+      <section className="relative overflow-hidden bg-[#E6F7FD] pt-6 sm:pt-8 lg:pt-10 pb-8 sm:pb-12 lg:pb-16">
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-[#0099D8]/10 blur-3xl animate-blob" />
-          <div className="absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-[#0099D8]/5 blur-3xl animate-blob animation-delay-2000" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[600px] rounded-full bg-[#0099D8]/5 blur-3xl animate-blob animation-delay-4000" />
+          <div className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-[#00AEEF]/5 blur-3xl" />
+          <div className="absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-[#00AEEF]/5 blur-3xl" />
         </div>
 
-        {/* Dot Pattern Overlay */}
-        <div className="absolute inset-0 opacity-[0.04]">
-          <div className="absolute inset-0" style={{
-            backgroundImage: `radial-gradient(circle at 1px 1px, black 1px, transparent 0)`,
-            backgroundSize: '40px 40px'
-          }} />
+        <div className="absolute inset-0 opacity-30">
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage: `radial-gradient(circle at 1px 1px, #00AEEF 1px, transparent 0)`,
+              backgroundSize: "40px 40px",
+            }}
+          />
         </div>
 
-        <div className="container relative z-10 mx-auto px-4">
+        <div className="relative z-10 mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-all mb-8 group"
+            className="group mb-8 inline-flex items-center gap-2 text-[#666666] transition-colors hover:text-[#00AEEF]"
           >
             <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
             <span className="font-medium">Back to Home</span>
           </Link>
 
-          <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
-            {/* Left Content */}
+          <div className="grid gap-10 lg:grid-cols-2 lg:items-center lg:gap-12">
             <div className="space-y-6">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#0099D8]/10 border border-[#0099D8]/20">
-                <div className="w-2 h-2 bg-[#0099D8] rounded-full animate-pulse" />
-                <span className="text-sm font-medium text-gray-900">Infinity Loans & Business Solutions</span>
+              <div className="inline-flex items-center gap-2 rounded-full border border-[#D6EEF8] bg-white px-4 py-2">
+                <div className="h-2 w-2 animate-pulse rounded-full bg-[#00AEEF]" />
+                <span className="text-sm font-semibold text-[#00AEEF]">Infinity Loans & Business Solutions</span>
               </div>
 
-              <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-gray-900 leading-tight">
+              <h1 className="text-4xl font-bold leading-tight tracking-tight text-[#1A1A1A] sm:text-5xl lg:text-6xl">
                 About{" "}
-                <span className="relative inline-block">
-                  <span className="relative z-10 text-[#0099D8]">Us</span>
-                  <span className="absolute bottom-3 left-0 w-full h-4 bg-[#0099D8]/20 -rotate-2" />
+                <span className="relative inline-block text-[#00AEEF]">
+                  Us
+                  <span className="absolute bottom-2 left-0 -z-10 h-3 w-full -rotate-1 bg-[#00AEEF]/15" />
                 </span>
               </h1>
 
-              <p className="text-lg md:text-xl text-gray-700 leading-relaxed">
+              <p className="text-lg leading-relaxed text-[#1A1A1A] md:text-xl">
                 Infinity Loans & Business Solutions
               </p>
 
-              <p className="text-base text-gray-600 leading-relaxed">
+              <p className="text-base leading-relaxed text-[#666666]">
                 Infinity Loans & Business Solutions is a financial advisory and loan facilitation firm committed to delivering the right analysis, the right structure, and the right lender fit for every client.
               </p>
 
-              <p className="text-base text-gray-600 leading-relaxed">
+              <p className="text-base leading-relaxed text-[#666666]">
                 We work closely with individuals and businesses to understand their financial requirements, assess risk profiles, structure loan applications, and map each case to the most suitable banks and NBFCs. Our team remains actively involved throughout the entire process—from initial profiling and documentation to approval and final disbursement—ensuring a smooth, transparent, and efficient experience.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-4 pt-4">
+              <div className="flex flex-col gap-3 pt-3 sm:flex-row sm:gap-4">
                 <Link href="/contact">
-                  <button className="group relative px-8 py-4 bg-[#0099D8] hover:bg-[#007BB0] text-white font-semibold rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl flex items-center gap-2">
+                  <button className="group inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-[#00AEEF] px-7 text-sm font-semibold text-white shadow-[0_2px_10px_rgba(0,174,239,0.18)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#008FCC] hover:shadow-[0_8px_18px_rgba(0,174,239,0.22)]">
                     <span>Talk to an Expert</span>
-                    <ArrowLeft className="h-4 w-4 rotate-180 group-hover:translate-x-1 transition-transform" />
+                    <ArrowLeft className="h-4 w-4 rotate-180 transition-transform group-hover:translate-x-0.5" />
                   </button>
                 </Link>
                 <Link href="/services">
-                  <button className="px-8 py-4 bg-white hover:bg-gray-50 text-gray-900 font-semibold rounded-lg transition-all duration-300 border border-gray-200 shadow-sm">
+                  <button className="inline-flex h-12 items-center justify-center rounded-xl border border-[#D6EEF8] bg-white px-7 text-sm font-semibold text-[#00AEEF] shadow-[0_2px_8px_rgba(0,0,0,0.04)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#00AEEF] hover:bg-[#E6F7FD] hover:shadow-[0_8px_18px_rgba(0,174,239,0.1)]">
                     Explore Services
                   </button>
                 </Link>
               </div>
             </div>
 
-            {/* Right Stats Grid */}
-            <div className="rounded-3xl bg-white p-6 sm:p-8 border border-gray-200 shadow-xl">
-              <h2 className="mb-5 text-sm font-semibold uppercase tracking-wide text-gray-600">
-                Our Track Record at a Glance
-              </h2>
+            <div className="rounded-[20px] border border-[#D6EEF8] bg-white p-6 shadow-[0_2px_8px_rgba(0,0,0,0.06)] sm:p-8">
               <div className="grid grid-cols-2 gap-4">
                 {[
-                  { value: "60,000+", subtitle: "Satisfied Clients Served", icon: Users },
-                  { value: "₹600+ Crore", subtitle: "Total Loans Successfully Disbursed", icon: Building2 },
-                  { value: "Within 48 Hours", subtitle: "Average Credit Approval Turnaround", icon: Clock },
-                  { value: "96%", subtitle: "Overall Success & Conversion Rate", icon: CheckCircle2 },
+                  { label: "Our Track Record at a Glance", value: "60,000+", subtitle: "Satisfied Clients Served", icon: Users },
+                  { label: "Our Track Record at a Glance", value: "₹600+ Crore", subtitle: "Total Loans Successfully Disbursed", icon: Building2 },
+                  { label: "Our Track Record at a Glance", value: "Within 48 Hours", subtitle: "Average Credit Approval Turnaround", icon: Clock },
+                  { label: "Our Track Record at a Glance", value: "96%", subtitle: "Overall Success & Conversion Rate", icon: CheckCircle2 },
                 ].map((stat, idx) => (
                   <div
-                    key={stat.subtitle}
-                    className="group rounded-2xl bg-gray-50 p-5 border border-gray-200 hover:border-[#0099D8]/50 transition-all duration-300 hover:scale-105"
+                    key={`${stat.label}-${idx}`}
+                    className="group rounded-xl border border-[#D6EEF8] bg-[#F7F9FC] p-4 transition-all duration-300 hover:border-[#00AEEF]/40 hover:shadow-[0_4px_16px_rgba(0,174,239,0.08)] sm:p-5"
                     style={{ animation: `fadeInUp 0.6s ease-out ${idx * 0.1}s both` }}
                   >
-                    <div className="flex items-start justify-between mb-3">
-                      <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">{stat.subtitle}</p>
-                      <stat.icon className="h-5 w-5 text-[#0099D8] group-hover:scale-110 transition-transform" />
+                    <div className="mb-3 flex items-start justify-between gap-2">
+                      <p className="text-[10px] font-semibold uppercase tracking-wide text-[#666666] sm:text-xs">{stat.label}</p>
+                      <stat.icon className="h-5 w-5 shrink-0 text-[#00AEEF] transition-transform group-hover:scale-110" />
                     </div>
-                    <p className="text-2xl font-bold text-gray-900 mb-1">{stat.value}</p>
+                    <p className="mb-1 text-xl font-bold text-[#1A1A1A] sm:text-2xl">{stat.value}</p>
+                    <p className="text-xs leading-tight text-[#666666]">{stat.subtitle}</p>
                   </div>
                 ))}
               </div>
@@ -114,161 +110,151 @@ export default function AboutUsPage() {
         </div>
       </section>
 
-      <PrivateInstitutionalHighlight />
-      <PoorCibilHighlight />
-      <EmiRestructuringHighlight />
-      <PropertyLoanHighlight />
-
-      <section className="py-20 lg:py-32 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
-        <div className="absolute inset-0 opacity-[0.03]">
-          <div
-            className="absolute inset-0"
-            style={{
-              backgroundImage: `radial-gradient(circle at 1px 1px, black 1px, transparent 0)`,
-              backgroundSize: "40px 40px",
-            }}
-          />
+      <section className="bg-white py-16 sm:py-20 lg:py-24">
+        <div className="mx-auto flex max-w-[1400px] flex-col gap-8 px-4 sm:px-6 lg:gap-10 lg:px-8">
+          <PrivateInstitutionalHighlight />
+          <PoorCibilHighlight />
+          <EmiRestructuringHighlight />
+          <PropertyLoanHighlight />
         </div>
+      </section>
 
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-black/5 border border-black/10 backdrop-blur-sm mb-4">
-              <TrendingUp className="w-4 h-4 text-[#0099D8]" />
-              <span className="text-sm font-medium text-gray-700">Our Purpose</span>
+      <section className="bg-[#F7F9FC] py-16 lg:py-24">
+        <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
+          <div className="mb-12 text-center lg:mb-16">
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#D6EEF8] bg-[#E6F7FD] px-4 py-2">
+              <TrendingUp className="h-4 w-4 text-[#00AEEF]" />
+              <span className="text-sm font-medium text-[#00AEEF]">Our Purpose</span>
             </div>
-            <h2 className="text-4xl md:text-5xl font-bold text-black mb-4">
-              Our <span className="text-[#0099D8]">Mission</span> & <span className="text-[#0099D8]">Vision</span>
+            <h2 className="mb-4 text-4xl font-bold text-[#1A1A1A] md:text-5xl">
+              Our <span className="text-[#00AEEF]">Mission</span> & <span className="text-[#00AEEF]">Vision</span>
             </h2>
           </div>
 
-          <div className="grid gap-8 lg:grid-cols-2 max-w-6xl mx-auto">
-            <article className="group relative rounded-3xl bg-white border border-gray-200 p-8 shadow-xl hover:shadow-2xl transition-all duration-500">
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#0099D8] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 rounded-2xl bg-[#0099D8]/10 border border-[#0099D8]/20 flex items-center justify-center">
-                  <Shield className="h-6 w-6 text-[#0099D8]" />
+          <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-2 lg:gap-10">
+            <article className="group relative rounded-[20px] border border-[#D6EEF8] bg-white p-6 shadow-[0_2px_8px_rgba(0,0,0,0.06)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#00AEEF]/45 hover:shadow-[0_8px_20px_rgba(0,174,239,0.1)] sm:p-8 lg:p-9">
+              <div className="mb-7 flex items-center gap-4">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-[#D6EEF8] bg-[#E6F7FD]">
+                  <Shield className="h-6 w-6 text-[#00AEEF]" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900">Our Mission</h3>
+                <h3 className="text-2xl font-bold leading-tight text-[#1A1A1A]">Our Mission</h3>
               </div>
 
-              <p className="text-gray-700 leading-relaxed mb-6">
+              <p className="mb-7 leading-relaxed text-[#666666]">
                 Our mission is to provide trusted, transparent, and expert-driven financial advisory services that empower individuals and businesses to access the most suitable funding solutions with clarity and confidence.
               </p>
 
-              <div className="rounded-2xl bg-gray-50 p-6 border border-gray-200">
-                <p className="text-sm font-semibold text-gray-900 mb-4">We are committed to:</p>
-                <ul className="space-y-3">
+              <div className="rounded-xl border border-[#D6EEF8] bg-[#F7F9FC] p-5 sm:p-6">
+                <p className="mb-4 text-sm font-semibold text-[#1A1A1A]">We are committed to:</p>
+                <ul className="space-y-4">
                   <li className="flex gap-3 items-start group/item">
-                    <div className="w-5 h-5 rounded-full bg-[#0099D8]/10 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover/item:bg-[#0099D8]/20 transition-colors">
-                      <div className="w-2 h-2 rounded-full bg-[#0099D8]" />
+                    <div className="w-5 h-5 rounded-full bg-[#00AEEF]/10 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover/item:bg-[#00AEEF]/20 transition-colors">
+                      <div className="w-2 h-2 rounded-full bg-[#00AEEF]" />
                     </div>
-                    <div className="text-gray-700 leading-relaxed">
-                      <div className="font-semibold text-gray-900">In-depth credit assessment and financial analysis</div>
+                    <div className="leading-relaxed text-[#666666]">
+                      <div className="font-semibold text-[#1A1A1A]">In-depth credit assessment and financial analysis</div>
                       <div>Ensuring every recommendation is backed by thorough evaluation and insight.</div>
                     </div>
                   </li>
                   <li className="flex gap-3 items-start group/item">
-                    <div className="w-5 h-5 rounded-full bg-[#0099D8]/10 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover/item:bg-[#0099D8]/20 transition-colors">
-                      <div className="w-2 h-2 rounded-full bg-[#0099D8]" />
+                    <div className="w-5 h-5 rounded-full bg-[#00AEEF]/10 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover/item:bg-[#00AEEF]/20 transition-colors">
+                      <div className="w-2 h-2 rounded-full bg-[#00AEEF]" />
                     </div>
-                    <div className="text-gray-700 leading-relaxed">
-                      <div className="font-semibold text-gray-900">Ethical, unbiased, and client-first advisory</div>
+                    <div className="leading-relaxed text-[#666666]">
+                      <div className="font-semibold text-[#1A1A1A]">Ethical, unbiased, and client-first advisory</div>
                       <div>Placing our clients’ long-term interests at the center of every decision.</div>
                     </div>
                   </li>
                   <li className="flex gap-3 items-start group/item">
-                    <div className="w-5 h-5 rounded-full bg-[#0099D8]/10 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover/item:bg-[#0099D8]/20 transition-colors">
-                      <div className="w-2 h-2 rounded-full bg-[#0099D8]" />
+                    <div className="w-5 h-5 rounded-full bg-[#00AEEF]/10 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover/item:bg-[#00AEEF]/20 transition-colors">
+                      <div className="w-2 h-2 rounded-full bg-[#00AEEF]" />
                     </div>
-                    <div className="text-gray-700 leading-relaxed">
-                      <div className="font-semibold text-gray-900">Accurate loan structuring aligned with lender policies</div>
+                    <div className="leading-relaxed text-[#666666]">
+                      <div className="font-semibold text-[#1A1A1A]">Accurate loan structuring aligned with lender policies</div>
                       <div>Designing solutions that meet both client objectives and bank/NBFC requirements.</div>
                     </div>
                   </li>
                   <li className="flex gap-3 items-start group/item">
-                    <div className="w-5 h-5 rounded-full bg-[#0099D8]/10 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover/item:bg-[#0099D8]/20 transition-colors">
-                      <div className="w-2 h-2 rounded-full bg-[#0099D8]" />
+                    <div className="w-5 h-5 rounded-full bg-[#00AEEF]/10 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover/item:bg-[#00AEEF]/20 transition-colors">
+                      <div className="w-2 h-2 rounded-full bg-[#00AEEF]" />
                     </div>
-                    <div className="text-gray-700 leading-relaxed">
-                      <div className="font-semibold text-gray-900">Complete transparency and regulatory compliance</div>
+                    <div className="leading-relaxed text-[#666666]">
+                      <div className="font-semibold text-[#1A1A1A]">Complete transparency and regulatory compliance</div>
                       <div>Maintaining the highest standards of integrity, disclosure, and compliance.</div>
                     </div>
                   </li>
                   <li className="flex gap-3 items-start group/item">
-                    <div className="w-5 h-5 rounded-full bg-[#0099D8]/10 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover/item:bg-[#0099D8]/20 transition-colors">
-                      <div className="w-2 h-2 rounded-full bg-[#0099D8]" />
+                    <div className="w-5 h-5 rounded-full bg-[#00AEEF]/10 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover/item:bg-[#00AEEF]/20 transition-colors">
+                      <div className="w-2 h-2 rounded-full bg-[#00AEEF]" />
                     </div>
-                    <div className="text-gray-700 leading-relaxed">
-                      <div className="font-semibold text-gray-900">Long-term value creation for every client</div>
+                    <div className="leading-relaxed text-[#666666]">
+                      <div className="font-semibold text-[#1A1A1A]">Long-term value creation for every client</div>
                       <div>Focusing on sustainable financial outcomes rather than short-term transactions.</div>
                     </div>
                   </li>
                 </ul>
               </div>
 
-              <p className="mt-6 text-gray-700 leading-relaxed">
+              <p className="mt-7 leading-relaxed text-[#666666]">
                 Our objective goes beyond loan facilitation—we strive to build enduring financial partnerships based on trust, expertise, and accountability.
               </p>
             </article>
 
-            <article className="group relative rounded-3xl bg-white border border-gray-200 p-8 shadow-xl hover:shadow-2xl transition-all duration-500">
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#0099D8] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 rounded-2xl bg-[#0099D8]/10 border border-[#0099D8]/20 flex items-center justify-center">
-                  <Award className="h-6 w-6 text-[#0099D8]" />
+            <article className="group relative rounded-[20px] border border-[#D6EEF8] bg-white p-6 shadow-[0_2px_8px_rgba(0,0,0,0.06)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#00AEEF]/45 hover:shadow-[0_8px_20px_rgba(0,174,239,0.1)] sm:p-8 lg:p-9">
+              <div className="mb-7 flex items-center gap-4">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-[#D6EEF8] bg-[#E6F7FD]">
+                  <Award className="h-6 w-6 text-[#00AEEF]" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900">Our Vision</h3>
+                <h3 className="text-2xl font-bold leading-tight text-[#1A1A1A]">Our Vision</h3>
               </div>
 
-              <p className="text-gray-700 leading-relaxed mb-6">
+              <p className="mb-7 leading-relaxed text-[#666666]">
                 Our vision is to build a globally trusted financial advisory institution, recognized for integrity, transparency, deep banking expertise, and excellence in structured credit advisory—supported by scalable, compliant, and technology-driven operations.
               </p>
 
-              <div className="rounded-2xl bg-gray-50 p-6 border border-gray-200">
-                <p className="text-sm font-semibold text-gray-900 mb-4">We aim to:</p>
-                <ul className="space-y-3">
+              <div className="rounded-xl border border-[#D6EEF8] bg-[#F7F9FC] p-5 sm:p-6">
+                <p className="mb-4 text-sm font-semibold text-[#1A1A1A]">We aim to:</p>
+                <ul className="space-y-4">
                   <li className="flex gap-3 items-start group/item">
-                    <div className="w-5 h-5 rounded-full bg-[#0099D8]/10 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover/item:bg-[#0099D8]/20 transition-colors">
-                      <div className="w-2 h-2 rounded-full bg-[#0099D8]" />
+                    <div className="w-5 h-5 rounded-full bg-[#00AEEF]/10 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover/item:bg-[#00AEEF]/20 transition-colors">
+                      <div className="w-2 h-2 rounded-full bg-[#00AEEF]" />
                     </div>
-                    <div className="text-gray-700 leading-relaxed">
-                      <div className="font-semibold text-gray-900">Set industry benchmarks in loan structuring and credit advisory</div>
+                    <div className="leading-relaxed text-[#666666]">
+                      <div className="font-semibold text-[#1A1A1A]">Set industry benchmarks in loan structuring and credit advisory</div>
                       <div>By delivering consistently high standards of analysis, execution, and outcomes.</div>
                     </div>
                   </li>
                   <li className="flex gap-3 items-start group/item">
-                    <div className="w-5 h-5 rounded-full bg-[#0099D8]/10 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover/item:bg-[#0099D8]/20 transition-colors">
-                      <div className="w-2 h-2 rounded-full bg-[#0099D8]" />
+                    <div className="w-5 h-5 rounded-full bg-[#00AEEF]/10 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover/item:bg-[#00AEEF]/20 transition-colors">
+                      <div className="w-2 h-2 rounded-full bg-[#00AEEF]" />
                     </div>
-                    <div className="text-gray-700 leading-relaxed">
-                      <div className="font-semibold text-gray-900">Expand across Pan-India and select international markets</div>
+                    <div className="leading-relaxed text-[#666666]">
+                      <div className="font-semibold text-[#1A1A1A]">Expand across Pan-India and select international markets</div>
                       <div>Establishing a strong and credible presence across geographies.</div>
                     </div>
                   </li>
                   <li className="flex gap-3 items-start group/item">
-                    <div className="w-5 h-5 rounded-full bg-[#0099D8]/10 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover/item:bg-[#0099D8]/20 transition-colors">
-                      <div className="w-2 h-2 rounded-full bg-[#0099D8]" />
+                    <div className="w-5 h-5 rounded-full bg-[#00AEEF]/10 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover/item:bg-[#00AEEF]/20 transition-colors">
+                      <div className="w-2 h-2 rounded-full bg-[#00AEEF]" />
                     </div>
-                    <div className="text-gray-700 leading-relaxed">
-                      <div className="font-semibold text-gray-900">Leverage advanced analytics, technology, and expert talent</div>
+                    <div className="leading-relaxed text-[#666666]">
+                      <div className="font-semibold text-[#1A1A1A]">Leverage advanced analytics, technology, and expert talent</div>
                       <div>To enhance decision-making, efficiency, and client experience.</div>
                     </div>
                   </li>
                   <li className="flex gap-3 items-start group/item">
-                    <div className="w-5 h-5 rounded-full bg-[#0099D8]/10 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover/item:bg-[#0099D8]/20 transition-colors">
-                      <div className="w-2 h-2 rounded-full bg-[#0099D8]" />
+                    <div className="w-5 h-5 rounded-full bg-[#00AEEF]/10 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover/item:bg-[#00AEEF]/20 transition-colors">
+                      <div className="w-2 h-2 rounded-full bg-[#00AEEF]" />
                     </div>
-                    <div className="text-gray-700 leading-relaxed">
-                      <div className="font-semibold text-gray-900">Promote responsible financial access and inclusion</div>
+                    <div className="leading-relaxed text-[#666666]">
+                      <div className="font-semibold text-[#1A1A1A]">Promote responsible financial access and inclusion</div>
                       <div>Serving individuals, startups, MSMEs, and enterprises across all stages of growth.</div>
                     </div>
                   </li>
                 </ul>
               </div>
 
-              <p className="mt-6 text-gray-700 leading-relaxed">
+              <p className="mt-7 leading-relaxed text-[#666666]">
                 Our vision is driven by a long-term commitment to trust, innovation, and sustainable value creation for clients, partners, and stakeholders.
               </p>
             </article>
@@ -277,103 +263,92 @@ export default function AboutUsPage() {
       </section>
 
       {/* Vision & Mission Section */}
-      <section className="py-20 lg:py-32 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
-        <div className="absolute inset-0 opacity-[0.03]">
-          <div className="absolute inset-0" style={{
-            backgroundImage: `radial-gradient(circle at 1px 1px, black 1px, transparent 0)`,
-            backgroundSize: '40px 40px'
-          }} />
-        </div>
-
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-black/5 border border-black/10 backdrop-blur-sm mb-4">
-              <TrendingUp className="w-4 h-4 text-[#0099D8]" />
-              <span className="text-sm font-medium text-gray-700">Our Story</span>
+      <section className="bg-white py-16 lg:py-24">
+        <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
+          <div className="mb-12 text-center lg:mb-16">
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#D6EEF8] bg-[#E6F7FD] px-4 py-2">
+              <TrendingUp className="h-4 w-4 text-[#00AEEF]" />
+              <span className="text-sm font-medium text-[#00AEEF]">Our Story</span>
             </div>
-            <h2 className="text-4xl md:text-5xl font-bold text-black mb-4">
-              Founder & <span className="text-[#0099D8]">Roadmap</span>
+            <h2 className="mb-4 text-4xl font-bold text-[#1A1A1A] md:text-5xl">
+              Founder & <span className="text-[#00AEEF]">Roadmap</span>
             </h2>
           </div>
 
-          <div className="grid gap-8 lg:grid-cols-2 max-w-6xl mx-auto">
+          <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-2 lg:gap-10">
             {/* Vision Card */}
-            <article className="group relative rounded-3xl bg-white border border-gray-200 p-8 shadow-xl hover:shadow-2xl transition-all duration-500">
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#0099D8] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 rounded-2xl bg-[#0099D8]/10 border border-[#0099D8]/20 flex items-center justify-center">
-                  <Award className="h-6 w-6 text-[#0099D8]" />
+            <article className="group relative rounded-[20px] border border-[#D6EEF8] bg-white p-6 shadow-[0_2px_8px_rgba(0,0,0,0.06)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#00AEEF]/45 hover:shadow-[0_8px_20px_rgba(0,174,239,0.1)] sm:p-8 lg:p-9">
+              <div className="mb-7 flex items-center gap-4">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-[#D6EEF8] bg-[#E6F7FD]">
+                  <Award className="h-6 w-6 text-[#00AEEF]" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900">Founder's Vision</h3>
+                <h3 className="text-2xl font-bold text-[#1A1A1A]">Founder's Vision</h3>
               </div>
 
-              <p className="text-gray-700 leading-relaxed mb-6">
+              <p className="mb-7 leading-relaxed text-[#666666]">
                 Aamin Khan, Founder & Director, brings over 17 years of cross-sector experience spanning banking, loans, insurance, taxation, business coaching, and real estate. His vision is rooted in building a financial advisory platform defined by integrity, deep domain expertise, and absolute clarity in execution.
               </p>
 
-              <p className="text-gray-700 leading-relaxed mb-6">
+              <p className="mb-7 leading-relaxed text-[#666666]">
                 Under his leadership, the firm is guided by a disciplined advisory philosophy—focused on understanding client needs through rigorous analysis, structuring solutions aligned with lender frameworks, and ensuring the right institutional fit for every case.
               </p>
               
-              <div className="rounded-2xl bg-gray-50 p-5 border border-gray-200">
-                <p className="text-sm font-semibold text-gray-900 flex items-center gap-2">
-                  <Sparkles className="h-4 w-4 text-[#0099D8]" />
+              <div className="rounded-xl border border-[#D6EEF8] bg-[#E6F7FD] p-5">
+                <p className="flex items-center gap-2 text-sm font-semibold text-[#1A1A1A]">
+                  <Sparkles className="h-4 w-4 text-[#00AEEF]" />
                   Right Analysis. Right Structuring. Right Bank.
                 </p>
               </div>
 
-              <p className="mt-6 text-gray-700 leading-relaxed">
+              <p className="mt-7 leading-relaxed text-[#666666]">
                 This vision reflects a commitment to ethical advisory, transparent processes, and long-term value creation for clients, partners, and stakeholders.
               </p>
             </article>
 
             {/* Mission Card */}
-            <article className="group relative rounded-3xl bg-white border border-gray-200 p-8 shadow-xl hover:shadow-2xl transition-all duration-500">
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#0099D8] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 rounded-2xl bg-[#0099D8]/10 border border-[#0099D8]/20 flex items-center justify-center">
-                  <Shield className="h-6 w-6 text-[#0099D8]" />
+            <article className="group relative rounded-[20px] border border-[#D6EEF8] bg-white p-6 shadow-[0_2px_8px_rgba(0,0,0,0.06)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#00AEEF]/45 hover:shadow-[0_8px_20px_rgba(0,174,239,0.1)] sm:p-8 lg:p-9">
+              <div className="mb-7 flex items-center gap-4">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-[#D6EEF8] bg-[#E6F7FD]">
+                  <Shield className="h-6 w-6 text-[#00AEEF]" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900">Growth Roadmap</h3>
+                <h3 className="text-2xl font-bold text-[#1A1A1A]">Growth Roadmap</h3>
               </div>
 
-              <div className="space-y-4">
-                <p className="text-gray-700 leading-relaxed">
+              <div className="space-y-5">
+                <p className="leading-relaxed text-[#666666]">
                   Infinity Loans & Business Solutions is progressing on a clearly defined, institution-led growth trajectory focused on scale, governance, and long-term sustainability.
                 </p>
 
-                <p className="text-gray-700 leading-relaxed">Our strategic roadmap includes:</p>
+                <p className="leading-relaxed text-[#666666]">Our strategic roadmap includes:</p>
 
-                <div className="space-y-3">
-                  <div>
-                    <p className="font-semibold text-gray-900">Planned transition from proprietorship to a Private Limited structure</p>
-                    <p className="text-gray-700 leading-relaxed">To strengthen corporate governance, transparency, and operational discipline.</p>
+                <div className="space-y-4">
+                  <div className="space-y-1.5">
+                    <p className="font-semibold text-[#1A1A1A]">Planned transition from proprietorship to a Private Limited structure</p>
+                    <p className="leading-relaxed text-[#666666]">To strengthen corporate governance, transparency, and operational discipline.</p>
                   </div>
 
-                  <div>
-                    <p className="font-semibold text-gray-900">Enhanced regulatory and compliance frameworks</p>
-                    <p className="text-gray-700 leading-relaxed">Aligning operations with evolving regulatory standards and best practices.</p>
+                  <div className="space-y-1.5">
+                    <p className="font-semibold text-[#1A1A1A]">Enhanced regulatory and compliance frameworks</p>
+                    <p className="leading-relaxed text-[#666666]">Aligning operations with evolving regulatory standards and best practices.</p>
                   </div>
 
-                  <div>
-                    <p className="font-semibold text-gray-900">Scalable and process-driven operations</p>
-                    <p className="text-gray-700 leading-relaxed">Building systems and teams that support sustainable growth across geographies.</p>
+                  <div className="space-y-1.5">
+                    <p className="font-semibold text-[#1A1A1A]">Scalable and process-driven operations</p>
+                    <p className="leading-relaxed text-[#666666]">Building systems and teams that support sustainable growth across geographies.</p>
                   </div>
 
-                  <div>
-                    <p className="font-semibold text-gray-900">Strengthened institutional credibility</p>
-                    <p className="text-gray-700 leading-relaxed">Creating a robust brand trusted by clients, partners, and stakeholders.</p>
+                  <div className="space-y-1.5">
+                    <p className="font-semibold text-[#1A1A1A]">Strengthened institutional credibility</p>
+                    <p className="leading-relaxed text-[#666666]">Creating a robust brand trusted by clients, partners, and stakeholders.</p>
                   </div>
 
-                  <div>
-                    <p className="font-semibold text-gray-900">Deeper and long-term partnerships with Banks, NBFCs, and investors</p>
-                    <p className="text-gray-700 leading-relaxed">Enabling broader product access, improved execution, and strategic capital alignment.</p>
+                  <div className="space-y-1.5">
+                    <p className="font-semibold text-[#1A1A1A]">Deeper and long-term partnerships with Banks, NBFCs, and investors</p>
+                    <p className="leading-relaxed text-[#666666]">Enabling broader product access, improved execution, and strategic capital alignment.</p>
                   </div>
                 </div>
 
-                <p className="text-gray-700 leading-relaxed">
+                <p className="leading-relaxed text-[#666666]">
                   Our growth strategy is anchored in responsible expansion, strong governance, and a commitment to building a resilient financial advisory institution.
                 </p>
               </div>
@@ -382,95 +357,80 @@ export default function AboutUsPage() {
         </div>
       </section>
 
-      {/* Why Choose Us Section */}
-      <section className="py-20 lg:py-32 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
-        <div className="absolute inset-0 opacity-[0.03]">
-          <div className="absolute inset-0" style={{
-            backgroundImage: `radial-gradient(circle at 1px 1px, black 1px, transparent 0)`,
-            backgroundSize: '40px 40px'
-          }} />
-        </div>
-
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#0099D8]/10 border border-[#0099D8]/20 mb-4">
-              <Users className="w-4 h-4 text-[#0099D8]" />
-              <span className="text-sm font-medium text-gray-900">Why Choose Us</span>
+      {/* Lending Network Section */}
+      <section className="bg-[#F7F9FC] py-16 lg:py-24">
+        <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
+          <div className="mb-12 text-center lg:mb-16">
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#D6EEF8] bg-[#E6F7FD] px-4 py-2">
+              <Users className="h-4 w-4 text-[#00AEEF]" />
+              <span className="text-sm font-medium text-[#00AEEF]">Why Choose Us</span>
             </div>
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              Why Choose <span className="text-[#0099D8]">Infinity Loans</span>
+            <h2 className="mb-4 text-4xl font-bold text-[#1A1A1A] md:text-5xl">
+              Why Choose <span className="text-[#00AEEF]">Infinity Loans</span>
             </h2>
-            <p className="text-gray-600 text-lg max-w-3xl mx-auto">
+            <p className="mx-auto max-w-3xl text-lg text-[#666666]">
               Strategic placement, transparent advisory, and end-to-end ownership from profiling to disbursement.
             </p>
           </div>
 
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-7xl mx-auto">
+          <div className="mx-auto grid max-w-7xl gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-7">
             {[
               {
                 icon: Clock,
                 title: "17+ Years of Industry Experience",
                 description: "Deep domain expertise across lending, risk, and structuring.",
-                color: "from-[#0099D8]/10 to-[#007BB0]/10",
-                iconBg: "bg-[#0099D8]/10",
-                iconColor: "text-[#0099D8]"
+                iconBg: "bg-[#E6F7FD]",
+                iconColor: "text-[#00AEEF]"
               },
               {
                 icon: Building2,
                 title: "100+ Bank & NBFC Relationships",
                 description: "Wide lender network to match policies with your profile.",
-                color: "from-[#2E3192]/10 to-[#2E3192]/5",
-                iconBg: "bg-[#2E3192]/10",
-                iconColor: "text-[#2E3192]"
+                iconBg: "bg-[#E6F7FD]",
+                iconColor: "text-[#00AEEF]"
               },
               {
                 icon: Users,
                 title: "500+ Financial & Credit Experts",
                 description: "Multi-disciplinary support across profiling, documentation, and follow-ups.",
-                color: "from-[#004D2C]/10 to-[#004D2C]/5",
-                iconBg: "bg-[#004D2C]/10",
-                iconColor: "text-[#004D2C]"
+                iconBg: "bg-[#E6F7FD]",
+                iconColor: "text-[#00AEEF]"
               },
               {
                 icon: CheckCircle2,
                 title: "High Approval Ratio",
                 description: "Better outcomes through policy-aligned structuring and placement.",
-                color: "from-[#0099D8]/10 to-[#007BB0]/10",
-                iconBg: "bg-[#0099D8]/10",
-                iconColor: "text-[#0099D8]"
+                iconBg: "bg-[#E6F7FD]",
+                iconColor: "text-[#00AEEF]"
               },
               {
                 icon: Award,
                 title: "Specialized HNI & UHNI Advisory",
                 description: "Large-ticket structuring and multi-bank negotiation support.",
-                color: "from-[#0099D8]/10 to-[#2E3192]/10",
-                iconBg: "bg-[#0099D8]/10",
-                iconColor: "text-[#0099D8]"
+                iconBg: "bg-[#E6F7FD]",
+                iconColor: "text-[#00AEEF]"
               },
               {
                 icon: TrendingUp,
                 title: "Pan-India Reach",
                 description: "Serving Tier 1 metros, Tier 2 & Tier 3 markets, emerging regions, all States and Union Territories — with select international cases.",
-                color: "from-cyan-500/10 to-cyan-600/10",
-                iconBg: "bg-cyan-500/10",
-                iconColor: "text-cyan-400"
+                iconBg: "bg-[#E6F7FD]",
+                iconColor: "text-[#00AEEF]"
               },
             ].map((item, idx) => (
               <div
                 key={idx}
-                className="group relative rounded-2xl bg-white border border-gray-200 p-6 shadow-md hover:border-[#0099D8]/50 hover:shadow-lg transition-all duration-500"
+                className="group relative rounded-[20px] border border-[#D6EEF8] bg-white p-6 shadow-[0_2px_8px_rgba(0,0,0,0.06)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#00AEEF]/45 hover:shadow-[0_8px_20px_rgba(0,174,239,0.1)] sm:p-7"
                 style={{ animation: `fadeInUp 0.6s ease-out ${idx * 0.1}s both` }}
               >
-                <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-[#0099D8]/5 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-                <div className={`w-14 h-14 rounded-2xl ${item.iconBg} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
+                <div className={`mb-4 flex h-14 w-14 items-center justify-center rounded-xl border border-[#D6EEF8] ${item.iconBg} transition-transform duration-300 group-hover:scale-105`}>
                   <item.icon className={`h-7 w-7 ${item.iconColor}`} />
                 </div>
 
-                <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-[#0099D8] transition-colors">
+                <h3 className="mb-3 text-lg font-bold leading-snug text-[#1A1A1A] transition-colors group-hover:text-[#00AEEF]">
                   {item.title}
                 </h3>
-                <p className="text-sm text-gray-600 leading-relaxed whitespace-pre-line">
+                <p className="text-sm leading-relaxed text-[#666666] whitespace-pre-line sm:text-[15px]">
                   {item.description}
                 </p>
               </div>
@@ -479,32 +439,22 @@ export default function AboutUsPage() {
         </div>
       </section>
 
-      <section className="py-20 lg:py-32 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
-        <div className="absolute inset-0 opacity-[0.03]">
-          <div
-            className="absolute inset-0"
-            style={{
-              backgroundImage: `radial-gradient(circle at 1px 1px, black 1px, transparent 0)`,
-              backgroundSize: "40px 40px",
-            }}
-          />
-        </div>
-
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-black/5 border border-black/10 backdrop-blur-sm mb-4">
-              <Briefcase className="w-4 h-4 text-[#0099D8]" />
-              <span className="text-sm font-medium text-gray-700">Our Core</span>
+      <section className="bg-white py-16 lg:py-24">
+        <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
+          <div className="mb-12 text-center lg:mb-16">
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#D6EEF8] bg-[#E6F7FD] px-4 py-2">
+              <Briefcase className="h-4 w-4 text-[#00AEEF]" />
+              <span className="text-sm font-medium text-[#00AEEF]">Our Core</span>
             </div>
-            <h2 className="text-4xl md:text-5xl font-bold text-black mb-4">
-              Our Core Service <span className="text-[#0099D8]">Segments</span>
+            <h2 className="mb-4 text-4xl font-bold text-[#1A1A1A] md:text-5xl">
+              Our Core Service <span className="text-[#00AEEF]">Segments</span>
             </h2>
-            <p className="text-gray-600 text-lg max-w-3xl mx-auto">
+            <p className="mx-auto max-w-3xl text-lg text-[#666666]">
               Advisory-led structuring and execution across corporate, real estate, and high-value funding.
             </p>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-1 max-w-7xl mx-auto">
+          <div className="mx-auto grid max-w-7xl gap-7 md:grid-cols-2 lg:grid-cols-1">
             {[
               {
                 label: "1.",
@@ -537,18 +487,15 @@ export default function AboutUsPage() {
             ].map((item, idx) => (
               <div
                 key={idx}
-                className="group relative overflow-hidden rounded-3xl border border-[#0099D8]/20 bg-gradient-to-br from-white via-slate-50 to-gray-50 p-6 shadow-xl transition-all duration-500 hover:-translate-y-1 hover:border-[#0099D8]/40"
+                className="group relative overflow-hidden rounded-[20px] border border-[#D6EEF8] bg-white p-6 shadow-[0_2px_8px_rgba(0,0,0,0.06)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#00AEEF]/45 hover:shadow-[0_8px_20px_rgba(0,174,239,0.1)] sm:p-8 lg:p-9"
                 style={{ animation: `fadeInUp 0.6s ease-out ${idx * 0.1}s both` }}
               >
-                <div className="pointer-events-none absolute -top-16 -right-16 h-56 w-56 rounded-full bg-[#0099D8]/20 blur-3xl" />
-                <div className="pointer-events-none absolute -bottom-20 -left-20 h-56 w-56 rounded-full bg-[#0099D8]/10 blur-3xl" />
-
                 <div className="relative">
-                  <p className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-gray-50 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-gray-900">
-                    <span className="inline-flex h-6 w-6 items-center justify-center rounded-lg bg-[#0099D8]/15">
-                      <item.icon className="h-3.5 w-3.5 text-[#0099D8]" />
+                  <p className="inline-flex flex-wrap items-center gap-2 rounded-full border border-[#D6EEF8] bg-[#E6F7FD] px-4 py-2 text-xs font-semibold uppercase tracking-widest text-[#1A1A1A] sm:gap-2.5">
+                    <span className="inline-flex h-8 w-8 items-center justify-center rounded-xl border border-[#D6EEF8] bg-[#E6F7FD]">
+                      <item.icon className="h-3.5 w-3.5 text-[#00AEEF]" />
                     </span>
-                    <span className="text-[#0099D8]">{item.label}</span>
+                    <span className="text-[#00AEEF]">{item.label}</span>
                     {item.title}
                   </p>
 
@@ -558,16 +505,16 @@ export default function AboutUsPage() {
 
                     return (
                       <>
-                        <p className="mt-5 text-sm leading-relaxed text-gray-700 whitespace-pre-line sm:text-base">
+                        <p className="mt-6 text-sm leading-relaxed text-[#666666] whitespace-pre-line sm:text-base">
                           {preview}
                         </p>
 
                         {remaining ? (
-                          <details className="mt-4 rounded-2xl border border-gray-200 bg-gray-50 p-4">
-                            <summary className="cursor-pointer select-none text-sm font-semibold text-gray-900">
+                          <details className="mt-5 rounded-xl border border-[#D6EEF8] bg-[#F7F9FC] p-5 sm:p-6">
+                            <summary className="cursor-pointer select-none text-sm font-semibold text-[#00AEEF]">
                               Read more
                             </summary>
-                            <p className="mt-3 text-sm leading-relaxed text-gray-700 whitespace-pre-line sm:text-base">
+                            <p className="mt-4 text-sm leading-relaxed text-[#666666] whitespace-pre-line sm:text-base">
                               {remaining}
                             </p>
                           </details>
@@ -582,29 +529,22 @@ export default function AboutUsPage() {
         </div>
       </section>
 
-      <section className="py-20 bg-gradient-to-b from-white to-gray-50 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-[0.03]">
-          <div className="absolute inset-0" style={{
-            backgroundImage: `radial-gradient(circle at 1px 1px, black 1px, transparent 0)`,
-            backgroundSize: '40px 40px'
-          }} />
-        </div>
-
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#0099D8]/10 border border-[#0099D8]/20 mb-4">
-              <CheckCircle2 className="w-4 h-4 text-[#0099D8]" />
-              <span className="text-sm font-medium text-gray-900">Our Process</span>
+      <section className="bg-[#F7F9FC] py-16 lg:py-24">
+        <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
+          <div className="mb-12 text-center lg:mb-16">
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#D6EEF8] bg-[#E6F7FD] px-4 py-2">
+              <CheckCircle2 className="h-4 w-4 text-[#00AEEF]" />
+              <span className="text-sm font-medium text-[#00AEEF]">Our Process</span>
             </div>
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              Requirement to Disbursement <span className="text-[#0099D8]">Workflow</span>
+            <h2 className="mb-4 text-4xl font-bold text-[#1A1A1A] md:text-5xl">
+              Requirement to Disbursement <span className="text-[#00AEEF]">Workflow</span>
             </h2>
-            <p className="text-gray-600 text-lg max-w-3xl mx-auto">
+            <p className="mx-auto max-w-3xl text-lg text-[#666666]">
               A disciplined, end-to-end advisory framework designed to enhance approval quality, ensure policy alignment, and deliver predictable execution outcomes.
             </p>
           </div>
 
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
+          <div className="mx-auto grid max-w-6xl gap-7 sm:grid-cols-2 lg:grid-cols-3">
             {[
               {
                 title: "STEP 01 | Requirement Understanding & Client Profiling",
@@ -651,25 +591,25 @@ export default function AboutUsPage() {
             ].map((item, idx) => (
               <div
                 key={idx}
-                className="group relative rounded-2xl bg-white border border-gray-200 p-6 shadow-md hover:border-[#0099D8]/50 hover:shadow-lg transition-all duration-500"
+                className="group relative rounded-[20px] border border-[#D6EEF8] bg-white p-6 shadow-[0_2px_8px_rgba(0,0,0,0.06)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#00AEEF]/45 hover:shadow-[0_8px_20px_rgba(0,174,239,0.1)] sm:p-7"
                 style={{ animation: `fadeInUp 0.6s ease-out ${idx * 0.1}s both` }}
               >
                 <div className="flex items-start gap-4">
-                  <div className="text-3xl">{item.icon}</div>
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-[#D6EEF8] bg-[#E6F7FD] text-2xl">{item.icon}</div>
                   <div className="flex-1">
-                    <div className="text-xs font-bold text-[#0099D8] mb-2">STEP {item.step}</div>
-                    <h3 className="text-base font-semibold text-gray-900 leading-tight">{item.title}</h3>
-                    <p className="mt-2 text-sm text-gray-600 leading-relaxed whitespace-pre-line">{item.description}</p>
+                    <div className="mb-2 text-xs font-bold text-[#00AEEF]">STEP {item.step}</div>
+                    <h3 className="text-base font-semibold leading-snug text-[#1A1A1A]">{item.title}</h3>
+                    <p className="mt-3 text-sm leading-relaxed text-[#666666] whitespace-pre-line sm:text-[15px]">{item.description}</p>
                   </div>
                 </div>
               </div>
             ))}
           </div>
 
-          <div className="max-w-6xl mx-auto mt-12 grid gap-6 lg:grid-cols-2">
-            <div className="rounded-2xl bg-white border border-gray-200 p-6 shadow-md">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">Process Outcomes</h3>
-              <ul className="space-y-3">
+          <div className="mx-auto mt-14 grid max-w-6xl gap-7 lg:grid-cols-2">
+            <div className="rounded-[20px] border border-[#D6EEF8] bg-white p-6 shadow-[0_2px_8px_rgba(0,0,0,0.06)] sm:p-7">
+              <h3 className="mb-4 text-lg font-bold text-[#1A1A1A]">Process Outcomes</h3>
+              <ul className="space-y-4">
                 {[
                   "Improved approval success ratio",
                   "Policy-compliant credit placement",
@@ -678,53 +618,43 @@ export default function AboutUsPage() {
                   "Stronger lender confidence and repeat business",
                 ].map((item, idx) => (
                   <li key={idx} className="flex gap-3 items-start">
-                    <div className="w-5 h-5 rounded-full bg-[#0099D8]/15 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <div className="w-2 h-2 rounded-full bg-[#0099D8]" />
+                    <div className="w-5 h-5 rounded-full bg-[#00AEEF]/15 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <div className="w-2 h-2 rounded-full bg-[#00AEEF]" />
                     </div>
-                    <span className="text-gray-700">{item}</span>
+                    <span className="text-[#666666]">{item}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
-            <div className="rounded-2xl bg-white border border-gray-200 p-6 shadow-md">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">Advisory Philosophy</h3>
-              <p className="text-gray-700">Right Analysis. Right Structuring. Right Bank.</p>
+            <div className="rounded-[20px] border border-[#D6EEF8] bg-white p-6 shadow-[0_2px_8px_rgba(0,0,0,0.06)] sm:p-7">
+              <h3 className="mb-4 text-lg font-bold text-[#1A1A1A]">Advisory Philosophy</h3>
+              <p className="leading-relaxed text-[#666666]">Right Analysis. Right Structuring. Right Bank.</p>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="py-20 bg-gradient-to-b from-white to-gray-50">
-        <div className="container mx-auto px-4">
-          <div className="max-w-5xl mx-auto rounded-3xl bg-gradient-to-br from-[#0099D8]/10 via-white to-blue-50/50 border border-[#0099D8]/20 p-12 relative overflow-hidden shadow-xl">
-            <div className="absolute inset-0 opacity-[0.04]">
-              <div
-                className="absolute inset-0"
-                style={{
-                  backgroundImage: `radial-gradient(circle at 1px 1px, black 1px, transparent 0)`,
-                  backgroundSize: "40px 40px",
-                }}
-              />
-            </div>
-
-            <div className="relative z-10 text-center space-y-6">
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900">
+      <section className="bg-white py-16 lg:py-24">
+        <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
+          <div className="relative mx-auto max-w-5xl overflow-hidden rounded-[20px] border border-[#D6EEF8] bg-[#E6F7FD] p-8 shadow-[0_4px_24px_rgba(0,174,239,0.08)] sm:p-12">
+            <div className="relative z-10 space-y-6 text-center">
+              <h2 className="text-3xl font-bold text-[#1A1A1A] md:text-4xl lg:text-5xl">
                 Let's Build Your Financial Future with{" "}
-                <span className="text-[#0099D8]">Confidence</span>
+                <span className="text-[#00AEEF]">Confidence</span>
               </h2>
-              <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+              <p className="mx-auto max-w-2xl text-lg text-[#666666]">
                 Every loan is handled with expertise, integrity, and commitment—ensuring you receive the right financial solution at the right time.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+              <div className="flex flex-col justify-center gap-4 pt-5 sm:flex-row">
                 <Link href="/contact">
-                  <button className="group relative px-8 py-4 bg-[#0099D8] hover:bg-[#007BB0] text-white font-semibold rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl">
+                  <button className="inline-flex h-12 items-center justify-center rounded-xl bg-[#00AEEF] px-7 text-sm font-semibold text-white shadow-[0_2px_10px_rgba(0,174,239,0.18)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#008FCC] hover:shadow-[0_8px_18px_rgba(0,174,239,0.22)]">
                     Contact Us Today
                   </button>
                 </Link>
                 <Link href="/services">
-                  <button className="px-8 py-4 bg-white hover:bg-gray-50 text-gray-900 font-semibold rounded-lg transition-all duration-300 border border-gray-200 shadow-sm">
+                  <button className="inline-flex h-12 items-center justify-center rounded-xl border border-[#D6EEF8] bg-white px-7 text-sm font-semibold text-[#00AEEF] shadow-[0_2px_8px_rgba(0,0,0,0.04)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#00AEEF] hover:bg-[#F7F9FC] hover:shadow-[0_8px_18px_rgba(0,174,239,0.1)]">
                     View All Services
                   </button>
                 </Link>
@@ -732,7 +662,7 @@ export default function AboutUsPage() {
             </div>
           </div>
 
-          <p className="mt-8 text-center text-sm text-gray-500">
+          <p className="mt-8 text-center text-sm text-[#666666]">
             Compliance & Disclaimer: Infinity Loans & Business Solutions acts strictly as a financial advisory and loan facilitation firm. We do not provide loans directly. All loan sanctions, interest rates, terms, and disbursements are solely at the discretion of the respective Bank or NBFC, subject to their internal credit policies and regulatory norms.
           </p>
         </div>

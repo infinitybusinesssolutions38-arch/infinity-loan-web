@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 
 type Enquiry = {
   _id: string;
@@ -15,7 +15,8 @@ type Enquiry = {
   createdAt?: string;
 };
 
-export default function AdminEnquiryDetailPage({ params }: { params: { id: string } }) {
+export default function AdminEnquiryDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
   const [item, setItem] = useState<Enquiry | null>(null);
   const [status, setStatus] = useState<Enquiry["status"]>("New");
   const [loading, setLoading] = useState(true);
@@ -28,7 +29,7 @@ export default function AdminEnquiryDetailPage({ params }: { params: { id: strin
     (async () => {
       try {
         setLoading(true);
-        const res = await fetch(`/api/admin/enquiries/${params.id}`, { credentials: "include" });
+        const res = await fetch(`/api/admin/enquiries/${id}`, { credentials: "include" });
         const data = await res.json().catch(() => ({}));
 
         if (!mounted) return;
@@ -49,13 +50,13 @@ export default function AdminEnquiryDetailPage({ params }: { params: { id: strin
     return () => {
       mounted = false;
     };
-  }, [params.id]);
+  }, [id]);
 
   const updateStatus = async () => {
     setSaving(true);
     setError(null);
     try {
-      const res = await fetch(`/api/admin/enquiries/${params.id}`, {
+      const res = await fetch(`/api/admin/enquiries/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -84,7 +85,7 @@ export default function AdminEnquiryDetailPage({ params }: { params: { id: strin
     setError(null);
 
     try {
-      const res = await fetch(`/api/admin/enquiries/${params.id}`, {
+      const res = await fetch(`/api/admin/enquiries/${id}`, {
         method: "DELETE",
         credentials: "include",
       });

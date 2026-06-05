@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import Link from "next/link";
 import { ArrowLeft, CheckCircle2, Users, Zap, Upload, FileText } from "lucide-react";
 import { useState } from "react";
@@ -10,6 +11,24 @@ const INDIAN_STATES = [
   "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu",
   "Telangana", "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal", "Delhi", "Jammu & Kashmir",
   "Ladakh", "Lakshadweep", "Andaman & Nicobar Islands"
+];
+
+const initialFiles = {
+  aadhaarFront: null as File | null,
+  aadhaarBack: null as File | null,
+  panFront: null as File | null,
+  bankPassbook: null as File | null,
+  passportPhoto: null as File | null,
+};
+
+type PartnerFileKey = keyof typeof initialFiles;
+
+const REQUIRED_FILE_FIELDS: { key: PartnerFileKey; label: string }[] = [
+  { key: "aadhaarFront", label: "Aadhaar Card (Front)" },
+  { key: "aadhaarBack", label: "Aadhaar Card (Back)" },
+  { key: "panFront", label: "PAN Card" },
+  { key: "bankPassbook", label: "Bank Passbook / Cancelled Cheque" },
+  { key: "passportPhoto", label: "Passport Size Photo" },
 ];
 
 export default function JoinUsClient() {
@@ -26,19 +45,7 @@ export default function JoinUsClient() {
     experience: "",
   });
 
-  const [files, setFiles] = useState<{
-    aadhaarFront: File | null;
-    aadhaarBack: File | null;
-    panFront: File | null;
-    bankPassbook: File | null;
-    passportPhoto: File | null;
-  }>({
-    aadhaarFront: null,
-    aadhaarBack: null,
-    panFront: null,
-    bankPassbook: null,
-    passportPhoto: null,
-  });
+  const [files, setFiles] = useState(initialFiles);
 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{
@@ -55,18 +62,69 @@ export default function JoinUsClient() {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, files: fileList } = e.target;
-    if (fileList && fileList[0]) {
-      setFiles({
-        ...files,
-        [name as keyof typeof files]: fileList[0],
-      });
+    const field = name as PartnerFileKey;
+    if (fileList?.[0]) {
+      setFiles((prev) => ({
+        ...prev,
+        [field]: fileList[0],
+      }));
     }
+  };
+
+  const FileUpload = ({ name, label, accept, value }: { name: PartnerFileKey; label: string; accept: string; value: File | null }) => {
+    const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+    return (
+      <div>
+        <label className="block text-sm font-semibold text-[#1A1A1A] mb-2">
+          {label} <span className="text-[#00AEEF]">*</span>
+        </label>
+        <div className="relative">
+          <input
+            ref={fileInputRef}
+            type="file"
+            name={name}
+            onChange={handleFileChange}
+            accept={accept}
+            className="sr-only"
+            tabIndex={-1}
+            aria-hidden
+          />
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            className="w-full h-11 px-4 rounded-xl bg-white border border-[#D6EEF8] text-[#1A1A1A] hover:border-[#00AEEF] focus:outline-none focus-visible:ring-4 focus-visible:ring-[#00AEEF]/20 transition-colors flex items-center justify-between"
+          >
+            <span className="text-sm text-[#666666]">
+              {value ? value.name : "Choose file..."}
+            </span>
+            <Upload className="h-4 w-4 text-[#00AEEF]" />
+          </button>
+          {value && (
+            <div className="mt-2 text-sm text-[#666666] flex items-center gap-2">
+              <FileText className="h-4 w-4" />
+              {value.name}
+            </div>
+          )}
+        </div>
+      </div>
+    );
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
     setMessage(null);
+
+    const missingFiles = REQUIRED_FILE_FIELDS.filter(({ key }) => !files[key]);
+    if (missingFiles.length > 0) {
+      setMessage({
+        type: "error",
+        text: `Please upload: ${missingFiles.map((f) => f.label).join(", ")}`,
+      });
+      return;
+    }
+
+    setLoading(true);
 
     try {
       const formDataToSend = new FormData();
@@ -94,7 +152,7 @@ export default function JoinUsClient() {
       if (response.ok) {
         setMessage({
           type: "success",
-          text: "Thank you! Our team will contact you shortly.",
+          text: data.message || "Thank you! Our team will contact you shortly.",
         });
         setFormData({
           fullName: "",
@@ -108,13 +166,7 @@ export default function JoinUsClient() {
           preferredLoan: "",
           experience: "",
         });
-        setFiles({
-          aadhaarFront: null,
-          aadhaarBack: null,
-          panFront: null,
-          bankPassbook: null,
-          passportPhoto: null,
-        });
+        setFiles(initialFiles);
       } else {
         setMessage({
           type: "error",
@@ -132,89 +184,88 @@ export default function JoinUsClient() {
   };
 
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen bg-[#F7F9FC]">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-slate-50 via-white to-blue-50/40 py-20 lg:py-32">
-        {/* Animated Background Elements */}
+      <section className="relative overflow-hidden bg-[#E6F7FD] pt-6 sm:pt-8 lg:pt-10 pb-8 sm:pb-12 lg:pb-16">
+        {/* Soft Background Elements */}
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-[#0099D8]/10 blur-3xl animate-blob" />
-          <div className="absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-[#0099D8]/5 blur-3xl animate-blob animation-delay-2000" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[600px] rounded-full bg-[#0099D8]/5 blur-3xl animate-blob animation-delay-4000" />
+          <div className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-[#00AEEF]/10 blur-3xl" />
+          <div className="absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-[#00AEEF]/10 blur-3xl" />
         </div>
 
         {/* Dot Pattern Overlay */}
-        <div className="absolute inset-0 opacity-[0.04]">
+        <div className="absolute inset-0 opacity-[0.18]">
           <div
             className="absolute inset-0"
             style={{
-              backgroundImage: `radial-gradient(circle at 1px 1px, black 1px, transparent 0)`,
-              backgroundSize: "40px 40px",
+              backgroundImage: `radial-gradient(circle at 1px 1px, rgba(0,174,239,0.75) 1px, transparent 0)`,
+              backgroundSize: "48px 48px",
             }}
           />
         </div>
 
-        <div className="container relative z-10 mx-auto px-4">
+        <div className="relative z-10 mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 text-gray-600 hover:text-[#0099D8] transition-all mb-8 group"
+            className="group mb-8 inline-flex items-center gap-2 text-[#666666] transition-colors hover:text-[#00AEEF]"
           >
-            <ArrowLeft className="h-4 w-4 text-[#0099D8] transition-transform group-hover:-translate-x-1" />
+            <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
             <span className="font-medium">Back to Home</span>
           </Link>
 
           <div className="grid gap-12 lg:grid-cols-2 lg:items-start">
             {/* Left Content */}
             <div className="space-y-6">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#0099D8]/10 border border-[#0099D8]/20">
-                <div className="w-2 h-2 bg-[#0099D8] rounded-full animate-pulse" />
-                <span className="text-sm font-medium text-gray-900">Become a Loan Partner</span>
+              <div className="inline-flex items-center gap-2 rounded-full border border-[#D6EEF8] bg-white px-4 py-2 shadow-[0_2px_10px_rgba(15,23,42,0.06)]">
+                <div className="w-2 h-2 bg-[#00AEEF] rounded-full" />
+                <span className="text-sm font-semibold text-[#00AEEF]">Become a Loan Partner</span>
               </div>
 
-              <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-gray-900 leading-tight">
-                <span className="relative inline-block">
-                  <span className="relative z-10 text-[#0099D8]">Become a Loan Partner</span>
-                  <span className="absolute bottom-3 left-0 w-full h-4 bg-[#0099D8]/20 -rotate-2" />
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[#1A1A1A] leading-tight">
+                <span className="relative inline-block text-[#00AEEF]">
+                  Become a Loan Partner
+                  <span className="absolute bottom-2 left-0 -z-10 h-3 w-full -rotate-1 bg-[#00AEEF]/15" />
                 </span>
               </h1>
 
-              <p className="text-lg md:text-xl text-gray-700 leading-relaxed">Start Your Loan Business and Earn Extra Income</p>
+              <p className="text-lg md:text-xl text-[#1A1A1A] leading-relaxed">Start Your Loan Business and Earn Extra Income</p>
 
-              <p className="text-base text-gray-600 leading-relaxed">
+              <p className="text-base text-[#666666] leading-relaxed">
                 Join India's trusted loan distribution network and grow your loan business with confidence and efficiency.
                 We empower our partners to earn higher commissions with instant payouts on every successful loan disbursement.
               </p>
 
               <div className="grid gap-4 pt-4">
                 <div className="flex gap-3 items-start">
-                  <CheckCircle2 className="h-5 w-5 text-[#0099D8] flex-shrink-0 mt-1" />
+                  <CheckCircle2 className="h-5 w-5 text-[#00AEEF] flex-shrink-0 mt-1" />
                   <div>
-                    <p className="font-semibold text-gray-900">No Investment or Joining Fees</p>
-                    <p className="text-sm text-gray-600">Start your loan business without any upfront cost.</p>
+                    <p className="font-semibold text-[#1A1A1A]">No Investment or Joining Fees</p>
+                    <p className="text-sm text-[#666666]">Start your loan business without any upfront cost.</p>
                   </div>
                 </div>
                 <div className="flex gap-3 items-start">
-                  <CheckCircle2 className="h-5 w-5 text-[#0099D8] flex-shrink-0 mt-1" />
+                  <CheckCircle2 className="h-5 w-5 text-[#00AEEF] flex-shrink-0 mt-1" />
                   <div>
-                    <p className="font-semibold text-gray-900">Instant Payouts & Support</p>
-                    <p className="text-sm text-gray-600">Fast, reliable payouts after every successful disbursement.</p>
+                    <p className="font-semibold text-[#1A1A1A]">Instant Payouts & Support</p>
+                    <p className="text-sm text-[#666666]">Fast, reliable payouts after every successful disbursement.</p>
                   </div>
                 </div>
                 <div className="flex gap-3 items-start">
-                  <CheckCircle2 className="h-5 w-5 text-[#0099D8] flex-shrink-0 mt-1" />
+                  <CheckCircle2 className="h-5 w-5 text-[#00AEEF] flex-shrink-0 mt-1" />
                   <div>
-                    <p className="font-semibold text-gray-900">Comprehensive Partnership Network</p>
-                    <p className="text-sm text-gray-600">Access to 100+ banks and NBFC partnerships.</p>
+                    <p className="font-semibold text-[#1A1A1A]">Comprehensive Partnership Network</p>
+                    <p className="text-sm text-[#666666]">Access to 100+ banks and NBFC partnerships.</p>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Right Registration Form */}
-            <div className="rounded-3xl bg-white p-8 border border-gray-200 shadow-xl h-fit sticky top-32">
+            <div className="rounded-[20px] bg-white p-6 sm:p-8 border border-[#D6EEF8] shadow-[0_8px_30px_rgba(15,23,42,0.10)] h-fit sticky top-32">
               <div className="mb-6">
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">📝 Partner Registration</h2>
-                <p className="text-sm text-gray-700 font-semibold mb-3">Register to Become a Loan Partner</p>
-                <p className="text-sm text-gray-600">
+                <h2 className="text-2xl font-bold text-[#1A1A1A] mb-2">📝 Partner Registration</h2>
+                <p className="text-sm text-[#1A1A1A] font-semibold mb-3">Register to Become a Loan Partner</p>
+                <p className="text-sm text-[#666666] leading-relaxed">
                   Complete the form below to join our loan partner network and start earning through successful loan disbursements.
                 </p>
               </div>
@@ -222,8 +273,8 @@ export default function JoinUsClient() {
               <form onSubmit={handleSubmit} className="space-y-4">
                 {/* Full Name */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Full Name <span className="text-[#0099D8]">*</span>
+                  <label className="block text-sm font-semibold text-[#1A1A1A] mb-2">
+                    Full Name <span className="text-[#00AEEF]">*</span>
                   </label>
                   <input
                     type="text"
@@ -232,14 +283,14 @@ export default function JoinUsClient() {
                     onChange={handleChange}
                     placeholder="Enter your full name"
                     required
-                    className="w-full px-4 py-2 rounded-lg bg-white border border-gray-300 text-gray-900 placeholder-gray-400 focus:border-[#0099D8] focus:ring-1 focus:ring-[#0099D8]/30 focus:outline-none transition-colors"
+                    className="w-full h-11 px-4 rounded-xl bg-white border border-[#D6EEF8] text-[#1A1A1A] placeholder:text-[#666666]/70 focus:outline-none focus-visible:ring-4 focus-visible:ring-[#00AEEF]/20 transition-colors"
                   />
                 </div>
 
                 {/* Mobile Number */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Mobile Number <span className="text-[#0099D8]">*</span>
+                  <label className="block text-sm font-semibold text-[#1A1A1A] mb-2">
+                    Mobile Number <span className="text-[#00AEEF]">*</span>
                   </label>
                   <input
                     type="tel"
@@ -249,14 +300,14 @@ export default function JoinUsClient() {
                     placeholder="10-digit mobile number"
                     pattern="[0-9]{10}"
                     required
-                    className="w-full px-4 py-2 rounded-lg bg-white border border-gray-300 text-gray-900 placeholder-gray-400 focus:border-[#0099D8] focus:ring-1 focus:ring-[#0099D8]/30 focus:outline-none transition-colors"
+                    className="w-full h-11 px-4 rounded-xl bg-white border border-[#D6EEF8] text-[#1A1A1A] placeholder:text-[#666666]/70 focus:outline-none focus-visible:ring-4 focus-visible:ring-[#00AEEF]/20 transition-colors"
                   />
                 </div>
 
                 {/* Alt Mobile Number */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Alternate Mobile Number <span className="text-gray-500">(Optional)</span>
+                  <label className="block text-sm font-semibold text-[#1A1A1A] mb-2">
+                    Alternate Mobile Number <span className="text-[#666666] font-medium">(Optional)</span>
                   </label>
                   <input
                     type="tel"
@@ -265,14 +316,14 @@ export default function JoinUsClient() {
                     onChange={handleChange}
                     placeholder="10-digit alternate mobile number"
                     pattern="[0-9]{10}"
-                    className="w-full px-4 py-2 rounded-lg bg-white border border-gray-300 text-gray-900 placeholder-gray-400 focus:border-[#0099D8] focus:ring-1 focus:ring-[#0099D8]/30 focus:outline-none transition-colors"
+                    className="w-full h-11 px-4 rounded-xl bg-white border border-[#D6EEF8] text-[#1A1A1A] placeholder:text-[#666666]/70 focus:outline-none focus-visible:ring-4 focus-visible:ring-[#00AEEF]/20 transition-colors"
                   />
                 </div>
 
                 {/* WhatsApp Number */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    WhatsApp Number <span className="text-gray-500">(Optional)</span>
+                  <label className="block text-sm font-semibold text-[#1A1A1A] mb-2">
+                    WhatsApp Number <span className="text-[#666666] font-medium">(Optional)</span>
                   </label>
                   <input
                     type="tel"
@@ -281,14 +332,14 @@ export default function JoinUsClient() {
                     onChange={handleChange}
                     placeholder="10-digit WhatsApp number"
                     pattern="[0-9]{10}"
-                    className="w-full px-4 py-2 rounded-lg bg-white border border-gray-300 text-gray-900 placeholder-gray-400 focus:border-[#0099D8] focus:ring-1 focus:ring-[#0099D8]/30 focus:outline-none transition-colors"
+                    className="w-full h-11 px-4 rounded-xl bg-white border border-[#D6EEF8] text-[#1A1A1A] placeholder:text-[#666666]/70 focus:outline-none focus-visible:ring-4 focus-visible:ring-[#00AEEF]/20 transition-colors"
                   />
                 </div>
 
                 {/* Email */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Email Address <span className="text-[#0099D8]">*</span>
+                  <label className="block text-sm font-semibold text-[#1A1A1A] mb-2">
+                    Email Address <span className="text-[#00AEEF]">*</span>
                   </label>
                   <input
                     type="email"
@@ -297,21 +348,21 @@ export default function JoinUsClient() {
                     onChange={handleChange}
                     placeholder="your@email.com"
                     required
-                    className="w-full px-4 py-2 rounded-lg bg-white border border-gray-300 text-gray-900 placeholder-gray-400 focus:border-[#0099D8] focus:ring-1 focus:ring-[#0099D8]/30 focus:outline-none transition-colors"
+                    className="w-full h-11 px-4 rounded-xl bg-white border border-[#D6EEF8] text-[#1A1A1A] placeholder:text-[#666666]/70 focus:outline-none focus-visible:ring-4 focus-visible:ring-[#00AEEF]/20 transition-colors"
                   />
                 </div>
 
                 {/* State */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    State <span className="text-[#0099D8]">*</span>
+                  <label className="block text-sm font-semibold text-[#1A1A1A] mb-2">
+                    State <span className="text-[#00AEEF]">*</span>
                   </label>
                   <select
                     name="state"
                     value={formData.state}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-2 rounded-lg bg-white border border-gray-300 text-gray-900 placeholder-gray-400 focus:border-[#0099D8] focus:ring-1 focus:ring-[#0099D8]/30 focus:outline-none transition-colors"
+                    className="w-full h-11 px-4 rounded-xl bg-white border border-[#D6EEF8] text-[#1A1A1A] focus:outline-none focus-visible:ring-4 focus-visible:ring-[#00AEEF]/20 transition-colors"
                   >
                     <option value="">Select your state</option>
                     {INDIAN_STATES.map((state) => (
@@ -324,8 +375,8 @@ export default function JoinUsClient() {
 
                 {/* City */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    City <span className="text-[#0099D8]">*</span>
+                  <label className="block text-sm font-semibold text-[#1A1A1A] mb-2">
+                    City <span className="text-[#00AEEF]">*</span>
                   </label>
                   <input
                     type="text"
@@ -334,14 +385,14 @@ export default function JoinUsClient() {
                     onChange={handleChange}
                     placeholder="Enter your city"
                     required
-                    className="w-full px-4 py-2 rounded-lg bg-white border border-gray-300 text-gray-900 placeholder-gray-400 focus:border-[#0099D8] focus:ring-1 focus:ring-[#0099D8]/30 focus:outline-none transition-colors"
+                    className="w-full h-11 px-4 rounded-xl bg-white border border-[#D6EEF8] text-[#1A1A1A] placeholder:text-[#666666]/70 focus:outline-none focus-visible:ring-4 focus-visible:ring-[#00AEEF]/20 transition-colors"
                   />
                 </div>
 
                 {/* Pincode */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Pincode <span className="text-[#0099D8]">*</span>
+                  <label className="block text-sm font-semibold text-[#1A1A1A] mb-2">
+                    Pincode <span className="text-[#00AEEF]">*</span>
                   </label>
                   <input
                     type="text"
@@ -351,14 +402,14 @@ export default function JoinUsClient() {
                     placeholder="6-digit pincode"
                     pattern="[0-9]{6}"
                     required
-                    className="w-full px-4 py-2 rounded-lg bg-white border border-gray-300 text-gray-900 placeholder-gray-400 focus:border-[#0099D8] focus:ring-1 focus:ring-[#0099D8]/30 focus:outline-none transition-colors"
+                    className="w-full h-11 px-4 rounded-xl bg-white border border-[#D6EEF8] text-[#1A1A1A] placeholder:text-[#666666]/70 focus:outline-none focus-visible:ring-4 focus-visible:ring-[#00AEEF]/20 transition-colors"
                   />
                 </div>
 
                 {/* Preferred Loan */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Preferred Loan <span className="text-[#0099D8]">*</span>
+                  <label className="block text-sm font-semibold text-[#1A1A1A] mb-2">
+                    Preferred Loan <span className="text-[#00AEEF]">*</span>
                   </label>
                   <input
                     type="text"
@@ -367,14 +418,14 @@ export default function JoinUsClient() {
                     onChange={handleChange}
                     placeholder="e.g., Personal Loan, Business Loan, Home Loan"
                     required
-                    className="w-full px-4 py-2 rounded-lg bg-white border border-gray-300 text-gray-900 placeholder-gray-400 focus:border-[#0099D8] focus:ring-1 focus:ring-[#0099D8]/30 focus:outline-none transition-colors"
+                    className="w-full h-11 px-4 rounded-xl bg-white border border-[#D6EEF8] text-[#1A1A1A] placeholder:text-[#666666]/70 focus:outline-none focus-visible:ring-4 focus-visible:ring-[#00AEEF]/20 transition-colors"
                   />
                 </div>
 
                 {/* Professional Experience */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Professional Experience <span className="text-gray-500">(Optional)</span>
+                  <label className="block text-sm font-semibold text-[#1A1A1A] mb-2">
+                    Professional Experience <span className="text-[#666666] font-medium">(Optional)</span>
                   </label>
                   <input
                     type="text"
@@ -382,128 +433,53 @@ export default function JoinUsClient() {
                     value={formData.experience}
                     onChange={handleChange}
                     placeholder="e.g., DSA, Financial Consultant"
-                    className="w-full px-4 py-2 rounded-lg bg-white border border-gray-300 text-gray-900 placeholder-gray-400 focus:border-[#0099D8] focus:ring-1 focus:ring-[#0099D8]/30 focus:outline-none transition-colors"
+                    className="w-full h-11 px-4 rounded-xl bg-white border border-[#D6EEF8] text-[#1A1A1A] placeholder:text-[#666666]/70 focus:outline-none focus-visible:ring-4 focus-visible:ring-[#00AEEF]/20 transition-colors"
                   />
                 </div>
 
                 {/* Document Uploads */}
-                <div className="space-y-4 pt-4 border-t border-gray-200">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">📎 Required Documents</h3>
+                <div className="space-y-4 pt-4 border-t border-[#D6EEF8]">
+                  <h3 className="text-lg font-semibold text-[#1A1A1A] mb-4">📎 Required Documents</h3>
                   
                   {/* Aadhaar Front */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Aadhaar Card (Front) <span className="text-[#0099D8]">*</span>
-                    </label>
-                    <div className="relative">
-                      <input
-                        type="file"
-                        name="aadhaarFront"
-                        onChange={handleFileChange}
-                        accept="image/*,.pdf"
-                        required
-                        className="w-full px-4 py-2 rounded-lg bg-white border border-gray-300 text-gray-900 file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-[#0099D8] file:text-white hover:file:bg-[#007BB0] placeholder-gray-400 focus:border-[#0099D8] focus:ring-1 focus:ring-[#0099D8]/30 focus:outline-none transition-colors"
-                      />
-                      {files.aadhaarFront && (
-                        <div className="mt-2 text-sm text-gray-600 flex items-center gap-2">
-                          <FileText className="h-4 w-4" />
-                          {files.aadhaarFront.name}
-                        </div>
-                      )}
-                    </div>
-                  </div>
+                  <FileUpload
+                    name="aadhaarFront"
+                    label="Aadhaar Card (Front)"
+                    accept="image/*,.pdf"
+                    value={files.aadhaarFront}
+                  />
 
                   {/* Aadhaar Back */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Aadhaar Card (Back) <span className="text-[#0099D8]">*</span>
-                    </label>
-                    <div className="relative">
-                      <input
-                        type="file"
-                        name="aadhaarBack"
-                        onChange={handleFileChange}
-                        accept="image/*,.pdf"
-                        required
-                        className="w-full px-4 py-2 rounded-lg bg-white border border-gray-300 text-gray-900 file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-[#0099D8] file:text-white hover:file:bg-[#007BB0] placeholder-gray-400 focus:border-[#0099D8] focus:ring-1 focus:ring-[#0099D8]/30 focus:outline-none transition-colors"
-                      />
-                      {files.aadhaarBack && (
-                        <div className="mt-2 text-sm text-gray-600 flex items-center gap-2">
-                          <FileText className="h-4 w-4" />
-                          {files.aadhaarBack.name}
-                        </div>
-                      )}
-                    </div>
-                  </div>
+                  <FileUpload
+                    name="aadhaarBack"
+                    label="Aadhaar Card (Back)"
+                    accept="image/*,.pdf"
+                    value={files.aadhaarBack}
+                  />
 
                   {/* PAN Front */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      PAN Card <span className="text-[#0099D8]">*</span>
-                    </label>
-                    <div className="relative">
-                      <input
-                        type="file"
-                        name="panFront"
-                        onChange={handleFileChange}
-                        accept="image/*,.pdf"
-                        required
-                        className="w-full px-4 py-2 rounded-lg bg-white border border-gray-300 text-gray-900 file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-[#0099D8] file:text-white hover:file:bg-[#007BB0] placeholder-gray-400 focus:border-[#0099D8] focus:ring-1 focus:ring-[#0099D8]/30 focus:outline-none transition-colors"
-                      />
-                      {files.panFront && (
-                        <div className="mt-2 text-sm text-gray-600 flex items-center gap-2">
-                          <FileText className="h-4 w-4" />
-                          {files.panFront.name}
-                        </div>
-                      )}
-                    </div>
-                  </div>
+                  <FileUpload
+                    name="panFront"
+                    label="PAN Card"
+                    accept="image/*,.pdf"
+                    value={files.panFront}
+                  />
 
                   {/* Bank Passbook */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Bank Passbook / Cancelled Cheque <span className="text-[#0099D8]">*</span>
-                    </label>
-                    <div className="relative">
-                      <input
-                        type="file"
-                        name="bankPassbook"
-                        onChange={handleFileChange}
-                        accept="image/*,.pdf"
-                        required
-                        className="w-full px-4 py-2 rounded-lg bg-white border border-gray-300 text-gray-900 file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-[#0099D8] file:text-white hover:file:bg-[#007BB0] placeholder-gray-400 focus:border-[#0099D8] focus:ring-1 focus:ring-[#0099D8]/30 focus:outline-none transition-colors"
-                      />
-                      {files.bankPassbook && (
-                        <div className="mt-2 text-sm text-gray-600 flex items-center gap-2">
-                          <FileText className="h-4 w-4" />
-                          {files.bankPassbook.name}
-                        </div>
-                      )}
-                    </div>
-                  </div>
+                  <FileUpload
+                    name="bankPassbook"
+                    label="Bank Passbook / Cancelled Cheque"
+                    accept="image/*,.pdf"
+                    value={files.bankPassbook}
+                  />
 
                   {/* Passport Photo */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Passport Size Photo <span className="text-[#0099D8]">*</span>
-                    </label>
-                    <div className="relative">
-                      <input
-                        type="file"
-                        name="passportPhoto"
-                        onChange={handleFileChange}
-                        accept="image/*"
-                        required
-                        className="w-full px-4 py-2 rounded-lg bg-white border border-gray-300 text-gray-900 file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-[#0099D8] file:text-white hover:file:bg-[#007BB0] placeholder-gray-400 focus:border-[#0099D8] focus:ring-1 focus:ring-[#0099D8]/30 focus:outline-none transition-colors"
-                      />
-                      {files.passportPhoto && (
-                        <div className="mt-2 text-sm text-gray-600 flex items-center gap-2">
-                          <FileText className="h-4 w-4" />
-                          {files.passportPhoto.name}
-                        </div>
-                      )}
-                    </div>
-                  </div>
+                  <FileUpload
+                    name="passportPhoto"
+                    label="Passport Size Photo"
+                    accept="image/*"
+                    value={files.passportPhoto}
+                  />
                 </div>
 
                 {/* Message Display */}
@@ -511,8 +487,8 @@ export default function JoinUsClient() {
                   <div
                     className={`p-4 rounded-lg text-sm ${
                       message.type === "success"
-                        ? "bg-green-50 border border-green-200 text-green-800"
-                        : "bg-red-50 border border-red-200 text-red-700"
+                        ? "bg-[#E6F7FD] border border-[#D6EEF8] text-[#1A1A1A]"
+                        : "bg-white border border-[#D6EEF8] text-[#1A1A1A]"
                     }`}
                   >
                     {message.text}
@@ -523,12 +499,12 @@ export default function JoinUsClient() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-[#0099D8] hover:bg-[#007BB0] disabled:opacity-50 text-white font-semibold py-3 rounded-lg transition-all duration-300 flex items-center justify-center gap-2"
+                  className="w-full bg-[#00AEEF] hover:bg-[#008FCC] disabled:opacity-50 text-white font-semibold py-3 rounded-xl shadow-[0_2px_10px_rgba(0,174,239,0.18)] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(0,174,239,0.18)] flex items-center justify-center gap-2 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#00AEEF]/20"
                 >
                   {loading ? "Submitting..." : "Become a Loan Partner"}
                 </button>
 
-                <p className="text-xs text-gray-500 text-center pt-2">
+                <p className="text-xs text-[#666666] text-center pt-2">
                   🔒 Your information is secure and will be used only for partner onboarding and communication.
                 </p>
               </form>
@@ -538,16 +514,16 @@ export default function JoinUsClient() {
       </section>
 
       {/* Content Sections */}
-      <section className="py-20 lg:py-32 bg-gradient-to-b from-white via-gray-50 to-white">
-        <div className="container mx-auto px-4">
+      <section className="py-16 lg:py-24 bg-[#F7F9FC]">
+        <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
           {/* Why Partner With Us */}
           <div className="max-w-6xl mx-auto mb-20">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-black/5 border border-black/10 mb-4">
-              <Users className="w-4 h-4 text-[#0099D8]" />
-              <span className="text-sm font-medium text-gray-700">Partner Benefits</span>
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-[#D6EEF8] shadow-[0_2px_10px_rgba(15,23,42,0.06)] mb-4">
+              <Users className="w-4 h-4 text-[#00AEEF]" />
+              <span className="text-sm font-semibold text-[#1A1A1A]">Partner Benefits</span>
             </div>
             <h2 className="text-4xl md:text-5xl font-bold text-black mb-4">
-              💼 Why Partner <span className="text-[#0099D8]">With Us?</span>
+              💼 Why Partner <span className="text-[#00AEEF]">With Us?</span>
             </h2>
             <p className="text-lg text-gray-600 mb-12">
               We provide a reliable and transparent platform designed to help our partners grow and succeed in the loan distribution business.
@@ -586,10 +562,10 @@ export default function JoinUsClient() {
               ].map((benefit, idx) => (
                 <div
                   key={idx}
-                  className="group rounded-2xl bg-white border border-gray-200 p-6 shadow-md hover:shadow-lg transition-all duration-300 hover:border-[#0099D8]/50"
+                  className="group rounded-[20px] bg-white border border-[#D6EEF8] p-6 shadow-[0_2px_10px_rgba(15,23,42,0.06)] transition-all duration-300 ease-out hover:-translate-y-1 hover:border-[#00AEEF]"
                 >
-                  <h3 className="text-lg font-bold text-gray-900 mb-2">{benefit.title}</h3>
-                  <p className="text-sm text-gray-600">{benefit.desc}</p>
+                  <h3 className="text-lg font-bold text-[#1A1A1A] mb-2">{benefit.title}</h3>
+                  <p className="text-sm text-[#666666] leading-relaxed">{benefit.desc}</p>
                 </div>
               ))}
             </div>
@@ -601,12 +577,12 @@ export default function JoinUsClient() {
 
           {/* How It Works */}
           <div className="max-w-6xl mx-auto mb-20">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-black/5 border border-black/10 mb-4">
-              <Zap className="w-4 h-4 text-[#0099D8]" />
-              <span className="text-sm font-medium text-gray-700">Process</span>
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-[#D6EEF8] shadow-[0_2px_10px_rgba(15,23,42,0.06)] mb-4">
+              <Zap className="w-4 h-4 text-[#00AEEF]" />
+              <span className="text-sm font-semibold text-[#1A1A1A]">Process</span>
             </div>
             <h2 className="text-4xl md:text-5xl font-bold text-black mb-4">
-              💰 How It <span className="text-[#0099D8]">Works</span>
+              💰 How It <span className="text-[#00AEEF]">Works</span>
             </h2>
             <p className="text-lg text-gray-600 mb-12">
               Our simple and streamlined process helps you earn commissions with ease and transparency.
@@ -637,11 +613,11 @@ export default function JoinUsClient() {
               ].map((item, idx) => (
                 <div
                   key={idx}
-                  className="group rounded-2xl bg-white border border-gray-200 p-6 shadow-md hover:shadow-lg transition-all duration-300 hover:border-[#0099D8]/50"
+                  className="group rounded-[20px] bg-white border border-[#D6EEF8] p-6 shadow-[0_2px_10px_rgba(15,23,42,0.06)] transition-all duration-300 ease-out hover:-translate-y-1 hover:border-[#00AEEF]"
                 >
-                  <p className="text-3xl mb-3 text-[#0099D8]">{item.step}</p>
-                  <h3 className="text-lg font-bold text-gray-900 mb-2">{item.title}</h3>
-                  <p className="text-sm text-gray-600">{item.desc}</p>
+                  <p className="text-3xl mb-3 text-[#00AEEF]">{item.step}</p>
+                  <h3 className="text-lg font-bold text-[#1A1A1A] mb-2">{item.title}</h3>
+                  <p className="text-sm text-[#666666] leading-relaxed">{item.desc}</p>
                 </div>
               ))}
             </div>

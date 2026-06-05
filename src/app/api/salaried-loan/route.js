@@ -7,6 +7,15 @@ import { v2 as cloudinary } from "cloudinary";
 import nodemailer from "nodemailer";
 import { sendLoanApplicationConfirmationEmail } from "../lib/loan-application-email";
 import { createGmailTransporter } from "../lib/apply-now-email";
+import { attachUserIdToPayload } from "../lib/user-auth";
+import {
+  resolveDirectorRecipients,
+  notifyDirectorInternalMail,
+} from "../lib/director-notification-email";
+import {
+  assertPanNotUsedInOtherLoanType,
+} from "../lib/pan-cross-loan-guard";
+import { assertEmailNotUsedForLoanApplication } from "../lib/email-cross-loan-guard";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -21,7 +30,30 @@ cloudinary.config({
 export async function POST(req) {
   try {
     await connectDB();
+
     const formData = await req.formData();
+
+    const panGuard = await assertPanNotUsedInOtherLoanType(
+      formData.get("panNumber"),
+      "salaried"
+    );
+    if (!panGuard.ok) {
+      return NextResponse.json(
+        { success: false, message: panGuard.message, code: panGuard.code },
+        { status: panGuard.status }
+      );
+    }
+
+    const emailGuard = await assertEmailNotUsedForLoanApplication(
+      formData.get("personalEmail"),
+      "salaried"
+    );
+    if (!emailGuard.ok) {
+      return NextResponse.json(
+        { success: false, message: emailGuard.message, code: emailGuard.code },
+        { status: emailGuard.status }
+      );
+    }
 
     const accountTypes = formData.getAll("accountTypes").filter(Boolean);
     const accountTypeJoined = accountTypes.length
@@ -90,22 +122,24 @@ export async function POST(req) {
     /* =========================================
        GENERATE APPLICATION REF
     ========================================== */
-    const sanitizeRefPart = (value) =>
+    const generateRandomApplicationRef = () => {
+      const ts = Date.now().toString(36).toUpperCase();
+      const rnd = Math.random().toString(36).slice(2, 8).toUpperCase();
+      return `SAL_${ts}_${rnd}`;
+    };
+
+    const toSafeUpperToken = (value, maxLen) =>
       String(value || "")
         .trim()
         .toUpperCase()
-        .replace(/[^A-Z0-9]+/g, "")
-        .slice(0, 32);
+        .replace(/[^A-Z0-9]/g, "")
+        .slice(0, typeof maxLen === "number" ? maxLen : undefined);
 
-    const buildApplicationRef = (attempt = 0) => {
-      const firstNameRaw = formData.get("firstName");
-      const panRaw = formData.get("panNumber");
-
-      const first4 = sanitizeRefPart(firstNameRaw).slice(0, 4).padEnd(4, "X");
-      const pan = sanitizeRefPart(panRaw).slice(0, 20);
-
-      const base = `SAL_${first4}${pan ? `_${pan}` : ""}`;
-      return attempt > 0 ? `${base}_${attempt + 1}` : base;
+    const generatePreferredApplicationRef = (nameRaw, panRaw) => {
+      const name4 = toSafeUpperToken(nameRaw, 4);
+      const pan = toSafeUpperToken(panRaw);
+      if (!name4 || !pan) return null;
+      return `SAL_${name4}_${pan}`;
     };
 
     /* =========================================
@@ -202,7 +236,7 @@ export async function POST(req) {
       officialEmail: formData.get("officialEmail"),
       officeEmailId: formData.get("officeEmailId"),
 
-      panNumber: formData.get("panNumber"),
+      panNumber: panGuard.pan,
       aadhaarNumber: formData.get("aadhaarNumber"),
       voterIdNumber: formData.get("voterIdNumber"),
       drivingLicense: formData.get("drivingLicense"),
@@ -276,20 +310,6 @@ export async function POST(req) {
       references,
 
       // Uploads
-      applicantPhotoUrl: await upload(formData.get("applicantPhoto")),
-      panPhotoUrl: await upload(formData.get("panPhoto")),
-      aadhaarPhotoUrl: await upload(formData.get("aadhaarPhoto")),
-      aadhaarBackPhotoUrl: await upload(formData.get("aadhaarBackPhoto")),
-      coApplicantPanPhotoUrl: await upload(formData.get("CoApplicantpanPhoto")),
-      coApplicantAadhaarPhotoUrl: await upload(
-        formData.get("CoApplicantAadhaarPhoto")
-      ),
-      coApplicantAadhaarBackPhotoUrl: await upload(
-        formData.get("CoApplicantAadhaarBackPhoto")
-      ),
-      coApplicantPhotoUrl: await upload(formData.get("CoApplicantPhoto")),
-      residencePhotoUrl: await upload(formData.get("residencePhoto")),
-      lastElectricityBillUrl: await upload(formData.get("lastElectricityBill")),
       permElectricityBillUrl: await upload(formData.get("permElectricityBill")),
       rentAgreementUrl: await upload(formData.get("rentAgreement")),
       companyAllotmentLetterUrl: await upload(
@@ -307,10 +327,6 @@ export async function POST(req) {
         formData.get("proformaInvoiceFile")
       ),
 
-      assessmentYear2324Url: await upload(formData.get("AssessmentYear2324")),
-      assessmentYear2425Url: await upload(formData.get("AssessmentYear2425")),
-      assessmentYear2526Url: await upload(formData.get("AssessmentYear2526")),
-
       medicalDocumentUrl: await upload(formData.get("medicalDocument")),
 
       numberOfOtherDocuments: Math.max(0, otherSupportedDocumentsCount || 0),
@@ -327,12 +343,25 @@ export async function POST(req) {
     let saved;
     let applicationRef;
     for (let attempt = 0; attempt < 5; attempt += 1) {
-      applicationRef = buildApplicationRef(attempt);
+      if (attempt === 0) {
+        applicationRef =
+          generatePreferredApplicationRef(
+            `${formData.get("firstName") || ""} ${formData.get("lastName") || ""}`,
+            formData.get("panNumber")
+          ) || generateRandomApplicationRef();
+      } else {
+        applicationRef = generateRandomApplicationRef();
+      }
       try {
-        const newApplication = new SalariedLoanModel({
-          applicationRef,
-          ...applicationBase,
-        });
+        const newApplication = new SalariedLoanModel(
+          attachUserIdToPayload(
+            {
+              applicationRef,
+              ...applicationBase,
+            },
+            req
+          )
+        );
         saved = await newApplication.save();
         break;
       } catch (err) {
@@ -340,6 +369,18 @@ export async function POST(req) {
         const dupField = err?.keyPattern ? Object.keys(err.keyPattern)[0] : "";
         const isRefDup = code === 11000 && dupField === "applicationRef";
         if (isRefDup) continue;
+        const isEmailDup = code === 11000 && dupField === "personalEmail";
+        if (isEmailDup) {
+          return NextResponse.json(
+            {
+              success: false,
+              code: "DUPLICATE_EMAIL",
+              message:
+                "An application with this email already exists. Check Applied Loans or use a different email to submit again.",
+            },
+            { status: 409 }
+          );
+        }
         throw err;
       }
     }
@@ -349,9 +390,9 @@ export async function POST(req) {
     }
 
     /* =========================================
-       EMAIL NOTIFICATIONS
+       EMAIL NOTIFICATIONS (non-blocking — save always succeeds)
     ========================================== */
-
+    try {
     const applicationDate = new Date().toLocaleDateString("en-IN");
 
     // Admin + Director Email via Gmail SMTP
@@ -388,13 +429,10 @@ export async function POST(req) {
       "SUPPORTMAIL"
     );
 
-    const directorEmail = directorEmailRaw || "business@infinityloanservices.com";
-    const supportEmail = supportEmailRaw || "infinitybusinesssolutions38@gmail.com";
-
-    // For Salaried Loan internal notifications, send to director + support (and admin user if set)
     const internalRecipients = normalizeEmailList(
-      directorEmail,
-      supportEmail,
+      ...resolveDirectorRecipients(),
+      directorEmailRaw,
+      supportEmailRaw,
       process.env.ADMIN_USER
     );
 
@@ -405,10 +443,11 @@ export async function POST(req) {
 
     const internalEmailSet = new Set(
       normalizeEmailList(
-        directorEmail,
+        ...resolveDirectorRecipients(),
+        directorEmailRaw,
         process.env.ADMIN_USER,
         process.env.ADMIN_EMAIL,
-        supportEmail
+        supportEmailRaw
       ).map((e) => normalizeEmail(e))
     );
 
@@ -424,22 +463,18 @@ export async function POST(req) {
     const personalEmail = formData.get("personalEmail");
     const officialEmail = formData.get("officialEmail");
 
-    const candidateCustomerEmail = !isInternalEmail(personalEmail)
-      ? personalEmail
-      : !isInternalEmail(officialEmail)
-        ? officialEmail
-        : null;
+    const customerRecipients = Array.from(
+      new Set(
+        [personalEmail, officialEmail]
+          .filter(Boolean)
+          .map((e) => String(e).trim())
+          .filter(Boolean)
+          .filter((e) => !isInternalEmail(e))
+          .map((e) => e.toLowerCase())
+      )
+    );
 
-    const additionalCustomerEmail =
-      officialEmail &&
-      !isInternalEmail(officialEmail) &&
-      (!candidateCustomerEmail ||
-        String(candidateCustomerEmail).trim().toLowerCase() !==
-          String(officialEmail).trim().toLowerCase())
-        ? officialEmail
-        : null;
-
-    if (candidateCustomerEmail || additionalCustomerEmail) {
+    if (customerRecipients.length > 0) {
       const confirmationPayload = {
         customerName: formData.get("firstName"),
         applicationNumber: applicationRef,
@@ -448,19 +483,25 @@ export async function POST(req) {
         loanAmount: formData.get("requiredLoanAmount"),
       };
 
-      const recipients = [candidateCustomerEmail, additionalCustomerEmail].filter(Boolean);
-
-      for (const to of recipients) {
+      for (const to of customerRecipients) {
         try {
-          await withTimeout(
+          const result = await withTimeout(
             sendLoanApplicationConfirmationEmail(to, confirmationPayload),
             12000
           );
-        } catch (err) {
-          console.error("Failed to send applicant confirmation email", {
-            to,
+
+          if (!result?.success) {
+            console.error("Customer confirmation email failed", {
+              applicationRef,
+              to,
+              error: result?.error,
+            });
+          }
+        } catch (emailErr) {
+          console.error("Customer confirmation email failed", {
             applicationRef,
-            error: err instanceof Error ? err.message : err,
+            to,
+            error: emailErr?.message || emailErr,
           });
         }
       }
@@ -488,7 +529,7 @@ export async function POST(req) {
     const asLink = (url) => {
       const u = safe(url).trim();
       if (!u) return "-";
-      return `<a href="${u}" target="_blank" rel="noreferrer" style="color:#0099D8;text-decoration:underline">View Document</a>`;
+      return `<a href="${u}" target="_blank" rel="noreferrer" style="color:#2563eb;text-decoration:underline">View Document</a>`;
     };
 
     const existingLoansHtml = Array.isArray(saved?.existingLoansData)
@@ -657,16 +698,6 @@ export async function POST(req) {
         <h3 style="margin:16px 0 8px 0">Documents</h3>
         <table style="width:100%;border-collapse:collapse;font-size:14px">
           <tbody>
-            <tr><td style="border:1px solid #e5e7eb;padding:8px;width:35%"><strong>Applicant Photo</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.applicantPhotoUrl)}</td></tr>
-            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>PAN Photo</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.panPhotoUrl)}</td></tr>
-            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Aadhaar Front</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.aadhaarPhotoUrl)}</td></tr>
-            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Aadhaar Back</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.aadhaarBackPhotoUrl)}</td></tr>
-            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Co-Applicant PAN Photo</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.coApplicantPanPhotoUrl)}</td></tr>
-            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Co-Applicant Aadhaar Front</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.coApplicantAadhaarPhotoUrl)}</td></tr>
-            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Co-Applicant Aadhaar Back</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.coApplicantAadhaarBackPhotoUrl)}</td></tr>
-            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Co-Applicant Photo</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.coApplicantPhotoUrl)}</td></tr>
-            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Residence Proof</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.residencePhotoUrl)}</td></tr>
-            <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Latest Electricity Bill</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.lastElectricityBillUrl)}</td></tr>
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Permanent Address Electricity Bill</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.permElectricityBillUrl)}</td></tr>
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Rent Agreement</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.rentAgreementUrl)}</td></tr>
             <tr><td style="border:1px solid #e5e7eb;padding:8px"><strong>Company Allotment Letter</strong></td><td style="border:1px solid #e5e7eb;padding:8px">${asLink(saved?.companyAllotmentLetterUrl)}</td></tr>
@@ -725,16 +756,16 @@ export async function POST(req) {
         <style>
           body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333; line-height: 1.6; margin: 0; padding: 0; background-color: #f8f9fa; }
           .container { max-width: 820px; margin: 0 auto; padding: 20px; background-color: #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 12px; }
-          .header { background: linear-gradient(135deg, #0099D8 0%, #33B5E5 100%); padding: 28px 24px; border-radius: 12px 12px 0 0; color: white; text-align: center; }
+          .header { background: linear-gradient(135deg, #00AEEF 0%, #33C1F3 100%); padding: 28px 24px; border-radius: 12px 12px 0 0; color: white; text-align: center; }
           .header h1 { margin: 0; color: white; font-size: 24px; font-weight: 700; }
           .header p { margin: 10px 0 0 0; color: rgba(255,255,255,0.9); font-size: 14px; }
           .content { padding: 22px; }
-          .details-box { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 18px; border-radius: 10px; margin: 16px 0; border-left: 4px solid #0099D8; }
+          .details-box { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 18px; border-radius: 10px; margin: 16px 0; border-left: 4px solid #00AEEF; }
           .details-box p { margin: 10px 0; font-size: 14px; }
-          .application-number { background: #0099D8; color: white; padding: 6px 12px; border-radius: 999px; font-weight: 700; display: inline-block; }
+          .application-number { background: #00AEEF; color: white; padding: 6px 12px; border-radius: 999px; font-weight: 700; display: inline-block; }
           .loan-type-badge { background: #111827; color: white; padding: 6px 12px; border-radius: 999px; font-size: 12px; font-weight: 700; display: inline-block; }
           .footer { border-top: 1px solid #e9ecef; margin-top: 20px; padding-top: 16px; text-align: center; color: #6c757d; font-size: 12px; }
-          a { color:#0099D8; text-decoration: underline; }
+          a { color:#2563eb; text-decoration: underline; }
         </style>
       </head>
       <body>
@@ -808,7 +839,7 @@ export async function POST(req) {
       applicationRef
     )}\nDate: ${safe(applicationDate)}\nService Category: ${safe(saved?.serviceCategoryTitle) || safe(saved?.serviceCategoryKey)}\n\nApplicant Details\nName: ${safe(
       saved?.firstName
-    )} ${safe(saved?.middleName)} ${safe(saved?.lastName)}\nDOB: ${safe(saved?.dob)}\nGender: ${safe(saved?.gender)}\nMarital Status: ${safe(saved?.maritalStatus)}\nMobile: ${safe(saved?.mobileNumber)}\nWhatsApp: ${safe(saved?.whatsappNumber)}\nAlternate Mobile: ${safe(saved?.alternateMobile)}\nPersonal Email: ${safe(saved?.personalEmail)}\nOfficial Email: ${safe(saved?.officialEmail)}\nOffice Email: ${safe(saved?.officeEmailId)}\n\nKYC\nPAN: ${safe(saved?.panNumber)}\nAadhaar: ${safe(saved?.aadhaarNumber)}\nVoter ID: ${safe(saved?.voterIdNumber)}\nDriving License: ${safe(saved?.drivingLicense)}\nPassport: ${safe(saved?.passportNumber)}\n\nAddress\nCurrent Address: ${safe(saved?.currentResidentialAddress)}\nCurrent Pincode: ${safe(saved?.currentResidentialPincode)}\nState: ${safe(saved?.state)}\nCity: ${safe(saved?.city)}\nResidence Type: ${safe(saved?.residenceType)}\nStaying Since: ${safe(saved?.stayingSinceDate)}\nPermanent Address: ${safe(saved?.permanentAddress)}\n\nEmployment\nCompany: ${safe(saved?.companyName)}\nOrganization Type: ${safe(saved?.organizationType)}\nIndustry: ${safe(saved?.industry)} ${safe(saved?.industryOther)} ${safe(saved?.otherSector)}\nDesignation: ${safe(saved?.designation)}\nEmployment Type: ${safe(saved?.employmentType)}\nDate Of Joining: ${safe(saved?.dateOfJoining)}\nTotal Experience (Years): ${safe(saved?.totalExperienceYears)}\nOffice Location: ${safe(saved?.officeLocation)}\nOffice Pincode: ${safe(saved?.officePincode)}\n\nIncome & Loan\nMonthly Net Salary: ${safe(saved?.monthlyNetSalary)}\nSalary Credit Mode: ${safe(saved?.salaryCreditMode)}\nSalary Account Bank: ${safe(saved?.salaryAccountBankName)}\nRequired Loan Amount: ${safe(saved?.requiredLoanAmount)}\nPreferred Tenure: ${safe(saved?.preferredTenure)}\nPurpose: ${safe(saved?.purpose)}\nCIBIL Available: ${safe(saved?.hasCibil)}\nCIBIL Score: ${safe(saved?.cibilScore)}\nCIBIL Issues: ${safe(saved?.cibilIssues)}\nBuying Goods: ${safe(saved?.isBuyingGoods)}\nQuotation Amount: ${safe(saved?.quotationAmount)}\n\nCo-Applicant\nName: ${safe(saved?.coApplicantName)}\nRelation: ${safe(saved?.coApplicantRelation)}\nEmployment Type: ${safe(saved?.coApplicantEmploymentType)}\n\nDocuments (Links)\nApplicant Photo: ${safe(saved?.applicantPhotoUrl) || "-"}\nPAN Photo: ${safe(saved?.panPhotoUrl) || "-"}\nAadhaar Front: ${safe(saved?.aadhaarPhotoUrl) || "-"}\nAadhaar Back: ${safe(saved?.aadhaarBackPhotoUrl) || "-"}\nResidence Proof: ${safe(saved?.residencePhotoUrl) || "-"}\nLatest Electricity Bill: ${safe(saved?.lastElectricityBillUrl) || "-"}\nPermanent Address Electricity Bill: ${safe(saved?.permElectricityBillUrl) || "-"}\nRent Agreement: ${safe(saved?.rentAgreementUrl) || "-"}\nCompany Allotment Letter: ${safe(saved?.companyAllotmentLetterUrl) || "-"}\nOffice ID: ${safe(saved?.officeIdPhotoUrl) || "-"}\nSalary Slips: ${safe(saved?.salarySlipsUrl) || "-"}\nBank Statement: ${safe(saved?.bankStatementUrl) || "-"}\nCIBIL Report: ${safe(saved?.cibilReportUrl) || "-"}\nQuotation File: ${safe(saved?.quotationFileUrl) || "-"}\nProforma Invoice: ${safe(saved?.proformaInvoiceFileUrl) || "-"}\n\nExisting Loans\n${existingLoansText || "No existing loans provided"}\n`;
+    )} ${safe(saved?.middleName)} ${safe(saved?.lastName)}\nDOB: ${safe(saved?.dob)}\nGender: ${safe(saved?.gender)}\nMarital Status: ${safe(saved?.maritalStatus)}\nMobile: ${safe(saved?.mobileNumber)}\nWhatsApp: ${safe(saved?.whatsappNumber)}\nAlternate Mobile: ${safe(saved?.alternateMobile)}\nPersonal Email: ${safe(saved?.personalEmail)}\nOfficial Email: ${safe(saved?.officialEmail)}\nOffice Email: ${safe(saved?.officeEmailId)}\n\nKYC\nPAN: ${safe(saved?.panNumber)}\nAadhaar: ${safe(saved?.aadhaarNumber)}\nVoter ID: ${safe(saved?.voterIdNumber)}\nDriving License: ${safe(saved?.drivingLicense)}\nPassport: ${safe(saved?.passportNumber)}\n\nAddress\nCurrent Address: ${safe(saved?.currentResidentialAddress)}\nCurrent Pincode: ${safe(saved?.currentResidentialPincode)}\nState: ${safe(saved?.state)}\nCity: ${safe(saved?.city)}\nResidence Type: ${safe(saved?.residenceType)}\nStaying Since: ${safe(saved?.stayingSinceDate)}\nPermanent Address: ${safe(saved?.permanentAddress)}\n\nEmployment\nCompany: ${safe(saved?.companyName)}\nOrganization Type: ${safe(saved?.organizationType)}\nIndustry: ${safe(saved?.industry)} ${safe(saved?.industryOther)} ${safe(saved?.otherSector)}\nDesignation: ${safe(saved?.designation)}\nEmployment Type: ${safe(saved?.employmentType)}\nDate Of Joining: ${safe(saved?.dateOfJoining)}\nTotal Experience (Years): ${safe(saved?.totalExperienceYears)}\nOffice Location: ${safe(saved?.officeLocation)}\nOffice Pincode: ${safe(saved?.officePincode)}\n\nIncome & Loan\nMonthly Net Salary: ${safe(saved?.monthlyNetSalary)}\nSalary Credit Mode: ${safe(saved?.salaryCreditMode)}\nSalary Account Bank: ${safe(saved?.salaryAccountBankName)}\nRequired Loan Amount: ${safe(saved?.requiredLoanAmount)}\nPreferred Tenure: ${safe(saved?.preferredTenure)}\nPurpose: ${safe(saved?.purpose)}\nCIBIL Available: ${safe(saved?.hasCibil)}\nCIBIL Score: ${safe(saved?.cibilScore)}\nCIBIL Issues: ${safe(saved?.cibilIssues)}\nBuying Goods: ${safe(saved?.isBuyingGoods)}\nQuotation Amount: ${safe(saved?.quotationAmount)}\n\nCo-Applicant\nName: ${safe(saved?.coApplicantName)}\nRelation: ${safe(saved?.coApplicantRelation)}\nEmployment Type: ${safe(saved?.coApplicantEmploymentType)}\n\nDocuments (Links)\nPermanent Address Electricity Bill: ${safe(saved?.permElectricityBillUrl) || "-"}\nRent Agreement: ${safe(saved?.rentAgreementUrl) || "-"}\nCompany Allotment Letter: ${safe(saved?.companyAllotmentLetterUrl) || "-"}\nOffice ID: ${safe(saved?.officeIdPhotoUrl) || "-"}\nSalary Slips: ${safe(saved?.salarySlipsUrl) || "-"}\nBank Statement: ${safe(saved?.bankStatementUrl) || "-"}\nCIBIL Report: ${safe(saved?.cibilReportUrl) || "-"}\nQuotation File: ${safe(saved?.quotationFileUrl) || "-"}\nProforma Invoice: ${safe(saved?.proformaInvoiceFileUrl) || "-"}\n\nExisting Loans\n${existingLoansText || "No existing loans provided"}\n`;
 
     const internalTextFinal = `${internalText}\n\nBuying Goods\nProduct Name: ${safe(
       saved?.productName
@@ -818,55 +849,56 @@ export async function POST(req) {
       saved?.coApplicantEmploymentType
     )}\nEmail: ${safe(saved?.coApplicantEmail)}\nMobile: ${safe(
       saved?.coApplicantMobile
-    )}\nPhoto: ${safe(saved?.coApplicantPhotoUrl)}\n\nReferences\n${
+    )}\n\nReferences\n${
       referencesText || "No reference details provided"
     }`;
 
     if (internalRecipients.length > 0) {
-      const directorList = normalizeEmailList(directorEmailRaw);
-      const supportList = normalizeEmailList(supportEmailRaw);
-
-      const toAddress = directorList?.[0] || internalRecipients?.[0];
-      const ccAddress =
-        !toAddress && internalRecipients.length > 1
-          ? internalRecipients.slice(1)
-          : supportList.length > 0
-            ? supportList
-            : undefined;
-
       try {
         await withTimeout(
-          gmailTransporter.sendMail({
-            from: fromAddress,
-            to: toAddress || internalRecipients,
-            cc: ccAddress,
-            replyTo: safe(saved?.personalEmail) || undefined,
+          notifyDirectorInternalMail({
             subject: `New Salaried Loan Application - ${applicationRef}`,
             html: internalBrandedHtml,
             text: internalTextFinal,
+            replyTo: safe(saved?.personalEmail) || undefined,
+            recipients: internalRecipients,
           }),
           12000
         );
-      } catch (err) {
-        console.error("Failed to send internal salaried-loan notification email", {
-          to: toAddress || internalRecipients,
-          cc: ccAddress,
+      } catch (emailErr) {
+        console.error("Internal salaried loan notification email failed", {
           applicationRef,
-          error: err instanceof Error ? err.message : err,
+          error: emailErr?.message || emailErr,
         });
       }
+    }
+    } catch (emailErr) {
+      console.error("Salaried loan email notifications failed (application saved)", {
+        applicationRef: saved?.applicationRef || applicationRef,
+        error: emailErr?.message || emailErr,
+      });
     }
 
     return NextResponse.json({
       success: true,
       message: "Salaried Loan Application Submitted",
+      applicationRef: saved?.applicationRef || applicationRef,
       data: saved,
     });
   } catch (error) {
     console.error(error);
-    return NextResponse.json(
-      { success: false, message: error.message },
-      { status: 500 }
-    );
+    const isDupEmail =
+      error?.code === 11000 &&
+      error?.keyPattern &&
+      Object.keys(error.keyPattern)[0] === "personalEmail";
+    const isSmtpError =
+      /invalid login|badcredentials|535|smtp|email/i.test(String(error?.message || ""));
+    const message = isDupEmail
+      ? "An application with this email already exists. Check Applied Loans or use a different email to submit again."
+      : isSmtpError
+        ? "Submission failed. Please try again."
+        : error?.message || "Submission failed";
+    const status = isDupEmail ? 409 : 500;
+    return NextResponse.json({ success: false, message, code: isDupEmail ? "DUPLICATE_EMAIL" : undefined }, { status });
   }
 }

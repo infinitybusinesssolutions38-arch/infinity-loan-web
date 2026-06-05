@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 
-export default function AdminLoanApplicationDetailPage({ params }: { params: { id: string } }) {
+export default function AdminLoanApplicationDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
   const [item, setItem] = useState<any>(null);
   const [status, setStatus] = useState<string>("Pending");
   const [adminRemarks, setAdminRemarks] = useState<string>("");
@@ -17,7 +18,7 @@ export default function AdminLoanApplicationDetailPage({ params }: { params: { i
     (async () => {
       try {
         setLoading(true);
-        const res = await fetch(`/api/admin/loan-applications/${params.id}`, {
+        const res = await fetch(`/api/admin/loan-applications/${id}`, {
           credentials: "include",
           cache: "no-store",
           headers: { "Pragma": "no-cache", "Cache-Control": "no-cache" },
@@ -43,14 +44,14 @@ export default function AdminLoanApplicationDetailPage({ params }: { params: { i
     return () => {
       mounted = false;
     };
-  }, [params.id]);
+  }, [id]);
 
   const save = async () => {
     setSaving(true);
     setError(null);
 
     try {
-      const res = await fetch(`/api/admin/loan-applications/${params.id}`, {
+      const res = await fetch(`/api/admin/loan-applications/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

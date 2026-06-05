@@ -5,14 +5,19 @@ import { isValidObjectId } from "../../lib/validate";
 import PersonalLoanModel from "../../../models/personal-loan-schema";
 import BusinessLoanModel from "../../../models/business-loan-schema";
 import SalariedLoanModel from "../../../models/salaried-loan-schema";
-import nodemailer from "nodemailer";
+import {
+  adminStatusToDbFields,
+  normalizeAdminListItem,
+  toAdminDisplayStatus,
+} from "../../../lib/admin-application-status";
+import { maybeSendStatusChangeEmail } from "../../../lib/loan-status-email";
 
 export const runtime = "nodejs";
 
 async function findApplicationById(id) {
-  const personal = await PersonalLoanModel.findById(id).lean();
-  if (personal) {
-    return { item: personal, type: "personal" };
+  const salaried = await SalariedLoanModel.findById(id).lean();
+  if (salaried) {
+    return { item: salaried, type: "salaried" };
   }
 
   const business = await BusinessLoanModel.findById(id).lean();
@@ -20,9 +25,9 @@ async function findApplicationById(id) {
     return { item: business, type: "business" };
   }
 
-  const salaried = await SalariedLoanModel.findById(id).lean();
-  if (salaried) {
-    return { item: salaried, type: "personal" }; // Treat salaried as personal for admin
+  const personal = await PersonalLoanModel.findById(id).lean();
+  if (personal) {
+    return { item: personal, type: "personal" };
   }
 
   return { item: null, type: null };
@@ -34,7 +39,7 @@ export async function GET(req, { params }) {
 
   const resolvedParams = await params;
   const id = resolvedParams?.id;
-  
+
   if (!isValidObjectId(id)) {
     return NextResponse.json({ success: false, message: "Invalid application id" }, { status: 400 });
   }
@@ -42,15 +47,16 @@ export async function GET(req, { params }) {
   await connectDB();
 
   const { item, type } = await findApplicationById(id);
-  
+
   if (!item) {
     return NextResponse.json({ success: false, message: "Application not found" }, { status: 404 });
   }
 
-  const res = NextResponse.json({ success: true, data: { ...item, _type: type } });
+  const res = NextResponse.json({
+    success: true,
+    data: normalizeAdminListItem(item, type),
+  });
   res.headers.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
-  res.headers.set("Pragma", "no-cache");
-  res.headers.set("Expires", "0");
   return res;
 }
 
@@ -83,67 +89,41 @@ export async function PATCH(req, { params }) {
     return NextResponse.json({ success: false, message: "Application not found" }, { status: 404 });
   }
 
-  const previousStatus = item?.status;
+  const previousStatus = toAdminDisplayStatus(item);
 
-  const update = {};
-  if (status !== undefined) update.status = status;
+  const update = { reviewedAt: new Date() };
+  if (status !== undefined) {
+    const statusFields = adminStatusToDbFields(type, status);
+    if (!statusFields) {
+      return NextResponse.json({ success: false, message: "Invalid status" }, { status: 400 });
+    }
+    Object.assign(update, statusFields);
+  }
   if (adminRemarks !== undefined) update.adminRemarks = adminRemarks;
-  update.reviewedAt = new Date();
 
-  const Model = type === "business" ? BusinessLoanModel : 
-               (item._source === "salaried" || item.loanType === "salaried") ? SalariedLoanModel : 
-               PersonalLoanModel;
+  const Model =
+    type === "business"
+      ? BusinessLoanModel
+      : type === "salaried"
+        ? SalariedLoanModel
+        : PersonalLoanModel;
 
   const updated = await Model.findByIdAndUpdate(id, update, { new: true }).lean();
 
-  if (status === "Approved" && previousStatus !== "Approved") {
-    try {
-      const host = process.env.EMAIL_HOST;
-      const port = Number(process.env.EMAIL_PORT || 0);
-      const user = process.env.EMAIL_USER;
-      const pass = process.env.EMAIL_PASS;
-      const secure = String(process.env.EMAIL_SECURE || "").toLowerCase() === "true";
-      const from = process.env.EMAIL_FROM || user;
-      const to = updated?.email || item?.email;
-
-      if (!host || !port || !user || !pass || !from) {
-        console.error("Approval email not sent: missing EMAIL_* env", {
-          hasHost: !!host,
-          hasPort: !!port,
-          hasUser: !!user,
-          hasPass: !!pass,
-          hasFrom: !!from,
-          secure,
-        });
-      } else if (!to) {
-        console.error("Approval email not sent: missing applicant email", { id, type });
-      } else {
-        const transporter = nodemailer.createTransport({
-          host,
-          port,
-          secure,
-          auth: { user, pass },
-        });
-
-        await transporter.verify();
-
-        const info = await transporter.sendMail({
-          from,
-          to,
-          subject: "Loan Approved",
-          text: "Your loan is approved successfully.",
-        });
-
-        console.log("Approval email sent", { id, to, messageId: info?.messageId });
-      }
-    } catch (e) {
-      console.error("Approval email send failed", e);
-    }
+  if (status !== undefined) {
+    await maybeSendStatusChangeEmail({
+      previousStatus,
+      newStatus: status,
+      record: updated,
+      loanType: type,
+      adminRemarks,
+    });
   }
 
-  const res = NextResponse.json({ success: true, data: { ...updated, _type: type } });
+  const res = NextResponse.json({
+    success: true,
+    data: normalizeAdminListItem(updated, type),
+  });
   res.headers.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
-  res.headers.set("Pragma", "no-cache");
-  res.headers.set("Expires", "0");
   return res;
 }

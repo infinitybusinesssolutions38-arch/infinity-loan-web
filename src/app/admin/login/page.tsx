@@ -42,7 +42,7 @@ export default function AdminLoginPage() {
       <div className="relative mx-auto grid min-h-screen w-full max-w-6xl grid-cols-1 items-stretch gap-6 px-4 py-10 md:grid-cols-2 md:gap-8 md:px-6">
         <div className="hidden overflow-hidden rounded-3xl border border-border/70 bg-gradient-to-br from-primary via-primary/90 to-primary/70 shadow-sm md:block">
           <div className="relative h-full p-10 text-primary-foreground">
-            <div className="text-xs font-semibold uppercase tracking-wider text-primary-foreground/80">Infinity Loans</div>
+            <div className="text-xs font-semibold uppercase tracking-wider text-primary-foreground/80">Infinity Loans & Business Solutions</div>
             <div className="mt-3 text-3xl font-bold tracking-tight">Admin Console</div>
             <div className="mt-3 max-w-md text-sm text-primary-foreground/80">
               Sign in to manage users, enquiries, and loan applications.

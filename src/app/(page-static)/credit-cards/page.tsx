@@ -168,7 +168,7 @@ function BadgePill({ badge }: { badge: Badge }) {
       className={cx(
         "inline-flex items-center rounded-full px-3 py-1 text-xs font-bold tracking-wider uppercase",
         badge === "Popular"
-          ? "bg-[#0099D8]/10 text-[#007BB0]"
+          ? "bg-[#E6F7FD] text-[#008FCC]"
           : "bg-emerald-100 text-emerald-700"
       )}
     >
@@ -292,7 +292,7 @@ function List({ items }: { items: string[] }) {
     <ul className="space-y-3 text-sm text-gray-700">
       {items.map((item) => (
         <li key={item} className="flex gap-3">
-          <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-gradient-to-br from-blue-600 to-indigo-600" />
+          <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-gradient-to-br from-[#00AEEF] to-[#2E3192]" />
           <span className="leading-relaxed">{item}</span>
         </li>
       ))}
@@ -313,8 +313,8 @@ function Disclosure({
     <details className="group rounded-2xl border border-gray-200 bg-white shadow-md hover:shadow-lg transition-shadow duration-300">
       <summary className="flex cursor-pointer list-none items-center justify-between gap-3 rounded-2xl px-5 py-4 hover:bg-gray-50 transition">
         <div className="flex items-center gap-3">
-          <div className="p-2 rounded-lg bg-[#0099D8]/5">
-            <Icon name={icon} className="text-[#0099D8]" />
+          <div className="p-2 rounded-lg bg-[#E6F7FD]">
+            <Icon name={icon} className="text-[#00AEEF]" />
           </div>
           <h3 className="text-sm font-semibold text-gray-900">{title}</h3>
         </div>
@@ -346,7 +346,7 @@ function CtaButton({
 }) {
   const className =
     intent === "primary"
-      ? "inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-lg hover:shadow-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-[#0099D8]/20"
+      ? "inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-[#00AEEF] to-[#2E3192] px-6 py-3 text-sm font-semibold text-white shadow-lg hover:shadow-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-[#B3E8FA]"
       : intent === "secondary"
       ? "inline-flex items-center justify-center rounded-xl border border-gray-300 bg-white px-6 py-3 text-sm font-semibold text-gray-900 shadow-md hover:shadow-lg hover:bg-gray-50 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-gray-200"
       : "inline-flex items-center justify-center rounded-xl border border-white/30 bg-white/10 px-6 py-3 text-sm font-semibold text-white shadow-md hover:bg-white/20 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-white/30";
@@ -373,7 +373,7 @@ function ProductCard({ product }: { product: Product }) {
             </h2>
             {product.badge ? <BadgePill badge={product.badge} /> : null}
           </div>
-          <p className="text-base font-semibold text-[#0099D8]">{product.tagline}</p>
+          <p className="text-base font-semibold text-[#00AEEF]">{product.tagline}</p>
           <div className="space-y-2 text-sm text-gray-600 leading-relaxed">
             {product.overview.map((p) => (
               <p key={p}>{p}</p>
@@ -394,10 +394,10 @@ function ProductCard({ product }: { product: Product }) {
       <div className="mt-8 grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2 space-y-6">
           {/* Key Features */}
-          <div className="rounded-2xl border border-[#0099D8]/15 bg-gradient-to-br from-blue-50 to-indigo-50 p-6">
+          <div className="rounded-2xl border border-[#E6F7FD] bg-gradient-to-br from-[#E6F7FD] to-[#E8EAF6] p-6">
             <div className="flex items-center gap-3 mb-4">
-              <div className="p-2 rounded-lg bg-[#0099D8]/10">
-                <Icon name="features" className="text-[#0099D8]" />
+              <div className="p-2 rounded-lg bg-[#E6F7FD]">
+                <Icon name="features" className="text-[#00AEEF]" />
               </div>
               <h3 className="text-base font-bold text-gray-900">Key Features</h3>
             </div>
@@ -411,7 +411,7 @@ function ProductCard({ product }: { product: Product }) {
             {product.highlights.map((h) => (
               <div
                 key={h.label}
-                className="rounded-2xl border border-gray-200 bg-white px-4 py-4 shadow-sm hover:shadow-md hover:border-[#0099D8]/20 transition-all"
+                className="rounded-2xl border border-gray-200 bg-white px-4 py-4 shadow-sm hover:shadow-md hover:border-[#D6EEF8] transition-all"
               >
                 <p className="text-xs font-bold uppercase tracking-widest text-gray-500">
                   {h.label}
@@ -455,22 +455,22 @@ export default function CreditCardsPage() {
       {/* Hero Section */}
       <section className="relative overflow-hidden border-b border-gray-200 bg-gradient-to-b from-gray-50 to-white">
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-[#0099D8]/10 rounded-full blur-3xl"></div>
+          <div className="absolute top-0 right-0 w-96 h-96 bg-[#33C1F3]/10 rounded-full blur-3xl"></div>
           <div className="absolute bottom-0 left-0 w-96 h-96 bg-indigo-400/10 rounded-full blur-3xl"></div>
         </div>
 
         <div className="relative mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-20">
           <div className="grid gap-12 lg:grid-cols-12 lg:items-center">
             <div className="lg:col-span-7 space-y-6">
-              <div className="inline-flex items-center gap-2 rounded-full border border-[#0099D8]/20 bg-white px-4 py-2 text-sm font-semibold text-[#007BB0] shadow-sm">
-                <Icon name="shield" className="text-[#0099D8]" />
+              <div className="inline-flex items-center gap-2 rounded-full border border-[#D6EEF8] bg-white px-4 py-2 text-sm font-semibold text-[#008FCC] shadow-sm">
+                <Icon name="shield" className="text-[#00AEEF]" />
                 <span>Transparent guidance. Eligibility-led suggestions.</span>
               </div>
               <div>
                 <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-gray-900">
                   Credit & Cards
                 </h1>
-                <div className="mt-2 h-1 w-24 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full"></div>
+                <div className="mt-2 h-1 w-24 bg-gradient-to-r from-[#00AEEF] to-[#2E3192] rounded-full"></div>
               </div>
               <p className="text-lg text-gray-700 leading-relaxed max-w-2xl">
                 Find the right credit product for your needs—rewards, business spends, credit building or short-term cashflow. Compare features, understand documents, and apply with support.
@@ -509,7 +509,7 @@ export default function CreditCardsPage() {
                   ].map((item, idx) => (
                     <div
                       key={idx}
-                      className="rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-50 to-gray-100 p-4 hover:border-[#0099D8]/20 hover:from-blue-50 hover:to-indigo-50 transition-all"
+                      className="rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-50 to-gray-100 p-4 hover:border-[#D6EEF8] hover:from-[#E6F7FD] hover:to-[#E8EAF6] transition-all"
                     >
                       <p className="text-xs font-bold uppercase tracking-widest text-gray-500">
                         {item.q}
@@ -541,7 +541,7 @@ export default function CreditCardsPage() {
             <Link
               key={p.id}
               href={`#${p.id}`}
-              className="rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-900 shadow-sm hover:bg-[#0099D8]/5 hover:border-[#0099D8]/30 transition-all duration-300"
+              className="rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-900 shadow-sm hover:bg-[#E6F7FD] hover:border-[#B3E8FA] transition-all duration-300"
             >
               {p.title}
             </Link>
@@ -564,7 +564,7 @@ export default function CreditCardsPage() {
                 <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">
                   Eligibility & Documents
                 </h2>
-                <div className="mt-2 h-1 w-24 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full"></div>
+                <div className="mt-2 h-1 w-24 bg-gradient-to-r from-[#00AEEF] to-[#2E3192] rounded-full"></div>
               </div>
               <p className="text-lg text-gray-700">
                 Exact criteria vary by issuer/partner. Keep these ready to speed up checks and avoid rework.
@@ -573,8 +573,8 @@ export default function CreditCardsPage() {
               <div className="space-y-4">
                 <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-md hover:shadow-lg transition-shadow">
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="p-2 rounded-lg bg-[#0099D8]/5">
-                      <Icon name="eligibility" className="text-[#0099D8]" />
+                    <div className="p-2 rounded-lg bg-[#E6F7FD]">
+                      <Icon name="eligibility" className="text-[#00AEEF]" />
                     </div>
                     <h3 className="text-base font-bold text-gray-900">Common Eligibility</h3>
                   </div>
@@ -590,8 +590,8 @@ export default function CreditCardsPage() {
 
                 <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-md hover:shadow-lg transition-shadow">
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="p-2 rounded-lg bg-[#0099D8]/5">
-                      <Icon name="documents" className="text-[#0099D8]" />
+                    <div className="p-2 rounded-lg bg-[#E6F7FD]">
+                      <Icon name="documents" className="text-[#00AEEF]" />
                     </div>
                     <h3 className="text-base font-bold text-gray-900">Document Checklist</h3>
                   </div>
@@ -636,7 +636,7 @@ export default function CreditCardsPage() {
                   ].map((item, idx) => (
                     <div
                       key={idx}
-                      className="rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-50 to-gray-100 p-5 hover:border-[#0099D8]/20 hover:from-blue-50 hover:to-indigo-50 transition-all"
+                      className="rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-50 to-gray-100 p-5 hover:border-[#D6EEF8] hover:from-[#E6F7FD] hover:to-[#E8EAF6] transition-all"
                     >
                       <p className="font-bold text-gray-900">{item.title}</p>
                       <p className="mt-2 text-sm text-gray-600">{item.desc}</p>
@@ -664,7 +664,7 @@ export default function CreditCardsPage() {
 
       {/* CTA Section */}
       <section id="apply" className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16">
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 p-8 sm:p-12 shadow-2xl">
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#00AEEF] via-blue-700 to-indigo-800 p-8 sm:p-12 shadow-2xl">
           {/* Decorative elements */}
           <div className="absolute inset-0 overflow-hidden">
             <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl"></div>
@@ -676,7 +676,7 @@ export default function CreditCardsPage() {
               <h2 className="text-4xl sm:text-5xl font-bold text-white">
                 Ready to apply?
               </h2>
-              <p className="mt-4 text-lg text-white/90 leading-relaxed">
+              <p className="mt-4 text-lg text-blue-50 leading-relaxed">
                 Start your application and our team will help you choose the right option based on your profile.
               </p>
             </div>

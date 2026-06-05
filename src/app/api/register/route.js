@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import connectDB from "../lib/db";
 import UserModel from "../models/user-schema";
 import { validateOTP, clearOTP } from "../lib/otp-service";
+import { sendWelcomeEmail } from "../lib/welcome-email-service";
 
 export async function POST(req) {
     try {
@@ -40,6 +41,7 @@ export async function POST(req) {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const defaultRole = String(process.env.DEFAULT_USER_ROLE || "borrower-personal").trim();
+
         const user = await UserModel.create({
             fullName,
             email,
@@ -49,6 +51,30 @@ export async function POST(req) {
         });
 
         await clearOTP(email);
+
+        console.log(`[Registration] OTP verification successful for ${email}. User created with ID: ${user._id}`);
+        console.log(`[Registration] Starting welcome email trigger for ${email}`);
+
+        // Send welcome email after successful OTP verification
+        try {
+            console.log(`[Registration] Calling sendWelcomeEmail for ${email}, name: ${fullName}`);
+            const emailResult = await sendWelcomeEmail(email, fullName);
+            console.log(`[Registration] sendWelcomeEmail returned:`, emailResult);
+            
+            // Mark welcome email as sent
+            await UserModel.findByIdAndUpdate(user._id, { welcomeEmailSent: true });
+            console.log(`[Registration] Welcome email sent successfully to ${email}. User updated with welcomeEmailSent: true`);
+        } catch (emailError) {
+            console.error(`[Registration] Failed to send welcome email to ${email}:`, emailError);
+            console.error(`[Registration] Email error details:`, {
+                message: emailError.message,
+                stack: emailError.stack,
+                code: emailError.code,
+                response: emailError.response
+            });
+            // Don't fail registration if email fails, just log the error
+            // Account should still be activated
+        }
 
         return NextResponse.json(
             {
