@@ -1,14 +1,19 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState, use } from "react";
+import AdminApplicationDetailView, {
+  type AdminLoanDetail,
+} from "@/components/admin/AdminApplicationDetailView";
 
-export default function AdminSalaryLoanApplicationDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const resolvedParams = use(params);
-  const id = resolvedParams.id;
-  const [item, setItem] = useState<any>(null);
-  const [status, setStatus] = useState<string>("Pending");
-  const [adminRemarks, setAdminRemarks] = useState<string>("");
+export default function AdminSalaryLoanApplicationDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = use(params);
+  const [detail, setDetail] = useState<AdminLoanDetail | null>(null);
+  const [status, setStatus] = useState("Pending");
+  const [adminRemarks, setAdminRemarks] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -22,21 +27,18 @@ export default function AdminSalaryLoanApplicationDetailPage({ params }: { param
         const res = await fetch(`/api/admin/loan-applications/${id}`, {
           credentials: "include",
           cache: "no-store",
-          headers: { "Pragma": "no-cache", "Cache-Control": "no-cache" },
         });
         const data = await res.json().catch(() => ({}));
-
         if (!mounted) return;
 
         if (res.ok && data?.success) {
-          // Show all types for salary employee loans
-          if (data.data._type === "business") {
-            setError("This is a business loan application. Please check business loan applications.");
+          if (data.data?._type === "business") {
+            setError("This is a business loan application. Open it from business loan applications.");
             return;
           }
-          setItem(data.data);
-          setStatus(data.data.status || "Pending");
-          setAdminRemarks(data.data.adminRemarks || "");
+          setDetail(data.detail || null);
+          setStatus(data.data?.status || "Pending");
+          setAdminRemarks(data.data?.adminRemarks || "");
         } else {
           setError(data?.message || "Failed to load application");
         }
@@ -55,7 +57,6 @@ export default function AdminSalaryLoanApplicationDetailPage({ params }: { param
   const save = async () => {
     setSaving(true);
     setError(null);
-
     try {
       const res = await fetch(`/api/admin/loan-applications/${id}`, {
         method: "PATCH",
@@ -63,14 +64,14 @@ export default function AdminSalaryLoanApplicationDetailPage({ params }: { param
         credentials: "include",
         body: JSON.stringify({ status, adminRemarks }),
       });
-
       const data = await res.json().catch(() => ({}));
       if (!res.ok || !data?.success) {
         setError(data?.message || "Failed to update");
         return;
       }
-
-      setItem(data.data);
+      setDetail(data.detail || null);
+      setStatus(data.data?.status || status);
+      setAdminRemarks(data.data?.adminRemarks || adminRemarks);
     } catch {
       setError("Failed to update");
     } finally {
@@ -81,418 +82,32 @@ export default function AdminSalaryLoanApplicationDetailPage({ params }: { param
   if (loading) {
     return (
       <div className="rounded-3xl border border-border/70 bg-card/70 p-6 shadow-sm backdrop-blur">
-        <div className="text-sm text-muted-foreground">Loading...</div>
+        <div className="text-sm text-muted-foreground">Loading application details...</div>
       </div>
     );
   }
 
-  if (!item) {
+  if (!detail) {
     return (
       <div className="rounded-3xl border border-border/70 bg-card/70 p-6 shadow-sm backdrop-blur">
         <div className="text-sm font-semibold">Application not found</div>
-        {error && <div className="mt-2 text-sm text-destructive">{error}</div>}
-        <div className="mt-6">
-          <Link className="text-sm font-semibold text-primary hover:underline" href="/admin/salary-loan-applications">
-            Back
-          </Link>
-        </div>
+        {error ? <div className="mt-2 text-sm text-destructive">{error}</div> : null}
       </div>
     );
   }
 
-  const name = `${item.firstName || item.firstname || ""} ${item.lastName || item.lastname || ""}`.trim();
-  const email = item.personalEmail || item.email || "-";
-  const mobile = item.mobileNumber || item.mobile || "-";
-
   return (
-    <div className="rounded-3xl border border-border/70 bg-card/70 p-6 shadow-sm backdrop-blur">
-      <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
-        <div>
-          <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Application</div>
-          <div className="mt-2 text-xl font-bold tracking-tight">Salary Employee Loan Application</div>
-          <div className="mt-1 text-sm text-muted-foreground">
-            Ref: {item.applicationRef || "-"}
-          </div>
-        </div>
-      </div>
-
-      {error && (
-        <div className="mt-4 rounded-2xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
-          {error}
-        </div>
-      )}
-
-      <div className="mt-6 space-y-6">
-        {/* A. Applicant Basic Details */}
-        <div className="rounded-3xl border border-border/70 bg-card/70 p-6 shadow-sm backdrop-blur">
-          <h3 className="text-lg font-semibold mb-4 text-primary">A. Applicant Basic Details</h3>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">First Name</div>
-              <div className="mt-1 text-sm font-semibold">{item.firstName || item.firstname || "-"}</div>
-            </div>
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Middle Name</div>
-              <div className="mt-1 text-sm font-semibold">{item.middleName || "-"}</div>
-            </div>
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Last Name</div>
-              <div className="mt-1 text-sm font-semibold">{item.lastName || item.lastname || "-"}</div>
-            </div>
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Gender</div>
-              <div className="mt-1 text-sm font-semibold">{item.gender || "-"}</div>
-            </div>
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Marital Status</div>
-              <div className="mt-1 text-sm font-semibold">{item.maritalStatus || "-"}</div>
-            </div>
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Date of Birth</div>
-              <div className="mt-1 text-sm font-semibold">{item.dob || "-"}</div>
-            </div>
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Application Ref</div>
-              <div className="mt-1 text-sm font-semibold">{item.applicationRef || "-"}</div>
-            </div>
-          </div>
-        </div>
-
-        {/* B. Applicant Contact Details */}
-        <div className="rounded-3xl border border-border/70 bg-card/70 p-6 shadow-sm backdrop-blur">
-          <h3 className="text-lg font-semibold mb-4 text-primary">B. Applicant Contact Details</h3>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Personal Email</div>
-              <div className="mt-1 text-sm font-semibold">{item.personalEmail || "-"}</div>
-            </div>
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Official Email</div>
-              <div className="mt-1 text-sm font-semibold">{item.officialEmail || "-"}</div>
-            </div>
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Mobile Number</div>
-              <div className="mt-1 text-sm font-semibold">{item.mobileNumber || "-"}</div>
-            </div>
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Alternate Mobile</div>
-              <div className="mt-1 text-sm font-semibold">{item.alternateMobile || "-"}</div>
-            </div>
-          </div>
-        </div>
-
-        {/* C. Residential Address Details */}
-        <div className="rounded-3xl border border-border/70 bg-card/70 p-6 shadow-sm backdrop-blur">
-          <h3 className="text-lg font-semibold mb-4 text-primary">C. Residential Address Details</h3>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Current Residential Address</div>
-              <div className="mt-1 text-sm font-semibold">{item.currentResidentialAddress || "-"}</div>
-            </div>
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Residential State</div>
-              <div className="mt-1 text-sm font-semibold">{item.state || item.residentialState || "-"}</div>
-            </div>
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Residential City</div>
-              <div className="mt-1 text-sm font-semibold">{item.city || item.residentialCity || "-"}</div>
-            </div>
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Residential Pincode</div>
-              <div className="mt-1 text-sm font-semibold">{item.currentResidentialPincode || "-"}</div>
-            </div>
-          </div>
-        </div>
-
-        {/* D. Office Address Details */}
-        <div className="rounded-3xl border border-border/70 bg-card/70 p-6 shadow-sm backdrop-blur">
-          <h3 className="text-lg font-semibold mb-4 text-primary">D. Office Address Details</h3>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Current Office Address</div>
-              <div className="mt-1 text-sm font-semibold">{item.officeLocation || item.currentOfficeAddress || "-"}</div>
-            </div>
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Office State</div>
-              <div className="mt-1 text-sm font-semibold">{item.officeState || "-"}</div>
-            </div>
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Office City</div>
-              <div className="mt-1 text-sm font-semibold">{item.officeCity || "-"}</div>
-            </div>
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Office Pincode</div>
-              <div className="mt-1 text-sm font-semibold">{item.currentOfficePincode || "-"}</div>
-            </div>
-          </div>
-        </div>
-
-        {/* E. Identity Documents */}
-        <div className="rounded-3xl border border-border/70 bg-card/70 p-6 shadow-sm backdrop-blur">
-          <h3 className="text-lg font-semibold mb-4 text-primary">E. Identity Documents</h3>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Aadhaar Number</div>
-              <div className="mt-1 text-sm font-semibold">{item.aadhaarNumber || "-"}</div>
-            </div>
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">PAN Number</div>
-              <div className="mt-1 text-sm font-semibold">{item.panNumber || "-"}</div>
-            </div>
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Voter ID Number</div>
-              <div className="mt-1 text-sm font-semibold">{item.voterIdNumber || "-"}</div>
-            </div>
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Driving License</div>
-              <div className="mt-1 text-sm font-semibold">{item.drivingLicense || "-"}</div>
-            </div>
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Passport Number</div>
-              <div className="mt-1 text-sm font-semibold">{item.passportNumber || "-"}</div>
-            </div>
-          </div>
-        </div>
-
-        {/* G. Employment Details */}
-        <div className="rounded-3xl border border-border/70 bg-card/70 p-6 shadow-sm backdrop-blur">
-          <h3 className="text-lg font-semibold mb-4 text-primary">G. Employment Details</h3>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Employment Type</div>
-              <div className="mt-1 text-sm font-semibold">{item.employmentType || "-"}</div>
-            </div>
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Company Name</div>
-              <div className="mt-1 text-sm font-semibold">{item.companyName || "-"}</div>
-            </div>
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Work Experience</div>
-              <div className="mt-1 text-sm font-semibold">{item.totalExperienceYears ?? item.workExperience ?? "-"}</div>
-            </div>
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Monthly Salary</div>
-              <div className="mt-1 text-sm font-semibold">{item.monthlyNetSalary || item.monthlySalary || "-"}</div>
-            </div>
-          </div>
-        </div>
-
-        {/* H. Bank Details */}
-        <div className="rounded-3xl border border-border/70 bg-card/70 p-6 shadow-sm backdrop-blur">
-          <h3 className="text-lg font-semibold mb-4 text-primary">H. Bank Details</h3>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Bank Name</div>
-              <div className="mt-1 text-sm font-semibold">{item.salaryAccountBankName || item.bankName || "-"}</div>
-            </div>
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Account Number</div>
-              <div className="mt-1 text-sm font-semibold">{item.accountNumber || "-"}</div>
-            </div>
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">IFSC Code</div>
-              <div className="mt-1 text-sm font-semibold">{item.ifscCode || "-"}</div>
-            </div>
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Branch Name</div>
-              <div className="mt-1 text-sm font-semibold">{item.branchName || "-"}</div>
-            </div>
-          </div>
-        </div>
-
-        {/* I. Loan Details */}
-        <div className="rounded-3xl border border-border/70 bg-card/70 p-6 shadow-sm backdrop-blur">
-          <h3 className="text-lg font-semibold mb-4 text-primary">I. Loan Details</h3>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Service Category</div>
-              <div className="mt-1 text-sm font-semibold">{item.serviceCategoryTitle || "-"}</div>
-            </div>
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Loan Amount</div>
-              <div className="mt-1 text-sm font-semibold">{item.requiredLoanAmount || item.loanAmount || "-"}</div>
-            </div>
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Loan Purpose</div>
-              <div className="mt-1 text-sm font-semibold">{item.purpose || item.loanPurpose || "-"}</div>
-            </div>
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Status</div>
-              <div className="mt-1 text-sm font-semibold">{item.status || "Pending"}</div>
-            </div>
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Application Date</div>
-              <div className="mt-1 text-sm font-semibold">{item.createdAt ? new Date(item.createdAt).toLocaleDateString() : "-"}</div>
-            </div>
-          </div>
-        </div>
-
-        {/* J. Additional Documents */}
-        <div className="rounded-3xl border border-border/70 bg-card/70 p-6 shadow-sm backdrop-blur">
-          <h3 className="text-lg font-semibold mb-4 text-primary">J. Additional Documents</h3>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            {item.bankStatementUrl && (
-              <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-                <div className="text-xs text-muted-foreground">Bank Statement</div>
-                <div className="mt-2">
-                  <a 
-                    href={item.bankStatementUrl} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center text-xs bg-primary text-primary-foreground px-3 py-2 rounded-lg hover:bg-primary/90 transition"
-                  >
-                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                    </svg>
-                    View Statement
-                  </a>
-                </div>
-              </div>
-            )}
-            {item.itrFileUrl && (
-              <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-                <div className="text-xs text-muted-foreground">ITR File</div>
-                <div className="mt-2">
-                  <a 
-                    href={item.itrFileUrl} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center text-xs bg-primary text-primary-foreground px-3 py-2 rounded-lg hover:bg-primary/90 transition"
-                  >
-                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                    </svg>
-                    View ITR
-                  </a>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {Array.isArray(item.additionalDocuments) && item.additionalDocuments.length > 0 ? (
-          <div className="rounded-3xl border border-border/70 bg-card/70 p-6 shadow-sm backdrop-blur">
-            <h3 className="text-lg font-semibold mb-4 text-primary">Profile Uploaded Additional Documents</h3>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              {item.additionalDocuments.map((doc: any, idx: number) => (
-                <div key={idx} className="rounded-2xl border border-border/50 bg-background/50 p-4">
-                  <div className="text-sm font-semibold">{doc?.documentName || `Document ${idx + 1}`}</div>
-                  {doc?.uploadedAt ? (
-                    <div className="mt-1 text-xs text-muted-foreground">
-                      Uploaded: {new Date(doc.uploadedAt).toLocaleString()}
-                    </div>
-                  ) : null}
-                  {doc?.documentUrl ? (
-                    <div className="mt-2">
-                      <a
-                        href={doc.documentUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center text-xs bg-primary text-primary-foreground px-3 py-2 rounded-lg hover:bg-primary/90 transition"
-                      >
-                        View Document
-                      </a>
-                    </div>
-                  ) : null}
-                </div>
-              ))}
-            </div>
-          </div>
-        ) : null}
-
-        <div className="rounded-3xl border border-border/70 bg-card/70 p-6 shadow-sm backdrop-blur">
-          <h3 className="text-lg font-semibold mb-4 text-primary">Payment Receipts (Uploaded from Profile)</h3>
-          {Array.isArray(item.paymentReceipts) && item.paymentReceipts.length > 0 ? (
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              {item.paymentReceipts.map((r: any, idx: number) => (
-                <div key={idx} className="rounded-2xl border border-border/50 bg-background/50 p-4">
-                  <div className="text-sm font-semibold">{r?.receiptName || `Receipt ${idx + 1}`}</div>
-                  {r?.uploadedAt ? (
-                    <div className="mt-1 text-xs text-muted-foreground">
-                      Uploaded: {new Date(r.uploadedAt).toLocaleString()}
-                    </div>
-                  ) : null}
-                  {r?.receiptUrl ? (
-                    <div className="mt-2">
-                      <a
-                        href={r.receiptUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center text-xs bg-primary text-primary-foreground px-3 py-2 rounded-lg hover:bg-primary/90 transition"
-                      >
-                        View Receipt
-                      </a>
-                    </div>
-                  ) : null}
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="rounded-2xl border border-dashed border-border/70 bg-background/40 p-4 text-sm text-muted-foreground">
-              No payment receipts uploaded.
-            </div>
-          )}
-        </div>
-
-        {/* K. Verification Status */}
-        <div className="rounded-3xl border border-border/70 bg-card/70 p-6 shadow-sm backdrop-blur">
-          <h3 className="text-lg font-semibold mb-4 text-primary">K. Verification Status</h3>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">KYC Status</div>
-              <div className="mt-1 text-sm font-semibold">{item.kycStatus || "-"}</div>
-            </div>
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Document Verification</div>
-              <div className="mt-1 text-sm font-semibold">{item.documentVerification || "-"}</div>
-            </div>
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Bank Verification</div>
-              <div className="mt-1 text-sm font-semibold">{item.bankVerification || "-"}</div>
-            </div>
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Verification Date</div>
-              <div className="mt-1 text-sm font-semibold">{item.verificationDate ? new Date(item.verificationDate).toLocaleDateString() : "-"}</div>
-            </div>
-          </div>
-        </div>
-
-        {/* L. Reference Details */}
-        <div className="rounded-3xl border border-border/70 bg-card/70 p-6 shadow-sm backdrop-blur">
-          <h3 className="text-lg font-semibold mb-4 text-primary">L. Reference Details</h3>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Reference 1 Name</div>
-              <div className="mt-1 text-sm font-semibold">{item.references?.[0]?.fullName || item.reference1Name || "-"}</div>
-            </div>
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Reference 1 Contact</div>
-              <div className="mt-1 text-sm font-semibold">{item.references?.[0]?.mobile || item.reference1Contact || "-"}</div>
-            </div>
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Reference 2 Name</div>
-              <div className="mt-1 text-sm font-semibold">{item.references?.[1]?.fullName || item.reference2Name || "-"}</div>
-            </div>
-            <div className="rounded-2xl border border-border/50 bg-background/50 p-4">
-              <div className="text-xs text-muted-foreground">Reference 2 Contact</div>
-              <div className="mt-1 text-sm font-semibold">{item.references?.[1]?.mobile || item.reference2Contact || "-"}</div>
-            </div>
-          </div>
-        </div>
-
-        <div className="rounded-3xl border border-border/70 bg-card/70 p-6 shadow-sm backdrop-blur">
-          <h3 className="text-lg font-semibold mb-4 text-primary">Raw Data</h3>
-          <pre className="max-h-[520px] overflow-auto rounded-2xl border border-border/50 bg-background/50 p-4 text-xs">
-            {JSON.stringify(item, null, 2)}
-          </pre>
-        </div>
-      </div>
-
-      <div className="mt-4">
-        <Link className="text-sm font-semibold text-primary hover:underline" href="/admin/salary-loan-applications">
-          Back to salary loan applications
-        </Link>
-      </div>
-    </div>
+    <AdminApplicationDetailView
+      loan={detail}
+      backHref="/admin/salary-loan-applications"
+      backLabel="Back to salary loan applications"
+      status={status}
+      adminRemarks={adminRemarks}
+      saving={saving}
+      error={error}
+      onStatusChange={setStatus}
+      onAdminRemarksChange={setAdminRemarks}
+      onSave={() => void save()}
+    />
   );
 }

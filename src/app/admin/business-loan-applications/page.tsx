@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import AdminCategoryBanner from "@/components/admin/AdminCategoryBanner";
+import AdminListDeleteButton from "@/components/admin/AdminListDeleteButton";
 import AdminStatusBadge from "@/components/admin/AdminStatusBadge";
 
 const LIST_TYPE = "business";
@@ -117,6 +118,26 @@ export default function AdminBusinessLoanApplicationsPage() {
     void updateStatus(id, value);
   };
 
+  const deleteApplication = async (id: string) => {
+    setError(null);
+    try {
+      const res = await fetch(`/api/admin/loan-applications/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data?.success) {
+        setError(data?.message || "Failed to delete application");
+        return false;
+      }
+      setItems((prev) => prev.filter((x) => String(x._id) !== id));
+      return true;
+    } catch {
+      setError("Failed to delete application");
+      return false;
+    }
+  };
+
   const displayName = (x: any) => {
     return x.firstName && x.lastName ? `${x.firstName} ${x.lastName}` : x.fullName || x.businessName || "-";
   };
@@ -181,6 +202,7 @@ export default function AdminBusinessLoanApplicationsPage() {
               <th className="py-3">Status</th>
               <th className="py-3">Approve / Reject</th>
               <th className="py-3">View</th>
+              <th className="py-3">Delete</th>
             </tr>
           </thead>
           <tbody>
@@ -220,12 +242,18 @@ export default function AdminBusinessLoanApplicationsPage() {
                     Details
                   </Link>
                 </td>
+                <td className="py-4">
+                  <AdminListDeleteButton
+                    itemLabel={x.applicationRef || "application"}
+                    onDelete={() => deleteApplication(String(x._id))}
+                  />
+                </td>
               </tr>
             ))}
 
             {!loading && items.length === 0 && (
               <tr>
-                <td colSpan={7} className="py-10 text-center text-muted-foreground">
+                <td colSpan={8} className="py-10 text-center text-muted-foreground">
                   No business loan applications found
                 </td>
               </tr>
