@@ -1,4 +1,7 @@
-import { NextResponse } from "next/server";
+const fs = require("fs");
+const path = require("path");
+
+const content = `import { NextResponse } from "next/server";
 import connectDB from "../../../lib/db";
 import { requireAdmin } from "../../lib/guard";
 import { isValidObjectId } from "../../lib/validate";
@@ -57,3 +60,18 @@ export async function DELETE(req, { params }) {
     message: "Payment receipt deleted successfully",
   });
 }
+`;
+
+const target = path.join(
+  __dirname,
+  "..",
+  "src",
+  "app",
+  "api",
+  "admin",
+  "payment-receipts",
+  "[id]",
+  "route.js"
+);
+fs.writeFileSync(target, content, "utf8");
+console.log("Wrote", target);
