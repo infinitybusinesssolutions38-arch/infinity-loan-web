@@ -259,18 +259,6 @@ export default function DisclaimerPage() {
                       >
                         business@infinityloanservices.com
                       </Link>
-                      <Link
-                        href="mailto:personal.infinityloans@gmail.com"
-                        className="block text-[#666666] hover:text-[#00AEEF]"
-                      >
-                        personal.infinityloans@gmail.com
-                      </Link>
-                      <Link
-                        href="mailto:business.infinityloans@gmail.com"
-                        className="block text-[#666666] hover:text-[#00AEEF]"
-                      >
-                        business.infinityloans@gmail.com
-                      </Link>
                     </div>
                   </div>
                 </div>

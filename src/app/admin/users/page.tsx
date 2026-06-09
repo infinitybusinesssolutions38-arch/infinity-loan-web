@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import AdminListDeleteButton from "@/components/admin/AdminListDeleteButton";
 
 type UserItem = {
   _id: string;
@@ -10,6 +11,8 @@ type UserItem = {
   role: string;
   isDisabled?: boolean;
   createdAt?: string;
+  loanCount?: number;
+  canDelete?: boolean;
 };
 
 export default function AdminUsersPage() {
@@ -74,8 +77,25 @@ export default function AdminUsersPage() {
 
     const data = await res.json().catch(() => ({}));
     if (res.ok && data?.success) {
-      setItems((prev) => prev.map((x) => (x._id === u._id ? data.data : x)));
+      setItems((prev) => prev.map((x) => (x._id === u._id ? { ...x, ...data.data } : x)));
     }
+  };
+
+  const deleteUser = async (u: UserItem) => {
+    setError(null);
+    const res = await fetch(`/api/admin/users/${u._id}`, {
+      method: "DELETE",
+      credentials: "include",
+    });
+    const data = await res.json().catch(() => ({}));
+
+    if (!res.ok || !data?.success) {
+      setError(data?.message || "Failed to delete user");
+      return false;
+    }
+
+    setItems((prev) => prev.filter((x) => x._id !== u._id));
+    return true;
   };
 
   return (
@@ -116,6 +136,7 @@ export default function AdminUsersPage() {
               <th className="py-3">Role</th>
               <th className="py-3">Status</th>
               <th className="py-3">Actions</th>
+              <th className="py-3">Delete</th>
               <th className="py-3">View</th>
             </tr>
           </thead>
@@ -144,6 +165,25 @@ export default function AdminUsersPage() {
                   </button>
                 </td>
                 <td className="py-4">
+                  {u.canDelete ? (
+                    <AdminListDeleteButton
+                      itemLabel="this user"
+                      onDelete={() => deleteUser(u)}
+                    />
+                  ) : (
+                    <span
+                      className="text-[10px] text-muted-foreground"
+                      title={
+                        (u.loanCount || 0) > 0
+                          ? `User has ${u.loanCount} loan application(s)`
+                          : undefined
+                      }
+                    >
+                      {(u.loanCount || 0) > 0 ? "Has loans" : "—"}
+                    </span>
+                  )}
+                </td>
+                <td className="py-4">
                   <Link
                     href={`/admin/users/${u._id}`}
                     className="rounded-2xl bg-secondary/70 px-3 py-2 text-xs font-semibold transition hover:bg-secondary"
@@ -156,7 +196,7 @@ export default function AdminUsersPage() {
 
             {!loading && items.length === 0 && (
               <tr>
-                <td colSpan={6} className="py-10 text-center text-muted-foreground">
+                <td colSpan={7} className="py-10 text-center text-muted-foreground">
                   {error ? "Unable to load users" : "No users found"}
                 </td>
               </tr>

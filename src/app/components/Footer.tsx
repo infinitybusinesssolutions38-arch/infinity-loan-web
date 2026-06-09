@@ -85,18 +85,6 @@ export function Footer() {
                                     >
                                         business@infinityloanservices.com
                                     </Link>
-                                    <Link
-                                        href="mailto:personal.infinityloans@gmail.com"
-                                        className={`${hl.footerLink} mt-1 block`}
-                                    >
-                                        personal.infinityloans@gmail.com
-                                    </Link>
-                                    <Link
-                                        href="mailto:business.infinityloans@gmail.com"
-                                        className={`${hl.footerLink} mt-1 block`}
-                                    >
-                                        business.infinityloans@gmail.com
-                                    </Link>
                                 </div>
                             </li>
                         </ul>

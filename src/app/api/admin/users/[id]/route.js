@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import connectDB from "../../../lib/db";
 import { requireAdmin } from "../../lib/guard";
 import { isValidObjectId } from "../../lib/validate";
+import { countUserLoans } from "../../../lib/loan-applications";
 import UserModel from "../../../models/user-schema";
 
 export async function GET(req, { params }) {
@@ -49,4 +50,38 @@ export async function PATCH(req, { params }) {
   }
 
   return NextResponse.json({ success: true, data: user });
+}
+
+export async function DELETE(req, { params }) {
+  const auth = requireAdmin(req);
+  if (!auth.ok) return auth.res;
+
+  const resolvedParams = await params;
+  const id = resolvedParams?.id;
+  if (!isValidObjectId(id)) {
+    return NextResponse.json({ success: false, message: "Invalid user id" }, { status: 400 });
+  }
+
+  await connectDB();
+
+  const user = await UserModel.findById(id).lean();
+  if (!user) {
+    return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });
+  }
+
+  const loanCount = await countUserLoans(user);
+  if (loanCount > 0) {
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Cannot delete user with existing loan applications.",
+        loanCount,
+      },
+      { status: 400 }
+    );
+  }
+
+  await UserModel.findByIdAndDelete(id);
+
+  return NextResponse.json({ success: true, message: "User deleted successfully" });
 }
