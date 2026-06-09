@@ -443,7 +443,7 @@ const ContactPage = () => {
                                 <Input
                                     id="mobile"
                                     type="tel"
-                                    placeholder="9876543210"
+                                    placeholder="0000000000"
                                     className={cn(
                                         "h-11 bg-white border-[#D6EEF8] focus:border-[#00AEEF] focus:ring-2 focus:ring-[#00AEEF]/20 transition-all",
                                         errors.mobile && "border-red-500"
