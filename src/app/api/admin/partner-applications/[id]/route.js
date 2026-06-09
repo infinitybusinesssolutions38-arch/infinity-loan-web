@@ -134,3 +134,26 @@ export async function PATCH(req, { params }) {
     );
   }
 }
+
+export async function DELETE(req, { params }) {
+  const auth = requireAdmin(req);
+  if (!auth.ok) return auth.res;
+
+  const resolvedParams = await params;
+  const id = String(resolvedParams?.id || "").trim();
+  if (!isValidObjectId(id)) {
+    return NextResponse.json({ success: false, message: "Invalid application id" }, { status: 400 });
+  }
+
+  await connectDB();
+
+  const deleted = await PartnerRegisterModel.findByIdAndDelete(id).lean();
+  if (!deleted) {
+    return NextResponse.json(
+      { success: false, message: "Partner application not found" },
+      { status: 404 }
+    );
+  }
+
+  return NextResponse.json({ success: true, message: "Partner application deleted successfully" });
+}

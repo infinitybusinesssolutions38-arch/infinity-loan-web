@@ -2,6 +2,7 @@ import {
   createDirectorMailTransport,
   resolveDirectorFromAddress,
 } from "./director-mail-transport";
+import { COMPANY_OFFICE_EMAIL_SECTION_HTML } from "./company-contact.js";
 
 function normalizeStatusForEmail(status) {
   const raw = String(status || "").trim();
@@ -183,17 +184,7 @@ function buildStatusEmailHtml({
         </div>
       </div>
 
-      <div class="section">
-        <div class="section-title">🏢 Our Office Locations</div>
-        <div class="office-box">
-          <h4>Gujarat Office</h4>
-          <p>Incuspaze 3rd Floor, 1965, Gorwa,<br>Alembic City, Alembic Road,<br>Vadodara – 390003 Gujarat, India</p>
-        </div>
-        <div class="office-box">
-          <h4>Pune Office</h4>
-          <p>Saraswati Sadan, 7–8,<br>Next to ICICI Prudential Mutual Fund,<br>Behind Viera Unisex Salon & Riviresa Society Baner,<br>Pune – 411045 Maharashtra, India</p>
-        </div>
-      </div>
+      ${COMPANY_OFFICE_EMAIL_SECTION_HTML}
 
       <p>Warm Regards,<br><strong>Team Infinity Loans & Business Solutions</strong></p>
 

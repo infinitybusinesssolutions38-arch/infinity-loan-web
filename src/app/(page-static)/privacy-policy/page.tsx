@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, Shield, Eye, Lock, FileText, Users, Building2, Mail, Phone, Globe } from "lucide-react";
+import CompanyOfficeAddress from "@/components/CompanyOfficeAddress";
 
 export const metadata: Metadata = {
   title: "Privacy Policy - Infinity Loans & Business Solutions",
@@ -364,17 +365,7 @@ export default function PrivacyPolicyPage() {
                     <div className="flex items-start gap-3">
                       <Building2 className="h-5 w-5 text-[#00AEEF] mt-1 shrink-0" />
                       <div>
-                        <p className="font-semibold text-[#1A1A1A] mb-1">Office Locations:</p>
-                        <p className="font-semibold text-[#1A1A1A] text-sm mb-1">
-                          Corporate & Registered Office
-                        </p>
-                        <p className="text-[#666666] text-sm leading-relaxed">
-                          8th Floor, Magnum Tower – 1,
-                          <br />
-                          Golf Course Extension Road, Sector 58,
-                          <br />
-                          Gurugram, Haryana – 122098, India
-                        </p>
+                        <CompanyOfficeAddress heading="Office Location:" />
                       </div>
                     </div>
                   </div>

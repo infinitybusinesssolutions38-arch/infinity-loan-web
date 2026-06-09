@@ -22,6 +22,8 @@ type DashboardStats = {
   users?: number;
   enquiries?: number;
   loanApplications?: number;
+  salaryLoanApplications?: number;
+  businessLoanApplications?: number;
   creditCardApplications?: number;
   partnerApplications?: number;
   totalApplications?: number;
@@ -188,7 +190,7 @@ function DashboardSkeleton() {
     <div className="space-y-6 animate-pulse">
       <div className="admin-welcome-banner h-28 rounded-2xl bg-[#E6F7FD]" />
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        {Array.from({ length: 6 }).map((_, i) => (
+        {Array.from({ length: 7 }).map((_, i) => (
           <div key={i} className="h-36 rounded-2xl bg-[#EEF9FE]" />
         ))}
       </div>
@@ -203,6 +205,20 @@ function DashboardSkeleton() {
 export default function AdminDashboardPage() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  useEffect(() => {
+    const refresh = () => setRefreshKey((key) => key + 1);
+    window.addEventListener("admin:dashboard-refresh", refresh);
+    const onVisibility = () => {
+      if (document.visibilityState === "visible") refresh();
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      window.removeEventListener("admin:dashboard-refresh", refresh);
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
+  }, []);
 
   useEffect(() => {
     let mounted = true;
@@ -210,7 +226,10 @@ export default function AdminDashboardPage() {
     (async () => {
       try {
         setLoading(true);
-        const res = await fetch("/api/admin/dashboard", { credentials: "include" });
+        const res = await fetch("/api/admin/dashboard", {
+          credentials: "include",
+          cache: "no-store",
+        });
         const data = await res.json().catch(() => ({}));
         if (!mounted) return;
         if (res.ok && data?.success) setStats(data.data);
@@ -225,7 +244,7 @@ export default function AdminDashboardPage() {
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [refreshKey]);
 
   const kpis: KpiConfig[] = useMemo(
     () => [
@@ -248,13 +267,22 @@ export default function AdminDashboardPage() {
         bg: "#E3F2FD",
       },
       {
-        title: "Loan Applications",
-        subtitle: "Personal & business combined",
-        value: stats?.loanApplications ?? "—",
+        title: "Salary Loan Apps",
+        subtitle: "Salaried employee applications",
+        value: stats?.salaryLoanApplications ?? stats?.applicationTypeSummary?.personal ?? "—",
         href: "/admin/salary-loan-applications",
         icon: Wallet,
         accent: "#0D9488",
         bg: "#CCFBF1",
+      },
+      {
+        title: "Business Loan Apps",
+        subtitle: "Business loan applications",
+        value: stats?.businessLoanApplications ?? stats?.applicationTypeSummary?.business ?? "—",
+        href: "/admin/business-loan-applications",
+        icon: BriefcaseBusiness,
+        accent: "#0284C7",
+        bg: "#E0F2FE",
       },
       {
         title: "Credit Card Apps",
@@ -355,7 +383,7 @@ export default function AdminDashboardPage() {
           </div>
           <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
             {[
-              { label: "Personal", value: stats?.applicationTypeSummary?.personal ?? 0, color: "#00AEEF" },
+              { label: "Salary", value: stats?.applicationTypeSummary?.personal ?? 0, color: "#0D9488" },
               { label: "Business", value: stats?.applicationTypeSummary?.business ?? 0, color: "#00AEEF" },
               { label: "Credit Card", value: stats?.applicationTypeSummary?.creditCard ?? 0, color: "#8B5CF6" },
               { label: "Partner", value: stats?.applicationTypeSummary?.partner ?? 0, color: "#F59E0B" },
@@ -453,11 +481,11 @@ export default function AdminDashboardPage() {
         </div>
         <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2">
           <ProgressMetric
-            label="Personal loans"
+            label="Salary employee loans"
             value={stats?.applicationTypeSummary?.personal || 0}
             total={totalApps || 1}
-            color="#00AEEF"
-            barColor="#00AEEF"
+            color="#0D9488"
+            barColor="#0D9488"
           />
           <ProgressMetric
             label="Business loans"
@@ -486,10 +514,10 @@ export default function AdminDashboardPage() {
       {/* Top categories */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <RankList
-          title="Top Personal Loan Categories"
+          title="Top Salary Loan Categories"
           items={stats?.topServiceCategories?.personal || []}
           accent="#00AEEF"
-          emptyLabel="No personal loan data yet"
+          emptyLabel="No salary loan data yet"
         />
         <RankList
           title="Top Business Loan Categories"
@@ -515,7 +543,7 @@ export default function AdminDashboardPage() {
             </div>
             <div className="flex flex-wrap gap-3 text-[11px] font-medium text-muted-foreground">
               <span className="flex items-center gap-1.5">
-                <span className="h-2 w-2 rounded-full bg-[#00AEEF]" /> Personal
+                <span className="h-2 w-2 rounded-full bg-[#0D9488]" /> Salary
               </span>
               <span className="flex items-center gap-1.5">
                 <span className="h-2 w-2 rounded-full bg-[#00AEEF]" /> Business
@@ -551,7 +579,7 @@ export default function AdminDashboardPage() {
                   <div className="admin-trend-bar-wrap" style={{ width: `${Math.max(barWidth, 4)}%` }}>
                     <div
                       className="admin-trend-segment"
-                      style={{ width: `${(personal / sum) * 100}%`, background: "#00AEEF" }}
+                      style={{ width: `${(personal / sum) * 100}%`, background: "#0D9488" }}
                     />
                     <div
                       className="admin-trend-segment"

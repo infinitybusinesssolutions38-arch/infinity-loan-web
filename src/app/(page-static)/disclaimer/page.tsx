@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowLeft, AlertTriangle, Shield, Globe, Mail, Phone, Info, XCircle } from "lucide-react";
+import { ArrowLeft, AlertTriangle, Shield, Globe, Mail, Phone, Info, XCircle, Building2 } from "lucide-react";
+import CompanyOfficeAddress from "@/components/CompanyOfficeAddress";
 
 export const metadata: Metadata = {
   title: "Disclaimer - Infinity Loans & Business Solutions",
@@ -260,6 +261,11 @@ export default function DisclaimerPage() {
                         business@infinityloanservices.com
                       </Link>
                     </div>
+                  </div>
+
+                  <div className="flex items-start gap-3 md:col-span-2">
+                    <Building2 className="h-5 w-5 text-[#00AEEF] mt-1 shrink-0" />
+                    <CompanyOfficeAddress heading="Office Location:" />
                   </div>
                 </div>
               </div>

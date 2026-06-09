@@ -4,6 +4,7 @@ import SalariedLoanModel from "../models/salaried-loan-schema";
 import BusinessLoanModel from "../models/business-loan-schema";
 import PersonalLoanModel from "../models/personal-loan-schema";
 import CreditCardModel from "../models/credit-card-schema";
+import UserModel from "../models/user-schema";
 
 const LOAN_MODELS = [
     { key: "salaried", model: SalariedLoanModel, label: "Salaried Loan" },
@@ -338,11 +339,44 @@ export function getEditableFieldGroups(categoryKey) {
 export function buildUserLoanFilter(user) {
     const email = String(user.email || user._raw?.email || "").trim().toLowerCase();
     const userId = user.id || user._id;
-    const or = [{ personalEmail: new RegExp(`^${escapeRegex(email)}$`, "i") }];
+    const mobile = String(user.mobile || user._raw?.mobile || "").replace(/\D/g, "");
+    const or = [];
+
+    if (email) {
+        or.push({ personalEmail: new RegExp(`^${escapeRegex(email)}$`, "i") });
+    }
     if (userId && mongoose.Types.ObjectId.isValid(String(userId))) {
         or.push({ userId: new mongoose.Types.ObjectId(String(userId)) });
     }
-    return { $or: or };
+    if (mobile) {
+        or.push({ mobileNumber: new RegExp(`${escapeRegex(mobile)}$`) });
+    }
+
+    return or.length > 0 ? { $or: or } : { _id: null };
+}
+
+/** Exclude loan records tied to a user account that no longer exists. */
+export async function buildOrphanExcludedLoanFilter() {
+    await connectDB();
+    const users = await UserModel.find({}, { _id: 1 }).lean();
+    const validUserIds = users.map((u) => u._id);
+
+    return {
+        $or: [
+            { userId: { $exists: false } },
+            { userId: null },
+            { userId: { $in: validUserIds } },
+        ],
+    };
+}
+
+export async function deleteUserLoans(user) {
+    await connectDB();
+    const filter = buildUserLoanFilter(user);
+    const results = await Promise.all(
+        LOAN_MODELS.map(({ model }) => model.deleteMany(filter))
+    );
+    return results.reduce((sum, result) => sum + (result.deletedCount || 0), 0);
 }
 
 export function getLoanTypeLabel(record, categoryKey, defaultLabel) {

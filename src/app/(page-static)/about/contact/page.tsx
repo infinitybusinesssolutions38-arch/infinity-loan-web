@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Minus, Mail, Phone, MapPin, Send, CheckCircle2, FileText } from "lucide-react";
+import CompanyOfficeAddress from "@/components/CompanyOfficeAddress";
 import PrivateInstitutionalHighlight from "@/app/components/PrivateInstitutionalHighlight";
 import PoorCibilHighlight from "@/app/components/PoorCibilHighlight";
 import EmiRestructuringHighlight from "@/app/components/Emirestructuringhighlight";
@@ -258,6 +259,20 @@ const ContactPage = () => {
                                     >
                                         business@infinityloanservices.com
                                     </a>
+                                </div>
+                            </div>
+
+                            <div className="flex items-center gap-4 p-4 bg-[#F7F9FC] rounded-lg border border-[#D6EEF8] transition-all duration-300 ease-out hover:border-[#00AEEF]">
+                                <div className="w-12 h-12 bg-[#E6F7FD] rounded-full flex items-center justify-center flex-shrink-0">
+                                    <MapPin className="text-[#00AEEF]" size={20} />
+                                </div>
+                                <div>
+                                    <p className="text-[#666666] text-sm">Visit Us</p>
+                                    <CompanyOfficeAddress
+                                        heading=""
+                                        titleClassName="text-[#1A1A1A] font-medium"
+                                        bodyClassName="text-[#1A1A1A] font-medium"
+                                    />
                                 </div>
                             </div>
 

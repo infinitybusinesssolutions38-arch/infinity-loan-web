@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import AdminListDeleteButton from "@/components/admin/AdminListDeleteButton";
 
 type PartnerStatus = "New" | "Contacted" | "Approved" | "Rejected" | "Onboarded";
 
@@ -140,6 +141,34 @@ export default function PartnerApplicationsPage() {
     void updateRowStatus(id, value);
   };
 
+  const deleteApplication = async (id: string) => {
+    if (!id) {
+      setError("Invalid application id — refresh the page and try again.");
+      return false;
+    }
+
+    setError(null);
+    try {
+      const res = await fetch(`/api/admin/partner-applications/${encodeURIComponent(id)}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok || !data?.success) {
+        setError(data?.message || "Failed to delete partner application");
+        return false;
+      }
+
+      setApplications((prev) => prev.filter((app) => getId(app) !== id));
+      window.dispatchEvent(new CustomEvent("admin:dashboard-refresh"));
+      return true;
+    } catch {
+      setError("Failed to delete partner application");
+      return false;
+    }
+  };
+
   const badgeClass = (status: PartnerStatus) => {
     if (status === "Approved" || status === "Onboarded") return "bg-green-50 text-green-700";
     if (status === "Contacted") return "bg-yellow-50 text-yellow-700";
@@ -198,6 +227,7 @@ export default function PartnerApplicationsPage() {
                   <th className="px-4 py-3">Status</th>
                   <th className="px-4 py-3">Change status</th>
                   <th className="px-4 py-3">Applied</th>
+                  <th className="px-4 py-3">Delete</th>
                   <th className="px-4 py-3">Actions</th>
                 </tr>
               </thead>
@@ -251,6 +281,12 @@ export default function PartnerApplicationsPage() {
                       </td>
                       <td className="px-4 py-3">
                         {app.createdAt ? new Date(app.createdAt).toLocaleDateString() : "—"}
+                      </td>
+                      <td className="px-4 py-3">
+                        <AdminListDeleteButton
+                          itemLabel="this partner application"
+                          onDelete={() => deleteApplication(id)}
+                        />
                       </td>
                       <td className="px-4 py-3">
                         <Link
