@@ -1,7 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ShieldCheck } from "lucide-react";
+import { ArrowLeft, ShieldCheck } from "lucide-react";
 
 const titleMap: Record<string, string> = {
   "/admin/dashboard": "Dashboard",
@@ -13,28 +14,87 @@ const titleMap: Record<string, string> = {
   "/admin/credit-card-applications": "Credit Card Applications",
   "/admin/google-forms": "Google Forms",
   "/admin/partner-applications": "Loan Partner Applications",
+  "/admin/payment-receipts": "Payment Receipts",
   "/admin/loan-applications": "Loan Applications",
+  "/admin/debug": "Debug",
 };
+
+const listRoutes: Record<string, { href: string; label: string }> = {
+  "/admin/users": { href: "/admin/users", label: "Users" },
+  "/admin/enquiries": { href: "/admin/enquiries", label: "Loan Enquiries" },
+  "/admin/regular-enquiries": { href: "/admin/regular-enquiries", label: "Regular Enquiries" },
+  "/admin/salary-loan-applications": {
+    href: "/admin/salary-loan-applications",
+    label: "Salary Employee Loan Applications",
+  },
+  "/admin/business-loan-applications": {
+    href: "/admin/business-loan-applications",
+    label: "Business Loan Applications",
+  },
+  "/admin/credit-card-applications": {
+    href: "/admin/credit-card-applications",
+    label: "Credit Card Applications",
+  },
+  "/admin/google-forms": { href: "/admin/google-forms", label: "Google Forms" },
+  "/admin/partner-applications": {
+    href: "/admin/partner-applications",
+    label: "Loan Partner Applications",
+  },
+  "/admin/payment-receipts": {
+    href: "/admin/payment-receipts",
+    label: "Payment Receipts",
+  },
+  "/admin/loan-applications": { href: "/admin/loan-applications", label: "Loan Applications" },
+};
+
+function getPageTitle(pathname: string) {
+  if (titleMap[pathname]) return titleMap[pathname];
+
+  if (pathname.startsWith("/admin/users/")) return "User Details";
+  if (pathname.startsWith("/admin/enquiries/")) return "Enquiry Details";
+  if (pathname.startsWith("/admin/salary-loan-applications/")) return "Salary Loan Details";
+  if (pathname.startsWith("/admin/business-loan-applications/")) return "Business Loan Details";
+  if (pathname.startsWith("/admin/credit-card-applications/")) return "Credit Card Details";
+  if (pathname.startsWith("/admin/partner-applications/")) return "Partner Application Details";
+  if (pathname.startsWith("/admin/loan-applications/")) return "Loan Application Details";
+
+  return "Admin";
+}
+
+function getBackNavigation(pathname: string) {
+  if (pathname === "/admin/dashboard") return null;
+
+  for (const [listPath, meta] of Object.entries(listRoutes)) {
+    if (pathname.startsWith(`${listPath}/`) && pathname !== listPath) {
+      return { href: listPath, label: `Back to ${meta.label}` };
+    }
+  }
+
+  if (pathname.startsWith("/admin/") && pathname !== "/admin/dashboard") {
+    return { href: "/admin/dashboard", label: "Back to Dashboard" };
+  }
+
+  return null;
+}
 
 export default function AdminTopbar() {
   const pathname = usePathname();
-
-  const title =
-    titleMap[pathname] ||
-    (pathname.startsWith("/admin/enquiries/")
-      ? "Enquiry Details"
-      : pathname.startsWith("/admin/salary-loan-applications/")
-        ? "Salary Loan Details"
-        : pathname.startsWith("/admin/business-loan-applications/")
-          ? "Business Loan Details"
-          : pathname.startsWith("/admin/loan-applications/")
-            ? "Loan Application Details"
-            : "Admin");
+  const title = getPageTitle(pathname);
+  const back = getBackNavigation(pathname);
 
   return (
     <div className="admin-topbar px-5 pb-4 pt-5">
-      <div className="flex items-center justify-between gap-3">
+      <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
+          {back ? (
+            <Link
+              href={back.href}
+              className="mb-2 inline-flex items-center gap-1.5 text-sm font-semibold text-[#00AEEF] transition hover:text-[#008FCC] hover:underline"
+            >
+              <ArrowLeft className="h-4 w-4 shrink-0" strokeWidth={2.25} />
+              {back.label}
+            </Link>
+          ) : null}
           <div className="truncate text-xs font-semibold uppercase tracking-wider text-[#00AEEF]/70">
             Infinity Loans & Business Solutions • Admin
           </div>

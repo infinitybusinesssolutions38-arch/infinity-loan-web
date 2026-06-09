@@ -4,32 +4,43 @@ import { useState, useMemo } from "react";
 import { useLoanModal } from "./LoanModalProvider";
 import ApplyNowCTAButton from "./loans/ApplyNowCTAButton";
 
+function toNumber(value: string) {
+    const n = Number(value);
+    return Number.isFinite(n) ? n : 0;
+}
+
 export default function EMICalculator() {
-    const [amount, setAmount] = useState(0);
-    const [tenure, setTenure] = useState(36);
-    const [annualRate, setAnnualRate] = useState(12);
+    const [amount, setAmount] = useState("500000");
+    const [tenure, setTenure] = useState("36");
+    const [annualRate, setAnnualRate] = useState("12");
 
     const loanModal = useLoanModal();
 
-    const monthlyRate = annualRate / 12 / 100;
+    const numericAmount = toNumber(amount);
+    const numericTenure = toNumber(tenure);
+    const numericRate = toNumber(annualRate);
+    const monthlyRate = numericRate / 12 / 100;
 
     const emi = useMemo(() => {
-        const p = amount;
+        const p = numericAmount;
         const r = monthlyRate;
-        const n = tenure;
+        const n = numericTenure;
 
+        if (!(p > 0) || !(n > 0)) return 0;
         if (r === 0) return p / n;
 
-        return (p * r * Math.pow(1 + r, n)) /
-            (Math.pow(1 + r, n) - 1);
-    }, [amount, tenure, monthlyRate]);
+        return (p * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+    }, [numericAmount, numericTenure, monthlyRate]);
 
-    const totalPayable = emi * tenure;
-    const interest = totalPayable - amount;
+    const totalPayable = emi * numericTenure;
+    const interest = totalPayable - numericAmount;
 
     const handleApply = () => {
         loanModal?.open?.();
     };
+
+    const inputClass =
+        "mt-2 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition focus:border-[#00AEEF] focus:ring-4 focus:ring-[#E6F7FD]";
 
     return (
         <section
@@ -38,7 +49,6 @@ export default function EMICalculator() {
         >
             <div className="w-full max-w-5xl bg-white/80 border border-gray-200 backdrop-blur-xl rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.08)] p-6 lg:p-10">
 
-                {/* Header */}
                 <div className="mb-10 text-center lg:text-left">
                     <h2 className="text-4xl font-black tracking-tight text-gray-900">
                         EMI Calculator
@@ -48,76 +58,52 @@ export default function EMICalculator() {
                     </p>
                 </div>
 
-                {/* Main Layout */}
                 <div className="grid gap-8 lg:grid-cols-2">
 
-                    {/* LEFT */}
-                    <div className="space-y-8">
+                    <div className="space-y-6">
 
-                        {/* Loan Amount */}
-                        <div className="bg-gray-50 rounded-2xl border border-gray-200 p-5 shadow-sm hover:shadow-md transition">
-                            <div className="flex justify-between mb-2">
-                                <span className="text-sm font-medium text-gray-700">
-                                    Loan Amount
-                                </span>
-                                <span className="text-sm font-bold text-[#2E3192]">
-                                    ₹ {amount.toLocaleString()}
-                                </span>
-                            </div>
+                        <div className="bg-gray-50 rounded-2xl border border-gray-200 p-5 shadow-sm">
+                            <label className="text-sm font-medium text-gray-700">
+                                Loan Amount (₹)
+                            </label>
                             <input
-                                type="range"
-                                min={0}
-                                max={2000000}
-                                step={10000}
+                                type="text"
+                                inputMode="numeric"
+                                placeholder="Enter loan amount"
                                 value={amount}
-                                onChange={(e) => setAmount(Number(e.target.value))}
-                                className="w-full accent-indigo-600 cursor-pointer"
+                                onChange={(e) => setAmount(e.target.value.replace(/[^\d.]/g, ""))}
+                                className={inputClass}
                             />
                         </div>
 
-                        {/* Tenure */}
-                        <div className="bg-gray-50 rounded-2xl border border-gray-200 p-5 shadow-sm hover:shadow-md transition">
-                            <div className="flex justify-between mb-2">
-                                <span className="text-sm font-medium text-gray-700">
-                                    Tenure
-                                </span>
-                                <span className="text-sm font-bold text-[#2E3192]">
-                                    {tenure} Months
-                                </span>
-                            </div>
+                        <div className="bg-gray-50 rounded-2xl border border-gray-200 p-5 shadow-sm">
+                            <label className="text-sm font-medium text-gray-700">
+                                Tenure (Months)
+                            </label>
                             <input
-                                type="range"
-                                min={6}
-                                max={84}
-                                step={6}
+                                type="text"
+                                inputMode="numeric"
+                                placeholder="Enter tenure in months"
                                 value={tenure}
-                                onChange={(e) => setTenure(Number(e.target.value))}
-                                className="w-full accent-indigo-600 cursor-pointer"
+                                onChange={(e) => setTenure(e.target.value.replace(/[^\d.]/g, ""))}
+                                className={inputClass}
                             />
                         </div>
 
-                        {/* Interest Rate */}
-                        <div className="bg-gray-50 rounded-2xl border border-gray-200 p-5 shadow-sm hover:shadow-md transition">
-                            <div className="flex justify-between mb-2">
-                                <span className="text-sm font-medium text-gray-700">
-                                    Interest Rate (Annual)
-                                </span>
-                                <span className="text-sm font-bold text-[#2E3192]">
-                                    {annualRate}%
-                                </span>
-                            </div>
+                        <div className="bg-gray-50 rounded-2xl border border-gray-200 p-5 shadow-sm">
+                            <label className="text-sm font-medium text-gray-700">
+                                Interest Rate (% p.a.)
+                            </label>
                             <input
-                                type="range"
-                                min={5}
-                                max={30}
-                                step={0.5}
+                                type="text"
+                                inputMode="decimal"
+                                placeholder="Enter interest rate"
                                 value={annualRate}
-                                onChange={(e) => setAnnualRate(Number(e.target.value))}
-                                className="w-full accent-indigo-600 cursor-pointer"
+                                onChange={(e) => setAnnualRate(e.target.value.replace(/[^\d.]/g, ""))}
+                                className={inputClass}
                             />
                         </div>
 
-                        {/* CTA Desktop */}
                         <ApplyNowCTAButton
                             loanType="Loan"
                             size="xl"
@@ -127,7 +113,6 @@ export default function EMICalculator() {
                         </ApplyNowCTAButton>
                     </div>
 
-                    {/* RIGHT */}
                     <div className="rounded-2xl bg-gradient-to-br from-white to-[#E6F7FD] p-6 shadow-xl border border-[#E6F7FD]/60 flex flex-col justify-between">
 
                         <div>
@@ -147,7 +132,7 @@ export default function EMICalculator() {
                                 <div className="flex justify-between text-sm border-t border-gray-200 pt-4">
                                     <span className="text-gray-500">Principal Amount</span>
                                     <span className="font-semibold text-gray-900">
-                                        ₹ {amount.toLocaleString()}
+                                        ₹ {numericAmount.toLocaleString()}
                                     </span>
                                 </div>
 
@@ -166,24 +151,22 @@ export default function EMICalculator() {
                                 </div>
                             </div>
                         </div>
-                    
 
-                    {/* CTA Mobile */}
-                    <ApplyNowCTAButton
-                        loanType="Loan"
-                        size="xl"
-                        className="lg:hidden mt-6 w-full"
-                        onClick={handleApply}
-                    >
-                        Apply for Loan
-                    </ApplyNowCTAButton>
+                        <ApplyNowCTAButton
+                            loanType="Loan"
+                            size="xl"
+                            className="lg:hidden mt-6 w-full"
+                            onClick={handleApply}
+                        >
+                            Apply for Loan
+                        </ApplyNowCTAButton>
+                    </div>
                 </div>
-            </div>
 
-            <p className="text-xs text-gray-400 text-center mt-6">
-                * EMI values are dynamically calculated based on your selections.
-            </p>
-        </div>
-        </section >
+                <p className="text-xs text-gray-400 text-center mt-6">
+                    * EMI values are calculated from the values you enter above.
+                </p>
+            </div>
+        </section>
     );
 }

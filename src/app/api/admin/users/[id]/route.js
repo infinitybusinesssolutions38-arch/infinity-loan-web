@@ -8,7 +8,8 @@ export async function GET(req, { params }) {
   const auth = requireAdmin(req);
   if (!auth.ok) return auth.res;
 
-  const id = params?.id;
+  const resolvedParams = await params;
+  const id = resolvedParams?.id;
   if (!isValidObjectId(id)) {
     return NextResponse.json({ success: false, message: "Invalid user id" }, { status: 400 });
   }
@@ -27,7 +28,8 @@ export async function PATCH(req, { params }) {
   const auth = requireAdmin(req);
   if (!auth.ok) return auth.res;
 
-  const id = params?.id;
+  const resolvedParams = await params;
+  const id = resolvedParams?.id;
   if (!isValidObjectId(id)) {
     return NextResponse.json({ success: false, message: "Invalid user id" }, { status: 400 });
   }

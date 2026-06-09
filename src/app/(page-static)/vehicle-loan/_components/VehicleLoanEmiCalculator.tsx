@@ -117,9 +117,8 @@ export default function VehicleLoanEmiCalculator() {
                   </label>
                   <div className="relative">
                     <input
-                      type="number"
+                      type="text"
                       inputMode="numeric"
-                      min={0}
                       value={inputs.loanAmount}
                       onChange={(e) =>
                         handleInputChange("loanAmount", e.target.value)
@@ -131,17 +130,6 @@ export default function VehicleLoanEmiCalculator() {
                       ₹
                     </span>
                   </div>
-                  <input
-                    type="range"
-                    min={100000}
-                    max={10000000}
-                    step={100000}
-                    value={inputs.loanAmount}
-                    onChange={(e) =>
-                      handleInputChange("loanAmount", e.target.value)
-                    }
-                    className="w-full h-2 bg-[#B3E8FA] rounded-lg appearance-none cursor-pointer accent-[#00AEEF]"
-                  />
                 </div>
 
                 {/* Interest Rate Input */}
@@ -151,10 +139,8 @@ export default function VehicleLoanEmiCalculator() {
                   </label>
                   <div className="relative">
                     <input
-                      type="number"
+                      type="text"
                       inputMode="decimal"
-                      min={0}
-                      step="0.01"
                       value={inputs.interestRate}
                       onChange={(e) =>
                         handleInputChange("interestRate", e.target.value)
@@ -166,17 +152,6 @@ export default function VehicleLoanEmiCalculator() {
                       %
                     </span>
                   </div>
-                  <input
-                    type="range"
-                    min={0}
-                    max={20}
-                    step={0.1}
-                    value={inputs.interestRate}
-                    onChange={(e) =>
-                      handleInputChange("interestRate", e.target.value)
-                    }
-                    className="w-full h-2 bg-[#B3E8FA] rounded-lg appearance-none cursor-pointer accent-[#00AEEF]"
-                  />
                 </div>
 
                 {/* Tenure Input */}
@@ -186,9 +161,8 @@ export default function VehicleLoanEmiCalculator() {
                   </label>
                   <div className="relative">
                     <input
-                      type="number"
+                      type="text"
                       inputMode="numeric"
-                      min={0}
                       value={inputs.tenureYears}
                       onChange={(e) =>
                         handleInputChange("tenureYears", e.target.value)
@@ -200,17 +174,6 @@ export default function VehicleLoanEmiCalculator() {
                       yrs
                     </span>
                   </div>
-                  <input
-                    type="range"
-                    min={1}
-                    max={20}
-                    step={1}
-                    value={inputs.tenureYears}
-                    onChange={(e) =>
-                      handleInputChange("tenureYears", e.target.value)
-                    }
-                    className="w-full h-2 bg-[#B3E8FA] rounded-lg appearance-none cursor-pointer accent-[#00AEEF]"
-                  />
                 </div>
               </div>
 

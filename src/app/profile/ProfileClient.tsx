@@ -153,6 +153,44 @@ const styles = `
   .btn-refresh span { position: relative; z-index: 1; }
   .btn-refresh:active { transform: scale(0.97); }
 
+  .profile-file-input-hidden {
+    display: none;
+  }
+  .profile-file-picker {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+  }
+  .btn-choose-file {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 18px;
+    border-radius: 12px;
+    border: 1.5px solid #2796CA;
+    background: #fff;
+    color: #2796CA;
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, transform 0.15s;
+    flex-shrink: 0;
+  }
+  .btn-choose-file:hover {
+    background: #2796CA;
+    color: #fff;
+  }
+  .btn-choose-file:active {
+    transform: scale(0.97);
+  }
+  .profile-file-name {
+    font-size: 12px;
+    color: #666;
+    word-break: break-all;
+  }
+
   /* Card base */
   .card {
     background: #fff;
@@ -729,9 +767,6 @@ export default function ProfileClient() {
                         <h1>My <span>Profile</span></h1>
                         <p>Your registered details and loan applications.</p>
                     </div>
-                    <button type="button" className="btn-refresh" onClick={() => window.location.reload()}>
-                        <span>↻ Refresh</span>
-                    </button>
                 </div>
 
                 {/* Loading */}
@@ -975,17 +1010,32 @@ export default function ProfileClient() {
                                         </div>
                                         <div className="loan-meta-item">
                                             <div className="loan-meta-label">Upload File (PDF/JPEG, max 1MB)</div>
-                                            <input
-                                                type="file"
-                                                accept="application/pdf,image/jpeg"
-                                                onChange={(e) => {
-                                                    const file = e.target.files?.[0] || null;
-                                                    const next = [...uploadRows];
-                                                    next[idx] = { ...next[idx], documentFile: file };
-                                                    setUploadRows(next);
-                                                }}
-                                                style={{ width: "100%" }}
-                                            />
+                                            <div className="profile-file-picker">
+                                                <input
+                                                    id={`upload-doc-file-${idx}`}
+                                                    type="file"
+                                                    className="profile-file-input-hidden"
+                                                    accept="application/pdf,image/jpeg"
+                                                    onChange={(e) => {
+                                                        const file = e.target.files?.[0] || null;
+                                                        const next = [...uploadRows];
+                                                        next[idx] = { ...next[idx], documentFile: file };
+                                                        setUploadRows(next);
+                                                    }}
+                                                />
+                                                <button
+                                                    type="button"
+                                                    className="btn-choose-file"
+                                                    onClick={() =>
+                                                        document.getElementById(`upload-doc-file-${idx}`)?.click()
+                                                    }
+                                                >
+                                                    Choose File
+                                                </button>
+                                                <span className="profile-file-name">
+                                                    {row.documentFile ? row.documentFile.name : "No file chosen"}
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -1162,17 +1212,32 @@ export default function ProfileClient() {
                                         </div>
                                         <div className="loan-meta-item">
                                             <div className="loan-meta-label">Upload File (PDF/JPEG, max 1MB)</div>
-                                            <input
-                                                type="file"
-                                                accept="application/pdf,image/jpeg"
-                                                onChange={(e) => {
-                                                    const file = e.target.files?.[0] || null;
-                                                    const next = [...receiptRows];
-                                                    next[idx] = { ...next[idx], receiptFile: file };
-                                                    setReceiptRows(next);
-                                                }}
-                                                style={{ width: "100%" }}
-                                            />
+                                            <div className="profile-file-picker">
+                                                <input
+                                                    id={`receipt-file-${idx}`}
+                                                    type="file"
+                                                    className="profile-file-input-hidden"
+                                                    accept="application/pdf,image/jpeg"
+                                                    onChange={(e) => {
+                                                        const file = e.target.files?.[0] || null;
+                                                        const next = [...receiptRows];
+                                                        next[idx] = { ...next[idx], receiptFile: file };
+                                                        setReceiptRows(next);
+                                                    }}
+                                                />
+                                                <button
+                                                    type="button"
+                                                    className="btn-choose-file"
+                                                    onClick={() =>
+                                                        document.getElementById(`receipt-file-${idx}`)?.click()
+                                                    }
+                                                >
+                                                    Choose File
+                                                </button>
+                                                <span className="profile-file-name">
+                                                    {row.receiptFile ? row.receiptFile.name : "No file chosen"}
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
 

@@ -84,6 +84,25 @@
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
 }
 
+.admin-sidebar-nav {
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 174, 239, 0.35) transparent;
+}
+
+.admin-sidebar-nav::-webkit-scrollbar {
+  width: 6px;
+}
+
+.admin-sidebar-nav::-webkit-scrollbar-thumb {
+  border-radius: 9999px;
+  background: rgba(0, 174, 239, 0.28);
+}
+
+.admin-sidebar-nav::-webkit-scrollbar-track {
+  background: transparent;
+}
+
 .admin-nav-link {
   position: relative;
   display: flex;

@@ -66,9 +66,8 @@ export default function BusinessLoanEmiCalculator() {
         <label className="space-y-2">
           <span className="text-sm font-medium text-gray-900">Loan amount</span>
           <input
-            type="number"
+            type="text"
             inputMode="numeric"
-            min={0}
             value={inputs.loanAmount}
             onChange={(e) => setInputs((prev) => ({ ...prev, loanAmount: e.target.value }))}
             className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 shadow-sm outline-none transition focus:border-[#00AEEF] focus:ring-4 focus:ring-[#E6F7FD]"
@@ -79,10 +78,8 @@ export default function BusinessLoanEmiCalculator() {
         <label className="space-y-2">
           <span className="text-sm font-medium text-gray-900">Interest rate (% p.a.)</span>
           <input
-            type="number"
+            type="text"
             inputMode="decimal"
-            min={0}
-            step="0.01"
             value={inputs.interestRate}
             onChange={(e) => setInputs((prev) => ({ ...prev, interestRate: e.target.value }))}
             className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 shadow-sm outline-none transition focus:border-[#00AEEF] focus:ring-4 focus:ring-[#E6F7FD]"
@@ -93,9 +90,8 @@ export default function BusinessLoanEmiCalculator() {
         <label className="space-y-2">
           <span className="text-sm font-medium text-gray-900">Loan tenure (years)</span>
           <input
-            type="number"
+            type="text"
             inputMode="numeric"
-            min={0}
             value={inputs.tenureYears}
             onChange={(e) => setInputs((prev) => ({ ...prev, tenureYears: e.target.value }))}
             className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 shadow-sm outline-none transition focus:border-[#00AEEF] focus:ring-4 focus:ring-[#E6F7FD]"

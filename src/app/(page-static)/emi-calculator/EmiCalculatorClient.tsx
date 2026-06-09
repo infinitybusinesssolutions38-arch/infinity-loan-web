@@ -203,20 +203,12 @@ export default function VehicleLoanEmiCalculator() {
             <div className="space-y-3 mb-6">
               <label className="text-sm font-semibold text-[#1A1A1A]">Loan Amount (₹)</label>
               <input
-                type="number"
-                min={0}
+                type="text"
+                inputMode="numeric"
+                placeholder="Enter loan amount"
                 value={inputs.loanAmount}
                 onChange={(e) => handleInputChange("loanAmount", e.target.value)}
                 className="w-full h-11 px-4 rounded-xl bg-white border border-[#D6EEF8] text-[#1A1A1A] placeholder:text-[#666666]/70 focus:outline-none focus-visible:ring-4 focus-visible:ring-[#00AEEF]/20 transition-colors"
-              />
-              <input
-                type="range"
-                min={10000}
-                max={10000000}
-                step={10000}
-                value={inputs.loanAmount}
-                onChange={(e) => handleInputChange("loanAmount", e.target.value)}
-                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#00AEEF] [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:transition-transform [&::-webkit-slider-thumb]:hover:scale-110"
               />
               {amountInWords && <p className="text-xs text-[#666666] italic leading-tight">{amountInWords}</p>}
             </div>
@@ -225,8 +217,9 @@ export default function VehicleLoanEmiCalculator() {
             <div className="space-y-3 mb-6">
               <label className="text-sm font-semibold text-[#1A1A1A]">Interest Rate (% p.a.)</label>
               <input
-                type="number"
-                step="0.1"
+                type="text"
+                inputMode="decimal"
+                placeholder="Enter interest rate"
                 value={inputs.interestRate}
                 onChange={(e) => handleInputChange("interestRate", e.target.value)}
                 className="w-full h-11 px-4 rounded-xl bg-white border border-[#D6EEF8] text-[#1A1A1A] placeholder:text-[#666666]/70 focus:outline-none focus-visible:ring-4 focus-visible:ring-[#00AEEF]/20 transition-colors"
@@ -237,7 +230,9 @@ export default function VehicleLoanEmiCalculator() {
             <div className="space-y-3">
               <label className="text-sm font-semibold text-[#1A1A1A]">Loan Tenure (Years)</label>
               <input
-                type="number"
+                type="text"
+                inputMode="numeric"
+                placeholder="Enter loan tenure in years"
                 value={inputs.tenureYears}
                 onChange={(e) => handleInputChange("tenureYears", e.target.value)}
                 className="w-full h-11 px-4 rounded-xl bg-white border border-[#D6EEF8] text-[#1A1A1A] placeholder:text-[#666666]/70 focus:outline-none focus-visible:ring-4 focus-visible:ring-[#00AEEF]/20 transition-colors"
