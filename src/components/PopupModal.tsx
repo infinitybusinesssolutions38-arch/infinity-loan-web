@@ -25,7 +25,7 @@ export default function PopupModal() {
     setIsOpen(false);
   };
 
-  const handleSignUp = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!agreedToContact) {
       alert("Please agree to be contacted to proceed.");
@@ -84,7 +84,7 @@ export default function PopupModal() {
         </h2>
 
         {/* Form */}
-        <form onSubmit={handleSignUp} className="space-y-3">
+        <form onSubmit={handleSubmit} className="space-y-3">
           <div>
             <label htmlFor="name" className="mb-1 block text-sm font-medium text-gray-700">
               Your Name
@@ -149,7 +149,7 @@ export default function PopupModal() {
 
           {/* Terms & Conditions text */}
           <p className="text-xs text-[#666666] leading-relaxed">
-            By clicking Sign Up, you confirm that you have read and agree to our{" "}
+            By clicking Submit, you confirm that you have read and agree to our{" "}
             <Link href="/terms-of-services" className="text-[#00AEEF] hover:underline">
               Terms & Conditions
             </Link>{" "}
@@ -189,7 +189,7 @@ export default function PopupModal() {
               variant="hero"
               className="flex-1"
             >
-              Sign Up
+              Submit
             </Button>
           </div>
         </form>

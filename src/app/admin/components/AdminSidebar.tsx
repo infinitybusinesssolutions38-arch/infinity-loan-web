@@ -12,6 +12,7 @@ import {
   LogOut,
   Mail,
   MessageSquare,
+  Receipt,
   Wallet,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
@@ -74,6 +75,15 @@ const nav: NavItem[] = [
     iconBg: "rgba(249, 115, 22, 0.12)",
   },
   {
+    href: "/admin/payment-receipts",
+    label: "Payment Receipts",
+    icon: Receipt,
+    accent: "#0D9488",
+    activeBg: "#CCFBF1",
+    hoverBg: "#F0FDFA",
+    iconBg: "rgba(13, 148, 136, 0.12)",
+  },
+  {
     href: "/admin/credit-card-applications",
     label: "Credit Card application",
     icon: CreditCard,
@@ -130,7 +140,7 @@ export default function AdminSidebar() {
           </div>
         </div>
 
-        <nav className="mt-2 min-h-0 flex-1 space-y-0.5 overflow-hidden px-2 py-1">
+        <nav className="admin-sidebar-nav mt-2 min-h-0 flex-1 space-y-0.5 overflow-y-auto px-2 py-1">
           {nav.map((item) => {
             const active = pathname === item.href;
             const Icon = item.icon;
