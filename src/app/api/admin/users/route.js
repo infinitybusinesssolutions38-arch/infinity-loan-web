@@ -38,7 +38,7 @@ export async function GET(req) {
         ...user,
         _id: user._id?.toString?.() || String(user._id || ""),
         loanCount,
-        canDelete: loanCount === 0,
+        canDelete: true,
       };
     })
   );

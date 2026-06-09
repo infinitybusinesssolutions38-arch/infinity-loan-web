@@ -76,7 +76,7 @@ const nav: NavItem[] = [
   },
   {
     href: "/admin/payment-receipts",
-    label: "Payment Receipts",
+    label: "Payment Receipt",
     icon: Receipt,
     accent: "#0D9488",
     activeBg: "#CCFBF1",

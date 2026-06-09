@@ -21,6 +21,8 @@ export default function AdminUsersPage() {
   const [loading, setLoading] = useState(false);
   const [items, setItems] = useState<UserItem[]>([]);
   const [pages, setPages] = useState(1);
+  const [total, setTotal] = useState(0);
+  const [refreshKey, setRefreshKey] = useState(0);
   const [error, setError] = useState<string | null>(null);
 
   const query = useMemo(() => {
@@ -45,15 +47,18 @@ export default function AdminUsersPage() {
         if (res.ok && data?.success) {
           setItems(data.data.items || []);
           setPages(data.data.pages || 1);
+          setTotal(data.data.total || 0);
         } else {
           setItems([]);
           setPages(1);
+          setTotal(0);
           setError(data?.message || `Request failed (${res.status})`);
         }
       } catch {
         if (mounted) {
           setItems([]);
           setPages(1);
+          setTotal(0);
           setError("Request failed");
         }
       } finally {
@@ -64,7 +69,7 @@ export default function AdminUsersPage() {
     return () => {
       mounted = false;
     };
-  }, [query]);
+  }, [query, refreshKey]);
 
   const toggleDisable = async (u: UserItem) => {
     const next = !u.isDisabled;
@@ -94,7 +99,15 @@ export default function AdminUsersPage() {
       return false;
     }
 
-    setItems((prev) => prev.filter((x) => x._id !== u._id));
+    window.dispatchEvent(new CustomEvent("admin:dashboard-refresh"));
+
+    const remainingOnPage = items.filter((x) => x._id !== u._id);
+    if (remainingOnPage.length === 0 && page > 1) {
+      setPage((p) => p - 1);
+    } else {
+      setRefreshKey((key) => key + 1);
+    }
+
     return true;
   };
 
@@ -167,20 +180,15 @@ export default function AdminUsersPage() {
                 <td className="py-4">
                   {u.canDelete ? (
                     <AdminListDeleteButton
-                      itemLabel="this user"
+                      itemLabel={
+                        (u.loanCount || 0) > 0
+                          ? `this user and ${u.loanCount} linked loan application(s)`
+                          : "this user"
+                      }
                       onDelete={() => deleteUser(u)}
                     />
                   ) : (
-                    <span
-                      className="text-[10px] text-muted-foreground"
-                      title={
-                        (u.loanCount || 0) > 0
-                          ? `User has ${u.loanCount} loan application(s)`
-                          : undefined
-                      }
-                    >
-                      {(u.loanCount || 0) > 0 ? "Has loans" : "—"}
-                    </span>
+                    <span className="text-[10px] text-muted-foreground">—</span>
                   )}
                 </td>
                 <td className="py-4">
@@ -206,7 +214,9 @@ export default function AdminUsersPage() {
       </div>
 
       <div className="mt-5 flex items-center justify-between">
-        <div className="text-xs text-muted-foreground">Page {page} of {pages}</div>
+        <div className="text-xs text-muted-foreground">
+          {total} user{total === 1 ? "" : "s"} · Page {page} of {pages}
+        </div>
         <div className="flex gap-2">
           <button
             disabled={page <= 1}

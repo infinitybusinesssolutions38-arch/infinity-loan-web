@@ -94,7 +94,8 @@ export const sendPartnerConfirmationEmail = async (partnerData) => {
             <p style="margin: 0; color: #0c4a6e; font-size: 14px;">
               Phone/WhatsApp: <strong>+91 9579880841</strong> | <strong>+91 9766616960</strong><br/>
               Email: <strong>business@infinityloanservices.com</strong><br/>
-              Website: <strong>www.infinityloanservices.com</strong>
+              Website: <strong>www.infinityloanservices.com</strong><br/>
+              Address: <strong>Corporate & Registered Office, 8th Floor, Magnum Tower – 1, Golf Course Extension Road, Sector 58, Gurugram, Haryana – 122098, India</strong>
             </p>
           </div>
 

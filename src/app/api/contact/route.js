@@ -96,7 +96,8 @@ export async function POST(req) {
                     <p>
                         <strong>Email:</strong> ${supportEmail}<br/>
                         <strong>Phone:</strong> ${supportPhone}<br/>
-                        <strong>Website:</strong> ${website}
+                        <strong>Website:</strong> ${website}<br/>
+                        <strong>Address:</strong> Corporate & Registered Office, 8th Floor, Magnum Tower – 1, Golf Course Extension Road, Sector 58, Gurugram, Haryana – 122098, India
                     </p>
 
                     <p>Warm regards,<br/><strong>${companyName}</strong></p>

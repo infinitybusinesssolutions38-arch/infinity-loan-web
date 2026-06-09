@@ -1,5 +1,6 @@
 import { hl } from "./highlight-ui";
 import { Phone, Mail, MapPin, Zap, ShieldCheck, CheckCircle2 } from "lucide-react";
+import CompanyOfficeAddress from "@/components/CompanyOfficeAddress";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -97,16 +98,11 @@ export function Footer() {
                             <li className="flex items-start gap-3">
                                 <MapPin className={hl.footerIconBox} />
                                 <div className="text-sm">
-                                    <p className="font-medium text-[#1A1A1A]">
-                                        Corporate & Registered Office
-                                    </p>
-                                    <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">
-                                        8th Floor, Magnum Tower – 1,
-                                        <br />
-                                        Golf Course Extension Road, Sector 58,
-                                        <br />
-                                        Gurugram, Haryana – 122098, India
-                                    </p>
+                                    <CompanyOfficeAddress
+                                        heading=""
+                                        titleClassName="font-medium text-[#1A1A1A]"
+                                        bodyClassName="text-gray-600 text-xs sm:text-sm leading-relaxed"
+                                    />
                                 </div>
                             </li>
                         </ul>
