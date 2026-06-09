@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import connectDB from "../../lib/db";
 import { requireAdmin } from "../lib/guard";
+import { countUserLoans } from "../../lib/loan-applications";
 import UserModel from "../../models/user-schema";
 
 export async function GET(req) {
@@ -30,14 +31,26 @@ export async function GET(req) {
     UserModel.countDocuments(filter),
   ]);
 
+  const enriched = await Promise.all(
+    items.map(async (user) => {
+      const loanCount = await countUserLoans(user);
+      return {
+        ...user,
+        _id: user._id?.toString?.() || String(user._id || ""),
+        loanCount,
+        canDelete: loanCount === 0,
+      };
+    })
+  );
+
   return NextResponse.json({
     success: true,
     data: {
-      items,
+      items: enriched,
       total,
       page,
       limit,
-      pages: Math.ceil(total / limit),
+      pages: Math.ceil(total / limit) || 1,
     },
   });
 }

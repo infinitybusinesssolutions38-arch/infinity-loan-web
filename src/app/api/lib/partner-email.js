@@ -92,8 +92,8 @@ export const sendPartnerConfirmationEmail = async (partnerData) => {
           <div style="margin: 18px 0; padding: 16px; border-radius: 10px; background: #f0f9ff; border: 1px solid #bae6fd;">
             <p style="margin: 0 0 8px 0; font-weight: 700; color: #075985;">Need help?</p>
             <p style="margin: 0; color: #0c4a6e; font-size: 14px;">
-              Phone/WhatsApp: <strong>+91 90283 46300</strong><br/>
-              Email: <strong>business@infinityloanservices.com</strong> | <strong>personal.infinityloans@gmail.com</strong><br/>
+              Phone/WhatsApp: <strong>+91 9579880841</strong> | <strong>+91 9766616960</strong><br/>
+              Email: <strong>business@infinityloanservices.com</strong><br/>
               Website: <strong>www.infinityloanservices.com</strong>
             </p>
           </div>

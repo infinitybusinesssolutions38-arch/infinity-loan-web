@@ -258,18 +258,6 @@ const ContactPage = () => {
                                     >
                                         business@infinityloanservices.com
                                     </a>
-                                    <a
-                                        href="mailto:personal.infinityloans@gmail.com"
-                                        className="mt-1 block text-[#1A1A1A] font-medium hover:text-[#00AEEF] transition-colors break-all"
-                                    >
-                                       personal.infinityloans@gmail.com
-                                    </a>
-                                    <a
-                                        href="mailto:business@infinityloanservices.com"
-                                        className="mt-1 block text-[#1A1A1A] font-medium hover:text-[#00AEEF] transition-colors break-all"
-                                    >
-                                       business@infinityloanservices.com
-                                    </a>
                                 </div>
                             </div>
 
@@ -280,17 +268,17 @@ const ContactPage = () => {
                                 <div>
                                     <p className="text-[#666666] text-sm">Call Us</p>
                                     <a
-                                        href="tel:+919028346900"
+                                        href="tel:+919579880841"
                                         className="text-[#1A1A1A] font-medium hover:text-[#00AEEF] transition-colors"
                                     >
-                                       +91 9028346900
+                                        +91 9579880841
                                     </a>
-                                    {/* <a
-                                        href="tel:+919766169660"
+                                    <a
+                                        href="tel:+919766616960"
                                         className="mt-1 block text-[#1A1A1A] font-medium hover:text-[#00AEEF] transition-colors"
                                     >
-                                        +91 9156266001
-                                    </a> */}
+                                        +91 9766616960
+                                    </a>
                                 </div>
                             </div>
 

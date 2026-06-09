@@ -576,7 +576,7 @@ export async function POST(req) {
     try {
       const companyName = process.env.COMPANY_NAME || "Infinity Loans & Business Solutions";
       const supportEmail = process.env.SUPPORT_EMAIL || process.env.EMAIL_FROM || process.env.EMAIL_USER;
-      const supportPhone = process.env.SUPPORT_PHONE || "+91 90283 46300";
+      const supportPhone = process.env.SUPPORT_PHONE || "+91 9579880841 | +91 9766616960";
       const website = process.env.COMPANY_WEBSITE || "www.infinityloanservices.com";
 
       const fromAddress = process.env.EMAIL_FROM || process.env.EMAIL_USER;

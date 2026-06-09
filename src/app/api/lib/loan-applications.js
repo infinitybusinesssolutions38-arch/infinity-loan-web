@@ -379,6 +379,13 @@ export function mapLoanSummary(record, categoryKey, defaultLabel) {
     };
 }
 
+export async function countUserLoans(user) {
+    await connectDB();
+    const filter = buildUserLoanFilter(user);
+    const counts = await Promise.all(LOAN_MODELS.map(({ model }) => model.countDocuments(filter)));
+    return counts.reduce((sum, n) => sum + n, 0);
+}
+
 export async function fetchAllUserLoans(user, { summaryOnly = true } = {}) {
     await connectDB();
     const filter = buildUserLoanFilter(user);

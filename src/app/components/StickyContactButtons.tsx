@@ -14,8 +14,8 @@ function normalizeWhatsappNumber(value: string) {
 }
 
 export default function StickyContactButtons() {
-  const phone = process.env.NEXT_PUBLIC_CONTACT_PHONE ?? "+919028346900";
-  const whatsapp = process.env.NEXT_PUBLIC_CONTACT_WHATSAPP ?? "919028346900";
+  const phone = process.env.NEXT_PUBLIC_CONTACT_PHONE ?? "+919579880841";
+  const whatsapp = process.env.NEXT_PUBLIC_CONTACT_WHATSAPP ?? "919579880841";
   const email = process.env.NEXT_PUBLIC_CONTACT_EMAIL ?? "business@infinityloanservices.com";
   const whatsappMessage =
     process.env.NEXT_PUBLIC_CONTACT_WHATSAPP_MESSAGE ??
