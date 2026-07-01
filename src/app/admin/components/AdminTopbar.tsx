@@ -13,6 +13,7 @@ const titleMap: Record<string, string> = {
   "/admin/business-loan-applications": "Business Loan Applications",
   "/admin/credit-card-applications": "Credit Card Applications",
   "/admin/google-forms": "Google Forms",
+  "/admin/direct-message": "Direct Message",
   "/admin/partner-applications": "Loan Partner Applications",
   "/admin/payment-receipts": "Payment Receipts",
   "/admin/loan-applications": "Loan Applications",
@@ -36,6 +37,7 @@ const listRoutes: Record<string, { href: string; label: string }> = {
     label: "Credit Card Applications",
   },
   "/admin/google-forms": { href: "/admin/google-forms", label: "Google Forms" },
+  "/admin/direct-message": { href: "/admin/direct-message", label: "Direct Message" },
   "/admin/partner-applications": {
     href: "/admin/partner-applications",
     label: "Loan Partner Applications",

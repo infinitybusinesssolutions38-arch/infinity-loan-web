@@ -102,6 +102,15 @@ const nav: NavItem[] = [
     iconBg: "rgba(0, 174, 239, 0.12)",
   },
   {
+    href: "/admin/direct-message",
+    label: "Direct Message",
+    icon: Mail,
+    accent: "#14B8A6",
+    activeBg: "#D1FAE5",
+    hoverBg: "#ECFDF5",
+    iconBg: "rgba(20, 184, 166, 0.14)",
+  },
+  {
     href: "/admin/partner-applications",
     label: "Loan Partner application",
     icon: Handshake,
